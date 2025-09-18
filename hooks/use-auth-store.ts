@@ -7,6 +7,8 @@ interface User {
   email: string
   firstName?: string
   lastName?: string
+  phoneNumber?: string
+  company?: string
   avatar?: string
   createdAt: string
   updatedAt: string

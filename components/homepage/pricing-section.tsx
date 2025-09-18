@@ -10,14 +10,20 @@ import { useRouter } from "next/navigation"
 import { pricingCategories, customPlan } from "@/types/pricing-plans"
 import { PricingCategory } from "@/types/pricing-types"
 import { formatPrice } from "@/lib/utils"
+import CustomRegistrationForm from "./customRegistrationForm"
+import useAuthStore from "@/hooks/use-auth-store"
+import { useToast } from "@/hooks/use-toast"
 
 export function PricingSection() {
   const { t } = useTranslation()
   const router = useRouter()
+  const { toast } = useToast()
+  const { isAuthenticated } = useAuthStore()
   const [expandedCategory, setExpandedCategory] = useState<string | null>('starter')
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [closingCategory, setClosingCategory] = useState<string | null>(null)
+  const [showCustomForm, setShowCustomForm] = useState(false)
   
   // Refs for scrolling
   const mainCardsRef = useRef<HTMLDivElement>(null)
@@ -37,6 +43,18 @@ export function PricingSection() {
     })
     
     router.push(`/checkout?${params.toString()}`)
+  }
+
+  const handleCustomPlanClick = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Vui lòng đăng nhập",
+        description: "Xin hãy đăng nhập để đăng ký gói tùy chọn",
+        variant: "destructive",
+      })
+      return
+    }
+    setShowCustomForm(true)
   }
 
       // Function để handle scroll khi đóng từ button "Đóng"
@@ -179,7 +197,12 @@ export function PricingSection() {
             </CardHeader>
 
             <CardFooter className="pt-4">
-              <Button variant="outline" size="lg" className="w-full py-3">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="w-full py-3"
+                onClick={handleCustomPlanClick}
+              >
                 Liên hệ tư vấn
               </Button>
             </CardFooter>
@@ -342,6 +365,12 @@ export function PricingSection() {
           </div>
         </div>
       </div>
+
+      {/* Custom Registration Form Popup */}
+      <CustomRegistrationForm 
+        open={showCustomForm} 
+        onOpenChange={setShowCustomForm} 
+      />
     </section>
   )
 }

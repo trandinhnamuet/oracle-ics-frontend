@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { User, Settings, LogOut } from 'lucide-react'
+import { User, Settings, LogOut, Shield, Package } from 'lucide-react'
 
 interface SimpleDropdownProps {
   user: any
@@ -72,6 +72,23 @@ export function SimpleDropdown({ user, onProfileClick, onLogout }: SimpleDropdow
               <User className="mr-2 h-4 w-4" />
               {t('header.profile')}
             </button>
+
+            <a
+              href="/admin"
+              className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+              onClick={() => setIsOpen(false)}
+            >
+              <Shield className="mr-2 h-4 w-4" />
+              Admin
+            </a>
+            <a
+              href="/package-management"
+              className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+              onClick={() => setIsOpen(false)}
+            >
+              <Package className="mr-2 h-4 w-4" />
+              Quản lý gói đã đăng ký
+            </a>
 
             <button
               onClick={() => setIsOpen(false)}
