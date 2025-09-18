@@ -1,0 +1,185 @@
+import { PricingPlan } from "./pricing-types"
+import { Shield } from "lucide-react"
+
+export const professionalPlans: PricingPlan[] = [
+  {
+    id: "professional-1",
+    name: "Professional 1",
+    description: "Gói chuyên nghiệp 1 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "580000",
+    period: "tháng",
+    icon: Shield,
+    popular: true,
+    category: 'professional',
+    subPlanNumber: 1,
+    features: [
+      "4 vCPU, 16GB RAM",
+      "500GB SSD Storage",
+      "5TB Bandwidth",
+      "Hỗ trợ điện thoại 24/7"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-2",
+    name: "Professional 2",
+    description: "Gói chuyên nghiệp 2 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "660000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 2,
+    features: [
+      "5 vCPU, 24GB RAM",
+      "700GB SSD Storage",
+      "7TB Bandwidth",
+      "Backup tự động 4 lần/ngày"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-3",
+    name: "Professional 3",
+    description: "Gói chuyên nghiệp 3 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "740000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 3,
+    features: [
+      "6 vCPU, 32GB RAM",
+      "900GB SSD Storage",
+      "9TB Bandwidth",
+      "Monitoring nâng cao"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-4",
+    name: "Professional 4",
+    description: "Gói chuyên nghiệp 4 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "820000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 4,
+    features: [
+      "7 vCPU, 40GB RAM",
+      "1100GB SSD Storage",
+      "11TB Bandwidth",
+      "Load Balancer"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-5",
+    name: "Professional 5",
+    description: "Gói chuyên nghiệp 5 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "900000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 5,
+    features: [
+      "8 vCPU, 48GB RAM",
+      "1300GB SSD Storage",
+      "13TB Bandwidth",
+      "Auto Scaling"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-6",
+    name: "Professional 6",
+    description: "Gói chuyên nghiệp 6 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "980000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 6,
+    features: [
+      "9 vCPU, 56GB RAM",
+      "1500GB SSD Storage",
+      "15TB Bandwidth",
+      "Database clustering"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-7",
+    name: "Professional 7",
+    description: "Gói chuyên nghiệp 7 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "1060000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 7,
+    features: [
+      "10 vCPU, 64GB RAM",
+      "1700GB SSD Storage",
+      "17TB Bandwidth",
+      "Multi-region support"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-8",
+    name: "Professional 8",
+    description: "Gói chuyên nghiệp 8 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "1140000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 8,
+    features: [
+      "11 vCPU, 72GB RAM",
+      "1900GB SSD Storage",
+      "19TB Bandwidth",
+      "Advanced analytics"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-9",
+    name: "Professional 9",
+    description: "Gói chuyên nghiệp 9 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "1220000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 9,
+    features: [
+      "12 vCPU, 80GB RAM",
+      "2100GB SSD Storage",
+      "21TB Bandwidth",
+      "Custom integrations"
+    ],
+      limitations: [],
+  },
+  {
+    id: "professional-10",
+    name: "Professional 10",
+    description: "Gói chuyên nghiệp 10 - Lựa chọn phổ biến cho doanh nghiệp vừa",
+  price: "1300000",
+    period: "tháng",
+    icon: Shield,
+    popular: false,
+    category: 'professional',
+    subPlanNumber: 10,
+    features: [
+      "13 vCPU, 88GB RAM",
+      "2300GB SSD Storage",
+      "23TB Bandwidth",
+      "Custom integrations"
+    ],
+      limitations: [],
+  }
+]

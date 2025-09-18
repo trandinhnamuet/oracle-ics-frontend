@@ -1,0 +1,63 @@
+{
+  "homepage": {
+    "hero": {
+      "title": "Giải pháp Oracle Cloud hàng đầu tại Việt Nam",
+      "subtitle": "Đối tác chính thức Oracle tại Việt Nam",
+      "description": "Chúng tôi cung cấp giải pháp cloud computing toàn diện với Oracle Cloud Infrastructure (OCI), giúp doanh nghiệp tối ưu hóa chi phí và nâng cao hiệu suất.",
+      "getStarted": "Bắt đầu ngay",
+      "dashboard": "Xem Dashboard",
+      "contact": "Liên hệ tư vấn"
+    },
+    "services": {
+      "title": "Dịch vụ",
+      "subtitle": "Giải pháp Cloud toàn diện"
+    },
+    "pricing": {
+      "title": "Bảng giá",
+      "subtitle": "Gói dịch vụ phù hợp với mọi quy mô doanh nghiệp",
+      "plans": {
+        "starter": "Tiêu chuẩn",
+        "professional": "Cao cấp", 
+        "enterprise": "Doanh nghiệp",
+        "custom": "Tùy chỉnh"
+      }
+    }
+  },
+  "header": {
+    "home": "Trang chủ",
+    "services": "Dịch vụ", 
+    "pricing": "Bảng giá",
+    "support": "Hỗ trợ",
+    "contact": "Liên hệ",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "hello": "Xin chào",
+    "profile": "Thông tin cá nhân",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "logoutSuccess": "Đăng xuất thành công!"
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "backButton": "Quay lại",
+    "packageInfo": "Thông tin gói dịch vụ",
+    "packageName": "Tên gói",
+    "description": "Mô tả",
+    "packageType": "Loại gói",
+    "features": "Tính năng bao gồm",
+    "totalAmount": "Tổng tiền",
+    "paymentQR": "Thanh toán qua QR",
+    "scanQR": "Quét mã QR bằng app ngân hàng để thanh toán",
+    "bankName": "Ngân hàng",
+    "accountNumber": "Số tài khoản",
+    "amount": "Số tiền",
+    "content": "Nội dung",
+    "copyInfo": "Sao chép thông tin chuyển khoản",
+    "copiedSuccess": "Đã sao chép thông tin chuyển khoản",
+    "note": "Lưu ý: Vui lòng chuyển khoản đúng nội dung để hệ thống tự động kích hoạt dịch vụ.",
+    "contactSupport": "Liên hệ hỗ trợ"
+  }
+}

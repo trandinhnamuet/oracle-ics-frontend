@@ -1,0 +1,63 @@
+{
+  "homepage": {
+    "hero": {
+      "title": "Leading Oracle Cloud Solutions in Vietnam",
+      "subtitle": "Official Oracle Partner in Vietnam",
+      "description": "We provide comprehensive cloud computing solutions with Oracle Cloud Infrastructure (OCI), helping businesses optimize costs and improve performance.",
+      "getStarted": "Get Started",
+      "dashboard": "View Dashboard",
+      "contact": "Contact for Consultation"
+    },
+    "services": {
+      "title": "Services",
+      "subtitle": "Comprehensive Cloud Solutions"
+    },
+    "pricing": {
+      "title": "Pricing",
+      "subtitle": "Service packages suitable for all business sizes",
+      "plans": {
+        "starter": "Standard",
+        "professional": "Premium",
+        "enterprise": "Enterprise", 
+        "custom": "Custom"
+      }
+    }
+  },
+  "header": {
+    "home": "Home",
+    "services": "Services",
+    "pricing": "Pricing", 
+    "support": "Support",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "hello": "Hello",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "common": {
+    "loading": "Loading...",
+    "logoutSuccess": "Logout successful!"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "backButton": "Back",
+    "packageInfo": "Package Information",
+    "packageName": "Package Name",
+    "description": "Description",
+    "packageType": "Package Type",
+    "features": "Features Included",
+    "totalAmount": "Total Amount",
+    "paymentQR": "QR Payment",
+    "scanQR": "Scan QR code with your banking app to pay",
+    "bankName": "Bank",
+    "accountNumber": "Account Number",
+    "amount": "Amount",
+    "content": "Content",
+    "copyInfo": "Copy transfer information",
+    "copiedSuccess": "Transfer information copied",
+    "note": "Note: Please transfer with exact content for automatic service activation.",
+    "contactSupport": "Contact Support"
+  }
+}

@@ -1,0 +1,185 @@
+import { PricingPlan } from "./pricing-types"
+import { Crown } from "lucide-react"
+
+export const enterprisePlans: PricingPlan[] = [
+  {
+    id: "enterprise-1",
+    name: "Enterprise 1",
+    description: "Gói doanh nghiệp 1 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "1250000",
+    period: "tháng",
+    icon: Crown,
+    popular: true,
+    category: 'enterprise',
+    subPlanNumber: 1,
+    features: [
+      "8 vCPU, 32GB RAM",
+      "2TB SSD Storage",
+      "Unlimited Bandwidth",
+      "Dedicated Account Manager"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-2",
+    name: "Enterprise 2",
+    description: "Gói doanh nghiệp 2 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "1400000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 2,
+    features: [
+      "10 vCPU, 48GB RAM",
+      "3TB SSD Storage",
+      "Unlimited Bandwidth",
+      "Backup real-time"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-3",
+    name: "Enterprise 3",
+    description: "Gói doanh nghiệp 3 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "1550000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 3,
+    features: [
+      "12 vCPU, 64GB RAM",
+      "4TB SSD Storage",
+      "Unlimited Bandwidth",
+      "Monitoring enterprise"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-4",
+    name: "Enterprise 4",
+    description: "Gói doanh nghiệp 4 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "1700000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 4,
+    features: [
+      "14 vCPU, 80GB RAM",
+      "5TB SSD Storage",
+      "Unlimited Bandwidth",
+      "Multi-region Load Balancer"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-5",
+    name: "Enterprise 5",
+    description: "Gói doanh nghiệp 5 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "1850000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 5,
+    features: [
+      "16 vCPU, 96GB RAM",
+      "6TB SSD Storage",
+      "Unlimited Bandwidth",
+      "Auto Scaling unlimited"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-6",
+    name: "Enterprise 6",
+    description: "Gói doanh nghiệp 6 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "2000000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 6,
+    features: [
+      "18 vCPU, 112GB RAM",
+      "7TB SSD Storage",
+      "Unlimited Bandwidth",
+      "Database clustering + HA"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-7",
+    name: "Enterprise 7",
+    description: "Gói doanh nghiệp 7 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "2150000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 7,
+    features: [
+      "20 vCPU, 128GB RAM",
+      "8TB SSD Storage",
+      "Unlimited Bandwidth",
+      "SLA 99.99%"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-8",
+    name: "Enterprise 8",
+    description: "Gói doanh nghiệp 8 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "2300000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 8,
+    features: [
+      "22 vCPU, 144GB RAM",
+      "9TB SSD Storage",
+      "Unlimited Bandwidth",
+      "Priority support"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-9",
+    name: "Enterprise 9",
+    description: "Gói doanh nghiệp 9 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "2450000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 9,
+    features: [
+      "24 vCPU, 160GB RAM",
+      "10TB SSD Storage",
+      "Unlimited Bandwidth",
+      "White-label options"
+    ],
+      limitations: [],
+  },
+  {
+    id: "enterprise-10",
+    name: "Enterprise 10",
+    description: "Gói doanh nghiệp 10 - Giải pháp toàn diện cho doanh nghiệp lớn",
+  price: "2600000",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'enterprise',
+    subPlanNumber: 10,
+    features: [
+      "26 vCPU, 176GB RAM",
+      "11TB SSD Storage",
+      "Unlimited Bandwidth",
+      "24/7 on-site support"
+    ],
+      limitations: [],
+  }
+]

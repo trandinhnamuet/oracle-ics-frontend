@@ -1,0 +1,185 @@
+import { PricingPlan } from "./pricing-types"
+import { Zap } from "lucide-react"
+
+export const starterPlans: PricingPlan[] = [
+  {
+    id: "starter-1",
+    name: "Starter 1",
+    description: "Gói khởi đầu 1 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "250000",
+    period: "tháng",
+    icon: Zap,
+    popular: true,
+    category: 'starter',
+    subPlanNumber: 1,
+    features: [
+      "1 vCPU, 8GB RAM",
+      "100GB SSD Storage",
+      "1TB Bandwidth",
+      "Hỗ trợ email 24/7"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-2",
+    name: "Starter 2",
+    description: "Gói khởi đầu 2 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "300000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 2,
+    features: [
+      "2 vCPU, 12GB RAM",
+      "150GB SSD Storage",
+      "2TB Bandwidth",
+      "Hỗ trợ email 24/7"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-3",
+    name: "Starter 3",
+    description: "Gói khởi đầu 3 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "350000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 3,
+    features: [
+      "3 vCPU, 16GB RAM",
+      "200GB SSD Storage",
+      "3TB Bandwidth",
+      "Hỗ trợ email 24/7"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-4",
+    name: "Starter 4",
+    description: "Gói khởi đầu 4 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "400000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 4,
+    features: [
+      "4 vCPU, 20GB RAM",
+      "250GB SSD Storage",
+      "4TB Bandwidth",
+      "Hỗ trợ email 24/7"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-5",
+    name: "Starter 5",
+    description: "Gói khởi đầu 5 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "450000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 5,
+    features: [
+      "5 vCPU, 24GB RAM",
+      "300GB SSD Storage",
+      "5TB Bandwidth",
+      "Backup tự động hàng ngày"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-6",
+    name: "Starter 6",
+    description: "Gói khởi đầu 6 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "500000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 6,
+    features: [
+      "6 vCPU, 28GB RAM",
+      "350GB SSD Storage",
+      "6TB Bandwidth",
+      "Load balancer cơ bản"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-7",
+    name: "Starter 7",
+    description: "Gói khởi đầu 7 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "550000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 7,
+    features: [
+      "7 vCPU, 32GB RAM",
+      "400GB SSD Storage",
+      "7TB Bandwidth",
+      "Load balancer cơ bản"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-8",
+    name: "Starter 8",
+    description: "Gói khởi đầu 8 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "600000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 8,
+    features: [
+      "8 vCPU, 36GB RAM",
+      "450GB SSD Storage",
+      "8TB Bandwidth",
+      "Auto scaling"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-9",
+    name: "Starter 9",
+    description: "Gói khởi đầu 9 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "650000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 9,
+    features: [
+      "9 vCPU, 40GB RAM",
+      "500GB SSD Storage",
+      "9TB Bandwidth",
+      "Auto scaling"
+    ],
+      limitations: [],
+  },
+  {
+    id: "starter-10",
+    name: "Starter 10",
+    description: "Gói khởi đầu 10 - Phù hợp cho doanh nghiệp nhỏ",
+  price: "700000",
+    period: "tháng",
+    icon: Zap,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 10,
+    features: [
+      "10 vCPU, 44GB RAM",
+      "550GB SSD Storage",
+      "10TB Bandwidth",
+      "Auto scaling"
+    ],
+      limitations: [],
+  }
+]

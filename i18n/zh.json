@@ -1,0 +1,42 @@
+{
+  "homepage": {
+    "hero": {
+      "title": "越南领先的Oracle云解决方案",
+      "subtitle": "Oracle在越南的官方合作伙伴",
+      "description": "我们通过Oracle云基础设施(OCI)提供全面的云计算解决方案，帮助企业优化成本并提高性能。",
+      "getStarted": "立即开始",
+      "dashboard": "查看仪表板",
+      "contact": "联系咨询"
+    },
+    "services": {
+      "title": "服务",
+      "subtitle": "全面的云解决方案"
+    },
+    "pricing": {
+      "title": "价格",
+      "subtitle": "适合各种规模企业的服务套餐",
+      "plans": {
+        "starter": "标准版",
+        "professional": "高级版",
+        "enterprise": "企业版",
+        "custom": "定制版"
+      }
+    }
+  },
+  "header": {
+    "home": "首页",
+    "services": "服务",
+    "pricing": "价格",
+    "support": "支持", 
+    "contact": "联系",
+    "login": "登录",
+    "register": "注册",
+    "hello": "您好",
+    "profile": "个人资料",
+    "settings": "设置",
+    "logout": "登出"
+  },
+  "common": {
+    "loading": "加载中..."
+  }
+}
