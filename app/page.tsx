@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/homepage/hero-section"
 import { ServicesSection } from "@/components/homepage/services-section"
 import { PricingSection } from "@/components/homepage/pricing-section"
 import { Footer } from "@/components/layout/footer"
+import { ChatbotButton } from "@/components/homepage/chatbot"
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 
@@ -38,6 +39,7 @@ export default function HomePage() {
           <PricingSection />
         </AnimatedSection>
       </main>
+      <ChatbotButton />
     </div>
   )
 }
