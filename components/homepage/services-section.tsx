@@ -48,13 +48,9 @@ export function ServicesSection() {
   const { t } = useTranslation()
 
   return (
-    <section id="services" className="py-20 lg:py-32">
+    <section id="services" className="py-10 lg:py-16">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-16">
-          <Badge variant="secondary" className="text-sm font-medium">
-            <CloudCog className="h-4 w-4 mr-2" />
-            {t('homepage.services.title')}
-          </Badge>
           <h2 className="text-3xl lg:text-5xl font-bold text-balance text-foreground">
             {t('homepage.services.subtitle')}
           </h2>

@@ -12,7 +12,7 @@ export function HeroSection() {
   const { isAuthenticated } = useAuthStore()
 
   return (
-    <section id="home" className="relative py-20 lg:py-32 overflow-hidden">
+    <section id="home" className="relative py-15 lg:py-24 overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-card to-background opacity-50" />
       <div className="absolute inset-0 bg-[url('/abstract-cloud-network-pattern.jpg')] opacity-5" />

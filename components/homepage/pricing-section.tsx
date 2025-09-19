@@ -122,12 +122,9 @@ export function PricingSection() {
   }
 
   return (
-    <section id="pricing" className="py-20 lg:py-32 bg-card/30">
+    <section id="pricing" className="py-10 lg:py-16 bg-card/30">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-16">
-          <Badge variant="secondary" className="text-sm font-medium">
-            {t('homepage.pricing.title')}
-          </Badge>
           <h2 className="text-3xl lg:text-5xl font-bold text-balance text-foreground">
             {t('homepage.pricing.subtitle')}
           </h2>
@@ -236,7 +233,7 @@ export function PricingSection() {
                     : 'animate-in fade-in-0 slide-in-from-left-2 duration-300'
                 }`}>
                   <Badge variant="outline" className="text-lg px-4 py-2">
-                    {t(`homepage.pricing.plans.${expandedCategory || closingCategory}`)} Plans
+                    {t(`homepage.pricing.plans.${expandedCategory || closingCategory}`)}
                   </Badge>
                   <span className={`text-muted-foreground transition-all duration-400 ${
                     isClosing 
@@ -362,6 +359,11 @@ export function PricingSection() {
             <span>✓ Hủy bất cứ lúc nào</span>
             <span>✓ Thanh toán linh hoạt</span>
             <span>✓ Tư vấn miễn phí</span>
+          </div>
+          <div className="pt-4">
+            <span className="inline-block px-4 py-2 rounded-lg bg-primary/10 text-primary font-semibold text-lg tracking-wide">
+              Hotline hỗ trợ: <a href="tel:0987654321" className="underline hover:text-primary/80">0987 654 321</a>
+            </span>
           </div>
         </div>
       </div>
