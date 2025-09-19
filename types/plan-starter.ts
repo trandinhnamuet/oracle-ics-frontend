@@ -3,7 +3,7 @@ import { Zap } from "lucide-react"
 
 export const starterPlans: PricingPlan[] = [
   {
-    id: "starter-1",
+    id: 1,
     name: "Starter 1",
     description: "Gói khởi đầu 1 - Phù hợp cho doanh nghiệp nhỏ",
   price: "250000",
@@ -21,7 +21,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-2",
+    id: 2,
     name: "Starter 2",
     description: "Gói khởi đầu 2 - Phù hợp cho doanh nghiệp nhỏ",
   price: "300000",
@@ -39,7 +39,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-3",
+    id: 3,
     name: "Starter 3",
     description: "Gói khởi đầu 3 - Phù hợp cho doanh nghiệp nhỏ",
   price: "350000",
@@ -57,7 +57,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-4",
+    id: 4,
     name: "Starter 4",
     description: "Gói khởi đầu 4 - Phù hợp cho doanh nghiệp nhỏ",
   price: "400000",
@@ -75,7 +75,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-5",
+    id: 5,
     name: "Starter 5",
     description: "Gói khởi đầu 5 - Phù hợp cho doanh nghiệp nhỏ",
   price: "450000",
@@ -93,7 +93,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-6",
+    id: 6,
     name: "Starter 6",
     description: "Gói khởi đầu 6 - Phù hợp cho doanh nghiệp nhỏ",
   price: "500000",
@@ -111,7 +111,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-7",
+    id: 7,
     name: "Starter 7",
     description: "Gói khởi đầu 7 - Phù hợp cho doanh nghiệp nhỏ",
   price: "550000",
@@ -129,7 +129,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-8",
+    id: 8,
     name: "Starter 8",
     description: "Gói khởi đầu 8 - Phù hợp cho doanh nghiệp nhỏ",
   price: "600000",
@@ -147,7 +147,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-9",
+    id: 9,
     name: "Starter 9",
     description: "Gói khởi đầu 9 - Phù hợp cho doanh nghiệp nhỏ",
   price: "650000",
@@ -165,7 +165,7 @@ export const starterPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "starter-10",
+    id: 10,
     name: "Starter 10",
     description: "Gói khởi đầu 10 - Phù hợp cho doanh nghiệp nhỏ",
   price: "700000",

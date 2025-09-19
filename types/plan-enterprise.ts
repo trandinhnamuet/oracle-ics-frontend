@@ -3,7 +3,7 @@ import { Crown } from "lucide-react"
 
 export const enterprisePlans: PricingPlan[] = [
   {
-    id: "enterprise-1",
+    id: 21,
     name: "Enterprise 1",
     description: "Gói doanh nghiệp 1 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "1250000",
@@ -21,7 +21,7 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-2",
+    id: 22,
     name: "Enterprise 2",
     description: "Gói doanh nghiệp 2 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "1400000",
@@ -39,7 +39,7 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-3",
+    id: 23,
     name: "Enterprise 3",
     description: "Gói doanh nghiệp 3 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "1550000",
@@ -57,7 +57,7 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-4",
+    id: 24,
     name: "Enterprise 4",
     description: "Gói doanh nghiệp 4 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "1700000",
@@ -75,7 +75,7 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-5",
+    id: 25,
     name: "Enterprise 5",
     description: "Gói doanh nghiệp 5 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "1850000",
@@ -93,7 +93,7 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-6",
+    id: 26,
     name: "Enterprise 6",
     description: "Gói doanh nghiệp 6 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "2000000",
@@ -111,7 +111,7 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-7",
+    id: 27,
     name: "Enterprise 7",
     description: "Gói doanh nghiệp 7 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "2150000",
@@ -129,7 +129,7 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-8",
+    id: 28,
     name: "Enterprise 8",
     description: "Gói doanh nghiệp 8 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "2300000",
@@ -147,7 +147,7 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-9",
+    id: 29,
     name: "Enterprise 9",
     description: "Gói doanh nghiệp 9 - Giải pháp toàn diện cho doanh nghiệp lớn",
   price: "2450000",
@@ -165,10 +165,10 @@ export const enterprisePlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "enterprise-10",
+    id: 30,
     name: "Enterprise 10",
     description: "Gói doanh nghiệp 10 - Giải pháp toàn diện cho doanh nghiệp lớn",
-  price: "2600000",
+    price: "2000",
     period: "tháng",
     icon: Crown,
     popular: false,

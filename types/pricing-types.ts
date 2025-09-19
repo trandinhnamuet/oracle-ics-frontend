@@ -1,7 +1,7 @@
 import { LucideIcon } from "lucide-react"
 
 export interface PricingPlan {
-  id: string
+  id: number
   name: string
   description: string
   price: string

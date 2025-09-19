@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, CreditCard, CheckCircle, Copy } from 'lucide-react'
+import { ArrowLeft, CreditCard, CheckCircle, Copy, Loader } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
+import { usePaymentStatus } from '@/hooks/use-payment-status'
+import { paymentApi } from '@/lib/payment-api'
 import Image from 'next/image'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 function CheckoutContent() {
   const { t } = useTranslation()
@@ -17,6 +19,11 @@ function CheckoutContent() {
   const searchParams = useSearchParams()
   const { toast } = useToast()
 
+  // States
+  const [qrUrl, setQrUrl] = useState<string>('')
+  const [paymentId, setPaymentId] = useState<string>('')
+  const [isCreatingPayment, setIsCreatingPayment] = useState(false)
+  
   // Lấy data từ query params
   const planId = searchParams.get('planId')
   const planName = searchParams.get('name')
@@ -29,38 +36,93 @@ function CheckoutContent() {
   // Parse features từ JSON string
   const planFeatures = planFeaturesStr ? JSON.parse(planFeaturesStr) : []
 
-  // Tạo URL QR Sepay
-  const createQRUrl = (amount: string, description: string) => {
+  // Mock userId - trong thực tế sẽ lấy từ auth context
+  const userId = 1 // TODO: Lấy từ auth context
+
+  // Theo dõi trạng thái thanh toán
+  const { isPaid, isChecking } = usePaymentStatus(
+    userId, 
+    parseInt(planId || '0'), 
+    !!paymentId // Chỉ bắt đầu theo dõi khi đã tạo payment
+  )
+
+  // Tạo URL QR Sepay với custom content
+  const createCustomQRUrl = (amount: string, description: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
+    const customContent = `${description} U${userId}P${planId}`
     const params = new URLSearchParams({
-      acc: '1036053562',
-      bank: 'Vietcombank',
+      acc: '66010901964',
+      bank: 'TPBank',
       amount: amount,
-      des: description
+      des: customContent
     })
     return `${baseUrl}?${params.toString()}`
   }
 
+  // Tạo thanh toán khi component mount
+  useEffect(() => {
+    if (!planId || !planName || !planPrice) {
+      router.push('/')
+      return
+    }
+
+    const createPayment = async () => {
+      try {
+        setIsCreatingPayment(true)
+        
+        // Tạo QR code với custom content
+  const customQrUrl = createCustomQRUrl(planPrice, planName)
+  console.log('QR URL:', customQrUrl)
+  setQrUrl(customQrUrl)
+
+        // Gọi API để tạo bản ghi payment (với is_paid = false)
+        const result = await paymentApi.createPayment({
+          userId,
+          packageId: parseInt(planId),
+          amount: parseInt(planPrice),
+          planName: planName
+        })
+
+        setPaymentId(result.paymentId)
+        
+        toast({
+          title: 'Đã tạo thanh toán',
+          description: 'Vui lòng quét QR code để thanh toán',
+          variant: 'default'
+        })
+      } catch (error) {
+        console.error('Error creating payment:', error)
+        toast({
+          title: 'Lỗi tạo thanh toán',
+          description: 'Vui lòng thử lại',
+          variant: 'destructive'
+        })
+      } finally {
+        setIsCreatingPayment(false)
+      }
+    }
+
+    createPayment()
+  }, [planId, planName, planPrice, userId, router, toast])
+
   // Nếu không có data, redirect về trang chính
   if (!planId || !planName || !planPrice) {
-    router.push('/')
     return null
   }
 
-  const qrUrl = createQRUrl(planPrice, `${planName} - Oracle Cloud`)
-
   const handleCopyTransferInfo = () => {
+    const customContent = `${planName} U${userId}P${planId}`
     const transferInfo = `
-${t('checkout.bankName')}: Vietcombank
-${t('checkout.accountNumber')}: 1036053562
+${t('checkout.bankName')}: TPBank
+${t('checkout.accountNumber')}: 66010901964
 ${t('checkout.amount')}: ${formatPrice(planPrice)}₫
-${t('checkout.content')}: ${planName} - Oracle Cloud
+${t('checkout.content')}: ${customContent}
     `.trim()
     
     navigator.clipboard.writeText(transferInfo)
     toast({
       title: t('checkout.copiedSuccess'),
-      variant: 'success'
+      variant: 'default'
     })
   }
 
@@ -155,29 +217,54 @@ ${t('checkout.content')}: ${planName} - Oracle Cloud
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-center">
-                <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
-                  <Image
-                    src={qrUrl}
-                    alt="QR Code thanh toán"
-                    width={200}
-                    height={200}
-                    className="mx-auto"
-                  />
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('checkout.scanQR')}
-                </p>
+                {isCreatingPayment ? (
+                  <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
+                    <div className="w-[200px] h-[200px] flex items-center justify-center">
+                      <Loader className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  </div>
+                ) : qrUrl ? (
+                  <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
+                    <Image
+                      src={qrUrl}
+                      alt="QR Code thanh toán"
+                      width={200}
+                      height={200}
+                      className="mx-auto"
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
+                    <div className="w-[200px] h-[200px] flex items-center justify-center text-gray-400">
+                      Đang tạo QR...
+                    </div>
+                  </div>
+                )}
+                
+                {isPaid ? (
+                  <p className="text-sm text-green-600 mt-2 font-medium">
+                    ✅ Thanh toán thành công! Đang chuyển hướng...
+                  </p>
+                ) : isChecking ? (
+                  <p className="text-sm text-blue-600 mt-2">
+                    🔄 Đang kiểm tra thanh toán...
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {t('checkout.scanQR')}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3">
                 <div className="bg-card border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.bankName')}:</span>
-                    <span className="text-sm font-medium">Vietcombank</span>
+                    <span className="text-sm font-medium">TPBank</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.accountNumber')}:</span>
-                    <span className="text-sm font-medium font-mono">1036053562</span>
+                    <span className="text-sm font-medium font-mono">66010901964</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.amount')}:</span>
@@ -185,7 +272,7 @@ ${t('checkout.content')}: ${planName} - Oracle Cloud
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.content')}:</span>
-                    <span className="text-sm font-medium">{planName} - Oracle Cloud</span>
+                    <span className="text-sm font-medium">{planName} U{userId}P{planId}</span>
                   </div>
                 </div>
 
@@ -202,9 +289,19 @@ ${t('checkout.content')}: ${planName} - Oracle Cloud
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800">
-                  <strong>{t('checkout.note')}</strong>
+                  <strong>{t('checkout.note')}</strong><br/>
+                  Nội dung chuyển khoản phải chính xác: <strong>{planName} U{userId}P{planId}</strong>
                 </p>
               </div>
+
+              {paymentId && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-800">
+                    <strong>Mã thanh toán:</strong> {paymentId}<br/>
+                    Hệ thống sẽ tự động xác nhận khi bạn chuyển khoản thành công.
+                  </p>
+                </div>
+              )}
 
               <div className="text-center">
                 <Button className="w-full" size="lg">

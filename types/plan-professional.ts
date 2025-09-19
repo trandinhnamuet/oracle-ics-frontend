@@ -3,7 +3,7 @@ import { Shield } from "lucide-react"
 
 export const professionalPlans: PricingPlan[] = [
   {
-    id: "professional-1",
+    id: 11,
     name: "Professional 1",
     description: "Gói chuyên nghiệp 1 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "580000",
@@ -21,7 +21,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-2",
+    id: 12,
     name: "Professional 2",
     description: "Gói chuyên nghiệp 2 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "660000",
@@ -39,7 +39,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-3",
+    id: 13,
     name: "Professional 3",
     description: "Gói chuyên nghiệp 3 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "740000",
@@ -57,7 +57,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-4",
+    id: 14,
     name: "Professional 4",
     description: "Gói chuyên nghiệp 4 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "820000",
@@ -75,7 +75,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-5",
+    id: 15,
     name: "Professional 5",
     description: "Gói chuyên nghiệp 5 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "900000",
@@ -93,7 +93,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-6",
+    id: 16,
     name: "Professional 6",
     description: "Gói chuyên nghiệp 6 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "980000",
@@ -111,7 +111,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-7",
+    id: 17,
     name: "Professional 7",
     description: "Gói chuyên nghiệp 7 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "1060000",
@@ -129,7 +129,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-8",
+    id: 18,
     name: "Professional 8",
     description: "Gói chuyên nghiệp 8 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "1140000",
@@ -147,7 +147,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-9",
+    id: 19,
     name: "Professional 9",
     description: "Gói chuyên nghiệp 9 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "1220000",
@@ -165,7 +165,7 @@ export const professionalPlans: PricingPlan[] = [
       limitations: [],
   },
   {
-    id: "professional-10",
+    id: 20,
     name: "Professional 10",
     description: "Gói chuyên nghiệp 10 - Lựa chọn phổ biến cho doanh nghiệp vừa",
   price: "1300000",

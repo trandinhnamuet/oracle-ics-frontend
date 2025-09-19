@@ -129,3 +129,37 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom animations for success page */
+@keyframes success-circle {
+  from {
+    transform: rotate(-90deg) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-90deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes checkmark-draw {
+  0% {
+    stroke-dashoffset: 283;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-success-circle {
+  animation: success-circle 0.5s ease-out forwards;
+}
+
+.animate-checkmark-draw {
+  animation: checkmark-draw 2s ease-out forwards;
+}
+
+/* Duration utilities */
+.duration-2000 {
+  transition-duration: 2000ms;
+}
