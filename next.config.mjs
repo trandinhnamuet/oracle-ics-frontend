@@ -9,13 +9,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Tự động sử dụng PORT từ .env
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
-  env: {
-    PORT: process.env.PORT || '3000',
-  },
 }
 
 export default nextConfig

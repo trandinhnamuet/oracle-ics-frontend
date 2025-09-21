@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev --port ${PORT:-3004}",
+    "dev": "next dev",
     "lint": "next lint",
-    "start": "next start --port ${PORT:-3004}"
+    "start": "next start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
