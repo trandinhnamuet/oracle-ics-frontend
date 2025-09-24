@@ -122,6 +122,23 @@ toán xong sẽ được gửi mail, QR sepay thanh toán. Làm chức năng tha
 
 - Chiều: Nghiên cứu dashboard data source infras it + business. Họp đến 3h30
 -  
+22/09
+- Cài server chày vẩy
+- Sửa 1 vài thứ của web dashboard:
+    - video ngan va phat luon nhu tai https://smartcity.edag.com/en/referenzen/smart-city-dashboard/
+    - theme, text
+- Chiều: Đã kích hoạt được tài khoản oracle với trandinhnamuet@gmail.com. Đang cố gắng mở port cho compute instance đã tạo nhưng không được. Thử tạo lại cloud instance được
+- Họp từ 4h15-6h
+
+23/09 
+- Sáng: Chiều muộn hôm qua họ cuối cùng đã mở port modem cho mình. Sáng nay cài hosts web
+- 
+
+
+Todo: 
+- chuc nang gui mail (ebook)
+- muc Lĩnh vực ứng dụn: click thi navigate sang trang chi tiet
+- Mục ung dung rong rai: lam nhu https://www.deepmoovr.com/list/11.html
 
 Todo:
 - Tinh chỉnh trang chủ: Không bắt đăng nhập để đăng ký gói custom. Phông chữ một số chỗ đang lỗi. Bỏ badge dịch vụ và badge
@@ -152,3 +169,5 @@ Todo:
 
 - Marketing: Từ chart báo cáo tình hình fanpage facebook tạo excel báo cáo
 sáng thứ 7 nộp báo cáo 
+
+

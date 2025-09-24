@@ -362,7 +362,7 @@ export function PricingSection() {
           </div>
           <div className="pt-4">
             <span className="inline-block px-4 py-2 rounded-lg bg-primary/10 text-primary font-semibold text-lg tracking-wide">
-              Hotline hỗ trợ: <a href="tel:0987654321" className="underline hover:text-primary/80">0987 654 321</a>
+              Hotline hỗ trợ: <a href="tel:0931487231" className="underline hover:text-primary/80">0931 487 231</a>
             </span>
           </div>
         </div>
