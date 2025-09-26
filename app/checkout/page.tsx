@@ -50,10 +50,13 @@ function CheckoutContent() {
   const createCustomQRUrl = (amount: string, description: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
     const customContent = `${description} U${userId}P${planId}`
+    // Chuyển số tiền sang VND
+    const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
+    const vndAmount = Math.floor(parseFloat(amount || '0') * rate);
     const params = new URLSearchParams({
       acc: '66010901964',
       bank: 'TPBank',
-      amount: amount,
+      amount: String(vndAmount),
       des: customContent
     })
     return `${baseUrl}?${params.toString()}`
@@ -190,7 +193,11 @@ ${t('checkout.content')}: ${customContent}
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span>{t('checkout.totalAmount')}:</span>
                   <span className="text-primary">
-                    {formatPrice(planPrice)}₫
+                    {(() => {
+                      const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
+                      const vndPrice = Math.floor(parseFloat(planPrice || '0') * rate);
+                      return formatPrice(vndPrice);
+                    })()}₫
                     {planPeriod && <span className="text-sm text-muted-foreground">/{planPeriod}</span>}
                   </span>
                 </div>
@@ -268,7 +275,13 @@ ${t('checkout.content')}: ${customContent}
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.amount')}:</span>
-                    <span className="text-sm font-medium text-primary">{formatPrice(planPrice)}₫</span>
+                    <span className="text-sm font-medium text-primary">
+                      {(() => {
+                        const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
+                        const vndPrice = Math.floor(parseFloat(planPrice || '0') * rate);
+                        return formatPrice(vndPrice);
+                      })()}₫
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.content')}:</span>
