@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 
-import { authApi, RegisterRequest } from '@/lib/auth-api'
+import { authApi, RegisterRequest } from '@/api/auth.api'
 import useAuthStore from '@/hooks/use-auth-store'
 
 // Schema validation cho form đăng ký

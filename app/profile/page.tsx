@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge'
 
 import useAuthStore, { User } from '@/hooks/use-auth-store'
 import withAuth from '@/components/auth/with-auth'
-import { authApi } from '@/lib/auth-api'
+import { authApi } from '@/api/auth.api'
 
 // Schema validation cho form cập nhật profile
 const profileSchema = z.object({

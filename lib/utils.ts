@@ -11,8 +11,8 @@ export function formatPrice(price: string | number): string {
     return price
   }
   
-  const numPrice = typeof price === 'string' ? parseInt(price) : price
+  const numPrice = typeof price === 'string' ? parseFloat(price) : price
   
-  // Use consistent formatting with comma as thousand separator
-  return numPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  // Round to nearest integer and format with comma as thousand separator
+  return Math.round(numPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }

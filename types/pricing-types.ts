@@ -10,7 +10,7 @@ export interface PricingPlan {
   popular: boolean
   features: string[]
   limitations: string[]
-  category: 'starter' | 'professional' | 'enterprise' | 'custom'
+  category: 'starter' | 'professional' | 'enterprise' | 'custom' | 'ai'
   subPlanNumber?: number
 }
 

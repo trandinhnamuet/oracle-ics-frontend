@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Check, Star, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { Check, Star, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Info } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -24,12 +24,22 @@ export function PricingSection() {
   const [isClosing, setIsClosing] = useState(false)
   const [closingCategory, setClosingCategory] = useState<string | null>(null)
   const [showCustomForm, setShowCustomForm] = useState(false)
+  const [showTooltip, setShowTooltip] = useState(false)
   
   // Refs for scrolling
   const mainCardsRef = useRef<HTMLDivElement>(null)
   const expandedSectionRef = useRef<HTMLDivElement>(null)
   const expandedHeaderRef = useRef<HTMLDivElement>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
+
+  // Lấy tỉ giá từ localStorage
+  function getExchangeRate() {
+    if (typeof window !== 'undefined') {
+      const rate = localStorage.getItem('usdvnd_sell');
+      return rate ? Number(rate) : 26500;
+    }
+    return 26500;
+  }
 
   const handleSelectPlan = (plan: any, category: string) => {
     const params = new URLSearchParams({
@@ -90,34 +100,71 @@ export function PricingSection() {
         }, 500)
       }, 1000)
     } else {
-      setExpandedCategory(categoryName)
-      setIsClosing(false)
-      setClosingCategory(null)
-      setIsTransitioning(false)
-      // Scroll để carousel các gói con căn cạnh dưới màn hình
-      setTimeout(() => {
-        if (expandedSectionRef.current) {
-          const sectionRect = expandedSectionRef.current.getBoundingClientRect()
-          const targetScrollTop = window.scrollY + sectionRect.bottom - window.innerHeight + 24
-          // Scroll chậm hơn với duration 1000ms
-          const startScrollTop = window.scrollY
-          const distance = targetScrollTop - startScrollTop
-          const duration = 1000
-          const startTime = performance.now()
+      // Nếu đã có category mở khác, đóng trước rồi mở cái mới
+      if (expandedCategory && expandedCategory !== categoryName) {
+        setIsClosing(true)
+        setClosingCategory(expandedCategory)
+        
+        setTimeout(() => {
+          setExpandedCategory(categoryName)
+          setIsClosing(false)
+          setClosingCategory(null)
+          setIsTransitioning(false)
           
-          const animateScroll = (currentTime: number) => {
-            const elapsed = currentTime - startTime
-            const progress = Math.min(elapsed / duration, 1)
-            const easeProgress = 0.5 - Math.cos(progress * Math.PI) / 2 // easeInOutSine
-            window.scrollTo(0, startScrollTop + distance * easeProgress)
-            
-            if (progress < 1) {
+          // Scroll sau khi animation hoàn thành
+          setTimeout(() => {
+            if (expandedSectionRef.current) {
+              const sectionRect = expandedSectionRef.current.getBoundingClientRect()
+              const targetScrollTop = window.scrollY + sectionRect.bottom - window.innerHeight + 24
+              const startScrollTop = window.scrollY
+              const distance = targetScrollTop - startScrollTop
+              const duration = 1000
+              const startTime = performance.now()
+              
+              const animateScroll = (currentTime: number) => {
+                const elapsed = currentTime - startTime
+                const progress = Math.min(elapsed / duration, 1)
+                const easeProgress = 0.5 - Math.cos(progress * Math.PI) / 2
+                window.scrollTo(0, startScrollTop + distance * easeProgress)
+                
+                if (progress < 1) {
+                  requestAnimationFrame(animateScroll)
+                }
+              }
               requestAnimationFrame(animateScroll)
             }
+          }, 200)
+        }, 500)
+      } else {
+        // Mở category mới khi chưa có gì mở
+        setExpandedCategory(categoryName)
+        setIsClosing(false)
+        setClosingCategory(null)
+        setIsTransitioning(false)
+        
+        setTimeout(() => {
+          if (expandedSectionRef.current) {
+            const sectionRect = expandedSectionRef.current.getBoundingClientRect()
+            const targetScrollTop = window.scrollY + sectionRect.bottom - window.innerHeight + 24
+            const startScrollTop = window.scrollY
+            const distance = targetScrollTop - startScrollTop
+            const duration = 1000
+            const startTime = performance.now()
+            
+            const animateScroll = (currentTime: number) => {
+              const elapsed = currentTime - startTime
+              const progress = Math.min(elapsed / duration, 1)
+              const easeProgress = 0.5 - Math.cos(progress * Math.PI) / 2
+              window.scrollTo(0, startScrollTop + distance * easeProgress)
+              
+              if (progress < 1) {
+                requestAnimationFrame(animateScroll)
+              }
+            }
+            requestAnimationFrame(animateScroll)
           }
-          requestAnimationFrame(animateScroll)
-        }
-      }, 200)
+        }, 200)
+      }
     }
   }
 
@@ -135,7 +182,7 @@ export function PricingSection() {
         </div>
 
         {/* Main pricing cards */}
-        <div ref={mainCardsRef} className="grid lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <div ref={mainCardsRef} className="grid lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
           {pricingCategories.map((category: PricingCategory, index: number) => {
             const IconComponent = category.icon
             return (
@@ -232,6 +279,38 @@ export function PricingSection() {
                     ? 'animate-out fade-out-0 slide-out-to-left-2 duration-400'
                     : 'animate-in fade-in-0 slide-in-from-left-2 duration-300'
                 }`}>
+                  {/* Icon mini i với tooltip */}
+                  <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <span
+                      onMouseEnter={() => setShowTooltip(true)}
+                      onMouseLeave={() => setShowTooltip(false)}
+                      className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary mr-2 cursor-pointer"
+                      style={{ fontSize: 12 }}
+                    >
+                      <Info className="w-3 h-3" />
+                    </span>
+                    {showTooltip && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          left: '110%',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: '#fff',
+                          color: '#222',
+                          border: '1px solid #eee',
+                          borderRadius: 6,
+                          padding: '8px 12px',
+                          fontSize: 13,
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                          zIndex: 10,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        Giá được tính theo tỉ giá thực tế.<br />Tỉ giá hôm nay: <b>{getExchangeRate().toLocaleString()}</b>
+                      </div>
+                    )}
+                  </div>
                   <Badge variant="outline" className="text-lg px-4 py-2">
                     {t(`homepage.pricing.plans.${expandedCategory || closingCategory}`)}
                   </Badge>
@@ -272,7 +351,9 @@ export function PricingSection() {
                 </button>
                 <div
                   ref={carouselRef}
-                  className="flex overflow-x-auto gap-4 pb-2 pt-2 hide-scrollbar"
+                  className={`flex overflow-x-auto gap-4 pb-2 pt-2 hide-scrollbar${
+                    (pricingCategories.find(cat => cat.name === (expandedCategory || closingCategory))?.plans.length ?? 0) <= 5 ? ' justify-center' : ''
+                  }`}
                   style={{ scrollSnapType: 'x mandatory' }}
                 >
                   {pricingCategories
@@ -301,7 +382,14 @@ export function PricingSection() {
                           </div>
                           <div className="text-center">
                             <div className="text-2xl font-bold text-primary">
-                              {formatPrice(plan.price)}
+                              {/* Hiển thị giá VND, debug giá gốc và tỉ giá */}
+                              {(() => {
+                                const usdPrice = parseFloat(plan.price);
+                                const exchangeRate = getExchangeRate();
+                                const vndPrice = Math.floor(usdPrice * exchangeRate); // chỉ lấy phần nguyên
+                                console.log(`Plan ${plan.name}: USD=${usdPrice}, Rate=${exchangeRate}, VND=${vndPrice}`);
+                                return formatPrice(vndPrice);
+                              })()}
                             </div>
                             <div className="text-xs text-muted-foreground">₫/{plan.period}</div>
                           </div>

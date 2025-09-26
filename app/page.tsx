@@ -1,13 +1,15 @@
 "use client"
 
-import { Header } from "@/components/layout/header"
-import { HeroSection } from "@/components/homepage/hero-section"
-import { ServicesSection } from "@/components/homepage/services-section"
-import { PricingSection } from "@/components/homepage/pricing-section"
-import { Footer } from "@/components/layout/footer"
-import { ChatbotButton } from "@/components/homepage/chatbot"
-import { motion, useInView } from "framer-motion"
-import { useRef } from "react"
+import { useEffect } from "react";
+import { getTodayExchangeRates } from "@/api/exchange-rate.api";
+import { Header } from "@/components/layout/header";
+import { HeroSection } from "@/components/homepage/hero-section";
+import { ServicesSection } from "@/components/homepage/services-section";
+import { PricingSection } from "@/components/homepage/pricing-section";
+import { Footer } from "@/components/layout/footer";
+import { ChatbotButton } from "@/components/homepage/chatbot";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) {
   const ref = useRef(null)
@@ -26,6 +28,27 @@ function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode, d
 }
 
 export default function HomePage() {
+  useEffect(() => {
+    async function fetchExchangeRate() {
+      try {
+        const rates = await getTodayExchangeRates();
+        // Chỉ lấy tỉ giá USD bán ra VND (direction: 'sell')
+        const usdvnd_sell = Array.isArray(rates)
+          ? rates.find(r => r.currency_from === 'USD' && r.currency_to === 'VND' && r.direction === 'sell')?.rate
+          : undefined;
+        if (usdvnd_sell) {
+          localStorage.setItem("usdvnd_sell", String(usdvnd_sell));
+        } else {
+          localStorage.setItem("usdvnd_sell", "26500");
+        }
+      } catch (error) {
+        localStorage.setItem("usdvnd_sell", "26500");
+        console.error("Lỗi lấy tỉ giá:", error);
+      }
+    }
+    fetchExchangeRate();
+  }, []);
+
   return (
     <div className="min-h-screen">
       <main>

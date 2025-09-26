@@ -1,12 +1,13 @@
-import { LucideIcon, Zap, Shield, Crown, Star } from "lucide-react"
+import { LucideIcon, Zap, Shield, Crown, Star, BrainCircuit } from "lucide-react"
 import { PricingPlan, PricingCategory } from "./pricing-types"
 import { starterPlans } from "./plan-starter"
 import { professionalPlans } from "./plan-professional"
 import { enterprisePlans } from "./plan-enterprise"
+import { aiPlans } from "./plan-ai"
 
 // Custom Plan
 export const customPlan: PricingPlan = {
-  id: "custom",
+  id: 0,
   name: "custom",
   description: "Giải pháp tuỳ chỉnh theo yêu cầu doanh nghiệp",
   price: "Liên hệ",
@@ -48,6 +49,14 @@ export const pricingCategories: PricingCategory[] = [
     popular: false,
     description: "Giải pháp toàn diện cho doanh nghiệp lớn",
     plans: enterprisePlans
+  },
+  {
+    name: "ai",
+    basePrice: aiPlans[0].price,
+    icon: BrainCircuit,
+    popular: false,
+    description: "Hạ tầng AI - Triển khai model LLM của bạn trên cloud.",
+    plans: aiPlans
   }
 ]
 
@@ -56,5 +65,6 @@ export const allPlans: PricingPlan[] = [
   ...starterPlans,
   ...professionalPlans,
   ...enterprisePlans,
+  ...aiPlans,
   customPlan
 ]

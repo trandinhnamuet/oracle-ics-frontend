@@ -19,6 +19,7 @@
         "starter": "Tiêu chuẩn",
         "professional": "Cao cấp", 
         "enterprise": "Doanh nghiệp",
+        "ai": "AI-GPU",
         "custom": "Tùy chỉnh"
       }
     }

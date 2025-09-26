@@ -17,7 +17,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 import useAuthStore from "@/hooks/use-auth-store"
 import { useToast } from "@/hooks/use-toast"
-import { authApi } from "@/lib/auth-api"
+import { authApi } from "@/api/auth.api"
 
 export function Header() {
   const { t } = useTranslation()

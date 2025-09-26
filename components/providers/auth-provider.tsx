@@ -2,7 +2,7 @@
 
 import { useEffect, ReactNode } from 'react'
 import useAuthStore from '@/hooks/use-auth-store'
-import { authApi } from '@/lib/auth-api'
+import { authApi } from '@/api/auth.api'
 
 interface AuthProviderProps {
   children: ReactNode

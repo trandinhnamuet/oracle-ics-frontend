@@ -9,7 +9,7 @@ import { ArrowLeft, CreditCard, CheckCircle, Copy, Loader } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { usePaymentStatus } from '@/hooks/use-payment-status'
-import { paymentApi } from '@/lib/payment-api'
+import { paymentApi } from '@/api/payment.api'
 import Image from 'next/image'
 import { Suspense, useEffect, useState } from 'react'
 

@@ -1,7 +1,7 @@
 // hooks/use-payment-status.ts
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { paymentApi } from '@/lib/payment-api'
+import { paymentApi } from '@/api/payment.api'
 
 export const usePaymentStatus = (userId: number, packageId: number, enabled: boolean = true) => {
   const [isPaid, setIsPaid] = useState(false)

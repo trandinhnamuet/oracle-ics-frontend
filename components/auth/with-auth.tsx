@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import useAuthStore from '@/hooks/use-auth-store'
-import { authApi } from '@/lib/auth-api'
+import { authApi } from '@/api/auth.api'
 
 interface WithAuthProps {
   requireAuth?: boolean
