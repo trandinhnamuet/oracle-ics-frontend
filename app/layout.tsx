@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     siteName: 'Oracle Cloud Vietnam',
     images: [
       {
-        url: 'https://oraclecloud.vn/thumbnail.jpg',
+        url: 'https://oraclecloud.vn/thumbnail2.jpg',
         width: 1200,
         height: 630,
         alt: 'Oracle Cloud Vietnam',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Oracle Cloud Vietnam',
     description: 'Giải pháp Oracle Cloud hàng đầu tại Việt Nam',
-    images: ['https://oraclecloud.vn/thumbnail.jpg'],
+    images: ['https://oraclecloud.vn/thumbnail2.jpg'],
   },
 }
 
