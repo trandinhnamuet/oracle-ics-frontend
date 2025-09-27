@@ -145,5 +145,23 @@ export const enterprisePlans: PricingPlan[] = [
       "Băng thông 300Mbps"
     ],
     limitations: [],
+  },
+  {
+    id: 9,
+    name: "Gói tư vấn toàn diện",
+    description: "Bạn thậm chí không cần đăng ký gói này để được nhận tư vấn. Chỉ cần gọi thẳng tới hotline!",
+    price: "0.16",
+    period: "tháng",
+    icon: Crown,
+    popular: false,
+    category: 'starter',
+    subPlanNumber: 6,
+    features: [
+      "0 vCPU",
+      "0 RAM",
+      "0GB SSD Storage",
+      "Băng thông 300Mbps"
+    ],
+    limitations: [],
   }
 ];
