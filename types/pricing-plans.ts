@@ -55,7 +55,7 @@ export const pricingCategories: PricingCategory[] = [
     basePrice: aiPlans[0].price,
     icon: BrainCircuit,
     popular: false,
-    description: "Hạ tầng AI - Triển khai model LLM của bạn trên cloud.",
+    description: "riển khai model LLM của bạn trên cloud.",
     plans: aiPlans
   }
 ]

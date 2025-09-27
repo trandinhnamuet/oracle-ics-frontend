@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { getTodayExchangeRates } from "@/api/exchange-rate.api";
 import { Header } from "@/components/layout/header";
 import { HeroSection } from "@/components/homepage/hero-section";
@@ -48,6 +49,27 @@ export default function HomePage() {
     }
     fetchExchangeRate();
   }, []);
+
+    // Scroll to section if ?scroll=... is present
+    const searchParams = useSearchParams();
+    useEffect(() => {
+      const scrollTarget = searchParams.get("scroll");
+      if (scrollTarget) {
+        setTimeout(() => {
+          let sectionId = "";
+          if (scrollTarget === "services") sectionId = "services";
+          if (scrollTarget === "pricing") sectionId = "pricing";
+          if (scrollTarget === "support") {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+            return;
+          }
+          if (sectionId) {
+            const el = document.getElementById(sectionId);
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 400);
+      }
+    }, [searchParams]);
 
   return (
     <div className="min-h-screen">

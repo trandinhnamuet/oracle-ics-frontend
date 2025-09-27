@@ -14,6 +14,8 @@ const languages: Language[] = [
   { code: 'vi', name: 'Tiếng Việt', flag: '/flag-vietnam.webp' },
   { code: 'en', name: 'English', flag: '/flag-united-state.png' },
   { code: 'zh', name: '中文', flag: '/flag-china.png' },
+  { code: 'ko', name: '한국어', flag: '/flag-korea.png' },
+  { code: 'ja', name: '日本語', flag: '/flag-japan.png' },
 ]
 
 export function LanguageSelector() {

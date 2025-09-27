@@ -105,21 +105,39 @@ export function Header() {
             <button
               type="button"
               className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0"
-              onClick={() => handleSmoothScroll('services')}
+              onClick={() => {
+                if (window.location.pathname !== "/") {
+                  router.push("/?scroll=services")
+                } else {
+                  handleSmoothScroll('services')
+                }
+              }}
             >
               {t('header.services')}
             </button>
             <button
               type="button"
               className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0"
-              onClick={() => handleSmoothScroll('pricing')}
+              onClick={() => {
+                if (window.location.pathname !== "/") {
+                  router.push("/?scroll=pricing")
+                } else {
+                  handleSmoothScroll('pricing')
+                }
+              }}
             >
               {t('header.pricing')}
             </button>
             <button
               type="button"
               className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0"
-              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })}
+              onClick={() => {
+                if (window.location.pathname !== "/") {
+                  router.push("/?scroll=support")
+                } else {
+                  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
+                }
+              }}
             >
               {t('header.support')}
             </button>

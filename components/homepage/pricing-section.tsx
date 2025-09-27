@@ -245,7 +245,7 @@ export function PricingSection() {
                 variant="outline" 
                 size="lg" 
                 className="w-full py-3"
-                onClick={handleCustomPlanClick}
+                onClick={() => setShowCustomForm(true)}
               >
                 Liên hệ tư vấn
               </Button>
@@ -352,7 +352,7 @@ export function PricingSection() {
                 <div
                   ref={carouselRef}
                   className={`flex overflow-x-auto gap-4 pb-2 pt-2 hide-scrollbar${
-                    (pricingCategories.find(cat => cat.name === (expandedCategory || closingCategory))?.plans.length ?? 0) <= 5 ? ' justify-center' : ''
+                    (pricingCategories.find(cat => cat.name === (expandedCategory || closingCategory))?.plans.length ?? 0) <= 6 ? ' justify-center' : ''
                   }`}
                   style={{ scrollSnapType: 'x mandatory' }}
                 >

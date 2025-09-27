@@ -14,6 +14,28 @@ export const metadata: Metadata = {
   title: 'Oracle Cloud Vietnam',
   description: 'Giải pháp Oracle Cloud hàng đầu tại Việt Nam',
   generator: 'Next.js',
+  openGraph: {
+    title: 'Oracle Cloud Vietnam',
+    description: 'Giải pháp Oracle Cloud hàng đầu tại Việt Nam',
+    url: 'https://oraclecloud.vn/',
+    siteName: 'Oracle Cloud Vietnam',
+    images: [
+      {
+        url: 'https://oraclecloud.vn/thumbnail.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Oracle Cloud Vietnam',
+      },
+    ],
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Oracle Cloud Vietnam',
+    description: 'Giải pháp Oracle Cloud hàng đầu tại Việt Nam',
+    images: ['https://oraclecloud.vn/thumbnail.jpg'],
+  },
 }
 
 export default function RootLayout({
