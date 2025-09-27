@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, Suspense } from "react";
 import { getTodayExchangeRates } from "@/api/exchange-rate.api";
 import { Header } from "@/components/layout/header";
 import { HeroSection } from "@/components/homepage/hero-section";
@@ -28,6 +27,47 @@ function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode, d
   )
 }
 
+
+function HomePageContent() {
+  const { useSearchParams } = require('next/navigation');
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const scrollTarget = searchParams.get("scroll");
+    if (scrollTarget) {
+      setTimeout(() => {
+        let sectionId = "";
+        if (scrollTarget === "services") sectionId = "services";
+        if (scrollTarget === "pricing") sectionId = "pricing";
+        if (scrollTarget === "support") {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+          return;
+        }
+        if (sectionId) {
+          const el = document.getElementById(sectionId);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 400);
+    }
+  }, [searchParams]);
+
+  return (
+    <>
+      <main>
+        <AnimatedSection delay={0.1}>
+          <HeroSection />
+        </AnimatedSection>
+        <AnimatedSection delay={0.2}>
+          <ServicesSection />
+        </AnimatedSection>
+        <AnimatedSection delay={0.2}>
+          <PricingSection />
+        </AnimatedSection>
+      </main>
+      <ChatbotButton />
+    </>
+  );
+}
+
 export default function HomePage() {
   useEffect(() => {
     async function fetchExchangeRate() {
@@ -50,41 +90,11 @@ export default function HomePage() {
     fetchExchangeRate();
   }, []);
 
-    // Scroll to section if ?scroll=... is present
-    const searchParams = useSearchParams();
-    useEffect(() => {
-      const scrollTarget = searchParams.get("scroll");
-      if (scrollTarget) {
-        setTimeout(() => {
-          let sectionId = "";
-          if (scrollTarget === "services") sectionId = "services";
-          if (scrollTarget === "pricing") sectionId = "pricing";
-          if (scrollTarget === "support") {
-            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-            return;
-          }
-          if (sectionId) {
-            const el = document.getElementById(sectionId);
-            if (el) el.scrollIntoView({ behavior: "smooth" });
-          }
-        }, 400);
-      }
-    }, [searchParams]);
-
   return (
     <div className="min-h-screen">
-      <main>
-        <AnimatedSection delay={0.1}>
-          <HeroSection />
-        </AnimatedSection>
-        <AnimatedSection delay={0.2}>
-          <ServicesSection />
-        </AnimatedSection>
-        <AnimatedSection delay={0.2}>
-          <PricingSection />
-        </AnimatedSection>
-      </main>
-      <ChatbotButton />
+      <Suspense>
+        <HomePageContent />
+      </Suspense>
     </div>
-  )
+  );
 }
