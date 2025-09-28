@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, CreditCard, CheckCircle, Copy, Loader } from 'lucide-react'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, roundMoney } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { usePaymentStatus } from '@/hooks/use-payment-status'
 import { paymentApi } from '@/api/payment.api'
@@ -52,7 +52,7 @@ function CheckoutContent() {
     const customContent = `${description} U${userId}P${planId}`
     // Chuyển số tiền sang VND
     const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
-    const vndAmount = Math.floor(parseFloat(amount || '0') * rate);
+  const vndAmount = roundMoney(parseFloat(amount || '0') * rate);
     const params = new URLSearchParams({
       acc: '66010901964',
       bank: 'TPBank',
@@ -195,7 +195,7 @@ ${t('checkout.content')}: ${customContent}
                   <span className="text-primary">
                     {(() => {
                       const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
-                      const vndPrice = Math.floor(parseFloat(planPrice || '0') * rate);
+                      const vndPrice = roundMoney(parseFloat(planPrice || '0') * rate);
                       return formatPrice(vndPrice);
                     })()}₫
                     {planPeriod && <span className="text-sm text-muted-foreground">/{planPeriod}</span>}
@@ -278,7 +278,7 @@ ${t('checkout.content')}: ${customContent}
                     <span className="text-sm font-medium text-primary">
                       {(() => {
                         const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
-                        const vndPrice = Math.floor(parseFloat(planPrice || '0') * rate);
+                        const vndPrice = roundMoney(parseFloat(planPrice || '0') * rate);
                         return formatPrice(vndPrice);
                       })()}₫
                     </span>

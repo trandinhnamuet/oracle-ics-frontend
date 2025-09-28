@@ -9,7 +9,7 @@ import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { pricingCategories, customPlan } from "@/types/pricing-plans"
 import { PricingCategory } from "@/types/pricing-types"
-import { formatPrice } from "@/lib/utils"
+import { formatPrice, roundMoney } from "@/lib/utils"
 import CustomRegistrationForm from "./customRegistrationForm"
 import useAuthStore from "@/hooks/use-auth-store"
 import { useToast } from "@/hooks/use-toast"
@@ -386,9 +386,10 @@ export function PricingSection() {
                               {(() => {
                                 const usdPrice = parseFloat(plan.price);
                                 const exchangeRate = getExchangeRate();
-                                const vndPrice = Math.floor(usdPrice * exchangeRate); // chỉ lấy phần nguyên
-                                console.log(`Plan ${plan.name}: USD=${usdPrice}, Rate=${exchangeRate}, VND=${vndPrice}`);
-                                return formatPrice(vndPrice);
+                                const vndPrice = Math.floor(usdPrice * exchangeRate);
+                                const roundedVnd = roundMoney(vndPrice);
+                                console.log(`Plan ${plan.name}: USD=${usdPrice}, Rate=${exchangeRate}, VND gốc=${vndPrice}, VND làm tròn=${roundedVnd}`);
+                                return formatPrice(roundedVnd);
                               })()}
                             </div>
                             <div className="text-xs text-muted-foreground">₫/{plan.period}</div>
