@@ -132,19 +132,106 @@ toán xong sẽ được gửi mail, QR sepay thanh toán. Làm chức năng tha
 
 23/09 
 - Sáng: Chiều muộn hôm qua họ cuối cùng đã mở port modem cho mình. Sáng nay cài hosts web
-- 
+- Do dùng các cổng không chuẩn 8887 6443 thay cho 80 443 làm cổng kết nối cho web hosting nên bị nhiều lỗi, cuối cùng không cài được. Đã cài lên oracle cloud instance.
+
+24/09
+Sáng:
+- Update responsive UI trang dashboard trên điện thoại
+- Thêm lựa chọn tùy chọn thuê theo năm hoặc mua trọn gói
+- Các card trong phần dịch vụ "Giải pháp Smart Dashboard toàn diện": Chuyển thành dạng card, khi hover sẽ lật mặt sau 
+- Phần thông số trong section dịch vụ: chuyển thành dạng thông số và rolling number animation. 
+- Thêm rolling number animation cho number ở hero section luôn
+- Phần Ứng dụng rộng rãi Nhà máy Cảng biển Ngân hàng Hành chính công Tòa nhà: Làm thành 1 banner dài với các con số luôn, không để thành các card rời rạc. Anh Âu đề xuất làm như lam nhu https://www.deepmoovr.com/list/11.html
+- Phần Lĩnh vực ứng dụng - industries section: Các card giờ sẽ có thể click vào để navigate sang trang landing page cho từng lĩnh vực
 
 
-Todo: 
+25/09
+- Đã chạy smartdashboard.vn và oraclecloud.vn ngon lành - full chức năng backend
+- Tạo 5 trang landing page cho hành chính công, tòa nhà, cảng biển, tài chính ngân hàng, nhà máy và chỉnh sửa UI chày vẩy
+- Làm chức năng tự lấy tỉ giá VND USD hàng ngày từ vietcombank API
 - chuc nang gui mail (ebook)
-- muc Lĩnh vực ứng dụn: click thi navigate sang trang chi tiet
-- Mục ung dung rong rai: lam nhu https://www.deepmoovr.com/list/11.html
+- Bỏ giá ở card thuê theo năm
+
+26/09
+Dashboard:
+- Chỉnh kích cỡ video cho các kích cỡ màn hình khác (Mac)
+- Fix flip card ở service section bị show mặt trước đè lên mặt sau khi lật mặt sau
+- Tinh chỉnh trang chủ: Không bắt đăng nhập để đăng ký gói custom. Phông chữ một số chỗ đang lỗi. Bỏ badge dịch vụ và badge
+
+
+Oracle Cloud:
+- Đưa bảng giá đã chốt lên web. Bổ sung gói Hạ tầng AI - GPU. https://docs.google.com/spreadsheets/d/1qHfG6xq__DTk50RF5LYCbdI8XkXhr6OYjeAfYPxxpwo/edit?gid=553644124#gid=553644124
+- Thêm API tỉ giá. Tính giá bằng giá USD nhân với tỉ giá call từ API tỉ giá.
+- T
+
+27/09
+- Update hoàn thiện các trang landing page: Tạo ảnh, thẻ chữ đóng mở, banner,...
+- Tạo mới dashboard backend. Các chức năng mới sẽ code trên đây, còn chức năng cũ đang chạy trên oracle backend sẽ tách ra sau
+
+29/09
+- Dashboard: backend: thêm module image
+- Dashboard: Làm chức năng viết bài viết (Backend: Tạo bảng, module API CRUD. Frontend: trang viết bài mới, trang list bài viết (khách), trang quản lý bài viết.).
+- Đẩy dashboard backend lên server oracle chạy
+
+##Chiều: họp 3h
+#Sale:
+- Dự án đào tạo - Lịch trình dự án: Lên outline cho 2 ngày đào tạo. Gửi báo giá phường để chốt giá và lịch thực hiện: lich_trinh_du_an.xlsx
+Mỗi người 1 phường. Phường của Nam: Phường Chu Văn An. 
+Khóa AI. Tài liệu khóa AI đâu? Chưa thấy a Trung gửi.
+
+- 1 bạn mới join: kiếm khách hàng, web
+- Mạng lưới an ninh bảo mật - NIC (TBT join, xoay quanh dashboard, có đến thăm gian hàng của mình). Chi phí: 20 triệu. 1-3/10. Nhân sự cứng đứng sẵn sàng nói. => Cần đảm bảo hiệu quả truyền thông. Có chụp ảnh, bài báo,...
+Liên hệ nhà báo xem họ viết bài về sự kiện thế nào, đề xuất viết về mình.
+-> a Trung chỉ: Cần nói gì, sẽ nói gì. 
+- Oracle Webminar sắp tới. Timeline, đối tượng khách hàng,...
+
+##Công việc khác:
+- Chức năng quên mật khẩu và xác thực Email: Cần thêm trường email_verified và phone_verified cho bảng user.
+Nên dùng chung module gửi mail?
+- Dashboard phần viết bài viết: thêm lựa chọn paste html thay vì react_quill
+- Dashboard: Fix flip card: Không thể lật trên iphone
 
 Todo:
-- Tinh chỉnh trang chủ: Không bắt đăng nhập để đăng ký gói custom. Phông chữ một số chỗ đang lỗi. Bỏ badge dịch vụ và badge
-- Làm web dashboard: Lấy code fe của web oracle đổi tên đổi content thôi. Bảo dũng gõ text trên web gửi để ghép.
+- Cả 2 web: Thêm chức năng báo bug
 
+- Oracle: thêm xác thực email khi đăng ký
+- Oracle: thêm form liên hệ ở trang liên hệ và footer
+- Oracle: update ngôn ngữ cho tiếng Anh, Trung, Hàn, Nhật
+- Chức năng quên mật khẩu: Code trang #file:page.tsx quên mật khẩu. UI tương tự #file:page.tsx nhưng form yêu cầu người dùng nhập mail. Khi nhập mail và submit sẽ gửi mail về mail chứa otp user bằng module gửi mail cuẩ backend, đồng thời navigate đến trang otp-confirm #file:page.tsx . Nếu user nhập otp và submit sẽ kiểm tra otp , nếu đúng sẽ navigate đến trang new-password #file:page.tsx để user nhập password mới và xác nhận lại password mới. Submit sẽ đổi mật khẩu user và dẫn về trang login.
+- Oracle: Thêm đăng nhập bằng google
+- oracle web: fix đang chưa đăng nhập vẫn cho thanh toán, tiền nhận được chuyển từ thiện
+- oracle custom package: Thêm chú thích what can you custom: cpu type (amd, intel, ampete), data center, ...
 - Làm trang quản lý các gói đã đăng ký của 1 user (backend - frontend, cần thiết kế database)
+- Làm module quản lý ảnh đề làm chức năng ảnh avatar cho user
+- Chức năng sửa thông tin tài khoản và đổi mật khẩu
+- Lưu ngôn ngữ user chọn vào local storage để F5 vẫn show ngôn ngữ đã chọn
+- Đổi sang tài khoản ngân hàng công ty. Hiện tại đang để tài khoản của Nam để tiện test
+- Test nhiều người vào 1 lúc để kiểm thử hiệu năng
+- Làm counter: đếm lượt truy cập web
+- Phân quyền: Chỉ tài khoản admin mới thấy menu admin. Chỉ user nào mới call được data của user đó
+- Viết tài liệu kĩ thuật: luồng hoạt động của đăng nhập, luồng hoạt động của tính giá và thanh toán, luồng hoạt động của quản lý 
+- Làm counter: đếm lượt truy cập web
+
+Cloud Oracle API: Note để hôm nào Bella transfer thì trao đổi / hỏi thêm
+- API cấp cloud
+- Tham số: số tháng đăng ký, chọn data center
+- Get list data center
+- API tùy chỉnh: mạng, cổng,...
+- API gia hạn cloud. Cloud hết hạn mỗi cuối tháng hay tròn 1 tháng từ ngày đăng ký  
+
+
+- Dashboard: Thêm news vào menu header và thêm chức năng đăng bài
+- Dashboard: update UI để không bị lỗi trên Safari - Macbook
+- Thêm menu đối tác vào header, thêm section đối tác
+- Update UI trang landing page theo format https://docs.google.com/document/d/18Y0IerExACEv-pk-Bby_pxi3vFO5CxkHZrXL0iwu8Xc/edit?tab=t.0
+- Darkmode đang có vấn đề. Một số div không ảnh hưởng bởi dark mode, hãy fix.
+
+
+- Màn admin oracle: QUản lý user nào lịch sử mua hàng, hiện có các gói nào (view cho admin)
+- oracle user: THêm trang thông tin chi tiết của 1 gói đã mua:IP, cấu hình , ...
+- Làm sidebar menu cho admin
+
+
 - Làm phân quyền: chỉ role admin mới nhìn thấy  button admin và nhiều phân quyền khác trong tương lai
 - Làm module quản lý các gói đăng ký và màn quản lý các gói đăng ký để admin no code có thể chỉnh sửa thường xuyên từ UI. Thiết kế: Định nghĩa 30 gói ở frontend. Call backend lấy API thông tin 30 gói. Nếu call được thì show data từ API,
 không thì show data đã định nghĩa -> Không sợ backend chết.
@@ -152,14 +239,17 @@ không thì show data đã định nghĩa -> Không sợ backend chết.
 - Ước lượng chi phí cho form custom đăng ký gói
 
 - Xác thực email khi đăng ký tài khoản và đăng nhập bằng google
-- Làm module quản lý ảnh đề làm chức năng ảnh avatar cho user
+
 - Thêm lựa chọn cloud center cho gói custom
 - Kiểm tra responsive web
-- Lưu ngôn ngữ vào local storage
 
-- Đổi sang tài khoản ngân hàng công ty
+
+
 - Chức năng gửi mail liên hệ trên UI
 - Link tiktok, youtube
+
+- Note lại các vấn đề xảy ra khi host server hôm 23/9 để lần sau gặp lại biết xử lý
+
 
 Todo: 
 - làm chức năng lọc khách hàng bằng button mà Dũng bảo  
@@ -170,4 +260,5 @@ Todo:
 - Marketing: Từ chart báo cáo tình hình fanpage facebook tạo excel báo cáo
 sáng thứ 7 nộp báo cáo 
 
-
+- Làm FTP server lưu file nội bộ
+- Update UI cho trang ICSS: UI tương tự https://www.cisco.com/
