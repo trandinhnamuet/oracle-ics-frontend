@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 import { getTodayExchangeRates } from "@/api/exchange-rate.api";
 import { Header } from "@/components/layout/header";
 import { HeroSection } from "@/components/homepage/hero-section";
@@ -29,9 +31,18 @@ function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode, d
 
 
 function HomePageContent() {
-  const { useSearchParams } = require('next/navigation');
   const searchParams = useSearchParams();
+  const { toast } = useToast ? useToast() : { toast: undefined };
   useEffect(() => {
+    // Hiển thị toast nếu có message logged-in
+    if (searchParams.get("message") === "logged-in" && toast) {
+      toast({
+        title: "Bạn đã đăng nhập rồi.",
+        description: "Hãy đăng xuất nếu muốn đăng ký/đăng nhập lại.",
+        duration: 4000,
+        variant: "info"
+      });
+    }
     const scrollTarget = searchParams.get("scroll");
     if (scrollTarget) {
       setTimeout(() => {
@@ -48,7 +59,7 @@ function HomePageContent() {
         }
       }, 400);
     }
-  }, [searchParams]);
+  }, [searchParams, toast]);
 
   return (
     <>

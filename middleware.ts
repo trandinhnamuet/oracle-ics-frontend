@@ -31,6 +31,11 @@ export function middleware(request: NextRequest) {
   
   // Nếu là protected route và không có token
   if (isProtectedRoute && !token) {
+    // Nếu là /admin hoặc /admin/* thì redirect sang /unauthorized
+    if (pathname.startsWith('/admin')) {
+      return NextResponse.redirect(new URL('/unauthorized', request.url));
+    }
+    // Các route khác vẫn về /login như cũ
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('returnUrl', pathname)
     return NextResponse.redirect(loginUrl)
@@ -38,7 +43,10 @@ export function middleware(request: NextRequest) {
   
   // Nếu là guest-only route và đã có token
   if (isGuestOnlyRoute && token) {
-    return NextResponse.redirect(new URL('/', request.url))
+    // Redirect về trang chủ kèm message
+    const homeUrl = new URL('/', request.url);
+    homeUrl.searchParams.set('message', 'logged-in');
+    return NextResponse.redirect(homeUrl);
   }
   
   return NextResponse.next()

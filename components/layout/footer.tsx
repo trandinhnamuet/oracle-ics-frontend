@@ -121,10 +121,10 @@ export function Footer() {
                 <MapPin className="h-4 w-4 mt-1 opacity-80" />
                 <div>
                   <p className="opacity-80 font-semibold">CÔNG TY CỔ PHẦN AN NINH MẠNG QUỐC TẾ - ICS</p>
-                  <div className="flex items-start space-x-2">
+                  {/* <div className="flex items-start space-x-2">
                     <MapPin className="h-4 w-4 mt-1 opacity-80" />
                     <p className="opacity-80">Trụ sở: Đường Vũ Văn Cẩn, Phường Bần Yên Nhân, Thị Xã Mỹ Hào, Hưng Yên</p>
-                  </div>
+                  </div> */}
                   <div className="flex items-start space-x-2">
                     <MapPin className="h-4 w-4 mt-1 opacity-80" />
                     <p className="opacity-80">Văn phòng: TT3-5 Khu đô thị Đại Kim mới, Định Công, Hà Nội</p>
