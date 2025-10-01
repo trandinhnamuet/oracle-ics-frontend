@@ -12,6 +12,8 @@ interface User {
   avatar?: string
   createdAt: string
   updatedAt: string
+  role?: string
+  isActive?: boolean
 }
 
 interface AuthState {

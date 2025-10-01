@@ -187,7 +187,8 @@ export default function LoginPage() {
                   const passwordInput = document.getElementById('password') as HTMLInputElement
                   
                   if (emailInput && passwordInput) {
-                    emailInput.value = 'test@gmail.com'
+                    if (emailInput.value == 'tranngocphong@gmail.com') emailInput.value = 'khucthuadu@gmail.com'
+                    else emailInput.value = 'tranngocphong@gmail.com'
                     emailInput.dispatchEvent(event)
                     passwordInput.value = '123123'
                     passwordInput.dispatchEvent(event)

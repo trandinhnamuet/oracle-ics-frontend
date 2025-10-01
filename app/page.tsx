@@ -9,9 +9,18 @@ import { HeroSection } from "@/components/homepage/hero-section";
 import { ServicesSection } from "@/components/homepage/services-section";
 import { PricingSection } from "@/components/homepage/pricing-section";
 import { Footer } from "@/components/layout/footer";
-import { ChatbotButton } from "@/components/homepage/chatbot";
+
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { printEnv, userInfo } from "@/lib/utils";
+import useAuthStore from "@/hooks/use-auth-store";
+
+// Khai báo type cho window.__gim để tránh lỗi TS
+declare global {
+  interface Window {
+    __gim?: any;
+  }
+}
 
 function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) {
   const ref = useRef(null)
@@ -74,7 +83,7 @@ function HomePageContent() {
           <PricingSection />
         </AnimatedSection>
       </main>
-      <ChatbotButton />
+
     </>
   );
 }
@@ -99,6 +108,25 @@ export default function HomePage() {
       }
     }
     fetchExchangeRate();
+
+    // Expose utility functions to global window object for console access
+    if (typeof window !== 'undefined') {
+      (window as any).printEnv = printEnv;
+      (window as any).userInfo = userInfo;
+      (window as any).useAuthStore = useAuthStore;
+
+      // Tích hợp chatbot GIM
+      if (!document.getElementById('gim-bot-sdk')) {
+        window.__gim = window.__gim || {};
+        window.__gim.licenseId = "586508500633432247";
+        const script = document.createElement('script');
+        script.id = 'gim-bot-sdk';
+        script.async = true;
+        script.type = 'text/javascript';
+        script.src = 'https://botsdk.stg.gim.beango.com/index.umd.js';
+        document.head.appendChild(script);
+      }
+    }
   }, []);
 
   return (

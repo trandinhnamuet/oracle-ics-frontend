@@ -73,14 +73,16 @@ export function SimpleDropdown({ user, onProfileClick, onLogout }: SimpleDropdow
               {t('header.profile')}
             </button>
 
-            <a
-              href="/admin"
-              className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-              onClick={() => setIsOpen(false)}
-            >
-              <Shield className="mr-2 h-4 w-4" />
-              Admin
-            </a>
+            {user?.role === 'admin' && (
+              <a
+                href="/admin"
+                className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => setIsOpen(false)}
+              >
+                <Shield className="mr-2 h-4 w-4" />
+                Admin
+              </a>
+            )}
             <a
               href="/package-management"
               className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"

@@ -116,6 +116,8 @@ export const authApi = {
   getCurrentUser: async (): Promise<User> => {
     try {
       const response = await api.get<User>('/auth/profile')
+      console.log('------------------------------------------------------------------');
+      console.log('Current user data:', response.data);
       return response.data
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Không thể lấy thông tin người dùng')
