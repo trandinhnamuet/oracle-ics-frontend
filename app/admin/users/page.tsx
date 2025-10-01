@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Search, Download, Users, Calendar, Building, Edit, Trash2 } from 'lucide-react'
+import { Search, Download, Users, Calendar, Building, Edit, Trash2, Crown } from 'lucide-react'
+import { toggleUserAdminRole } from '@/api/user.api'
 
 interface User {
   id: number
@@ -18,6 +19,7 @@ interface User {
   lastName: string
   phoneNumber?: string | null
   company?: string | null
+  role?: string
   isActive: boolean
   createdAt: string
   updatedAt: string
@@ -97,6 +99,18 @@ export default function UserManagementPage() {
     }
   }
 
+  // Toggle admin role
+  const toggleAdminRole = async (userId: number, currentRole: string = 'customer') => {
+    try {
+      const updatedUser = await toggleUserAdminRole(userId, currentRole)
+      setUsers(prev => prev.map(user => 
+        user.id === userId ? { ...user, role: updatedUser.role } : user
+      ))
+    } catch (error) {
+      console.error('Error toggling admin role:', error)
+    }
+  }
+
   // Export to Excel
   const exportToExcel = () => {
     const exportData = filteredUsers.map(user => ({
@@ -105,6 +119,7 @@ export default function UserManagementPage() {
       'Họ tên': `${user.firstName} ${user.lastName}`,
       'Số điện thoại': user.phoneNumber || 'Chưa có',
       'Công ty': user.company || 'Chưa có',
+      'Vai trò': user.role === 'admin' ? 'Admin' : 'Customer',
       'Trạng thái': user.isActive ? 'Hoạt động' : 'Khóa',
       'Ngày tạo': new Date(user.createdAt).toLocaleDateString('vi-VN'),
       'Ngày cập nhật': new Date(user.updatedAt).toLocaleDateString('vi-VN')
@@ -120,6 +135,7 @@ export default function UserManagementPage() {
       { wch: 20 },  // Họ tên
       { wch: 15 },  // Số điện thoại
       { wch: 20 },  // Công ty
+      { wch: 12 },  // Vai trò
       { wch: 12 },  // Trạng thái
       { wch: 12 },  // Ngày tạo
       { wch: 12 }   // Ngày cập nhật
@@ -235,6 +251,7 @@ export default function UserManagementPage() {
                   <TableHead>Họ tên</TableHead>
                   <TableHead>Số điện thoại</TableHead>
                   <TableHead>Công ty</TableHead>
+                  <TableHead>Vai trò</TableHead>
                   <TableHead>Trạng thái</TableHead>
                   <TableHead>Ngày tạo</TableHead>
                   <TableHead>Ngày cập nhật</TableHead>
@@ -244,7 +261,7 @@ export default function UserManagementPage() {
               <TableBody>
                 {filteredUsers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
                       {searchTerm ? 'Không tìm thấy người dùng nào' : 'Chưa có người dùng nào'}
                     </TableCell>
                   </TableRow>
@@ -267,6 +284,11 @@ export default function UserManagementPage() {
                         ) : (
                           <span className="text-gray-400 italic">Chưa có</span>
                         )}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={user.role === 'admin' ? 'destructive' : 'outline'}>
+                          {user.role === 'admin' ? 'Admin' : 'Customer'}
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
@@ -299,13 +321,25 @@ export default function UserManagementPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => deleteUser(user.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <div title={user.role === 'admin' ? 'Bỏ quyền admin' : 'Cấp quyền admin'}>
+                            <Button
+                              variant={user.role === 'admin' ? 'default' : 'outline'}
+                              size="sm"
+                              onClick={() => toggleAdminRole(user.id, user.role || 'customer')}
+                              className={user.role === 'admin' ? 'text-white bg-yellow-600 hover:bg-yellow-700' : ''}
+                            >
+                              <Crown className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          <div title="Xóa người dùng">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => deleteUser(user.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </TableCell>
                     </TableRow>

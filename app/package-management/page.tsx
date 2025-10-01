@@ -1,6 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import axios from 'axios'
+import useAuthStore from '@/hooks/use-auth-store'
+import { getPaidUserPackages, updateUserPackage, deleteUserPackage } from '@/api/user-package.api'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
@@ -11,129 +14,59 @@ import { Search, Package, Calendar, DollarSign, Settings, Play, Pause, Trash2 } 
 
 interface PackageSubscription {
   id: number
-  packageName: string
-  packageType: 'starter' | 'professional' | 'enterprise' | 'custom'
-  status: 'active' | 'suspended' | 'expired' | 'pending'
-  startDate: string
-  endDate: string
-  monthlyPrice: number
-  totalPaid: number
-  specs: {
-    cpu: string
-    ram: string
-    storage: string
-    bandwidth: string
-  }
   userId: number
-  userEmail: string
-  nextBilling: string
+  packageId: number
+  isPaid: boolean
+  isActive: boolean
+  totalPaidAmount: number
+  createdAt: string
+  updatedAt: string
+  // Thông tin từ bảng package hoặc custom_package_registration
+  package?: {
+    name: string
+    type: string
+    price: number
+    description?: string
+  }
+  // Thông tin user (từ relation)
+  user?: {
+    id: number
+    email: string
+    firstName: string
+    lastName: string
+  }
 }
 
-// Mock data
-const mockPackages: PackageSubscription[] = [
-  {
-    id: 1,
-    packageName: 'Oracle Cloud Starter',
-    packageType: 'starter',
-    status: 'active',
-    startDate: '2025-01-15',
-    endDate: '2026-01-15',
-    monthlyPrice: 299000,
-    totalPaid: 2990000,
-    specs: {
-      cpu: '2 vCPUs',
-      ram: '4GB',
-      storage: '100GB SSD',
-      bandwidth: '100Mbps'
-    },
-    userId: 1,
-    userEmail: 'admin@example.com',
-    nextBilling: '2025-10-15'
-  },
-  {
-    id: 2,
-    packageName: 'Oracle Cloud Professional',
-    packageType: 'professional',
-    status: 'active',
-    startDate: '2025-03-01',
-    endDate: '2026-03-01',
-    monthlyPrice: 599000,
-    totalPaid: 4193000,
-    specs: {
-      cpu: '4 vCPUs',
-      ram: '8GB',
-      storage: '250GB SSD',
-      bandwidth: '500Mbps'
-    },
-    userId: 2,
-    userEmail: 'test@example.com',
-    nextBilling: '2025-10-01'
-  },
-  {
-    id: 3,
-    packageName: 'Oracle Cloud Enterprise',
-    packageType: 'enterprise',
-    status: 'suspended',
-    startDate: '2024-12-01',
-    endDate: '2025-12-01',
-    monthlyPrice: 999000,
-    totalPaid: 9990000,
-    specs: {
-      cpu: '8 vCPUs',
-      ram: '16GB',
-      storage: '500GB SSD',
-      bandwidth: '1Gbps'
-    },
-    userId: 3,
-    userEmail: 'test@gmail.com',
-    nextBilling: '2025-10-01'
-  },
-  {
-    id: 4,
-    packageName: 'Custom Package - Gaming Server',
-    packageType: 'custom',
-    status: 'active',
-    startDate: '2025-07-10',
-    endDate: '2026-07-10',
-    monthlyPrice: 1299000,
-    totalPaid: 3897000,
-    specs: {
-      cpu: '12 vCPUs',
-      ram: '32GB',
-      storage: '1TB NVMe SSD',
-      bandwidth: '2Gbps'
-    },
-    userId: 4,
-    userEmail: 'tranngocphong@gmail.com',
-    nextBilling: '2025-10-10'
-  },
-  {
-    id: 5,
-    packageName: 'Oracle Cloud Professional',
-    packageType: 'professional',
-    status: 'expired',
-    startDate: '2024-01-01',
-    endDate: '2025-01-01',
-    monthlyPrice: 599000,
-    totalPaid: 7188000,
-    specs: {
-      cpu: '4 vCPUs',
-      ram: '8GB',
-      storage: '250GB SSD',
-      bandwidth: '500Mbps'
-    },
-    userId: 5,
-    userEmail: 'olduser@company.com',
-    nextBilling: 'N/A'
-  }
-]
-
 export default function PackageManagementPage() {
-  const [packages, setPackages] = useState<PackageSubscription[]>(mockPackages)
+  const { user } = useAuthStore()
+  const [packages, setPackages] = useState<PackageSubscription[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [isVisible, setIsVisible] = useState(false)
+
+  // Fetch user packages
+  const fetchUserPackages = async () => {
+    if (!user?.id) {
+      setLoading(false)
+      return
+    }
+
+    try {
+      const paidPackages = await getPaidUserPackages(Number(user.id))
+      setPackages(paidPackages)
+    } catch (error) {
+      console.error('Error fetching user packages:', error)
+      setPackages([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchUserPackages()
+  }, [user?.id])
 
   // Animation effect
   useEffect(() => {
@@ -146,20 +79,23 @@ export default function PackageManagementPage() {
 
   // Filter packages
   const filteredPackages = packages.filter(pkg => {
+    const packageName = pkg.package?.name || 'N/A'
+    const packageType = pkg.package?.type || 'N/A'
+    
     const matchesSearch = 
-      pkg.packageName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pkg.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pkg.specs.cpu.toLowerCase().includes(searchTerm.toLowerCase())
+      packageName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      packageType.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesStatus = statusFilter === 'all' || pkg.status === statusFilter
-    const matchesType = typeFilter === 'all' || pkg.packageType === typeFilter
+    const status = pkg.isActive ? 'active' : 'inactive'
+    const matchesStatus = statusFilter === 'all' || status === statusFilter
+    const matchesType = typeFilter === 'all' || packageType === typeFilter
 
     return matchesSearch && matchesStatus && matchesType
   })
 
   // Get package type badge variant
   const getTypeVariant = (type: string) => {
-    switch (type) {
+    switch (type?.toLowerCase()) {
       case 'starter': return 'secondary'
       case 'professional': return 'default'
       case 'enterprise': return 'destructive'
@@ -169,14 +105,8 @@ export default function PackageManagementPage() {
   }
 
   // Get status badge variant
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case 'active': return 'default'
-      case 'suspended': return 'secondary'
-      case 'expired': return 'destructive'
-      case 'pending': return 'outline'
-      default: return 'secondary'
-    }
+  const getStatusVariant = (isActive: boolean) => {
+    return isActive ? 'default' : 'secondary'
   }
 
   // Format currency
@@ -188,29 +118,42 @@ export default function PackageManagementPage() {
   }
 
   // Handle package actions
-  const togglePackageStatus = (id: number) => {
-    setPackages(prev => prev.map(pkg => 
-      pkg.id === id 
-        ? { ...pkg, status: pkg.status === 'active' ? 'suspended' : 'active' as any }
-        : pkg
-    ))
+  const togglePackageStatus = async (id: number) => {
+    try {
+      const pkg = packages.find(p => p.id === id)
+      if (!pkg) return
+
+      await updateUserPackage(id, {
+        isActive: !pkg.isActive
+      })
+      
+      setPackages(prev => prev.map(p => 
+        p.id === id ? { ...p, isActive: !p.isActive } : p
+      ))
+    } catch (error) {
+      console.error('Error toggling package status:', error)
+    }
   }
 
-  const deletePackage = (id: number) => {
+  const deletePackage = async (id: number) => {
     if (confirm('Bạn có chắc chắn muốn xóa gói này?')) {
-      setPackages(prev => prev.filter(pkg => pkg.id !== id))
+      try {
+        await deleteUserPackage(id)
+        setPackages(prev => prev.filter(pkg => pkg.id !== id))
+      } catch (error) {
+        console.error('Error deleting package:', error)
+      }
     }
   }
 
   // Statistics
   const stats = {
     total: packages.length,
-    active: packages.filter(p => p.status === 'active').length,
-    suspended: packages.filter(p => p.status === 'suspended').length,
-    expired: packages.filter(p => p.status === 'expired').length,
+    active: packages.filter(p => p.isActive).length,
+    inactive: packages.filter(p => !p.isActive).length,
     totalRevenue: packages
-      .filter(p => p.status === 'active')
-      .reduce((sum, p) => sum + p.monthlyPrice, 0)
+      .filter(p => p.isActive)
+      .reduce((sum, p) => sum + (p.package?.price || p.totalPaidAmount || 0), 0)
   }
 
   return (
@@ -245,9 +188,7 @@ export default function PackageManagementPage() {
             <SelectContent>
               <SelectItem value="all">Tất cả</SelectItem>
               <SelectItem value="active">Hoạt động</SelectItem>
-              <SelectItem value="suspended">Tạm dừng</SelectItem>
-              <SelectItem value="expired">Hết hạn</SelectItem>
-              <SelectItem value="pending">Chờ duyệt</SelectItem>
+              <SelectItem value="inactive">Không hoạt động</SelectItem>
             </SelectContent>
           </Select>
 
@@ -267,7 +208,7 @@ export default function PackageManagementPage() {
       </div>
 
       {/* Statistics Cards */}
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 transition-all duration-700 transform ${
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-700 transform ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
       }`} style={{ transitionDelay: '400ms' }}>
         <Card>
@@ -292,21 +233,11 @@ export default function PackageManagementPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tạm dừng</CardTitle>
+            <CardTitle className="text-sm font-medium">Không hoạt động</CardTitle>
             <Pause className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{stats.suspended}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Hết hạn</CardTitle>
-            <Calendar className="h-4 w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{stats.expired}</div>
+            <div className="text-2xl font-bold text-orange-600">{stats.inactive}</div>
           </CardContent>
         </Card>
 
@@ -338,11 +269,9 @@ export default function PackageManagementPage() {
                   <TableHead>ID</TableHead>
                   <TableHead>Tên gói</TableHead>
                   <TableHead>Loại</TableHead>
-                  <TableHead>Người dùng</TableHead>
-                  <TableHead>Cấu hình</TableHead>
-                  <TableHead>Giá/tháng</TableHead>
-                  <TableHead>Ngày bắt đầu</TableHead>
-                  <TableHead>Ngày hết hạn</TableHead>
+                  <TableHead>Số tiền đã trả</TableHead>
+                  <TableHead>Ngày đăng ký</TableHead>
+                  <TableHead>Cập nhật lần cuối</TableHead>
                   <TableHead>Trạng thái</TableHead>
                   <TableHead>Thao tác</TableHead>
                 </TableRow>
@@ -350,7 +279,7 @@ export default function PackageManagementPage() {
               <TableBody>
                 {filteredPackages.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       {searchTerm || statusFilter !== 'all' || typeFilter !== 'all' 
                         ? 'Không tìm thấy gói nào phù hợp' 
                         : 'Chưa có gói đăng ký nào'
@@ -358,67 +287,62 @@ export default function PackageManagementPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredPackages.map(pkg => (
-                    <TableRow key={pkg.id}>
-                      <TableCell className="font-medium">{pkg.id}</TableCell>
-                      <TableCell className="font-medium">{pkg.packageName}</TableCell>
-                      <TableCell>
-                        <Badge variant={getTypeVariant(pkg.packageType)}>
-                          {pkg.packageType.charAt(0).toUpperCase() + pkg.packageType.slice(1)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{pkg.userEmail}</TableCell>
-                      <TableCell>
-                        <div className="text-xs">
-                          <div>CPU: {pkg.specs.cpu}</div>
-                          <div>RAM: {pkg.specs.ram}</div>
-                          <div>Storage: {pkg.specs.storage}</div>
-                          <div>Bandwidth: {pkg.specs.bandwidth}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {formatPrice(pkg.monthlyPrice)}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(pkg.startDate).toLocaleDateString('vi-VN')}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(pkg.endDate).toLocaleDateString('vi-VN')}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusVariant(pkg.status)}>
-                          {pkg.status === 'active' && 'Hoạt động'}
-                          {pkg.status === 'suspended' && 'Tạm dừng'}
-                          {pkg.status === 'expired' && 'Hết hạn'}
-                          {pkg.status === 'pending' && 'Chờ duyệt'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          {pkg.status !== 'expired' && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => togglePackageStatus(pkg.id)}
-                            >
-                              {pkg.status === 'active' ? (
-                                <Pause className="h-4 w-4" />
-                              ) : (
-                                <Play className="h-4 w-4" />
-                              )}
-                            </Button>
-                          )}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => deletePackage(pkg.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  filteredPackages.map(pkg => {
+                    const packageName = pkg.package?.name || 'Gói tùy chỉnh'
+                    const packageType = pkg.package?.type || 'custom'
+                    
+                    return (
+                      <TableRow key={pkg.id}>
+                        <TableCell className="font-medium">{pkg.id}</TableCell>
+                        <TableCell className="font-medium">{packageName}</TableCell>
+                        <TableCell>
+                          <Badge variant={getTypeVariant(packageType)}>
+                            {packageType.charAt(0).toUpperCase() + packageType.slice(1)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {formatPrice(pkg.totalPaidAmount)}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(pkg.createdAt).toLocaleDateString('vi-VN')}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(pkg.updatedAt).toLocaleDateString('vi-VN')}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getStatusVariant(pkg.isActive)}>
+                            {pkg.isActive ? 'Hoạt động' : 'Không hoạt động'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            <div title={pkg.isActive ? 'Tạm dừng gói' : 'Kích hoạt gói'}>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => togglePackageStatus(pkg.id)}
+                              >
+                                {pkg.isActive ? (
+                                  <Pause className="h-4 w-4" />
+                                ) : (
+                                  <Play className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                            <div title="Xóa gói">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => deletePackage(pkg.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })
                 )}
               </TableBody>
             </Table>

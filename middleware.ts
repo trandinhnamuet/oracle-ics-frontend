@@ -18,6 +18,20 @@ const guestOnlyRoutes = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get('auth-token')?.value
+  let userRole = null;
+  // Nếu có token, decode để lấy role
+  if (token) {
+    try {
+      // JWT: header.payload.signature
+      const payload = token.split('.')[1];
+      if (payload) {
+        const decoded = JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'));
+        userRole = decoded.role;
+      }
+    } catch (e) {
+      userRole = null;
+    }
+  }
   
   // Kiểm tra xem route có cần authentication không
   const isProtectedRoute = protectedRoutes.some(route => 
@@ -39,6 +53,11 @@ export function middleware(request: NextRequest) {
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('returnUrl', pathname)
     return NextResponse.redirect(loginUrl)
+  }
+
+  // Nếu đã đăng nhập nhưng vào /admin mà không phải admin thì redirect unauthorized
+  if (token && pathname.startsWith('/admin') && userRole !== 'admin') {
+    return NextResponse.redirect(new URL('/unauthorized', request.url));
   }
   
   // Nếu là guest-only route và đã có token
