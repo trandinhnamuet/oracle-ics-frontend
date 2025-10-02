@@ -17,8 +17,9 @@ const guestOnlyRoutes = [
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const token = request.cookies.get('auth-token')?.value
+  const token = request.cookies.get('access_token')?.value
   let userRole = null;
+  
   // Nếu có token, decode để lấy role
   if (token) {
     try {
@@ -27,8 +28,10 @@ export function middleware(request: NextRequest) {
       if (payload) {
         const decoded = JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'));
         userRole = decoded.role;
+        console.log(`Middleware: User ${decoded.email} with role ${userRole} accessing ${pathname}`);
       }
     } catch (e) {
+      console.log('Middleware: Invalid JWT token');
       userRole = null;
     }
   }
