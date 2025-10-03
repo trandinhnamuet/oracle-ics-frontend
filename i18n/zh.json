@@ -322,6 +322,114 @@
       }
     }
   },
+  "pricing": {
+    "plans": {
+      "starter": {
+        "1": {
+          "description": "2 vCPU，1GB 内存，20GB SSD 存储"
+        },
+        "2": {
+          "description": "2 vCPU，2GB 内存，40GB SSD 存储"
+        },
+        "3": {
+          "description": "4 vCPU，4GB 内存，80GB SSD 存储"
+        },
+        "4": {
+          "description": "4 vCPU，8GB 内存，80GB SSD 存储"
+        },
+        "5": {
+          "description": "8 vCPU，8GB 内存，100GB SSD 存储"
+        }
+      },
+      "professional": {
+        "1": {
+          "description": "4 vCPU，6GB 内存，100GB SSD 存储"
+        },
+        "2": {
+          "description": "6 vCPU，8GB 内存，150GB SSD 存储"
+        },
+        "3": {
+          "description": "8 vCPU，10GB 内存，150GB SSD 存储"
+        },
+        "4": {
+          "description": "8 vCPU，12GB 内存，150GB SSD 存储"
+        },
+        "5": {
+          "description": "8 vCPU，16GB 内存，200GB SSD 存储"
+        },
+        "6": {
+          "description": "8 vCPU，32GB 内存，200GB SSD 存储"
+        }
+      },
+      "enterprise": {
+        "1": {
+          "description": "10 vCPU，16GB 内存，250GB SSD 存储"
+        },
+        "2": {
+          "description": "12 vCPU，16GB 内存，250GB SSD 存储"
+        },
+        "3": {
+          "description": "12 vCPU，18GB 内存，500GB SSD 存储"
+        },
+        "4": {
+          "description": "16 vCPU，32GB 内存，500GB SSD 存储"
+        },
+        "5": {
+          "description": "16 vCPU，32GB 内存，1024GB SSD 存储"
+        },
+        "6": {
+          "description": "24 vCPU，32GB 内存，1024GB SSD 存储"
+        },
+        "7": {
+          "description": "36 vCPU，64GB 内存，1024GB SSD 存储"
+        },
+        "8": {
+          "description": "48 vCPU，128GB 内存，1024GB SSD 存储"
+        },
+        "9": {
+          "description": "您甚至不需要注册此套餐即可获得咨询。只需直接拨打热线！"
+        }
+      },
+      "ai": {
+        "1": {
+          "description": "1 GPU P100，16GB 内存，1024 GB"
+        },
+        "2": {
+          "description": "1 GPU A10，24GB 内存，1024 GB"
+        },
+        "3": {
+          "description": "2 GPU P100，32GB 内存，1024 GB"
+        },
+        "4": {
+          "description": "2 GPU A10，48GB 内存，1024GB"
+        }
+      },
+      "custom": {
+        "description": "根据企业要求定制的解决方案",
+        "price": "联系我们",
+        "features": {
+          "flexible": "灵活配置",
+          "integration": "私有系统集成",
+          "consulting": "深度架构咨询",
+          "onsite": "现场部署支持"
+        }
+      }
+    },
+    "categories": {
+      "starter": {
+        "description": "适合小型企业"
+      },
+      "professional": {
+        "description": "中型企业的热门选择"
+      },
+      "enterprise": {
+        "description": "大型企业的全面解决方案"
+      },
+      "ai": {
+        "description": "在云端部署您的LLM模型"
+      }
+    }
+  },
   "header": {
     "home": "首页",
     "services": "服务",
@@ -444,5 +552,37 @@
     "validationEmailInvalid": "邮箱格式不正确",
     "validationPasswordRequired": "请输入密码",
     "validationPasswordMinLength": "密码至少为{{length}}个字符"
+  },
+  "profile": {
+    "title": "个人资料",
+    "subtitle": "管理您的账户信息",
+    "loadingUser": "正在加载用户信息...",
+    "userBadge": "用户",
+    "id": "ID",
+    "createdAt": "创建日期",
+    "updatedAt": "最后更新",
+    "editInfo": "编辑信息",
+    "editDescription": "更新您的个人信息",
+    "updateSuccess": "信息已成功更新！",
+    "updateFailed": "更新信息失败",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "email": "电子邮箱",
+    "emailDescription": "电子邮箱用于登录和接收通知",
+    "cancel": "取消",
+    "saving": "正在保存...",
+    "saveChanges": "保存更改",
+    "edit": "编辑",
+    "changePassword": "修改密码",
+    "changePasswordDescription": "更新您的密码以保护账户安全",
+    "changePasswordButton": "修改密码（即将推出）",
+    "validation": {
+      "firstNameRequired": "名字不能为空",
+      "firstNameMax": "名字不能超过50个字符",
+      "lastNameRequired": "姓氏不能为空",
+      "lastNameMax": "姓氏不能超过50个字符",
+      "emailRequired": "电子邮箱不能为空",
+      "emailInvalid": "电子邮箱格式不正确"
     }
+  }
 }

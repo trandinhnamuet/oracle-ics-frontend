@@ -322,6 +322,114 @@
       }
     }
   },
+  "pricing": {
+    "plans": {
+      "starter": {
+        "1": {
+          "description": "2 vCPU、1GB RAM、20GB SSDストレージ"
+        },
+        "2": {
+          "description": "2 vCPU、2GB RAM、40GB SSDストレージ"
+        },
+        "3": {
+          "description": "4 vCPU、4GB RAM、80GB SSDストレージ"
+        },
+        "4": {
+          "description": "4 vCPU、8GB RAM、80GB SSDストレージ"
+        },
+        "5": {
+          "description": "8 vCPU、8GB RAM、100GB SSDストレージ"
+        }
+      },
+      "professional": {
+        "1": {
+          "description": "4 vCPU、6GB RAM、100GB SSDストレージ"
+        },
+        "2": {
+          "description": "6 vCPU、8GB RAM、150GB SSDストレージ"
+        },
+        "3": {
+          "description": "8 vCPU、10GB RAM、150GB SSDストレージ"
+        },
+        "4": {
+          "description": "8 vCPU、12GB RAM、150GB SSDストレージ"
+        },
+        "5": {
+          "description": "8 vCPU、16GB RAM、200GB SSDストレージ"
+        },
+        "6": {
+          "description": "8 vCPU、32GB RAM、200GB SSDストレージ"
+        }
+      },
+      "enterprise": {
+        "1": {
+          "description": "10 vCPU、16GB RAM、250GB SSDストレージ"
+        },
+        "2": {
+          "description": "12 vCPU、16GB RAM、250GB SSDストレージ"
+        },
+        "3": {
+          "description": "12 vCPU、18GB RAM、500GB SSDストレージ"
+        },
+        "4": {
+          "description": "16 vCPU、32GB RAM、500GB SSDストレージ"
+        },
+        "5": {
+          "description": "16 vCPU、32GB RAM、1024GB SSDストレージ"
+        },
+        "6": {
+          "description": "24 vCPU、32GB RAM、1024GB SSDストレージ"
+        },
+        "7": {
+          "description": "36 vCPU、64GB RAM、1024GB SSDストレージ"
+        },
+        "8": {
+          "description": "48 vCPU、128GB RAM、1024GB SSDストレージ"
+        },
+        "9": {
+          "description": "相談を受けるためにこのパッケージを登録する必要すらありません。ホットラインに直接お電話ください！"
+        }
+      },
+      "ai": {
+        "1": {
+          "description": "1 GPU P100、16GB RAM、1024 GB"
+        },
+        "2": {
+          "description": "1 GPU A10、24GB RAM、1024 GB"
+        },
+        "3": {
+          "description": "2 GPU P100、32GB RAM、1024 GB"
+        },
+        "4": {
+          "description": "2 GPU A10、48GB RAM、1024GB"
+        }
+      },
+      "custom": {
+        "description": "企業要件に合わせたカスタムソリューション",
+        "price": "お問い合わせ",
+        "features": {
+          "flexible": "柔軟な構成",
+          "integration": "専用システム統合",
+          "consulting": "詳細なアーキテクチャコンサルティング",
+          "onsite": "オンサイト導入サポート"
+        }
+      }
+    },
+    "categories": {
+      "starter": {
+        "description": "小規模企業に適しています"
+      },
+      "professional": {
+        "description": "中規模企業に人気の選択"
+      },
+      "enterprise": {
+        "description": "大企業向けの包括的ソリューション"
+      },
+      "ai": {
+        "description": "クラウドでLLMモデルをデプロイ"
+      }
+    }
+  },
   "header": {
     "home": "ホーム",
     "services": "サービス",
@@ -443,5 +551,37 @@
     "validationEmailInvalid": "無効なメールアドレスです",
     "validationPasswordRequired": "パスワードを入力してください",
     "validationPasswordMinLength": "パスワードは{{length}}文字以上で入力してください"
+  },
+  "profile": {
+    "title": "プロフィール情報",
+    "subtitle": "アカウント情報を管理します",
+    "loadingUser": "ユーザー情報を読み込み中...",
+    "userBadge": "ユーザー",
+    "id": "ID",
+    "createdAt": "作成日",
+    "updatedAt": "最終更新",
+    "editInfo": "情報編集",
+    "editDescription": "個人情報を更新します",
+    "updateSuccess": "情報が正常に更新されました！",
+    "updateFailed": "情報の更新に失敗しました",
+    "firstName": "名前",
+    "lastName": "姓",
+    "email": "メールアドレス",
+    "emailDescription": "メールアドレスはログインと通知の受信に使用されます",
+    "cancel": "キャンセル",
+    "saving": "保存中...",
+    "saveChanges": "変更を保存",
+    "edit": "編集",
+    "changePassword": "パスワード変更",
+    "changePasswordDescription": "アカウントのセキュリティのためにパスワードを更新してください",
+    "changePasswordButton": "パスワード変更（近日公開）",
+    "validation": {
+      "firstNameRequired": "名前の入力が必要です",
+      "firstNameMax": "名前は50文字以内で入力してください",
+      "lastNameRequired": "姓の入力が必要です",
+      "lastNameMax": "姓は50文字以内で入力してください",
+      "emailRequired": "メールアドレスの入力が必要です",
+      "emailInvalid": "無効なメールアドレスです"
     }
+  }
 }

@@ -9,17 +9,17 @@ import { aiPlans } from "./plan-ai"
 export const customPlan: PricingPlan = {
   id: 0,
   name: "custom",
-  description: "Giải pháp tuỳ chỉnh theo yêu cầu doanh nghiệp",
-  price: "Liên hệ",
+  description: "pricing.plans.custom.description",
+  price: "pricing.plans.custom.price",
   period: "",
   icon: Star,
   popular: false,
   category: 'custom',
   features: [
-    "Cấu hình linh hoạt",
-    "Tích hợp hệ thống riêng",
-    "Tư vấn kiến trúc chuyên sâu",
-    "Hỗ trợ triển khai tận nơi"
+    "pricing.plans.custom.features.flexible",
+    "pricing.plans.custom.features.integration",
+    "pricing.plans.custom.features.consulting",
+    "pricing.plans.custom.features.onsite"
   ],
   limitations: [],
 }
@@ -31,7 +31,7 @@ export const pricingCategories: PricingCategory[] = [
     basePrice: starterPlans[0].price,
     icon: Zap,
     popular: false,
-    description: "Phù hợp cho doanh nghiệp nhỏ",
+    description: "pricing.categories.starter.description",
     plans: starterPlans
   },
   {
@@ -39,7 +39,7 @@ export const pricingCategories: PricingCategory[] = [
     basePrice: professionalPlans[0].price,
     icon: Shield,
     popular: true,
-    description: "Lựa chọn phổ biến cho doanh nghiệp vừa",
+    description: "pricing.categories.professional.description",
     plans: professionalPlans
   },
   {
@@ -47,7 +47,7 @@ export const pricingCategories: PricingCategory[] = [
     basePrice: enterprisePlans[0].price,
     icon: Crown,
     popular: false,
-    description: "Giải pháp toàn diện cho doanh nghiệp lớn",
+    description: "pricing.categories.enterprise.description",
     plans: enterprisePlans
   },
   {
@@ -55,7 +55,7 @@ export const pricingCategories: PricingCategory[] = [
     basePrice: aiPlans[0].price,
     icon: BrainCircuit,
     popular: false,
-    description: "riển khai model LLM của bạn trên cloud.",
+    description: "pricing.categories.ai.description",
     plans: aiPlans
   }
 ]

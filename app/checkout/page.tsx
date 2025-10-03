@@ -163,7 +163,9 @@ ${t('checkout.content')}: ${customContent}
               {planDescription && (
                 <div className="flex items-start justify-between">
                   <span className="text-sm text-muted-foreground">{t('checkout.description')}:</span>
-                  <span className="text-sm text-right max-w-xs">{planDescription}</span>
+                  <span className="text-sm text-right max-w-xs">
+                    {planDescription.startsWith('pricing.') ? t(planDescription) : planDescription}
+                  </span>
                 </div>
               )}
 

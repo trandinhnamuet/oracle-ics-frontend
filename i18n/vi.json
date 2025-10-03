@@ -322,6 +322,114 @@
       }
     }
   },
+  "pricing": {
+    "plans": {
+      "starter": {
+        "1": {
+          "description": "2 vCPU, 1GB RAM, 20GB SSD Storage"
+        },
+        "2": {
+          "description": "2 vCPU, 2GB RAM, 40GB SSD Storage"
+        },
+        "3": {
+          "description": "4 vCPU, 4GB RAM, 80GB SSD Storage"
+        },
+        "4": {
+          "description": "4 vCPU, 8GB RAM, 80GB SSD Storage"
+        },
+        "5": {
+          "description": "8 vCPU, 8GB RAM, 100GB SSD Storage"
+        }
+      },
+      "professional": {
+        "1": {
+          "description": "4 vCPU, 6GB RAM, 100GB SSD Storage"
+        },
+        "2": {
+          "description": "6 vCPU, 8GB RAM, 150GB SSD Storage"
+        },
+        "3": {
+          "description": "8 vCPU, 10GB RAM, 150GB SSD Storage"
+        },
+        "4": {
+          "description": "8 vCPU, 12GB RAM, 150GB SSD Storage"
+        },
+        "5": {
+          "description": "8 vCPU, 16GB RAM, 200GB SSD Storage"
+        },
+        "6": {
+          "description": "8 vCPU, 32GB RAM, 200GB SSD Storage"
+        }
+      },
+      "enterprise": {
+        "1": {
+          "description": "10 vCPU, 16GB RAM, 250GB SSD Storage"
+        },
+        "2": {
+          "description": "12 vCPU, 16GB RAM, 250GB SSD Storage"
+        },
+        "3": {
+          "description": "12 vCPU, 18GB RAM, 500GB SSD Storage"
+        },
+        "4": {
+          "description": "16 vCPU, 32GB RAM, 500GB SSD Storage"
+        },
+        "5": {
+          "description": "16 vCPU, 32GB RAM, 1024GB SSD Storage"
+        },
+        "6": {
+          "description": "24 vCPU, 32GB RAM, 1024GB SSD Storage"
+        },
+        "7": {
+          "description": "36 vCPU, 64GB RAM, 1024GB SSD Storage"
+        },
+        "8": {
+          "description": "48 vCPU, 128GB RAM, 1024GB SSD Storage"
+        },
+        "9": {
+          "description": "Bạn thậm chí không cần đăng ký gói này để được nhận tư vấn. Chỉ cần gọi thẳng tới hotline!"
+        }
+      },
+      "ai": {
+        "1": {
+          "description": "1 GPU P100, 16GB RAM, 1024 GB"
+        },
+        "2": {
+          "description": "1 GPU A10, 24GB RAM, 1024 GB"
+        },
+        "3": {
+          "description": "2 GPU P100, 32GB RAM, 1024 GB"
+        },
+        "4": {
+          "description": "2 GPU A10, 48GB RAM, 1024GB"
+        }
+      },
+      "custom": {
+        "description": "Giải pháp tùy chỉnh theo yêu cầu doanh nghiệp",
+        "price": "Liên hệ",
+        "features": {
+          "flexible": "Cấu hình linh hoạt",
+          "integration": "Tích hợp hệ thống riêng",
+          "consulting": "Tư vấn kiến trúc chuyên sâu",
+          "onsite": "Hỗ trợ triển khai tận nơi"
+        }
+      }
+    },
+    "categories": {
+      "starter": {
+        "description": "Phù hợp cho doanh nghiệp nhỏ"
+      },
+      "professional": {
+        "description": "Lựa chọn phổ biến cho doanh nghiệp vừa"
+      },
+      "enterprise": {
+        "description": "Giải pháp toàn diện cho doanh nghiệp lớn"
+      },
+      "ai": {
+        "description": "Triển khai model LLM của bạn trên cloud"
+      }
+    }
+  },
   "header": {
     "home": "Trang chủ",
     "services": "Dịch vụ",
@@ -443,5 +551,37 @@
     "validationEmailInvalid": "Email không hợp lệ",
     "validationPasswordRequired": "Vui lòng nhập mật khẩu",
     "validationPasswordMinLength": "Mật khẩu phải có ít nhất {{length}} ký tự"
+  },
+  "profile": {
+    "title": "Thông tin cá nhân",
+    "subtitle": "Quản lý thông tin tài khoản của bạn",
+    "loadingUser": "Đang tải thông tin người dùng...",
+    "userBadge": "Người dùng",
+    "id": "ID",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Cập nhật cuối",
+    "editInfo": "Chỉnh sửa thông tin",
+    "editDescription": "Cập nhật thông tin cá nhân của bạn",
+    "updateSuccess": "Thông tin đã được cập nhật thành công!",
+    "updateFailed": "Cập nhật thông tin thất bại",
+    "firstName": "Họ",
+    "lastName": "Tên",
+    "email": "Email",
+    "emailDescription": "Email được sử dụng để đăng nhập và nhận thông báo",
+    "cancel": "Hủy",
+    "saving": "Đang lưu...",
+    "saveChanges": "Lưu thay đổi",
+    "edit": "Chỉnh sửa",
+    "changePassword": "Đổi mật khẩu",
+    "changePasswordDescription": "Cập nhật mật khẩu để bảo mật tài khoản",
+    "changePasswordButton": "Đổi mật khẩu (Sắp có)",
+    "validation": {
+      "firstNameRequired": "Họ không được để trống",
+      "firstNameMax": "Họ không được quá 50 ký tự",
+      "lastNameRequired": "Tên không được để trống",
+      "lastNameMax": "Tên không được quá 50 ký tự",
+      "emailRequired": "Email không được để trống",
+      "emailInvalid": "Email không hợp lệ"
+    }
   }
 }

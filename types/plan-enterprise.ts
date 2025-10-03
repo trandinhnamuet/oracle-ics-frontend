@@ -5,7 +5,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 1,
     name: "Enterprise 1",
-    description: "10 vCPU, 16GB RAM, 250GB SSD Storage",
+    description: "pricing.plans.enterprise.1.description",
     price: "121.48",
     period: "tháng",
     icon: Crown,
@@ -23,7 +23,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 2,
     name: "Enterprise 2",
-    description: "12 vCPU, 16GB RAM, 250GB SSD Storage",
+    description: "pricing.plans.enterprise.2.description",
     price: "140.08",
     period: "tháng",
     icon: Crown,
@@ -41,7 +41,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 3,
     name: "Enterprise 3",
-    description: "12 vCPU, 18GB RAM, 500GB SSD Storage",
+    description: "pricing.plans.enterprise.3.description",
     price: "152.94",
     period: "tháng",
     icon: Crown,
@@ -59,7 +59,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 4,
     name: "Enterprise 4",
-    description: "16 vCPU, 32GB RAM, 500GB SSD Storage",
+    description: "pricing.plans.enterprise.4.description",
     price: "205.76",
     period: "tháng",
     icon: Crown,
@@ -77,7 +77,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 5,
     name: "Enterprise 5",
-    description: "16 vCPU, 32GB RAM, 1024GB SSD Storage",
+    description: "pricing.plans.enterprise.5.description",
     price: "228.03",
     period: "tháng",
     icon: Crown,
@@ -95,7 +95,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 6,
     name: "Enterprise 6",
-    description: "24 vCPU, 32GB RAM, 1024GB SSD Storage",
+    description: "pricing.plans.enterprise.6.description",
     price: "302.43",
     period: "tháng",
     icon: Crown,
@@ -113,7 +113,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 7,
     name: "Enterprise 7",
-    description: "36 vCPU, 64GB RAM, 1024GB SSD Storage",
+    description: "pricing.plans.enterprise.7.description",
     price: "326.24",
     period: "tháng",
     icon: Crown,
@@ -131,7 +131,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 8,
     name: "Enterprise 8",
-    description: "48 vCPU, 128GB RAM, 1024GB SSD Storage",
+    description: "pricing.plans.enterprise.8.description",
     price: "483.97",
     period: "tháng",
     icon: Crown,
@@ -149,7 +149,7 @@ export const enterprisePlans: PricingPlan[] = [
   {
     id: 9,
     name: "Tư vấn toàn diện",
-    description: "Bạn thậm chí không cần đăng ký gói này để được nhận tư vấn. Chỉ cần gọi thẳng tới hotline!",
+    description: "pricing.plans.enterprise.9.description",
     price: "0.16",
     period: "tháng",
     icon: Crown,

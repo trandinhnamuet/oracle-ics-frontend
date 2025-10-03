@@ -199,7 +199,7 @@ export function PricingSection() {
                     <IconComponent className="h-8 w-8 text-primary" />
                   </div>
                   <CardTitle className="text-2xl font-bold text-foreground">{t(`homepage.pricing.plans.${category.name}`)}</CardTitle>
-                  <CardDescription className="text-base mt-2">{category.description}</CardDescription>
+                  <CardDescription className="text-base mt-2">{t(category.description)}</CardDescription>
                 </CardHeader>
 
                 <CardFooter className="pt-4">
@@ -215,12 +215,12 @@ export function PricingSection() {
                     {expandedCategory === category.name ? (
                       <>
                         <ChevronUp className="h-4 w-4 mr-2" />
-                        {t('homepage.pricing.buttons.hideDetails')} {category.plans.length} {t('homepage.pricing.buttons.packages')}
+                        {t('homepage.pricing.buttons.packages')}
                       </>
                     ) : (
                       <>
                         <ChevronDown className="h-4 w-4 mr-2" />
-                        {t('homepage.pricing.buttons.showDetails')} {category.plans.length} {t('homepage.pricing.buttons.packages')} {t('homepage.pricing.buttons.viewDetails')}
+                        {t('homepage.pricing.buttons.viewDetails')}
                       </>
                     )}
                   </Button>
@@ -236,7 +236,7 @@ export function PricingSection() {
                 <customPlan.icon className="h-8 w-8 text-primary" />
               </div>
               <CardTitle className="text-2xl font-bold text-foreground">{t(`homepage.pricing.plans.${customPlan.name}`)}</CardTitle>
-              <CardDescription className="text-base mt-2">{customPlan.description}</CardDescription>
+              <CardDescription className="text-base mt-2">{t(customPlan.description)}</CardDescription>
             </CardHeader>
 
             <CardFooter className="pt-4">

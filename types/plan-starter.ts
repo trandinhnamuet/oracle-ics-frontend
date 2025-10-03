@@ -5,7 +5,7 @@ export const starterPlans: PricingPlan[] = [
   {
     id: 1,
     name: "Starter 1",
-    description: "2 vCPU, 1GB RAM, 20GB SSD Storage",
+    description: "pricing.plans.starter.1.description",
     price: "12.75",
     period: "tháng",
     icon: Zap,
@@ -16,14 +16,14 @@ export const starterPlans: PricingPlan[] = [
       "2 vCPU",
       "1GB RAM",
       "20GB SSD Storage",
-      "Băng thông 300Mbps"
+      "Bandwidth 300Mbps"
     ],
     limitations: [],
   },
   {
     id: 2,
     name: "Starter 2",
-    description: "2 vCPU, 2GB RAM, 40GB SSD Storage",
+    description: "pricing.plans.starter.2.description",
     price: "15.09",
     period: "tháng",
     icon: Zap,
@@ -34,14 +34,14 @@ export const starterPlans: PricingPlan[] = [
       "2 vCPU",
       "2GB RAM",
       "40GB SSD Storage",
-      "Băng thông 300Mbps"
+      "Bandwidth 300Mbps"
     ],
     limitations: [],
   },
   {
     id: 3,
     name: "Starter 3",
-    description: "4 vCPU, 4GB RAM, 80GB SSD Storage",
+    description: "pricing.plans.starter.3.description",
     price: "30.18",
     period: "tháng",
     icon: Zap,
@@ -52,14 +52,14 @@ export const starterPlans: PricingPlan[] = [
       "4 vCPU",
       "4GB RAM",
       "80GB SSD Storage",
-      "Băng thông 300Mbps"
+      "Bandwidth 300Mbps"
     ],
     limitations: [],
   },
   {
     id: 4,
     name: "Starter 4",
-    description: "4 vCPU, 8GB RAM, 80GB SSD Storage",
+    description: "pricing.plans.starter.4.description",
     price: "36.14",
     period: "tháng",
     icon: Zap,
@@ -70,14 +70,14 @@ export const starterPlans: PricingPlan[] = [
       "4 vCPU",
       "8GB RAM",
       "80GB SSD Storage",
-      "Băng thông 300Mbps"
+      "Bandwidth 300Mbps"
     ],
     limitations: [],
   },
   {
     id: 5,
     name: "Starter 5",
-    description: "8 vCPU, 8GB RAM, 100GB SSD Storage",
+    description: "pricing.plans.starter.5.description",
     price: "57.82",
     period: "tháng",
     icon: Zap,
@@ -88,7 +88,7 @@ export const starterPlans: PricingPlan[] = [
       "8 vCPU",
       "8GB RAM",
       "100GB SSD Storage",
-      "Băng thông 300Mbps"
+      "Bandwidth 300Mbps"
     ],
     limitations: [],
   }

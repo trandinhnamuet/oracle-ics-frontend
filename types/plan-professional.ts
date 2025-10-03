@@ -5,7 +5,7 @@ export const professionalPlans: PricingPlan[] = [
   {
     id: 1,
     name: "Professional 1",
-    description: "4 vCPU, 6GB RAM, 100GB SSD Storage",
+    description: "pricing.plans.professional.1.description",
     price: "48.15",
     period: "tháng",
     icon: Shield,
@@ -23,7 +23,7 @@ export const professionalPlans: PricingPlan[] = [
   {
     id: 2,
     name: "Professional 2",
-    description: "6 vCPU, 8GB RAM, 150GB SSD Storage",
+    description: "pricing.plans.professional.2.description",
     price: "71.10",
     period: "tháng",
     icon: Shield,
@@ -41,7 +41,7 @@ export const professionalPlans: PricingPlan[] = [
   {
     id: 3,
     name: "Professional 3",
-    description: "8 vCPU, 10GB RAM, 150GB SSD Storage",
+    description: "pricing.plans.professional.3.description",
     price: "89.70",
     period: "tháng",
     icon: Shield,
@@ -59,7 +59,7 @@ export const professionalPlans: PricingPlan[] = [
   {
     id: 4,
     name: "Professional 4",
-    description: "8 vCPU, 12GB RAM, 150GB SSD Storage",
+    description: "pricing.plans.professional.4.description",
     price: "94.17",
     period: "tháng",
     icon: Shield,
@@ -77,7 +77,7 @@ export const professionalPlans: PricingPlan[] = [
   {
     id: 5,
     name: "Professional 5",
-    description: "8 vCPU, 16GB RAM, 200GB SSD Storage",
+    description: "pricing.plans.professional.5.description",
     price: "100.76",
     period: "tháng",
     icon: Shield,
@@ -95,7 +95,7 @@ export const professionalPlans: PricingPlan[] = [
   {
     id: 6,
     name: "Professional 6",
-    description: "8 vCPU, 32GB RAM, 200GB SSD Storage",
+    description: "pricing.plans.professional.6.description",
     price: "118.61",
     period: "tháng",
     icon: Shield,

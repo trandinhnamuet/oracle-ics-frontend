@@ -5,7 +5,7 @@ export const aiPlans: PricingPlan[] = [
   {
     id: 1,
     name: "VM.GPU2.1",
-    description: "1 GPU P100, 16GB RAM, 1024 GB",
+    description: "pricing.plans.ai.1.description",
     price: "992.12",
     period: "tháng",
     icon: BrainCircuit,
@@ -23,7 +23,7 @@ export const aiPlans: PricingPlan[] = [
   {
     id: 2,
     name: "VM.GPU.A10.1",
-    description: "1 GPU A10, 24GB RAM, 1024 GB",
+    description: "pricing.plans.ai.2.description",
     price: "1531.52",
     period: "tháng",
     icon: BrainCircuit,
@@ -41,7 +41,7 @@ export const aiPlans: PricingPlan[] = [
   {
     id: 3,
     name: "BM.GPU2.2",
-    description: "2 GPU P100, 32GB RAM, 1024 GB",
+    description: "pricing.plans.ai.3.description",
     price: "1940.72",
     period: "tháng",
     icon: BrainCircuit,
@@ -59,7 +59,7 @@ export const aiPlans: PricingPlan[] = [
   {
     id: 4,
     name: "VM.GPU.A10.2",
-    description: "2 GPU A10, 48GB RAM, 1024GB",
+    description: "pricing.plans.ai.4.description",
     price: "2980.25",
     period: "tháng",
     icon: BrainCircuit,

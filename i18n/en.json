@@ -322,6 +322,114 @@
       }
     }
   },
+  "pricing": {
+    "plans": {
+      "starter": {
+        "1": {
+          "description": "2 vCPU, 1GB RAM, 20GB SSD Storage"
+        },
+        "2": {
+          "description": "2 vCPU, 2GB RAM, 40GB SSD Storage"
+        },
+        "3": {
+          "description": "4 vCPU, 4GB RAM, 80GB SSD Storage"
+        },
+        "4": {
+          "description": "4 vCPU, 8GB RAM, 80GB SSD Storage"
+        },
+        "5": {
+          "description": "8 vCPU, 8GB RAM, 100GB SSD Storage"
+        }
+      },
+      "professional": {
+        "1": {
+          "description": "4 vCPU, 6GB RAM, 100GB SSD Storage"
+        },
+        "2": {
+          "description": "6 vCPU, 8GB RAM, 150GB SSD Storage"
+        },
+        "3": {
+          "description": "8 vCPU, 10GB RAM, 150GB SSD Storage"
+        },
+        "4": {
+          "description": "8 vCPU, 12GB RAM, 150GB SSD Storage"
+        },
+        "5": {
+          "description": "8 vCPU, 16GB RAM, 200GB SSD Storage"
+        },
+        "6": {
+          "description": "8 vCPU, 32GB RAM, 200GB SSD Storage"
+        }
+      },
+      "enterprise": {
+        "1": {
+          "description": "10 vCPU, 16GB RAM, 250GB SSD Storage"
+        },
+        "2": {
+          "description": "12 vCPU, 16GB RAM, 250GB SSD Storage"
+        },
+        "3": {
+          "description": "12 vCPU, 18GB RAM, 500GB SSD Storage"
+        },
+        "4": {
+          "description": "16 vCPU, 32GB RAM, 500GB SSD Storage"
+        },
+        "5": {
+          "description": "16 vCPU, 32GB RAM, 1024GB SSD Storage"
+        },
+        "6": {
+          "description": "24 vCPU, 32GB RAM, 1024GB SSD Storage"
+        },
+        "7": {
+          "description": "36 vCPU, 64GB RAM, 1024GB SSD Storage"
+        },
+        "8": {
+          "description": "48 vCPU, 128GB RAM, 1024GB SSD Storage"
+        },
+        "9": {
+          "description": "You don't even need to register for this package to receive consultation. Just call the hotline directly!"
+        }
+      },
+      "ai": {
+        "1": {
+          "description": "1 GPU P100, 16GB RAM, 1024 GB"
+        },
+        "2": {
+          "description": "1 GPU A10, 24GB RAM, 1024 GB"
+        },
+        "3": {
+          "description": "2 GPU P100, 32GB RAM, 1024 GB"
+        },
+        "4": {
+          "description": "2 GPU A10, 48GB RAM, 1024GB"
+        }
+      },
+      "custom": {
+        "description": "Custom solution tailored to enterprise requirements",
+        "price": "Contact Us",
+        "features": {
+          "flexible": "Flexible configuration",
+          "integration": "Private system integration",
+          "consulting": "In-depth architecture consulting",
+          "onsite": "On-site deployment support"
+        }
+      }
+    },
+    "categories": {
+      "starter": {
+        "description": "Suitable for small businesses"
+      },
+      "professional": {
+        "description": "Popular choice for medium businesses"
+      },
+      "enterprise": {
+        "description": "Comprehensive solution for large enterprises"
+      },
+      "ai": {
+        "description": "Deploy your LLM models on the cloud"
+      }
+    }
+  },
   "header": {
     "home": "Home",
     "services": "Services",
@@ -444,5 +552,37 @@
     "validationEmailInvalid": "Invalid email address",
     "validationPasswordRequired": "Please enter your password",
     "validationPasswordMinLength": "Password must be at least {{length}} characters"
+  },
+  "profile": {
+    "title": "Profile Information",
+    "subtitle": "Manage your account information",
+    "loadingUser": "Loading user information...",
+    "userBadge": "User",
+    "id": "ID",
+    "createdAt": "Created Date",
+    "updatedAt": "Last Updated",
+    "editInfo": "Edit Information",
+    "editDescription": "Update your personal information",
+    "updateSuccess": "Information has been updated successfully!",
+    "updateFailed": "Failed to update information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "emailDescription": "Email is used for login and receiving notifications",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "saveChanges": "Save Changes",
+    "edit": "Edit",
+    "changePassword": "Change Password",
+    "changePasswordDescription": "Update your password to secure your account",
+    "changePasswordButton": "Change Password (Coming Soon)",
+    "validation": {
+      "firstNameRequired": "First name is required",
+      "firstNameMax": "First name cannot exceed 50 characters",
+      "lastNameRequired": "Last name is required",
+      "lastNameMax": "Last name cannot exceed 50 characters",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address"
     }
+  }
 }

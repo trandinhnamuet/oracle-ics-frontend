@@ -322,6 +322,114 @@
       }
     }
   },
+  "pricing": {
+    "plans": {
+      "starter": {
+        "1": {
+          "description": "2 vCPU, 1GB RAM, 20GB SSD 저장소"
+        },
+        "2": {
+          "description": "2 vCPU, 2GB RAM, 40GB SSD 저장소"
+        },
+        "3": {
+          "description": "4 vCPU, 4GB RAM, 80GB SSD 저장소"
+        },
+        "4": {
+          "description": "4 vCPU, 8GB RAM, 80GB SSD 저장소"
+        },
+        "5": {
+          "description": "8 vCPU, 8GB RAM, 100GB SSD 저장소"
+        }
+      },
+      "professional": {
+        "1": {
+          "description": "4 vCPU, 6GB RAM, 100GB SSD 저장소"
+        },
+        "2": {
+          "description": "6 vCPU, 8GB RAM, 150GB SSD 저장소"
+        },
+        "3": {
+          "description": "8 vCPU, 10GB RAM, 150GB SSD 저장소"
+        },
+        "4": {
+          "description": "8 vCPU, 12GB RAM, 150GB SSD 저장소"
+        },
+        "5": {
+          "description": "8 vCPU, 16GB RAM, 200GB SSD 저장소"
+        },
+        "6": {
+          "description": "8 vCPU, 32GB RAM, 200GB SSD 저장소"
+        }
+      },
+      "enterprise": {
+        "1": {
+          "description": "10 vCPU, 16GB RAM, 250GB SSD 저장소"
+        },
+        "2": {
+          "description": "12 vCPU, 16GB RAM, 250GB SSD 저장소"
+        },
+        "3": {
+          "description": "12 vCPU, 18GB RAM, 500GB SSD 저장소"
+        },
+        "4": {
+          "description": "16 vCPU, 32GB RAM, 500GB SSD 저장소"
+        },
+        "5": {
+          "description": "16 vCPU, 32GB RAM, 1024GB SSD 저장소"
+        },
+        "6": {
+          "description": "24 vCPU, 32GB RAM, 1024GB SSD 저장소"
+        },
+        "7": {
+          "description": "36 vCPU, 64GB RAM, 1024GB SSD 저장소"
+        },
+        "8": {
+          "description": "48 vCPU, 128GB RAM, 1024GB SSD 저장소"
+        },
+        "9": {
+          "description": "상담을 받기 위해 이 패키지를 등록할 필요도 없습니다. 핫라인으로 바로 전화하세요!"
+        }
+      },
+      "ai": {
+        "1": {
+          "description": "1 GPU P100, 16GB RAM, 1024 GB"
+        },
+        "2": {
+          "description": "1 GPU A10, 24GB RAM, 1024 GB"
+        },
+        "3": {
+          "description": "2 GPU P100, 32GB RAM, 1024 GB"
+        },
+        "4": {
+          "description": "2 GPU A10, 48GB RAM, 1024GB"
+        }
+      },
+      "custom": {
+        "description": "기업 요구사항에 맞춘 맞춤형 솔루션",
+        "price": "문의하기",
+        "features": {
+          "flexible": "유연한 구성",
+          "integration": "전용 시스템 통합",
+          "consulting": "심화 아키텍처 컨설팅",
+          "onsite": "현장 배포 지원"
+        }
+      }
+    },
+    "categories": {
+      "starter": {
+        "description": "소규모 기업에 적합"
+      },
+      "professional": {
+        "description": "중견기업의 인기 선택"
+      },
+      "enterprise": {
+        "description": "대기업을 위한 종합 솔루션"
+      },
+      "ai": {
+        "description": "클라우드에서 LLM 모델 배포"
+      }
+    }
+  },
   "header": {
     "home": "홈",
     "services": "서비스",
@@ -443,5 +551,37 @@
     "validationEmailInvalid": "유효하지 않은 이메일입니다",
     "validationPasswordRequired": "비밀번호를 입력하세요",
     "validationPasswordMinLength": "비밀번호는 최소 {{length}}자 이상이어야 합니다"
+  },
+  "profile": {
+    "title": "프로필 정보",
+    "subtitle": "계정 정보를 관리하세요",
+    "loadingUser": "사용자 정보를 로딩 중...",
+    "userBadge": "사용자",
+    "id": "ID",
+    "createdAt": "생성 날짜",
+    "updatedAt": "마지막 업데이트",
+    "editInfo": "정보 편집",
+    "editDescription": "개인 정보를 업데이트하세요",
+    "updateSuccess": "정보가 성공적으로 업데이트되었습니다!",
+    "updateFailed": "정보 업데이트에 실패했습니다",
+    "firstName": "이름",
+    "lastName": "성씨",
+    "email": "이메일",
+    "emailDescription": "이메일은 로그인 및 알림 수신에 사용됩니다",
+    "cancel": "취소",
+    "saving": "저장 중...",
+    "saveChanges": "변경 사항 저장",
+    "edit": "편집",
+    "changePassword": "비밀번호 변경",
+    "changePasswordDescription": "계정 보안을 위해 비밀번호를 업데이트하세요",
+    "changePasswordButton": "비밀번호 변경 (공개 예정)",
+    "validation": {
+      "firstNameRequired": "이름을 입력해주세요",
+      "firstNameMax": "이름은 50자를 초과할 수 없습니다",
+      "lastNameRequired": "성씨를 입력해주세요",
+      "lastNameMax": "성씨는 50자를 초과할 수 없습니다",
+      "emailRequired": "이메일을 입력해주세요",
+      "emailInvalid": "유효하지 않은 이메일 주소입니다"
     }
+  }
 }

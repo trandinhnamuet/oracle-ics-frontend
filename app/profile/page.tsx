@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,28 +19,33 @@ import useAuthStore, { User } from '@/hooks/use-auth-store'
 import withAuth from '@/components/auth/with-auth'
 import { authApi } from '@/api/auth.api'
 
-// Schema validation cho form cập nhật profile
-const profileSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, 'Họ không được để trống')
-    .max(50, 'Họ không được quá 50 ký tự'),
-  lastName: z
-    .string()
-    .min(1, 'Tên không được để trống')
-    .max(50, 'Tên không được quá 50 ký tự'),
-  email: z
-    .string()
-    .min(1, 'Email không được để trống')
-    .email('Email không hợp lệ'),
-})
-
-type ProfileFormData = z.infer<typeof profileSchema>
+type ProfileFormData = {
+  firstName: string
+  lastName: string
+  email: string
+}
 
 function ProfilePage() {
+  const { t } = useTranslation()
   const { user, setUser, setLoading, setError, error, isLoading } = useAuthStore()
   const [isEditing, setIsEditing] = useState(false)
   const [updateSuccess, setUpdateSuccess] = useState(false)
+
+  // Schema validation cho form cập nhật profile
+  const profileSchema = z.object({
+    firstName: z
+      .string()
+      .min(1, t('profile.validation.firstNameRequired'))
+      .max(50, t('profile.validation.firstNameMax')),
+    lastName: z
+      .string()
+      .min(1, t('profile.validation.lastNameRequired'))
+      .max(50, t('profile.validation.lastNameMax')),
+    email: z
+      .string()
+      .min(1, t('profile.validation.emailRequired'))
+      .email(t('profile.validation.emailInvalid')),
+  })
 
   const {
     register,
@@ -88,7 +94,7 @@ function ProfilePage() {
       setTimeout(() => setUpdateSuccess(false), 3000)
       
     } catch (error: any) {
-      setError(error.message || 'Cập nhật thông tin thất bại')
+      setError(error.message || t('profile.updateFailed'))
     } finally {
       setLoading(false)
     }
@@ -129,7 +135,7 @@ function ProfilePage() {
   if (!user) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div>Đang tải thông tin người dùng...</div>
+        <div>{t('profile.loadingUser')}</div>
       </div>
     )
   }
@@ -138,8 +144,8 @@ function ProfilePage() {
     <div className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Thông tin cá nhân</h1>
-          <p className="text-gray-600">Quản lý thông tin tài khoản của bạn</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('profile.title')}</h1>
+          <p className="text-gray-600">{t('profile.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -164,22 +170,22 @@ function ProfilePage() {
                   <p className="text-sm text-gray-500">{user.email}</p>
                 </div>
 
-                <Badge variant="secondary">Người dùng</Badge>
+                <Badge variant="secondary">{t('profile.userBadge')}</Badge>
               </div>
 
               <Separator className="my-4" />
 
               <div className="space-y-2 text-sm">
                 <div>
-                  <span className="font-medium">ID:</span>
+                  <span className="font-medium">{t('profile.id')}:</span>
                   <p className="text-gray-500 font-mono">{user.id}</p>
                 </div>
                 <div>
-                  <span className="font-medium">Ngày tạo:</span>
+                  <span className="font-medium">{t('profile.createdAt')}:</span>
                   <p className="text-gray-500">{formatDate(user.createdAt)}</p>
                 </div>
                 <div>
-                  <span className="font-medium">Cập nhật cuối:</span>
+                  <span className="font-medium">{t('profile.updatedAt')}:</span>
                   <p className="text-gray-500">{formatDate(user.updatedAt)}</p>
                 </div>
               </div>
@@ -189,9 +195,9 @@ function ProfilePage() {
           {/* Profile Form Card */}
           <Card className="lg:col-span-2">
             <CardHeader>
-              <CardTitle>Chỉnh sửa thông tin</CardTitle>
+              <CardTitle>{t('profile.editInfo')}</CardTitle>
               <CardDescription>
-                Cập nhật thông tin cá nhân của bạn
+                {t('profile.editDescription')}
               </CardDescription>
             </CardHeader>
 
@@ -205,7 +211,7 @@ function ProfilePage() {
               {updateSuccess && (
                 <Alert>
                   <AlertDescription>
-                    Thông tin đã được cập nhật thành công!
+                    {t('profile.updateSuccess')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -213,7 +219,7 @@ function ProfilePage() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">Họ</Label>
+                    <Label htmlFor="firstName">{t('profile.firstName')}</Label>
                     <Input
                       id="firstName"
                       type="text"
@@ -227,7 +233,7 @@ function ProfilePage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Tên</Label>
+                    <Label htmlFor="lastName">{t('profile.lastName')}</Label>
                     <Input
                       id="lastName"
                       type="text"
@@ -242,7 +248,7 @@ function ProfilePage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('profile.email')}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -254,7 +260,7 @@ function ProfilePage() {
                     <p className="text-sm text-red-500">{errors.email.message}</p>
                   )}
                   <p className="text-xs text-gray-500">
-                    Email được sử dụng để đăng nhập và nhận thông báo
+                    {t('profile.emailDescription')}
                   </p>
                 </div>
 
@@ -267,10 +273,10 @@ function ProfilePage() {
                         onClick={handleCancel}
                         disabled={isLoading}
                       >
-                        Hủy
+                        {t('profile.cancel')}
                       </Button>
                       <Button type="submit" disabled={isLoading}>
-                        {isLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
+                        {isLoading ? t('profile.saving') : t('profile.saveChanges')}
                       </Button>
                     </>
                   ) : (
@@ -278,7 +284,7 @@ function ProfilePage() {
                       type="button"
                       onClick={() => setIsEditing(true)}
                     >
-                      Chỉnh sửa
+                      {t('profile.edit')}
                     </Button>
                   )}
                 </div>
@@ -290,14 +296,14 @@ function ProfilePage() {
         {/* Password Change Section */}
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>Đổi mật khẩu</CardTitle>
+            <CardTitle>{t('profile.changePassword')}</CardTitle>
             <CardDescription>
-              Cập nhật mật khẩu để bảo mật tài khoản
+              {t('profile.changePasswordDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button variant="outline" disabled>
-              Đổi mật khẩu (Sắp có)
+              {t('profile.changePasswordButton')}
             </Button>
           </CardContent>
         </Card>
