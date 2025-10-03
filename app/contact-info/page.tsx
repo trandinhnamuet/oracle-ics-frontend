@@ -23,6 +23,7 @@ function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode, d
   )
 }
 
+export default function ContactInfoPage() {
   const { t } = useTranslation()
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
