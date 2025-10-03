@@ -5,47 +5,54 @@ import { Badge } from "@/components/ui/badge"
 import { Database, Shield, Zap, Globe, BarChart3, Cpu, HardDrive, Network, Lock, CloudCog } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
-const services = [
+const getServices = (t: any) => [
   {
     icon: Database,
-    title: "Oracle Database Cloud",
-    description: "Cơ sở dữ liệu Oracle tự quản lý với hiệu suất cao và bảo mật tuyệt đối",
-    features: ["Autonomous Database", "Real Application Clusters", "Data Guard", "Advanced Security"],
+    key: 'database',
+    title: t('homepage.services.serviceList.database.title'),
+    description: t('homepage.services.serviceList.database.description'),
+    features: t('homepage.services.serviceList.database.features', { returnObjects: true }),
   },
   {
     icon: Cpu,
-    title: "Compute Cloud",
-    description: "Máy chủ ảo linh hoạt với cấu hình tùy chỉnh theo nhu cầu doanh nghiệp",
-    features: ["Bare Metal", "Virtual Machines", "Container Engine", "Functions"],
+    key: 'compute',
+    title: t('homepage.services.serviceList.compute.title'),
+    description: t('homepage.services.serviceList.compute.description'),
+    features: t('homepage.services.serviceList.compute.features', { returnObjects: true }),
   },
   {
     icon: HardDrive,
-    title: "Storage Solutions",
-    description: "Giải pháp lưu trữ đa dạng từ block storage đến object storage",
-    features: ["Block Volume", "Object Storage", "File Storage", "Archive Storage"],
+    key: 'storage',
+    title: t('homepage.services.serviceList.storage.title'),
+    description: t('homepage.services.serviceList.storage.description'),
+    features: t('homepage.services.serviceList.storage.features', { returnObjects: true }),
   },
   {
     icon: Network,
-    title: "Networking",
-    description: "Hạ tầng mạng toàn cầu với độ trễ thấp và băng thông cao",
-    features: ["Virtual Cloud Network", "Load Balancer", "VPN Connect", "FastConnect"],
+    key: 'networking',
+    title: t('homepage.services.serviceList.networking.title'),
+    description: t('homepage.services.serviceList.networking.description'),
+    features: t('homepage.services.serviceList.networking.features', { returnObjects: true }),
   },
   {
     icon: Shield,
-    title: "Security & Identity",
-    description: "Bảo mật đa lớp với quản lý danh tính và truy cập tiên tiến",
-    features: ["Identity Management", "Key Management", "Web Application Firewall", "Security Zones"],
+    key: 'security',
+    title: t('homepage.services.serviceList.security.title'),
+    description: t('homepage.services.serviceList.security.description'),
+    features: t('homepage.services.serviceList.security.features', { returnObjects: true }),
   },
   {
     icon: BarChart3,
-    title: "Analytics & AI",
-    description: "Phân tích dữ liệu thông minh với machine learning tích hợp",
-    features: ["Analytics Cloud", "Data Science", "Machine Learning", "Big Data Service"],
+    key: 'analytics',
+    title: t('homepage.services.serviceList.analytics.title'),
+    description: t('homepage.services.serviceList.analytics.description'),
+    features: t('homepage.services.serviceList.analytics.features', { returnObjects: true }),
   },
 ]
 
 export function ServicesSection() {
   const { t } = useTranslation()
+  const services = getServices(t)
 
   return (
     <section id="services" className="py-10 lg:py-16">
@@ -55,8 +62,7 @@ export function ServicesSection() {
             {t('homepage.services.subtitle')}
           </h2>
           <p className="text-xl text-muted-foreground text-pretty max-w-3xl mx-auto leading-relaxed">
-            Từ cơ sở dữ liệu đến AI, chúng tôi cung cấp đầy đủ các dịch vụ cloud để đáp ứng mọi nhu cầu chuyển đổi số
-            của doanh nghiệp.
+            {t('homepage.services.description')}
           </p>
         </div>
 
@@ -85,9 +91,9 @@ export function ServicesSection() {
                     {service.description}
                   </CardDescription>
                   <div className="space-y-2">
-                    <p className="text-sm font-medium text-foreground">Tính năng chính:</p>
+                    <p className="text-sm font-medium text-foreground">{t('homepage.services.keyFeatures')}</p>
                     <div className="grid grid-cols-1 gap-2">
-                      {service.features.map((feature, featureIndex) => (
+                      {service.features.map((feature: string, featureIndex: number) => (
                         <div key={featureIndex} className="flex items-center space-x-2">
                           <div className="w-1.5 h-1.5 bg-primary rounded-full" />
                           <span className="text-sm text-muted-foreground">{feature}</span>
@@ -107,29 +113,29 @@ export function ServicesSection() {
             <div className="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-4">
               <Zap className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="font-semibold mb-2 text-foreground">Triển khai nhanh</h3>
-            <p className="text-sm text-muted-foreground">Khởi tạo trong vài phút</p>
+            <h3 className="font-semibold mb-2 text-foreground">{t('homepage.services.benefits.fastDeploy.title')}</h3>
+            <p className="text-sm text-muted-foreground">{t('homepage.services.benefits.fastDeploy.description')}</p>
           </div>
           <div className="text-center p-6 rounded-xl bg-card border border-border">
             <div className="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-4">
               <Globe className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="font-semibold mb-2 text-foreground">Phủ sóng toàn cầu</h3>
-            <p className="text-sm text-muted-foreground">36+ data centers</p>
+            <h3 className="font-semibold mb-2 text-foreground">{t('homepage.services.benefits.globalCoverage.title')}</h3>
+            <p className="text-sm text-muted-foreground">{t('homepage.services.benefits.globalCoverage.description')}</p>
           </div>
           <div className="text-center p-6 rounded-xl bg-card border border-border">
             <div className="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-4">
               <Lock className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="font-semibold mb-2 text-foreground">Bảo mật enterprise</h3>
-            <p className="text-sm text-muted-foreground">Tuân thủ quốc tế</p>
+            <h3 className="font-semibold mb-2 text-foreground">{t('homepage.services.benefits.enterpriseSecurity.title')}</h3>
+            <p className="text-sm text-muted-foreground">{t('homepage.services.benefits.enterpriseSecurity.description')}</p>
           </div>
           <div className="text-center p-6 rounded-xl bg-card border border-border">
             <div className="bg-primary/10 p-3 rounded-xl w-fit mx-auto mb-4">
               <BarChart3 className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="font-semibold mb-2 text-foreground">Tối ưu chi phí</h3>
-            <p className="text-sm text-muted-foreground">Tiết kiệm đến 40%</p>
+            <h3 className="font-semibold mb-2 text-foreground">{t('homepage.services.benefits.costOptimization.title')}</h3>
+            <p className="text-sm text-muted-foreground">{t('homepage.services.benefits.costOptimization.description')}</p>
           </div>
         </div>
       </div>

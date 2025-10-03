@@ -1,0 +1,447 @@
+{
+  "packageManagement": {
+    "title": "サブスクリプションパッケージ管理",
+    "subtitle": "利用中のサービスパッケージを追跡および管理",
+    "searchPlaceholder": "パッケージ名、メールアドレスで検索...",
+    "status": "ステータス",
+    "type": "パッケージタイプ",
+    "filter": {
+      "all": "すべて",
+      "active": "アクティブ",
+      "inactive": "非アクティブ"
+    },
+    "stats": {
+      "total": "パッケージ総数",
+      "active": "アクティブ",
+      "inactive": "非アクティブ",
+      "revenue": "月間収益"
+    },
+    "table": {
+      "title": "サブスクリプションパッケージ一覧 ({{count}})",
+      "packageName": "パッケージ名",
+      "type": "タイプ",
+      "paidAmount": "支払い金額",
+      "createdAt": "登録日",
+      "updatedAt": "最終更新日",
+      "status": "ステータス",
+      "actions": "操作",
+      "noMatch": "一致するパッケージが見つかりません",
+      "noPackage": "サブスクリプションパッケージはまだありません",
+      "customPackage": "カスタムパッケージ",
+      "active": "アクティブ",
+      "inactive": "非アクティブ",
+      "pauseTitle": "パッケージ一時停止",
+      "activateTitle": "パッケージ有効化",
+      "deleteTitle": "パッケージ削除"
+    }
+  },
+  "contactInfo": {
+    "heroTitle": "お問い合わせ",
+    "heroDesc": "ベトナムの公式Oracleパートナー、24時間年中無休でサポート",
+    "companyInfo": "会社情報",
+    "companyName": "国際サイバーセキュリティ株式会社 - ICS",
+    "officeHanoi": "ハノイオフィス",
+    "officeAddress": "ハノイ市ディンコン、大キム新都市エリアTT3-5",
+    "contactInfo": "連絡先情報",
+    "phoneHotline": "電話およびホットライン",
+    "email": "メール",
+    "website": "ウェブサイト",
+    "mapTitle": "地図上の位置",
+    "mapDesc": "当社オフィスへの道順"
+  },
+  "dashboard": {
+    "title": "システム管理",
+    "user": {
+      "title": "ユーザー管理",
+      "desc": "ユーザーアカウントの表示、編集、管理",
+      "stats": "合計 {{count}} ユーザー"
+    },
+    "customRegistration": {
+      "title": "カスタムパッケージ登録",
+      "desc": "カスタムサービスパッケージの登録リクエストを管理",
+      "stats": "{{count}} 新規リクエスト"
+    },
+    "access": "アクセス"
+  },
+  "admin": {
+    "title": "管理ダッシュボード",
+    "userTitle": "ユーザー管理",
+    "userDesc": "ユーザーアカウントの表示、編集、管理",
+    "userStats": "合計{{count}}ユーザー",
+    "customRegTitle": "カスタムパッケージ申請管理",
+    "customRegDesc": "カスタムパッケージ申請の追跡と処理",
+    "customRegStats": "{{count}}件の新規申請",
+    "access": "アクセス",
+    "user": {
+      "title": "ユーザー管理",
+      "subtitle": "システム内のユーザーアカウントを管理",
+      "exportExcel": "Excelにエクスポート",
+      "searchPlaceholder": "メール、名前、会社で検索...",
+      "stats": {
+        "total": "ユーザー総数",
+        "active": "アクティブ",
+        "inactive": "ロック済み"
+      },
+      "table": {
+        "id": "ID",
+        "email": "メール",
+        "name": "フルネーム",
+        "phone": "電話番号",
+        "company": "会社",
+        "role": "役割",
+        "status": "ステータス",
+        "createdAt": "作成日",
+        "updatedAt": "更新日",
+        "actions": "操作",
+        "noUserFound": "ユーザーが見つかりません",
+        "noUser": "ユーザーはまだいません",
+        "noData": "データなし",
+        "admin": "管理者",
+        "customer": "顧客",
+        "active": "アクティブ",
+        "inactive": "ロック"
+      },
+      "actions": {
+        "grantAdmin": "管理者権限の付与",
+        "revokeAdmin": "管理者権限の解除",
+        "delete": "ユーザー削除"
+      },
+      "loading": "読み込み中..."
+    },
+    "customRegistration": {
+      "title": "カスタムパッケージ登録管理",
+      "subtitle": "カスタムサービスパッケージの登録リクエストを追跡および処理",
+      "exportExcel": "Excelにエクスポート",
+      "stats": {
+        "total": "登録総数",
+        "processed": "処理済み",
+        "unprocessed": "未処理"
+      },
+      "searchPlaceholder": "メール、電話番号、名前、会社で検索...",
+      "filter": {
+        "all": "すべて",
+        "processed": "処理済み",
+        "unprocessed": "未処理"
+      },
+      "table": {
+        "id": "ID",
+        "user": "登録者",
+        "contact": "連絡先",
+        "company": "会社",
+        "config": "構成",
+        "note": "メモ",
+        "time": "時間",
+        "status": "ステータス",
+        "noData": "一致するデータがありません",
+        "noCompany": "なし",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "ストレージ",
+        "bandwidth": "帯域幅"
+      },
+      "footer": "{{current}} / {{total}} 登録を表示",
+      "loading": "データ読み込み中..."
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "ベトナムをリードするOracleクラウドソリューション",
+      "subtitle": "ベトナムの公式Oracleパートナー",
+      "description": "Oracle Cloud Infrastructure（OCI）を使用した包括的なクラウドコンピューティングソリューションを提供し、コストの最適化とパフォーマンスの向上を支援します。",
+      "getStarted": "今すぐ始める",
+      "dashboard": "ダッシュボードを表示",
+      "contact": "相談の連絡",
+      "viewPricing": "構成と価格を表示",
+      "imageAlt": "Oracleクラウドダッシュボード",
+      "features": {
+        "security": {
+          "title": "絶対的なセキュリティ",
+          "description": "99.9%のアップタイム"
+        },
+        "performance": {
+          "title": "高性能",
+          "description": "優れた速度"
+        },
+        "global": {
+          "title": "グローバル",
+          "description": "36以上のデータセンター"
+        }
+      },
+      "trustIndicators": {
+        "customers": "顧客",
+        "uptime": "アップタイム",
+        "support": "サポート"
+      },
+      "floatingElements": {
+        "costSaving": "コストを40%削減",
+        "quickDeploy": "24時間以内にデプロイ"
+      }
+    },
+    "services": {
+      "title": "サービス",
+      "subtitle": "包括的なクラウドソリューション",
+      "description": "データベースからAIまで、ビジネスのデジタル変革のあらゆるニーズに対応するクラウドサービスを提供します。",
+      "keyFeatures": "主な機能：",
+      "serviceList": {
+        "database": {
+          "title": "Oracleデータベースクラウド",
+          "description": "高性能で絶対的なセキュリティを備えた自己管理型Oracleデータベース",
+          "features": ["自律型データベース", "リアルアプリケーションクラスタ", "データガード", "高度なセキュリティ"]
+        },
+        "compute": {
+          "title": "コンピュートクラウド",
+          "description": "ビジネスニーズに応じた柔軟な仮想サーバー構成",
+          "features": ["ベアメタル", "仮想マシン", "コンテナエンジン", "ファンクション"]
+        },
+        "storage": {
+          "title": "ストレージソリューション",
+          "description": "ブロックストレージからオブジェクトストレージまで多様なストレージソリューション",
+          "features": ["ブロックボリューム", "オブジェクトストレージ", "ファイルストレージ", "アーカイブストレージ"]
+        },
+        "networking": {
+          "title": "ネットワーキング",
+          "description": "低遅延かつ高帯域幅のグローバルネットワークインフラ",
+          "features": ["仮想クラウドネットワーク", "ロードバランサー", "VPN接続", "ファストコネクト"]
+        },
+        "security": {
+          "title": "セキュリティとアイデンティティ",
+          "description": "高度なアイデンティティおよびアクセス管理を備えた多層セキュリティ",
+          "features": ["アイデンティティ管理", "キー管理", "ウェブアプリケーションファイアウォール", "セキュリティゾーン"]
+        },
+        "analytics": {
+          "title": "分析とAI",
+          "description": "統合された機械学習によるインテリジェントなデータ分析",
+          "features": ["分析クラウド", "データサイエンス", "機械学習", "ビッグデータサービス"]
+        }
+      },
+      "benefits": {
+        "fastDeploy": {
+          "title": "迅速なデプロイ",
+          "description": "数分で設定完了"
+        },
+        "globalCoverage": {
+          "title": "グローバルカバレッジ",
+          "description": "36以上のデータセンター"
+        },
+        "enterpriseSecurity": {
+          "title": "エンタープライズセキュリティ",
+          "description": "国際基準に準拠"
+        },
+        "costOptimization": {
+          "title": "コスト最適化",
+          "description": "最大40%削減"
+        }
+      }
+    },
+    "pricing": {
+      "title": "価格",
+      "subtitle": "あらゆる規模のビジネスに適したサービスパッケージ",
+      "description": "ベトナム市場で最も競争力のある価格で提供される、柔軟でスケーラブルなOracleクラウドサービスパッケージ。",
+      "plans": {
+        "starter": "スタンダード",
+        "professional": "プレミアム",
+        "enterprise": "エンタープライズ",
+        "ai": "AI-GPU",
+        "custom": "カスタム"
+      },
+      "buttons": {
+        "viewDetails": "詳細を表示",
+        "hideDetails": "非表示",
+        "showDetails": "表示",
+        "packages": "パッケージ",
+        "selectPlan": "このプランを選択",
+        "contactConsult": "相談の連絡",
+        "close": "閉じる"
+      },
+      "tooltips": {
+        "exchangeRate": "価格は現在の為替レートに基づいて計算されます。",
+        "todayRate": "今日のレート："
+      },
+      "sections": {
+        "selectSuitable": "あなたに最適なパッケージを選択",
+        "moreFeatures": "その他の機能"
+      },
+      "auth": {
+        "loginRequired": "ログインしてください",
+        "loginToRegister": "カスタムパッケージ登録のためにログインしてください"
+      },
+      "additionalInfo": {
+        "support247": "すべてのパッケージには24時間年中無休の技術サポートと99.9%のアップタイム保証が含まれます",
+        "noSetupFee": "設定費用なし",
+        "cancelAnytime": "いつでもキャンセル可能",
+        "flexiblePayment": "柔軟な支払いオプション",
+        "freeConsult": "無料相談",
+        "hotlineSupport": "サポートホットライン："
+      }
+    },
+    "form": {
+      "customRegistration": {
+        "title": "カスタムパッケージ登録",
+        "description": "最適なサービスパッケージを提案するために、詳細情報を入力してください。",
+        "userName": "ユーザー名",
+        "email": "メール",
+        "phoneNumber": "電話番号",
+        "company": "会社名",
+        "configRequirements": "構成要件",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "ストレージ",
+        "bandwidth": "帯域幅",
+        "additionalNotes": "追加メモ",
+        "placeholders": {
+          "userName": "名前を入力",
+          "email": "example@company.com",
+          "phoneNumber": "0987654321",
+          "company": "ABCカンパニー",
+          "cpu": "例：4コア、Intel Xeon",
+          "ram": "例：16GB、32GB",
+          "storage": "例：500GB SSD、1TB HDD",
+          "bandwidth": "例：100Mbps、1Gbps",
+          "additionalNotes": "特別な要件、デプロイスケジュール、想定予算などを記載..."
+        },
+        "validation": {
+          "userNameMin": "ユーザー名は2文字以上である必要があります",
+          "emailInvalid": "無効なメールアドレスです",
+          "phoneNumberMin": "電話番号は10桁以上である必要があります",
+          "phoneNumberMax": "電話番号は20桁を超えることはできません",
+          "cpuRequired": "CPU情報を入力してください",
+          "ramRequired": "RAM情報を入力してください"
+        },
+        "buttons": {
+          "cancel": "キャンセル",
+          "register": "登録"
+        },
+        "success": {
+          "title": "登録成功！",
+          "description": "できるだけ早くご連絡いたします。"
+        },
+        "error": {
+          "title": "エラーが発生しました",
+          "description": "後でもう一度お試しいただくか、サポートにご連絡ください。"
+        }
+      }
+    }
+  },
+  "header": {
+    "home": "ホーム",
+    "services": "サービス",
+    "pricing": "価格",
+    "support": "サポート",
+    "contact": "連絡",
+    "login": "ログイン",
+    "register": "登録",
+    "hello": "こんにちは",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "logout": "ログアウト",
+    "logoTitle": "Oracleクラウドベトナム",
+    "logoSubtitle": "公式パートナー",
+    "languageLabel": "言語",
+    "admin": "管理者",
+    "packageManagement": "登録済みパッケージ管理"
+  },
+  "footer": {
+    "companyName": "Oracleクラウドベトナム",
+    "officialPartner": "公式パートナー",
+    "companyDescription": "ベトナムの公式Oracleパートナーとして、10年以上の経験を基に企業向けの先進的なクラウドコンピューティングソリューションを提供します。",
+    "services": "サービス",
+    "serviceList": {
+      "database": "Oracleデータベースクラウド",
+      "compute": "コンピュートクラウド",
+      "storage": "ストレージソリューション",
+      "networking": "ネットワーキング",
+      "security": "セキュリティとアイデンティティ",
+      "analytics": "分析とAI"
+    },
+    "support": "サポート",
+    "supportList": {
+      "docs": "技術ドキュメント",
+      "videos": "ガイド動画",
+      "forum": "コミュニティフォーラム",
+      "ticket": "サポートチケット",
+      "training": "トレーニングと認証",
+      "api": "APIドキュメント"
+    },
+    "contact": "連絡",
+    "companyFull": "国際サイバーセキュリティ株式会社 - ICS",
+    "office": "オフィス：ハノイ市ディンコン、大キム新都市エリアTT3-5",
+    "phone": "電話：0931.487.231",
+    "hotline": "ホットライン：0707.806.860",
+    "email": "メール：info@icss.com.vn",
+    "website": "www.icss.com.vn",
+    "newsletter": "ニュースレター購読",
+    "newsletterPlaceholder": "あなたのメールアドレス",
+    "newsletterButton": "購読",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "sla": "SLA",
+    "sitemap": "サイトマップ",
+    "copyright": "© 2024 Oracleクラウドベトナム。全権利を留保。"
+  },
+  "unauthorized": {
+    "title": "このページにアクセスする権限がありません",
+    "description": "アクセス権限を確認するか、エラーだと思われる場合は管理者にご連絡ください。"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "logoutSuccess": "ログアウト成功！"
+  },
+  "checkout": {
+    "title": "チェックアウト",
+    "backButton": "戻る",
+    "success": {
+      "title": "支払い成功！",
+      "desc": "サービスパッケージの購読ありがとうございます。確認メールと使用ガイドをあなたのメールアドレスに送信しました。",
+      "manageBtn": "購読パッケージ管理",
+      "homeBtn": "ホームに戻る",
+      "note": "注意：5分以内にメールを受信しない場合は、迷惑メールフォルダを確認するか、弊社にご連絡ください。"
+    },
+    "packageInfo": "サービスパッケージ情報",
+    "packageName": "パッケージ名",
+    "description": "説明",
+    "packageType": "パッケージタイプ",
+    "features": "含まれる機能",
+    "totalAmount": "合計金額",
+    "paymentQR": "QRで支払い",
+    "scanQR": "バンキングアプリでQRコードをスキャンして支払い",
+    "bankName": "銀行",
+    "accountNumber": "口座番号",
+    "amount": "金額",
+    "content": "内容",
+    "copyInfo": "送金情報コピー",
+    "copiedSuccess": "送金情報が正常にコピーされました",
+    "note": "注意：システムがサービスを自動的に有効化するには、正確な内容で送金してください。",
+    "contactSupport": "サポートに連絡",
+    "support247": "24時間年中無休の技術サポート",
+    "noSetupFee": "設定費用なし",
+    "uptimeGuarantee": "99.9%アップタイム保証",
+    "flexiblePayment": "柔軟な支払いオプション",
+    "creatingQR": "QR作成中...",
+    "paidSuccessRedirect": "支払い成功！リダイレクト中...",
+    "checkingPayment": "支払い確認中...",
+    "transferContentExact": "送金内容は正確である必要があります",
+    "paymentId": "支払いID",
+    "autoConfirmNote": "送金が成功するとシステムが自動的に確認します。"
+  },
+  "login": {
+    "title": "ログイン",
+    "subtitle": "お帰りなさい！続行するにはログインしてください。",
+    "email": "メールアドレス",
+    "emailPlaceholder": "メールアドレスを入力",
+    "password": "パスワード",
+    "passwordPlaceholder": "パスワードを入力",
+    "loginButton": "ログイン",
+    "loggingIn": "ログイン中...",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "registerNow": "今すぐ登録",
+    "or": "または",
+    "loginWithGoogle": "Googleでログイン",
+    "googleLoginComingSoon": "Googleログインは近日公開予定です。",
+    "fillTestData": "テストデータを入力 (test@gmail.com / 123123)",
+    "validationEmailRequired": "メールアドレスを入力してください",
+    "validationEmailInvalid": "無効なメールアドレスです",
+    "validationPasswordRequired": "パスワードを入力してください",
+    "validationPasswordMinLength": "パスワードは{{length}}文字以上で入力してください"
+    }
+}

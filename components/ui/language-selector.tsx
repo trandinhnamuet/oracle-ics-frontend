@@ -21,15 +21,34 @@ const languages: Language[] = [
 export function LanguageSelector() {
   const { i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
+  const [currentLang, setCurrentLang] = useState(i18n.language)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0]
+  const currentLanguage = languages.find(lang => lang.code === currentLang) || languages[0]
 
   const handleLanguageChange = (languageCode: string) => {
+    // Lưu ngôn ngữ vào localStorage trước khi thay đổi
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('selectedLanguage', languageCode)
+    }
     i18n.changeLanguage(languageCode)
+    setCurrentLang(languageCode)
     setIsOpen(false)
   }
+
+  // Theo dõi thay đổi ngôn ngữ từ i18n
+  useEffect(() => {
+    const handleLanguageChanged = (lng: string) => {
+      setCurrentLang(lng)
+    }
+
+    i18n.on('languageChanged', handleLanguageChanged)
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged)
+    }
+  }, [i18n])
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -84,7 +103,7 @@ export function LanguageSelector() {
                 className="w-5 h-5 object-cover rounded mr-2"
               />
               <span className="text-sm">{language.name}</span>
-              {language.code === i18n.language && (
+              {language.code === currentLang && (
                 <span className="ml-auto text-xs text-blue-600">✓</span>
               )}
             </button>

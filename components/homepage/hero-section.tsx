@@ -41,8 +41,8 @@ export function HeroSection() {
                   <Shield className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm text-foreground">Bảo mật tuyệt đối</p>
-                  <p className="text-xs text-muted-foreground">99.9% uptime</p>
+                  <p className="font-semibold text-sm text-foreground">{t('homepage.hero.features.security.title')}</p>
+                  <p className="text-xs text-muted-foreground">{t('homepage.hero.features.security.description')}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3 p-4 rounded-lg bg-card border border-border">
@@ -50,8 +50,8 @@ export function HeroSection() {
                   <Zap className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm text-foreground">Hiệu suất cao</p>
-                  <p className="text-xs text-muted-foreground">Tốc độ vượt trội</p>
+                  <p className="font-semibold text-sm text-foreground">{t('homepage.hero.features.performance.title')}</p>
+                  <p className="text-xs text-muted-foreground">{t('homepage.hero.features.performance.description')}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3 p-4 rounded-lg bg-card border border-border">
@@ -59,8 +59,8 @@ export function HeroSection() {
                   <Globe className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm text-foreground">Toàn cầu</p>
-                  <p className="text-xs text-muted-foreground">36+ data centers</p>
+                  <p className="font-semibold text-sm text-foreground">{t('homepage.hero.features.global.title')}</p>
+                  <p className="text-xs text-muted-foreground">{t('homepage.hero.features.global.description')}</p>
                 </div>
               </div>
             </div>
@@ -80,7 +80,7 @@ export function HeroSection() {
                     }
                   }}
                 >
-                  Xem cấu hình và giá
+                  {t('homepage.hero.viewPricing')}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               ) : (
@@ -107,15 +107,15 @@ export function HeroSection() {
             <div className="flex items-center space-x-6 pt-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-primary">500+</p>
-                <p className="text-sm text-muted-foreground">Khách hàng</p>
+                <p className="text-sm text-muted-foreground">{t('homepage.hero.trustIndicators.customers')}</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-primary">99.9%</p>
-                <p className="text-sm text-muted-foreground">Uptime</p>
+                <p className="text-sm text-muted-foreground">{t('homepage.hero.trustIndicators.uptime')}</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-primary">24/7</p>
-                <p className="text-sm text-muted-foreground">Hỗ trợ</p>
+                <p className="text-sm text-muted-foreground">{t('homepage.hero.trustIndicators.support')}</p>
               </div>
             </div>
           </div>
@@ -125,16 +125,16 @@ export function HeroSection() {
             <div className="relative z-10">
               <img
                 src="/modern-cloud-infrastructure-dashboard-with-charts-.jpg"
-                alt="Oracle Cloud Dashboard"    
+                alt={t('homepage.hero.imageAlt')}
                 className="w-full h-auto rounded-2xl shadow-2xl border border-border"
               />
             </div>
             {/* Floating Elements */}
             <div className="absolute -top-6 -right-6 bg-primary text-primary-foreground p-4 rounded-xl shadow-lg animate-bounce z-20">
-              <p className="text-sm font-semibold">Tiết kiệm 40% chi phí</p>
+              <p className="text-sm font-semibold">{t('homepage.hero.floatingElements.costSaving')}</p>
             </div>
             <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground p-4 rounded-xl shadow-lg animate-bounce z-20">
-              <p className="text-sm font-semibold">Triển khai trong 24h</p>
+              <p className="text-sm font-semibold">{t('homepage.hero.floatingElements.quickDeploy')}</p>
             </div>
           </div>
         </div>

@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -10,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Search, Filter, Download, Users, Calendar, Building } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface CustomRegistration {
   id: number
@@ -24,6 +26,7 @@ interface CustomRegistration {
 }
 
 export default function CustomRegistrationAdminPage() {
+  const { t } = useTranslation()
   const [data, setData] = useState<CustomRegistration[]>([])
   const [filteredData, setFilteredData] = useState<CustomRegistration[]>([])
   const [loading, setLoading] = useState(true)
@@ -131,6 +134,7 @@ export default function CustomRegistrationAdminPage() {
     unprocessed: data.filter(item => !item.processed).length
   }
 
+
   return (
     <div className="container mx-auto py-8 px-4 space-y-8">
       {/* Header Section */}
@@ -139,12 +143,12 @@ export default function CustomRegistrationAdminPage() {
       }`}>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Quản lý đăng ký gói tùy chỉnh</h1>
-            <p className="text-muted-foreground">Theo dõi và xử lý các yêu cầu đăng ký gói dịch vụ tùy chỉnh</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t('admin.customRegistration.title')}</h1>
+            <p className="text-muted-foreground">{t('admin.customRegistration.subtitle')}</p>
           </div>
           <Button variant="outline" size="sm" onClick={exportToExcel}>
             <Download className="h-4 w-4 mr-2" />
-            Xuất Excel
+            {t('admin.customRegistration.exportExcel')}
           </Button>
         </div>
 
@@ -157,7 +161,7 @@ export default function CustomRegistrationAdminPage() {
               <div className="flex items-center space-x-2">
                 <Users className="h-5 w-5 text-blue-500" />
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Tổng đăng ký</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t('admin.customRegistration.stats.total')}</p>
                   <p className="text-2xl font-bold">{stats.total}</p>
                 </div>
               </div>
@@ -168,7 +172,7 @@ export default function CustomRegistrationAdminPage() {
               <div className="flex items-center space-x-2">
                 <Calendar className="h-5 w-5 text-green-500" />
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Đã xử lý</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t('admin.customRegistration.stats.processed')}</p>
                   <p className="text-2xl font-bold text-green-600">{stats.processed}</p>
                 </div>
               </div>
@@ -179,7 +183,7 @@ export default function CustomRegistrationAdminPage() {
               <div className="flex items-center space-x-2">
                 <Building className="h-5 w-5 text-orange-500" />
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Chưa xử lý</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t('admin.customRegistration.stats.unprocessed')}</p>
                   <p className="text-2xl font-bold text-orange-600">{stats.unprocessed}</p>
                 </div>
               </div>
@@ -194,7 +198,7 @@ export default function CustomRegistrationAdminPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Tìm kiếm theo email, số điện thoại, tên, công ty..."
+              placeholder={t('admin.customRegistration.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -207,15 +211,16 @@ export default function CustomRegistrationAdminPage() {
               onChange={(e) => setFilterProcessed(e.target.value as any)}
               className="border rounded-md px-3 py-2 text-sm"
             >
-              <option value="all">Tất cả</option>
-              <option value="processed">Đã xử lý</option>
-              <option value="unprocessed">Chưa xử lý</option>
+              <option value="all">{t('admin.customRegistration.filter.all')}</option>
+              <option value="processed">{t('admin.customRegistration.filter.processed')}</option>
+              <option value="unprocessed">{t('admin.customRegistration.filter.unprocessed')}</option>
             </select>
           </div>
         </div>
       </div>
 
       {/* Table Section */}
+
       <Card className={`transition-all duration-700 transform ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
       }`} style={{ transitionDelay: '600ms' }}>
@@ -223,21 +228,21 @@ export default function CustomRegistrationAdminPage() {
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <span className="ml-2 text-muted-foreground">Đang tải dữ liệu...</span>
+              <span className="ml-2 text-muted-foreground">{t('admin.customRegistration.loading')}</span>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/50">
-                    <TableHead className="font-semibold">ID</TableHead>
-                    <TableHead className="font-semibold">Người đăng ký</TableHead>
-                    <TableHead className="font-semibold">Liên hệ</TableHead>
-                    <TableHead className="font-semibold">Công ty</TableHead>
-                    <TableHead className="font-semibold">Cấu hình</TableHead>
-                    <TableHead className="font-semibold">Ghi chú</TableHead>
-                    <TableHead className="font-semibold">Thời gian</TableHead>
-                    <TableHead className="font-semibold text-center">Trạng thái</TableHead>
+                    <TableHead className="font-semibold">{t('admin.customRegistration.table.id')}</TableHead>
+                    <TableHead className="font-semibold">{t('admin.customRegistration.table.user')}</TableHead>
+                    <TableHead className="font-semibold">{t('admin.customRegistration.table.contact')}</TableHead>
+                    <TableHead className="font-semibold">{t('admin.customRegistration.table.company')}</TableHead>
+                    <TableHead className="font-semibold">{t('admin.customRegistration.table.config')}</TableHead>
+                    <TableHead className="font-semibold">{t('admin.customRegistration.table.note')}</TableHead>
+                    <TableHead className="font-semibold">{t('admin.customRegistration.table.time')}</TableHead>
+                    <TableHead className="font-semibold text-center">{t('admin.customRegistration.table.status')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -261,14 +266,14 @@ export default function CustomRegistrationAdminPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline">{item.company || 'Không có'}</Badge>
+                          <Badge variant="outline">{item.company || t('admin.customRegistration.table.noCompany')}</Badge>
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            {detailObj.cpu && <Badge variant="secondary" className="mr-1">CPU: {detailObj.cpu}</Badge>}
-                            {detailObj.ram && <Badge variant="secondary" className="mr-1">RAM: {detailObj.ram}</Badge>}
-                            {detailObj.storage && <div><Badge variant="outline" className="mr-1">Storage: {detailObj.storage}</Badge></div>}
-                            {detailObj.bandwidth && <div><Badge variant="outline">Bandwidth: {detailObj.bandwidth}</Badge></div>}
+                            {detailObj.cpu && <Badge variant="secondary" className="mr-1">{t('admin.customRegistration.table.cpu')}: {detailObj.cpu}</Badge>}
+                            {detailObj.ram && <Badge variant="secondary" className="mr-1">{t('admin.customRegistration.table.ram')}: {detailObj.ram}</Badge>}
+                            {detailObj.storage && <div><Badge variant="outline" className="mr-1">{t('admin.customRegistration.table.storage')}: {detailObj.storage}</Badge></div>}
+                            {detailObj.bandwidth && <div><Badge variant="outline">{t('admin.customRegistration.table.bandwidth')}: {detailObj.bandwidth}</Badge></div>}
                           </div>
                         </TableCell>
                         <TableCell className="max-w-xs">
@@ -294,7 +299,7 @@ export default function CustomRegistrationAdminPage() {
                   {filteredData.length === 0 && !loading && (
                     <TableRow>
                       <TableCell colSpan={8} className="text-center py-16 text-muted-foreground">
-                        Không có dữ liệu phù hợp
+                        {t('admin.customRegistration.table.noData')}
                       </TableCell>
                     </TableRow>
                   )}
@@ -307,7 +312,7 @@ export default function CustomRegistrationAdminPage() {
 
       {/* Footer */}
       <div className="text-center text-sm text-muted-foreground">
-        Hiển thị {filteredData.length} / {data.length} đăng ký
+        {t('admin.customRegistration.footer', { current: filteredData.length, total: data.length })}
       </div>
     </div>
   )

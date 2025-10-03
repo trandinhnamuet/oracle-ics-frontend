@@ -1,32 +1,331 @@
 {
+  "packageManagement": {
+    "title": "Subscription Package Management",
+    "subtitle": "Track and manage your active service packages",
+    "searchPlaceholder": "Search by package name, email...",
+    "status": "Status",
+    "type": "Package Type",
+    "filter": {
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "stats": {
+      "total": "Total Packages",
+      "active": "Active",
+      "inactive": "Inactive",
+      "revenue": "Revenue/Month"
+    },
+    "table": {
+      "title": "List of Subscription Packages ({{count}})",
+      "packageName": "Package Name",
+      "type": "Type",
+      "paidAmount": "Paid Amount",
+      "createdAt": "Subscription Date",
+      "updatedAt": "Last Updated",
+      "status": "Status",
+      "actions": "Actions",
+      "noMatch": "No matching packages found",
+      "noPackage": "No subscription packages yet",
+      "customPackage": "Custom Package",
+      "active": "Active",
+      "inactive": "Inactive",
+      "pauseTitle": "Pause Package",
+      "activateTitle": "Activate Package",
+      "deleteTitle": "Delete Package"
+    }
+  },
+  "contactInfo": {
+    "heroTitle": "Contact Us",
+    "heroDesc": "Official Oracle partner in Vietnam, ready to support you 24/7",
+    "companyInfo": "Company Information",
+    "companyName": "INTERNATIONAL CYBERSECURITY JOINT STOCK COMPANY - ICS",
+    "officeHanoi": "Hanoi Office",
+    "officeAddress": "TT3-5 Dai Kim New Urban Area, Dinh Cong, Hanoi",
+    "contactInfo": "Contact Information",
+    "phoneHotline": "Phone & Hotline",
+    "email": "Email",
+    "website": "Website",
+    "mapTitle": "Location on Map",
+    "mapDesc": "Find directions to our office"
+  },
+  "dashboard": {
+    "title": "System Management",
+    "user": {
+      "title": "User Management",
+      "desc": "View, edit, and manage user accounts",
+      "stats": "Total {{count}} users"
+    },
+    "customRegistration": {
+      "title": "Custom Package Registration",
+      "desc": "Manage custom service package registration requests",
+      "stats": "{{count}} new requests"
+    },
+    "access": "Access"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "userTitle": "User Management",
+    "userDesc": "View, edit, and manage user accounts",
+    "userStats": "Total {{count}} users",
+    "customRegTitle": "Custom Package Registration",
+    "customRegDesc": "Track and process custom package registration requests",
+    "customRegStats": "{{count}} new requests",
+    "access": "Access",
+    "user": {
+      "title": "User Management",
+      "subtitle": "Manage user accounts in the system",
+      "exportExcel": "Export to Excel",
+      "searchPlaceholder": "Search by email, name, company...",
+      "stats": {
+        "total": "Total Users",
+        "active": "Active",
+        "inactive": "Locked"
+      },
+      "table": {
+        "id": "ID",
+        "email": "Email",
+        "name": "Full Name",
+        "phone": "Phone Number",
+        "company": "Company",
+        "role": "Role",
+        "status": "Status",
+        "createdAt": "Created Date",
+        "updatedAt": "Updated Date",
+        "actions": "Actions",
+        "noUserFound": "No users found",
+        "noUser": "No users yet",
+        "noData": "No data",
+        "admin": "Admin",
+        "customer": "Customer",
+        "active": "Active",
+        "inactive": "Locked"
+      },
+      "actions": {
+        "grantAdmin": "Grant Admin Role",
+        "revokeAdmin": "Revoke Admin Role",
+        "delete": "Delete User"
+      },
+      "loading": "Loading..."
+    },
+    "customRegistration": {
+      "title": "Custom Package Registration Management",
+      "subtitle": "Track and process custom service package registration requests",
+      "exportExcel": "Export to Excel",
+      "stats": {
+        "total": "Total Registrations",
+        "processed": "Processed",
+        "unprocessed": "Unprocessed"
+      },
+      "searchPlaceholder": "Search by email, phone number, name, company...",
+      "filter": {
+        "all": "All",
+        "processed": "Processed",
+        "unprocessed": "Unprocessed"
+      },
+      "table": {
+        "id": "ID",
+        "user": "Registrant",
+        "contact": "Contact",
+        "company": "Company",
+        "config": "Configuration",
+        "note": "Note",
+        "time": "Time",
+        "status": "Status",
+        "noData": "No matching data",
+        "noCompany": "None",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "Storage",
+        "bandwidth": "Bandwidth"
+      },
+      "footer": "Showing {{current}} / {{total}} registrations",
+      "loading": "Loading data..."
+    }
+  },
   "homepage": {
     "hero": {
       "title": "Leading Oracle Cloud Solutions in Vietnam",
       "subtitle": "Official Oracle Partner in Vietnam",
-      "description": "We provide comprehensive cloud computing solutions with Oracle Cloud Infrastructure (OCI), helping businesses optimize costs and improve performance.",
+      "description": "We provide comprehensive cloud computing solutions with Oracle Cloud Infrastructure (OCI), helping businesses optimize costs and enhance performance.",
       "getStarted": "Get Started",
       "dashboard": "View Dashboard",
-      "contact": "Contact for Consultation"
+      "contact": "Contact for Consultation",
+      "viewPricing": "View Configurations and Pricing",
+      "imageAlt": "Oracle Cloud Dashboard",
+      "features": {
+        "security": {
+          "title": "Absolute Security",
+          "description": "99.9% uptime"
+        },
+        "performance": {
+          "title": "High Performance",
+          "description": "Superior speed"
+        },
+        "global": {
+          "title": "Global",
+          "description": "36+ data centers"
+        }
+      },
+      "trustIndicators": {
+        "customers": "Customers",
+        "uptime": "Uptime",
+        "support": "Support"
+      },
+      "floatingElements": {
+        "costSaving": "Save 40% on costs",
+        "quickDeploy": "Deploy within 24 hours"
+      }
     },
     "services": {
       "title": "Services",
-      "subtitle": "Comprehensive Cloud Solutions"
+      "subtitle": "Comprehensive Cloud Solutions",
+      "description": "From databases to AI, we offer a full range of cloud services to meet all your business's digital transformation needs.",
+      "keyFeatures": "Key Features:",
+      "serviceList": {
+        "database": {
+          "title": "Oracle Database Cloud",
+          "description": "Self-managed Oracle database with high performance and absolute security",
+          "features": ["Autonomous Database", "Real Application Clusters", "Data Guard", "Advanced Security"]
+        },
+        "compute": {
+          "title": "Compute Cloud",
+          "description": "Flexible virtual servers with customizable configurations for business needs",
+          "features": ["Bare Metal", "Virtual Machines", "Container Engine", "Functions"]
+        },
+        "storage": {
+          "title": "Storage Solutions",
+          "description": "Diverse storage solutions from block storage to object storage",
+          "features": ["Block Volume", "Object Storage", "File Storage", "Archive Storage"]
+        },
+        "networking": {
+          "title": "Networking",
+          "description": "Global network infrastructure with low latency and high bandwidth",
+          "features": ["Virtual Cloud Network", "Load Balancer", "VPN Connect", "FastConnect"]
+        },
+        "security": {
+          "title": "Security & Identity",
+          "description": "Multi-layered security with advanced identity and access management",
+          "features": ["Identity Management", "Key Management", "Web Application Firewall", "Security Zones"]
+        },
+        "analytics": {
+          "title": "Analytics & AI",
+          "description": "Intelligent data analytics with integrated machine learning",
+          "features": ["Analytics Cloud", "Data Science", "Machine Learning", "Big Data Service"]
+        }
+      },
+      "benefits": {
+        "fastDeploy": {
+          "title": "Fast Deployment",
+          "description": "Setup in minutes"
+        },
+        "globalCoverage": {
+          "title": "Global Coverage",
+          "description": "36+ data centers"
+        },
+        "enterpriseSecurity": {
+          "title": "Enterprise Security",
+          "description": "International compliance"
+        },
+        "costOptimization": {
+          "title": "Cost Optimization",
+          "description": "Save up to 40%"
+        }
+      }
     },
     "pricing": {
       "title": "Pricing",
-      "subtitle": "Service packages suitable for all business sizes",
+      "subtitle": "Service packages suitable for businesses of all sizes",
+      "description": "Flexible and scalable Oracle Cloud service packages with the most competitive pricing in the Vietnam market.",
       "plans": {
         "starter": "Standard",
         "professional": "Premium",
-        "enterprise": "Enterprise", 
+        "enterprise": "Enterprise",
+        "ai": "AI-GPU",
         "custom": "Custom"
+      },
+      "buttons": {
+        "viewDetails": "View Details",
+        "hideDetails": "Hide",
+        "showDetails": "Show",
+        "packages": "packages",
+        "selectPlan": "Select This Plan",
+        "contactConsult": "Contact for Consultation",
+        "close": "Close"
+      },
+      "tooltips": {
+        "exchangeRate": "Prices are calculated based on the current exchange rate.",
+        "todayRate": "Today's rate:"
+      },
+      "sections": {
+        "selectSuitable": "Choose the most suitable package for you",
+        "moreFeatures": "more features"
+      },
+      "auth": {
+        "loginRequired": "Please log in",
+        "loginToRegister": "Please log in to register for a custom package"
+      },
+      "additionalInfo": {
+        "support247": "All packages include 24/7 technical support and a 99.9% uptime guarantee",
+        "noSetupFee": "No setup fee",
+        "cancelAnytime": "Cancel anytime",
+        "flexiblePayment": "Flexible payment options",
+        "freeConsult": "Free consultation",
+        "hotlineSupport": "Support hotline:"
+      }
+    },
+    "form": {
+      "customRegistration": {
+        "title": "Custom Package Registration",
+        "description": "Please fill in the details so we can recommend the most suitable service package for you.",
+        "userName": "Username",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "company": "Company Name",
+        "configRequirements": "Configuration Requirements",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "Storage",
+        "bandwidth": "Bandwidth",
+        "additionalNotes": "Additional Notes",
+        "placeholders": {
+          "userName": "Enter your name",
+          "email": "example@company.com",
+          "phoneNumber": "0987654321",
+          "company": "ABC Company",
+          "cpu": "E.g., 4 cores, Intel Xeon",
+          "ram": "E.g., 16GB, 32GB",
+          "storage": "E.g., 500GB SSD, 1TB HDD",
+          "bandwidth": "E.g., 100Mbps, 1Gbps",
+          "additionalNotes": "Describe additional requirements, deployment timeline, estimated budget..."
+        },
+        "validation": {
+          "userNameMin": "Username must be at least 2 characters",
+          "emailInvalid": "Invalid email",
+          "phoneNumberMin": "Phone number must have at least 10 digits",
+          "phoneNumberMax": "Phone number must not exceed 20 digits",
+          "cpuRequired": "Please enter CPU information",
+          "ramRequired": "Please enter RAM information"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "register": "Register"
+        },
+        "success": {
+          "title": "Registration Successful!",
+          "description": "We will contact you as soon as possible."
+        },
+        "error": {
+          "title": "An Error Occurred",
+          "description": "Please try again later or contact support."
+        }
       }
     }
   },
   "header": {
     "home": "Home",
     "services": "Services",
-    "pricing": "Pricing", 
+    "pricing": "Pricing",
     "support": "Support",
     "contact": "Contact",
     "login": "Login",
@@ -34,30 +333,116 @@
     "hello": "Hello",
     "profile": "Profile",
     "settings": "Settings",
-    "logout": "Logout"
+    "logout": "Logout",
+    "logoTitle": "Oracle Cloud Vietnam",
+    "logoSubtitle": "Official Partner",
+    "languageLabel": "Language",
+    "admin": "Admin",
+    "packageManagement": "Package Management"
+
+  },
+  "footer": {
+    "companyName": "Oracle Cloud Vietnam",
+    "officialPartner": "Official Partner",
+    "companyDescription": "Official Oracle partner in Vietnam, providing leading cloud computing solutions for businesses with over 10 years of experience.",
+    "services": "Services",
+    "serviceList": {
+      "database": "Oracle Database Cloud",
+      "compute": "Compute Cloud",
+      "storage": "Storage Solutions",
+      "networking": "Networking",
+      "security": "Security & Identity",
+      "analytics": "Analytics & AI"
+    },
+    "support": "Support",
+    "supportList": {
+      "docs": "Technical Documentation",
+      "videos": "Instructional Videos",
+      "forum": "Community Forum",
+      "ticket": "Support Ticket",
+      "training": "Training & Certification",
+      "api": "API Documentation"
+    },
+    "contact": "Contact",
+    "companyFull": "INTERNATIONAL CYBERSECURITY JOINT STOCK COMPANY - ICS",
+    "office": "Office: TT3-5 Dai Kim New Urban Area, Dinh Cong, Hanoi",
+    "phone": "Phone: 0931.487.231",
+    "hotline": "Hotline: 0707.806.860",
+    "email": "Email: info@icss.com.vn",
+    "website": "www.icss.com.vn",
+    "newsletter": "Subscribe to Newsletter",
+    "newsletterPlaceholder": "Your email",
+    "newsletterButton": "Subscribe",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "sla": "SLA",
+    "sitemap": "Sitemap",
+    "copyright": "© 2024 Oracle Cloud Vietnam. All rights reserved."
+  },
+  "unauthorized": {
+    "title": "You do not have permission to access this page",
+    "description": "Please check your access rights or contact the administrator if you believe this is an error."
   },
   "common": {
     "loading": "Loading...",
-    "logoutSuccess": "Logout successful!"
+    "logoutSuccess": "Logged out successfully!"
   },
   "checkout": {
     "title": "Checkout",
     "backButton": "Back",
-    "packageInfo": "Package Information",
+    "success": {
+      "title": "Payment Successful!",
+      "desc": "Thank you for subscribing to the service package. We have sent a confirmation email and usage instructions to your email address.",
+      "manageBtn": "Manage Subscribed Packages",
+      "homeBtn": "Back to Home",
+      "note": "Note: If you do not receive the email within 5 minutes, please check your spam folder or contact us."
+    },
+    "packageInfo": "Service Package Information",
     "packageName": "Package Name",
     "description": "Description",
     "packageType": "Package Type",
-    "features": "Features Included",
+    "features": "Included Features",
     "totalAmount": "Total Amount",
-    "paymentQR": "QR Payment",
-    "scanQR": "Scan QR code with your banking app to pay",
+    "paymentQR": "Pay via QR",
+    "scanQR": "Scan the QR code with your banking app to make payment",
     "bankName": "Bank",
     "accountNumber": "Account Number",
     "amount": "Amount",
     "content": "Content",
     "copyInfo": "Copy transfer information",
-    "copiedSuccess": "Transfer information copied",
-    "note": "Note: Please transfer with exact content for automatic service activation.",
-    "contactSupport": "Contact Support"
-  }
+    "copiedSuccess": "Transfer information copied successfully",
+    "note": "Note: Please transfer with the exact content for the system to automatically activate the service.",
+    "contactSupport": "Contact Support",
+    "support247": "24/7 Technical Support",
+    "noSetupFee": "No setup fee",
+    "uptimeGuarantee": "99.9% uptime guarantee",
+    "flexiblePayment": "Flexible payment options",
+    "creatingQR": "Creating QR...",
+    "paidSuccessRedirect": "Payment successful! Redirecting...",
+    "checkingPayment": "Checking payment...",
+    "transferContentExact": "Transfer content must be exact",
+    "paymentId": "Payment ID",
+    "autoConfirmNote": "The system will automatically confirm once the transfer is successful."
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Welcome back! Please sign in to continue.",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "registerNow": "Register now",
+    "or": "Or",
+    "loginWithGoogle": "Login with Google",
+    "googleLoginComingSoon": "Google Login coming soon.",
+    "fillTestData": "Fill Test Data (test@gmail.com / 123123)",
+    "validationEmailRequired": "Please enter your email",
+    "validationEmailInvalid": "Invalid email address",
+    "validationPasswordRequired": "Please enter your password",
+    "validationPasswordMinLength": "Password must be at least {{length}} characters"
+    }
 }

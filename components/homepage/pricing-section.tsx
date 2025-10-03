@@ -58,8 +58,8 @@ export function PricingSection() {
   const handleCustomPlanClick = () => {
     if (!isAuthenticated) {
       toast({
-        title: "Vui lòng đăng nhập",
-        description: "Xin hãy đăng nhập để đăng ký gói tùy chọn",
+        title: t('homepage.pricing.auth.loginRequired'),
+        description: t('homepage.pricing.auth.loginToRegister'),
         variant: "destructive",
       })
       return
@@ -176,8 +176,7 @@ export function PricingSection() {
             {t('homepage.pricing.subtitle')}
           </h2>
           <p className="text-xl text-muted-foreground text-pretty max-w-3xl mx-auto leading-relaxed">
-            Các gói dịch vụ Oracle Cloud linh hoạt, có thể mở rộng theo nhu cầu với mức giá cạnh tranh nhất thị trường
-            Việt Nam.
+            {t('homepage.pricing.description')}
           </p>
         </div>
 
@@ -216,12 +215,12 @@ export function PricingSection() {
                     {expandedCategory === category.name ? (
                       <>
                         <ChevronUp className="h-4 w-4 mr-2" />
-                        Ẩn {category.plans.length} gói
+                        {t('homepage.pricing.buttons.hideDetails')} {category.plans.length} {t('homepage.pricing.buttons.packages')}
                       </>
                     ) : (
                       <>
                         <ChevronDown className="h-4 w-4 mr-2" />
-                        Xem {category.plans.length} gói chi tiết
+                        {t('homepage.pricing.buttons.showDetails')} {category.plans.length} {t('homepage.pricing.buttons.packages')} {t('homepage.pricing.buttons.viewDetails')}
                       </>
                     )}
                   </Button>
@@ -247,7 +246,7 @@ export function PricingSection() {
                 className="w-full py-3"
                 onClick={() => setShowCustomForm(true)}
               >
-                Liên hệ tư vấn
+                {t('homepage.pricing.buttons.contactConsult')}
               </Button>
             </CardFooter>
           </Card>
@@ -307,7 +306,7 @@ export function PricingSection() {
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        Giá được tính theo tỉ giá thực tế.<br />Tỉ giá hôm nay: <b>{getExchangeRate().toLocaleString()}</b>
+                        {t('homepage.pricing.tooltips.exchangeRate')}<br />{t('homepage.pricing.tooltips.todayRate')} <b>{getExchangeRate().toLocaleString()}</b>
                       </div>
                     )}
                   </div>
@@ -319,7 +318,7 @@ export function PricingSection() {
                       ? 'animate-out fade-out-0 slide-out-to-right-2 duration-400 delay-100'
                       : 'animate-in fade-in-0 slide-in-from-right-2 duration-300 delay-100'
                   }`}>
-                    Chọn gói phù hợp nhất cho bạn
+                    {t('homepage.pricing.sections.selectSuitable')}
                   </span>
                 </div>
                 <Button
@@ -333,7 +332,7 @@ export function PricingSection() {
                   }`}
                 >
                   <X className="h-4 w-4 mr-1" />
-                  Đóng
+                  {t('homepage.pricing.buttons.close')}
                 </Button>
               </div>
               
@@ -405,7 +404,7 @@ export function PricingSection() {
                           ))}
                           {plan.features.length > 4 && (
                             <div className="text-xs text-muted-foreground">
-                              +{plan.features.length - 4} tính năng khác
+                              +{plan.features.length - 4} {t('homepage.pricing.sections.moreFeatures')}
                             </div>
                           )}
                         </CardContent>
@@ -417,7 +416,7 @@ export function PricingSection() {
                             className="w-full text-xs hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
                             onClick={() => handleSelectPlan(plan, expandedCategory || closingCategory || '')}
                           >
-                            Chọn gói này
+                            {t('homepage.pricing.buttons.selectPlan')}
                           </Button>
                         </CardFooter>
                       </Card>
@@ -442,16 +441,16 @@ export function PricingSection() {
 
         {/* Additional Info */}
         <div className="mt-16 text-center space-y-4">
-          <p className="text-muted-foreground">Tất cả gói đều bao gồm hỗ trợ kỹ thuật 24/7 và đảm bảo uptime 99.9%</p>
+          <p className="text-muted-foreground">{t('homepage.pricing.additionalInfo.support247')}</p>
           <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-            <span>✓ Không phí setup</span>
-            <span>✓ Hủy bất cứ lúc nào</span>
-            <span>✓ Thanh toán linh hoạt</span>
-            <span>✓ Tư vấn miễn phí</span>
+            <span>✓ {t('homepage.pricing.additionalInfo.noSetupFee')}</span>
+            <span>✓ {t('homepage.pricing.additionalInfo.cancelAnytime')}</span>
+            <span>✓ {t('homepage.pricing.additionalInfo.flexiblePayment')}</span>
+            <span>✓ {t('homepage.pricing.additionalInfo.freeConsult')}</span>
           </div>
           <div className="pt-4">
             <span className="inline-block px-4 py-2 rounded-lg bg-primary/10 text-primary font-semibold text-lg tracking-wide">
-              Hotline hỗ trợ: <a href="tel:0707806860" className="underline hover:text-primary/80">0707 806 860</a>
+              {t('homepage.pricing.additionalInfo.hotlineSupport')} <a href="tel:0707806860" className="underline hover:text-primary/80">0707 806 860</a>
             </span>
           </div>
         </div>

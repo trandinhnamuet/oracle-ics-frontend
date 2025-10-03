@@ -1,0 +1,447 @@
+{
+  "packageManagement": {
+    "title": "구독 패키지 관리",
+    "subtitle": "사용 중인 서비스 패키지를 추적하고 관리하세요",
+    "searchPlaceholder": "패키지 이름, 이메일로 검색...",
+    "status": "상태",
+    "type": "패키지 유형",
+    "filter": {
+      "all": "전체",
+      "active": "활성",
+      "inactive": "비활성"
+    },
+    "stats": {
+      "total": "총 패키지 수",
+      "active": "활성",
+      "inactive": "비활성",
+      "revenue": "월 수익"
+    },
+    "table": {
+      "title": "구독 패키지 목록 ({{count}})",
+      "packageName": "패키지 이름",
+      "type": "유형",
+      "paidAmount": "지불 금액",
+      "createdAt": "구독 날짜",
+      "updatedAt": "마지막 업데이트",
+      "status": "상태",
+      "actions": "작업",
+      "noMatch": "일치하는 패키지를 찾을 수 없습니다",
+      "noPackage": "아직 구독 패키지가 없습니다",
+      "customPackage": "맞춤 패키지",
+      "active": "활성",
+      "inactive": "비활성",
+      "pauseTitle": "패키지 일시 중지",
+      "activateTitle": "패키지 활성화",
+      "deleteTitle": "패키지 삭제"
+    }
+  },
+  "contactInfo": {
+    "heroTitle": "문의하기",
+    "heroDesc": "베트남 공식 Oracle 파트너, 24/7 지원 준비 완료",
+    "companyInfo": "회사 정보",
+    "companyName": "국제 사이버 보안 주식회사 - ICS",
+    "officeHanoi": "하노이 사무소",
+    "officeAddress": "하노이 딘콩 대김 신도시 TT3-5",
+    "contactInfo": "연락처 정보",
+    "phoneHotline": "전화 및 핫라인",
+    "email": "이메일",
+    "website": "웹사이트",
+    "mapTitle": "지도상의 위치",
+    "mapDesc": "저희 사무소로 가는 길 찾기"
+  },
+  "dashboard": {
+    "title": "시스템 관리",
+    "user": {
+      "title": "사용자 관리",
+      "desc": "사용자 계정을 보고, 수정하고, 관리하세요",
+      "stats": "총 {{count}} 사용자"
+    },
+    "customRegistration": {
+      "title": "맞춤 패키지 등록",
+      "desc": "맞춤 서비스 패키지 등록 요청 관리",
+      "stats": "{{count}} 새로운 요청"
+    },
+    "access": "액세스"
+  },
+  "admin": {
+    "title": "관리자 대시보드",
+    "userTitle": "사용자 관리",
+    "userDesc": "사용자 계정 보기, 편집 및 관리",
+    "userStats": "총 {{count}}명 사용자",
+    "customRegTitle": "맞춤 패키지 신청 관리",
+    "customRegDesc": "맞춤 패키지 신청 요청 추적 및 처리",
+    "customRegStats": "{{count}}건 신규 요청",
+    "access": "액세스",
+    "user": {
+      "title": "사용자 관리",
+      "subtitle": "시스템 내 사용자 계정 관리",
+      "exportExcel": "Excel로 내보내기",
+      "searchPlaceholder": "이메일, 이름, 회사로 검색...",
+      "stats": {
+        "total": "총 사용자 수",
+        "active": "활성",
+        "inactive": "잠김"
+      },
+      "table": {
+        "id": "ID",
+        "email": "이메일",
+        "name": "전체 이름",
+        "phone": "전화번호",
+        "company": "회사",
+        "role": "역할",
+        "status": "상태",
+        "createdAt": "생성 날짜",
+        "updatedAt": "업데이트 날짜",
+        "actions": "작업",
+        "noUserFound": "사용자를 찾을 수 없습니다",
+        "noUser": "아직 사용자가 없습니다",
+        "noData": "데이터 없음",
+        "admin": "관리자",
+        "customer": "고객",
+        "active": "활성",
+        "inactive": "잠김"
+      },
+      "actions": {
+        "grantAdmin": "관리자 권한 부여",
+        "revokeAdmin": "관리자 권한 해제",
+        "delete": "사용자 삭제"
+      },
+      "loading": "로딩 중..."
+    },
+    "customRegistration": {
+      "title": "맞춤 패키지 등록 관리",
+      "subtitle": "맞춤 서비스 패키지 등록 요청을 추적하고 처리하세요",
+      "exportExcel": "Excel로 내보내기",
+      "stats": {
+        "total": "총 등록 수",
+        "processed": "처리됨",
+        "unprocessed": "미처리"
+      },
+      "searchPlaceholder": "이메일, 전화번호, 이름, 회사로 검색...",
+      "filter": {
+        "all": "전체",
+        "processed": "처리됨",
+        "unprocessed": "미처리"
+      },
+      "table": {
+        "id": "ID",
+        "user": "등록자",
+        "contact": "연락처",
+        "company": "회사",
+        "config": "구성",
+        "note": "메모",
+        "time": "시간",
+        "status": "상태",
+        "noData": "일치하는 데이터 없음",
+        "noCompany": "없음",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "저장소",
+        "bandwidth": "대역폭"
+      },
+      "footer": "{{current}} / {{total}} 등록 표시",
+      "loading": "데이터 로딩 중..."
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "베트남 최고의 Oracle 클라우드 솔루션",
+      "subtitle": "베트남 공식 Oracle 파트너",
+      "description": "우리는 Oracle Cloud Infrastructure(OCI)를 통해 비용을 최적화하고 성능을 향상시키는 포괄적인 클라우드 컴퓨팅 솔루션을 제공합니다.",
+      "getStarted": "지금 시작하기",
+      "dashboard": "대시보드 보기",
+      "contact": "상담 문의",
+      "viewPricing": "구성 및 가격 보기",
+      "imageAlt": "Oracle 클라우드 대시보드",
+      "features": {
+        "security": {
+          "title": "절대적인 보안",
+          "description": "99.9% 가동 시간"
+        },
+        "performance": {
+          "title": "고성능",
+          "description": "탁월한 속도"
+        },
+        "global": {
+          "title": "글로벌",
+          "description": "36+ 데이터 센터"
+        }
+      },
+      "trustIndicators": {
+        "customers": "고객",
+        "uptime": "가동 시간",
+        "support": "지원"
+      },
+      "floatingElements": {
+        "costSaving": "비용 40% 절감",
+        "quickDeploy": "24시간 이내 배포"
+      }
+    },
+    "services": {
+      "title": "서비스",
+      "subtitle": "포괄적인 클라우드 솔루션",
+      "description": "데이터베이스부터 AI까지, 우리는 기업의 디지털 전환 요구를 충족하는 모든 클라우드 서비스를 제공합니다.",
+      "keyFeatures": "주요 기능:",
+      "serviceList": {
+        "database": {
+          "title": "Oracle 데이터베이스 클라우드",
+          "description": "고성능 및 절대적인 보안을 제공하는 자가 관리 Oracle 데이터베이스",
+          "features": ["자율 데이터베이스", "실시간 애플리케이션 클러스터", "데이터 가드", "고급 보안"]
+        },
+        "compute": {
+          "title": "컴퓨트 클라우드",
+          "description": "기업 요구에 맞춘 유연한 가상 서버 구성",
+          "features": ["베어 메탈", "가상 머신", "컨테이너 엔진", "함수"]
+        },
+        "storage": {
+          "title": "저장소 솔루션",
+          "description": "블록 저장소에서 객체 저장소까지 다양한 저장소 솔루션",
+          "features": ["블록 볼륨", "객체 저장소", "파일 저장소", "아카이브 저장소"]
+        },
+        "networking": {
+          "title": "네트워킹",
+          "description": "낮은 지연 시간과 높은 대역폭의 글로벌 네트워크 인프라",
+          "features": ["가상 클라우드 네트워크", "로드 밸런서", "VPN 연결", "패스트커넥트"]
+        },
+        "security": {
+          "title": "보안 및 신원",
+          "description": "고급 신원 및 접근 관리를 포함한 다층 보안",
+          "features": ["신원 관리", "키 관리", "웹 애플리케이션 방화벽", "보안 존"]
+        },
+        "analytics": {
+          "title": "분석 및 AI",
+          "description": "통합된 머신 러닝을 활용한 지능형 데이터 분석",
+          "features": ["분석 클라우드", "데이터 사이언스", "머신 러닝", "빅 데이터 서비스"]
+        }
+      },
+      "benefits": {
+        "fastDeploy": {
+          "title": "빠른 배포",
+          "description": "몇 분 내 설정 완료"
+        },
+        "globalCoverage": {
+          "title": "글로벌 커버리지",
+          "description": "36+ 데이터 센터"
+        },
+        "enterpriseSecurity": {
+          "title": "엔터프라이즈 보안",
+          "description": "국제 표준 준수"
+        },
+        "costOptimization": {
+          "title": "비용 최적화",
+          "description": "최대 40% 절감"
+        }
+      }
+    },
+    "pricing": {
+      "title": "가격",
+      "subtitle": "모든 규모의 기업에 적합한 서비스 패키지",
+      "description": "베트남 시장에서 가장 경쟁력 있는 가격으로 제공되는 유연하고 확장 가능한 Oracle 클라우드 서비스 패키지",
+      "plans": {
+        "starter": "표준",
+        "professional": "프리미엄",
+        "enterprise": "엔터프라이즈",
+        "ai": "AI-GPU",
+        "custom": "맞춤"
+      },
+      "buttons": {
+        "viewDetails": "세부 정보 보기",
+        "hideDetails": "숨기기",
+        "showDetails": "보기",
+        "packages": "패키지",
+        "selectPlan": "이 패키지 선택",
+        "contactConsult": "상담 문의",
+        "close": "닫기"
+      },
+      "tooltips": {
+        "exchangeRate": "가격은 현재 환율을 기준으로 계산됩니다.",
+        "todayRate": "오늘의 환율:"
+      },
+      "sections": {
+        "selectSuitable": "가장 적합한 패키지 선택",
+        "moreFeatures": "추가 기능"
+      },
+      "auth": {
+        "loginRequired": "로그인하세요",
+        "loginToRegister": "맞춤 패키지 등록을 위해 로그인하세요"
+      },
+      "additionalInfo": {
+        "support247": "모든 패키지에는 24/7 기술 지원 및 99.9% 가동 시간 보장이 포함됩니다",
+        "noSetupFee": "설정 비용 없음",
+        "cancelAnytime": "언제든지 취소 가능",
+        "flexiblePayment": "유연한 결제 옵션",
+        "freeConsult": "무료 상담",
+        "hotlineSupport": "지원 핫라인:"
+      }
+    },
+    "form": {
+      "customRegistration": {
+        "title": "맞춤 패키지 등록",
+        "description": "가장 적합한 서비스 패키지를 추천받기 위해 자세한 정보를 입력하세요.",
+        "userName": "사용자 이름",
+        "email": "이메일",
+        "phoneNumber": "전화번호",
+        "company": "회사 이름",
+        "configRequirements": "구성 요구 사항",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "저장소",
+        "bandwidth": "대역폭",
+        "additionalNotes": "추가 메모",
+        "placeholders": {
+          "userName": "이름을 입력하세요",
+          "email": "example@company.com",
+          "phoneNumber": "0987654321",
+          "company": "ABC 회사",
+          "cpu": "예: 4코어, Intel Xeon",
+          "ram": "예: 16GB, 32GB",
+          "storage": "예: 500GB SSD, 1TB HDD",
+          "bandwidth": "예: 100Mbps, 1Gbps",
+          "additionalNotes": "특별 요구 사항, 배포 일정, 예상 예산 등을 설명..."
+        },
+        "validation": {
+          "userNameMin": "사용자 이름은 최소 2자 이상이어야 합니다",
+          "emailInvalid": "유효하지 않은 이메일입니다",
+          "phoneNumberMin": "전화번호는 최소 10자리여야 합니다",
+          "phoneNumberMax": "전화번호는 20자를 초과할 수 없습니다",
+          "cpuRequired": "CPU 정보를 입력하세요",
+          "ramRequired": "RAM 정보를 입력하세요"
+        },
+        "buttons": {
+          "cancel": "취소",
+          "register": "등록"
+        },
+        "success": {
+          "title": "등록 성공!",
+          "description": "최대한 빨리 연락드리겠습니다."
+        },
+        "error": {
+          "title": "오류 발생",
+          "description": "나중에 다시 시도하거나 지원팀에 문의하세요."
+        }
+      }
+    }
+  },
+  "header": {
+    "home": "홈",
+    "services": "서비스",
+    "pricing": "가격",
+    "support": "지원",
+    "contact": "문의",
+    "login": "로그인",
+    "register": "등록",
+    "hello": "안녕하세요",
+    "profile": "프로필",
+    "settings": "설정",
+    "logout": "로그아웃",
+    "logoTitle": "Oracle 클라우드 베트남",
+    "logoSubtitle": "공식 파트너",
+    "languageLabel": "언어",
+    "admin": "관리자",
+    "packageManagement": "등록된 패키지 관리"
+  },
+  "footer": {
+    "companyName": "Oracle 클라우드 베트남",
+    "officialPartner": "공식 파트너",
+    "companyDescription": "베트남 공식 Oracle 파트너로, 10년 이상의 경험을 바탕으로 기업을 위한 선도적인 클라우드 컴퓨팅 솔루션을 제공합니다.",
+    "services": "서비스",
+    "serviceList": {
+      "database": "Oracle 데이터베이스 클라우드",
+      "compute": "컴퓨트 클라우드",
+      "storage": "저장소 솔루션",
+      "networking": "네트워킹",
+      "security": "보안 및 신원",
+      "analytics": "분석 및 AI"
+    },
+    "support": "지원",
+    "supportList": {
+      "docs": "기술 문서",
+      "videos": "가이드 동영상",
+      "forum": "커뮤니티 포럼",
+      "ticket": "지원 티켓",
+      "training": "교육 및 인증",
+      "api": "API 문서"
+    },
+    "contact": "문의",
+    "companyFull": "국제 사이버 보안 주식회사 - ICS",
+    "office": "사무소: 하노이 딘콩 대김 신도시 TT3-5",
+    "phone": "전화: 0931.487.231",
+    "hotline": "핫라인: 0707.806.860",
+    "email": "이메일: info@icss.com.vn",
+    "website": "www.icss.com.vn",
+    "newsletter": "뉴스레터 구독",
+    "newsletterPlaceholder": "당신의 이메일",
+    "newsletterButton": "구독",
+    "privacy": "개인정보 보호정책",
+    "terms": "이용 약관",
+    "sla": "SLA",
+    "sitemap": "사이트맵",
+    "copyright": "© 2024 Oracle 클라우드 베트남. 모든 권리 보유."
+  },
+  "unauthorized": {
+    "title": "이 페이지에 접근할 권한이 없습니다",
+    "description": "액세스 권한을 확인하거나 오류라고 생각되면 관리자에게 문의하세요."
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "logoutSuccess": "로그아웃 성공!"
+  },
+  "checkout": {
+    "title": "결제",
+    "backButton": "뒤로",
+    "success": {
+      "title": "결제 성공!",
+      "desc": "서비스 패키지 구독에 감사드립니다. 확인 이메일과 사용 안내를 귀하의 이메일 주소로 보냈습니다.",
+      "manageBtn": "구독 패키지 관리",
+      "homeBtn": "홈으로 돌아가기",
+      "note": "참고: 5분 이내에 이메일을 받지 못한 경우 스팸 폴더를 확인하거나 저희에게 연락주세요."
+    },
+    "packageInfo": "서비스 패키지 정보",
+    "packageName": "패키지 이름",
+    "description": "설명",
+    "packageType": "패키지 유형",
+    "features": "포함된 기능",
+    "totalAmount": "총 금액",
+    "paymentQR": "QR로 결제",
+    "scanQR": "뱅킹 앱으로 QR 코드를 스캔하여 결제하세요",
+    "bankName": "은행",
+    "accountNumber": "계좌 번호",
+    "amount": "금액",
+    "content": "내용",
+    "copyInfo": "송금 정보 복사",
+    "copiedSuccess": "송금 정보가 성공적으로 복사되었습니다",
+    "note": "참고: 시스템이 서비스를 자동으로 활성화하려면 정확한 내용으로 송금하세요.",
+    "contactSupport": "지원 문의",
+    "support247": "24/7 기술 지원",
+    "noSetupFee": "설정 비용 없음",
+    "uptimeGuarantee": "99.9% 가동 시간 보장",
+    "flexiblePayment": "유연한 결제 옵션",
+    "creatingQR": "QR 생성 중...",
+    "paidSuccessRedirect": "결제 성공! 리디렉션 중...",
+    "checkingPayment": "결제 확인 중...",
+    "transferContentExact": "송금 내용은 정확해야 합니다",
+    "paymentId": "결제 ID",
+    "autoConfirmNote": "송금이 성공하면 시스템이 자동으로 확인합니다."
+  },
+  "login": {
+    "title": "로그인",
+    "subtitle": "다시 오신 것을 환영합니다! 계속하려면 로그인하세요.",
+    "email": "이메일",
+    "emailPlaceholder": "이메일을 입력하세요",
+    "password": "비밀번호",
+    "passwordPlaceholder": "비밀번호를 입력하세요",
+    "loginButton": "로그인",
+    "loggingIn": "로그인 중...",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "noAccount": "계정이 없으신가요?",
+    "registerNow": "지금 가입하기",
+    "or": "또는",
+    "loginWithGoogle": "Google로 로그인",
+    "googleLoginComingSoon": "Google 로그인 기능이 곧 제공됩니다.",
+    "fillTestData": "테스트 데이터 입력 (test@gmail.com / 123123)",
+    "validationEmailRequired": "이메일을 입력하세요",
+    "validationEmailInvalid": "유효하지 않은 이메일입니다",
+    "validationPasswordRequired": "비밀번호를 입력하세요",
+    "validationPasswordMinLength": "비밀번호는 최소 {{length}}자 이상이어야 합니다"
+    }
+}

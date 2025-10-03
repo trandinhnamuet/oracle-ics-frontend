@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Search, Download, Users, Calendar, Building, Edit, Trash2, Crown } from 'lucide-react'
 import { toggleUserAdminRole } from '@/api/user.api'
+import { useTranslation } from 'react-i18next'
 
 interface User {
   id: number
@@ -26,6 +27,7 @@ interface User {
 }
 
 export default function UserManagementPage() {
+  const { t } = useTranslation()
   const [users, setUsers] = useState<User[]>([])
   const [filteredUsers, setFilteredUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
@@ -156,7 +158,7 @@ export default function UserManagementPage() {
     return (
       <div className="container mx-auto py-8 px-4">
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Đang tải...</div>
+          <div className="text-lg">{t('admin.user.loading')}</div>
         </div>
       </div>
     )
@@ -170,12 +172,12 @@ export default function UserManagementPage() {
       }`}>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Quản lý người dùng</h1>
-            <p className="text-muted-foreground">Quản lý tài khoản người dùng trong hệ thống</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t('admin.user.title')}</h1>
+            <p className="text-muted-foreground">{t('admin.user.subtitle')}</p>
           </div>
           <Button variant="outline" size="sm" onClick={exportToExcel}>
             <Download className="h-4 w-4 mr-2" />
-            Xuất Excel
+            {t('admin.user.exportExcel')}
           </Button>
         </div>
 
@@ -184,7 +186,7 @@ export default function UserManagementPage() {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Tìm kiếm theo email, tên, công ty..."
+              placeholder={t('admin.user.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -202,7 +204,7 @@ export default function UserManagementPage() {
       >
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng số người dùng</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin.user.stats.total')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -212,7 +214,7 @@ export default function UserManagementPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Đang hoạt động</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin.user.stats.active')}</CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -222,7 +224,7 @@ export default function UserManagementPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Đã khóa</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin.user.stats.inactive')}</CardTitle>
             <Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -239,30 +241,30 @@ export default function UserManagementPage() {
         style={{ transitionDelay: '400ms' }}
       >
         <CardHeader>
-          <CardTitle>Danh sách người dùng ({filteredUsers.length})</CardTitle>
+          <CardTitle>{t('admin.user.title')} ({filteredUsers.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Họ tên</TableHead>
-                  <TableHead>Số điện thoại</TableHead>
-                  <TableHead>Công ty</TableHead>
-                  <TableHead>Vai trò</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead>Ngày tạo</TableHead>
-                  <TableHead>Ngày cập nhật</TableHead>
-                  <TableHead>Thao tác</TableHead>
+                  <TableHead>{t('admin.user.table.id')}</TableHead>
+                  <TableHead>{t('admin.user.table.email')}</TableHead>
+                  <TableHead>{t('admin.user.table.name')}</TableHead>
+                  <TableHead>{t('admin.user.table.phone')}</TableHead>
+                  <TableHead>{t('admin.user.table.company')}</TableHead>
+                  <TableHead>{t('admin.user.table.role')}</TableHead>
+                  <TableHead>{t('admin.user.table.status')}</TableHead>
+                  <TableHead>{t('admin.user.table.createdAt')}</TableHead>
+                  <TableHead>{t('admin.user.table.updatedAt')}</TableHead>
+                  <TableHead>{t('admin.user.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUsers.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
-                      {searchTerm ? 'Không tìm thấy người dùng nào' : 'Chưa có người dùng nào'}
+                      {searchTerm ? t('admin.user.table.noUserFound') : t('admin.user.table.noUser')}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -275,19 +277,19 @@ export default function UserManagementPage() {
                         {user.phoneNumber ? (
                           <span>{user.phoneNumber}</span>
                         ) : (
-                          <span className="text-gray-400 italic">Chưa có</span>
+                          <span className="text-gray-400 italic">{t('admin.user.table.noData')}</span>
                         )}
                       </TableCell>
                       <TableCell>
                         {user.company ? (
                           <span>{user.company}</span>
                         ) : (
-                          <span className="text-gray-400 italic">Chưa có</span>
+                          <span className="text-gray-400 italic">{t('admin.user.table.noData')}</span>
                         )}
                       </TableCell>
                       <TableCell>
                         <Badge variant={user.role === 'admin' ? 'destructive' : 'outline'}>
-                          {user.role === 'admin' ? 'Admin' : 'Customer'}
+                          {user.role === 'admin' ? t('admin.user.table.admin') : t('admin.user.table.customer')}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -297,7 +299,7 @@ export default function UserManagementPage() {
                             onCheckedChange={() => toggleUserStatus(user.id, user.isActive)}
                           />
                           <Badge variant={user.isActive ? 'default' : 'secondary'}>
-                            {user.isActive ? 'Hoạt động' : 'Khóa'}
+                            {user.isActive ? t('admin.user.table.active') : t('admin.user.table.inactive')}
                           </Badge>
                         </div>
                       </TableCell>
@@ -321,7 +323,7 @@ export default function UserManagementPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          <div title={user.role === 'admin' ? 'Bỏ quyền admin' : 'Cấp quyền admin'}>
+                          <div title={user.role === 'admin' ? t('admin.user.actions.revokeAdmin') : t('admin.user.actions.grantAdmin')}>
                             <Button
                               variant={user.role === 'admin' ? 'default' : 'outline'}
                               size="sm"
@@ -331,7 +333,7 @@ export default function UserManagementPage() {
                               <Crown className="h-4 w-4" />
                             </Button>
                           </div>
-                          <div title="Xóa người dùng">
+                          <div title={t('admin.user.actions.delete')}>
                             <Button
                               variant="outline"
                               size="sm"

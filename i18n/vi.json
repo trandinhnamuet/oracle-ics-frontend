@@ -1,4 +1,148 @@
 {
+  "packageManagement": {
+    "title": "Quản lý gói đã đăng ký",
+    "subtitle": "Theo dõi và quản lý các gói dịch vụ đang sử dụng",
+    "searchPlaceholder": "Tìm kiếm theo tên gói, email...",
+    "status": "Trạng thái",
+    "type": "Loại gói",
+    "filter": {
+      "all": "Tất cả",
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động"
+    },
+    "stats": {
+      "total": "Tổng số gói",
+      "active": "Đang hoạt động",
+      "inactive": "Không hoạt động",
+      "revenue": "Doanh thu/tháng"
+    },
+    "table": {
+      "title": "Danh sách gói đăng ký ({{count}})",
+      "packageName": "Tên gói",
+      "type": "Loại",
+      "paidAmount": "Số tiền đã trả",
+      "createdAt": "Ngày đăng ký",
+      "updatedAt": "Cập nhật lần cuối",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "noMatch": "Không tìm thấy gói nào phù hợp",
+      "noPackage": "Chưa có gói đăng ký nào",
+      "customPackage": "Gói tùy chỉnh",
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "pauseTitle": "Tạm dừng gói",
+      "activateTitle": "Kích hoạt gói",
+      "deleteTitle": "Xóa gói"
+    }
+  },
+  "contactInfo": {
+    "heroTitle": "Liên hệ với chúng tôi",
+    "heroDesc": "Đối tác chính thức của Oracle tại Việt Nam, sẵn sàng hỗ trợ bạn 24/7",
+    "companyInfo": "Thông tin công ty",
+    "companyName": "CÔNG TY CỔ PHẦN AN NINH MẠNG QUỐC TẾ - ICS",
+    "officeHanoi": "Văn phòng Hà Nội",
+    "officeAddress": "TT3-5 Khu đô thị Đại Kim mới, Định Công, Hà Nội",
+    "contactInfo": "Thông tin liên hệ",
+    "phoneHotline": "Điện thoại & Hotline",
+    "email": "Email",
+    "website": "Website",
+    "mapTitle": "Vị trí trên bản đồ",
+    "mapDesc": "Tìm đường đến văn phòng của chúng tôi"
+  },
+  "dashboard": {
+    "title": "Quản lý hệ thống",
+    "user": {
+      "title": "Quản lý người dùng",
+      "desc": "Xem, chỉnh sửa và quản lý tài khoản người dùng",
+      "stats": "Tổng {{count}} người dùng"
+    },
+    "customRegistration": {
+      "title": "Đăng ký gói tùy chỉnh",
+      "desc": "Quản lý các yêu cầu đăng ký gói dịch vụ tùy chỉnh",
+      "stats": "{{count}} yêu cầu mới"
+    },
+    "access": "Truy cập"
+  },
+  "admin": {
+    "title": "Bảng điều khiển quản trị",
+    "userTitle": "Quản lý người dùng",
+    "userDesc": "Xem, chỉnh sửa và quản lý tài khoản người dùng",
+    "userStats": "Tổng {{count}} người dùng",
+    "customRegTitle": "Quản lý đăng ký gói tùy chỉnh",
+    "customRegDesc": "Theo dõi và xử lý các yêu cầu đăng ký gói dịch vụ tùy chỉnh",
+    "customRegStats": "{{count}} yêu cầu mới",
+    "access": "Truy cập",
+    "user": {
+      "title": "Quản lý người dùng",
+      "subtitle": "Quản lý tài khoản người dùng trong hệ thống",
+      "exportExcel": "Xuất Excel",
+      "searchPlaceholder": "Tìm kiếm theo email, tên, công ty...",
+      "stats": {
+        "total": "Tổng số người dùng",
+        "active": "Đang hoạt động",
+        "inactive": "Đã khóa"
+      },
+      "table": {
+        "id": "ID",
+        "email": "Email",
+        "name": "Họ tên",
+        "phone": "Số điện thoại",
+        "company": "Công ty",
+        "role": "Vai trò",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        "actions": "Thao tác",
+        "noUserFound": "Không tìm thấy người dùng nào",
+        "noUser": "Chưa có người dùng nào",
+        "noData": "Chưa có",
+        "admin": "Admin",
+        "customer": "Customer",
+        "active": "Hoạt động",
+        "inactive": "Khóa"
+      },
+      "actions": {
+        "grantAdmin": "Cấp quyền admin",
+        "revokeAdmin": "Bỏ quyền admin",
+        "delete": "Xóa người dùng"
+      },
+      "loading": "Đang tải..."
+    },
+    "customRegistration": {
+      "title": "Quản lý đăng ký gói tùy chỉnh",
+      "subtitle": "Theo dõi và xử lý các yêu cầu đăng ký gói dịch vụ tùy chỉnh",
+      "exportExcel": "Xuất Excel",
+      "stats": {
+        "total": "Tổng đăng ký",
+        "processed": "Đã xử lý",
+        "unprocessed": "Chưa xử lý"
+      },
+      "searchPlaceholder": "Tìm kiếm theo email, số điện thoại, tên, công ty...",
+      "filter": {
+        "all": "Tất cả",
+        "processed": "Đã xử lý",
+        "unprocessed": "Chưa xử lý"
+      },
+      "table": {
+        "id": "ID",
+        "user": "Người đăng ký",
+        "contact": "Liên hệ",
+        "company": "Công ty",
+        "config": "Cấu hình",
+        "note": "Ghi chú",
+        "time": "Thời gian",
+        "status": "Trạng thái",
+        "noData": "Không có dữ liệu phù hợp",
+        "noCompany": "Không có",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "Storage",
+        "bandwidth": "Bandwidth"
+      },
+      "footer": "Hiển thị {{current}} / {{total}} đăng ký",
+      "loading": "Đang tải dữ liệu..."
+    }
+  },
   "homepage": {
     "hero": {
       "title": "Giải pháp Oracle Cloud hàng đầu tại Việt Nam",
@@ -6,27 +150,181 @@
       "description": "Chúng tôi cung cấp giải pháp cloud computing toàn diện với Oracle Cloud Infrastructure (OCI), giúp doanh nghiệp tối ưu hóa chi phí và nâng cao hiệu suất.",
       "getStarted": "Bắt đầu ngay",
       "dashboard": "Xem Dashboard",
-      "contact": "Liên hệ tư vấn"
+      "contact": "Liên hệ tư vấn",
+      "viewPricing": "Xem cấu hình và giá",
+      "imageAlt": "Oracle Cloud Dashboard",
+      "features": {
+        "security": {
+          "title": "Bảo mật tuyệt đối",
+          "description": "99.9% uptime"
+        },
+        "performance": {
+          "title": "Hiệu suất cao",
+          "description": "Tốc độ vượt trội"
+        },
+        "global": {
+          "title": "Toàn cầu",
+          "description": "36+ data centers"
+        }
+      },
+      "trustIndicators": {
+        "customers": "Khách hàng",
+        "uptime": "Uptime",
+        "support": "Hỗ trợ"
+      },
+      "floatingElements": {
+        "costSaving": "Tiết kiệm 40% chi phí",
+        "quickDeploy": "Triển khai trong 24h"
+      }
     },
     "services": {
       "title": "Dịch vụ",
-      "subtitle": "Giải pháp Cloud toàn diện"
+      "subtitle": "Giải pháp Cloud toàn diện",
+      "description": "Từ cơ sở dữ liệu đến AI, chúng tôi cung cấp đầy đủ các dịch vụ cloud để đáp ứng mọi nhu cầu chuyển đổi số của doanh nghiệp.",
+      "keyFeatures": "Tính năng chính:",
+      "serviceList": {
+        "database": {
+          "title": "Oracle Database Cloud",
+          "description": "Cơ sở dữ liệu Oracle tự quản lý với hiệu suất cao và bảo mật tuyệt đối",
+          "features": ["Autonomous Database", "Real Application Clusters", "Data Guard", "Advanced Security"]
+        },
+        "compute": {
+          "title": "Compute Cloud",
+          "description": "Máy chủ ảo linh hoạt với cấu hình tùy chỉnh theo nhu cầu doanh nghiệp",
+          "features": ["Bare Metal", "Virtual Machines", "Container Engine", "Functions"]
+        },
+        "storage": {
+          "title": "Storage Solutions",
+          "description": "Giải pháp lưu trữ đa dạng từ block storage đến object storage",
+          "features": ["Block Volume", "Object Storage", "File Storage", "Archive Storage"]
+        },
+        "networking": {
+          "title": "Networking",
+          "description": "Hạ tầng mạng toàn cầu với độ trễ thấp và băng thông cao",
+          "features": ["Virtual Cloud Network", "Load Balancer", "VPN Connect", "FastConnect"]
+        },
+        "security": {
+          "title": "Security & Identity",
+          "description": "Bảo mật đa lớp với quản lý danh tính và truy cập tiên tiến",
+          "features": ["Identity Management", "Key Management", "Web Application Firewall", "Security Zones"]
+        },
+        "analytics": {
+          "title": "Analytics & AI",
+          "description": "Phân tích dữ liệu thông minh với machine learning tích hợp",
+          "features": ["Analytics Cloud", "Data Science", "Machine Learning", "Big Data Service"]
+        }
+      },
+      "benefits": {
+        "fastDeploy": {
+          "title": "Triển khai nhanh",
+          "description": "Khởi tạo trong vài phút"
+        },
+        "globalCoverage": {
+          "title": "Phủ sóng toàn cầu",
+          "description": "36+ data centers"
+        },
+        "enterpriseSecurity": {
+          "title": "Bảo mật enterprise",
+          "description": "Tuân thủ quốc tế"
+        },
+        "costOptimization": {
+          "title": "Tối ưu chi phí",
+          "description": "Tiết kiệm đến 40%"
+        }
+      }
     },
     "pricing": {
       "title": "Bảng giá",
       "subtitle": "Gói dịch vụ phù hợp với mọi quy mô doanh nghiệp",
+      "description": "Các gói dịch vụ Oracle Cloud linh hoạt, có thể mở rộng theo nhu cầu với mức giá cạnh tranh nhất thị trường Việt Nam.",
       "plans": {
         "starter": "Tiêu chuẩn",
-        "professional": "Cao cấp", 
+        "professional": "Cao cấp",
         "enterprise": "Doanh nghiệp",
         "ai": "AI-GPU",
         "custom": "Tùy chỉnh"
+      },
+      "buttons": {
+        "viewDetails": "Xem chi tiết",
+        "hideDetails": "Ẩn",
+        "showDetails": "Xem",
+        "packages": "gói",
+        "selectPlan": "Chọn gói này",
+        "contactConsult": "Liên hệ tư vấn",
+        "close": "Đóng"
+      },
+      "tooltips": {
+        "exchangeRate": "Giá được tính theo tỉ giá thực tế.",
+        "todayRate": "Tỉ giá hôm nay:"
+      },
+      "sections": {
+        "selectSuitable": "Chọn gói phù hợp nhất cho bạn",
+        "moreFeatures": "tính năng khác"
+      },
+      "auth": {
+        "loginRequired": "Vui lòng đăng nhập",
+        "loginToRegister": "Xin hãy đăng nhập để đăng ký gói tùy chọn"
+      },
+      "additionalInfo": {
+        "support247": "Tất cả gói đều bao gồm hỗ trợ kỹ thuật 24/7 và đảm bảo uptime 99.9%",
+        "noSetupFee": "Không phí setup",
+        "cancelAnytime": "Hủy bất cứ lúc nào",
+        "flexiblePayment": "Thanh toán linh hoạt",
+        "freeConsult": "Tư vấn miễn phí",
+        "hotlineSupport": "Hotline hỗ trợ:"
+      }
+    },
+    "form": {
+      "customRegistration": {
+        "title": "Đăng ký gói tùy chỉnh",
+        "description": "Vui lòng điền thông tin chi tiết để chúng tôi tư vấn gói dịch vụ phù hợp nhất cho bạn.",
+        "userName": "Tên người dùng",
+        "email": "Email",
+        "phoneNumber": "Số điện thoại",
+        "company": "Tên công ty",
+        "configRequirements": "Yêu cầu cấu hình",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "Bộ nhớ",
+        "bandwidth": "Đường truyền",
+        "additionalNotes": "Ghi chú thêm",
+        "placeholders": {
+          "userName": "Nhập tên của bạn",
+          "email": "example@company.com",
+          "phoneNumber": "0987654321",
+          "company": "Công ty ABC",
+          "cpu": "VD: 4 cores, Intel Xeon",
+          "ram": "VD: 16GB, 32GB",
+          "storage": "VD: 500GB SSD, 1TB HDD",
+          "bandwidth": "VD: 100Mbps, 1Gbps",
+          "additionalNotes": "Mô tả thêm về yêu cầu đặc biệt, thời gian triển khai, ngân sách dự kiến..."
+        },
+        "validation": {
+          "userNameMin": "Tên người dùng phải có ít nhất 2 ký tự",
+          "emailInvalid": "Email không hợp lệ",
+          "phoneNumberMin": "Số điện thoại phải có ít nhất 10 số",
+          "phoneNumberMax": "Số điện thoại không được quá 20 số",
+          "cpuRequired": "Vui lòng nhập thông tin CPU",
+          "ramRequired": "Vui lòng nhập thông tin RAM"
+        },
+        "buttons": {
+          "cancel": "Hủy",
+          "register": "Đăng ký"
+        },
+        "success": {
+          "title": "Đăng ký thành công!",
+          "description": "Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất."
+        },
+        "error": {
+          "title": "Có lỗi xảy ra",
+          "description": "Vui lòng thử lại sau hoặc liên hệ hỗ trợ."
+        }
       }
     }
   },
   "header": {
     "home": "Trang chủ",
-    "services": "Dịch vụ", 
+    "services": "Dịch vụ",
     "pricing": "Bảng giá",
     "support": "Hỗ trợ",
     "contact": "Liên hệ",
@@ -35,7 +333,54 @@
     "hello": "Xin chào",
     "profile": "Thông tin cá nhân",
     "settings": "Cài đặt",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "logoTitle": "Oracle Cloud Vietnam",
+    "logoSubtitle": "Đối tác chính thức",
+    "languageLabel": "Ngôn ngữ",
+    "admin": "Quản trị",
+    "packageManagement": "Quản lý gói đã đăng ký"
+  },
+  "footer": {
+    "companyName": "Oracle Cloud Vietnam",
+    "officialPartner": "Đối tác chính thức",
+    "companyDescription": "Đối tác chính thức của Oracle tại Việt Nam, cung cấp giải pháp cloud computing hàng đầu cho doanh nghiệp với hơn 10 năm kinh nghiệm.",
+    "services": "Dịch vụ",
+    "serviceList": {
+      "database": "Oracle Database Cloud",
+      "compute": "Compute Cloud",
+      "storage": "Storage Solutions",
+      "networking": "Networking",
+      "security": "Security & Identity",
+      "analytics": "Analytics & AI"
+    },
+    "support": "Hỗ trợ",
+    "supportList": {
+      "docs": "Tài liệu kỹ thuật",
+      "videos": "Video hướng dẫn",
+      "forum": "Diễn đàn cộng đồng",
+      "ticket": "Ticket hỗ trợ",
+      "training": "Đào tạo & Chứng chỉ",
+      "api": "API Documentation"
+    },
+    "contact": "Liên hệ",
+    "companyFull": "CÔNG TY CỔ PHẦN AN NINH MẠNG QUỐC TẾ - ICS",
+    "office": "Văn phòng: TT3-5 Khu đô thị Đại Kim mới, Định Công, Hà Nội",
+    "phone": "Điện thoại: 0931.487.231",
+    "hotline": "Hotline: 0707.806.860",
+    "email": "E-mail: info@icss.com.vn",
+    "website": "www.icss.com.vn",
+    "newsletter": "Đăng ký nhận tin",
+    "newsletterPlaceholder": "Email của bạn",
+    "newsletterButton": "Đăng ký",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản sử dụng",
+    "sla": "SLA",
+    "sitemap": "Sitemap",
+    "copyright": "© 2024 Oracle Cloud Vietnam. Tất cả quyền được bảo lưu."
+  },
+  "unauthorized": {
+    "title": "Bạn không có quyền truy cập trang này",
+    "description": "Vui lòng kiểm tra lại quyền truy cập hoặc liên hệ quản trị viên nếu bạn nghĩ đây là nhầm lẫn."
   },
   "common": {
     "loading": "Đang tải...",
@@ -44,6 +389,13 @@
   "checkout": {
     "title": "Thanh toán",
     "backButton": "Quay lại",
+    "success": {
+      "title": "Thanh toán thành công!",
+      "desc": "Cảm ơn bạn đã đăng ký gói dịch vụ. Chúng tôi đã gửi email xác nhận và hướng dẫn sử dụng đến địa chỉ email của bạn.",
+      "manageBtn": "Quản lý gói đã đăng ký",
+      "homeBtn": "Về trang chủ",
+      "note": "Lưu ý: Nếu bạn không nhận được email trong vòng 5 phút, vui lòng kiểm tra thư mục spam hoặc liên hệ với chúng tôi."
+    },
     "packageInfo": "Thông tin gói dịch vụ",
     "packageName": "Tên gói",
     "description": "Mô tả",
@@ -59,6 +411,37 @@
     "copyInfo": "Sao chép thông tin chuyển khoản",
     "copiedSuccess": "Đã sao chép thông tin chuyển khoản",
     "note": "Lưu ý: Vui lòng chuyển khoản đúng nội dung để hệ thống tự động kích hoạt dịch vụ.",
-    "contactSupport": "Liên hệ hỗ trợ"
+    "contactSupport": "Liên hệ hỗ trợ",
+    "support247": "Hỗ trợ kỹ thuật 24/7",
+    "noSetupFee": "Không phí setup",
+    "uptimeGuarantee": "Đảm bảo uptime 99.9%",
+    "flexiblePayment": "Thanh toán linh hoạt",
+    "creatingQR": "Đang tạo QR...",
+    "paidSuccessRedirect": "Thanh toán thành công! Đang chuyển hướng...",
+    "checkingPayment": "Đang kiểm tra thanh toán...",
+    "transferContentExact": "Nội dung chuyển khoản phải chính xác",
+    "paymentId": "Mã thanh toán",
+    "autoConfirmNote": "Hệ thống sẽ tự động xác nhận khi bạn chuyển khoản thành công."
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "subtitle": "Chào mừng bạn quay lại! Vui lòng đăng nhập để tiếp tục.",
+    "email": "Email",
+    "emailPlaceholder": "Nhập email của bạn",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "loginButton": "Đăng nhập",
+    "loggingIn": "Đang đăng nhập...",
+    "forgotPassword": "Quên mật khẩu?",
+    "noAccount": "Chưa có tài khoản?",
+    "registerNow": "Đăng ký ngay",
+    "or": "Hoặc",
+    "loginWithGoogle": "Đăng nhập với Google",
+    "googleLoginComingSoon": "Tính năng Google Login sẽ sớm có mặt.",
+    "fillTestData": "Điền dữ liệu test (test@gmail.com / 123123)",
+    "validationEmailRequired": "Vui lòng nhập email",
+    "validationEmailInvalid": "Email không hợp lệ",
+    "validationPasswordRequired": "Vui lòng nhập mật khẩu",
+    "validationPasswordMinLength": "Mật khẩu phải có ít nhất {{length}} ký tự"
   }
 }

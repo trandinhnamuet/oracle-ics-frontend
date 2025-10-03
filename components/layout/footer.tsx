@@ -1,8 +1,15 @@
+'use client'
+
+import React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Cloud, Mail, Phone, MapPin, Facebook, Linkedin, Youtube } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 export function Footer() {
+  const { t } = useTranslation()
+
+//
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-16">
@@ -14,63 +21,62 @@ export function Footer() {
                 <Cloud className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold">Oracle Cloud Vietnam</h3>
-                <p className="text-sm opacity-80">Đối tác chính thức</p>
+                <h3 className="text-xl font-bold">{t('footer.companyName')}</h3>
+                <p className="text-sm opacity-80">{t('footer.officialPartner')}</p>
               </div>
             </div>
             <p className="text-sm opacity-80 leading-relaxed">
-              Đối tác chính thức của Oracle tại Việt Nam, cung cấp giải pháp cloud computing hàng đầu cho doanh nghiệp
-              với hơn 10 năm kinh nghiệm.
+              {t('footer.companyDescription')}
             </p>
             <div className="flex space-x-4">
-                    <a href="https://www.facebook.com/ICS.OracleCloud/" target="_blank" rel="noopener noreferrer">
-                      <Button variant="ghost" size="sm" className="bg-white hover:bg-primary border border-primary">
-                        <Facebook className="h-4 w-4 text-[#1877F3]" />
-                      </Button>
-                    </a>
+              <a href="https://www.facebook.com/ICS.OracleCloud/" target="_blank" rel="noopener noreferrer">
+                <Button variant="ghost" size="sm" className="bg-white hover:bg-primary border border-primary">
+                  <Facebook className="h-4 w-4 text-[#1877F3]" />
+                </Button>
+              </a>
               <Button variant="ghost" size="sm" className="bg-white hover:bg-primary">
                 <Linkedin className="h-4 w-4 text-[#0A66C2]" />
               </Button>
-                    <a href="https://www.youtube.com/channel/UCpOn4kxyTtzmUldsDZoxLHg" target="_blank" rel="noopener noreferrer">
-                      <Button variant="ghost" size="sm" className="bg-white hover:bg-primary border border-primary">
-                        <Youtube className="h-4 w-4 text-[#FF0000]" />
-                      </Button>
-                    </a>
+              <a href="https://www.youtube.com/channel/UCpOn4kxyTtzmUldsDZoxLHg" target="_blank" rel="noopener noreferrer">
+                <Button variant="ghost" size="sm" className="bg-white hover:bg-primary border border-primary">
+                  <Youtube className="h-4 w-4 text-[#FF0000]" />
+                </Button>
+              </a>
             </div>
           </div>
 
           {/* Services */}
           <div className="space-y-6">
-            <h4 className="text-lg font-semibold">Dịch vụ</h4>
+            <h4 className="text-lg font-semibold">{t('footer.services')}</h4>
             <ul className="space-y-3 text-sm">
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Oracle Database Cloud
+                  {t('footer.serviceList.database')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Compute Cloud
+                  {t('footer.serviceList.compute')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Storage Solutions
+                  {t('footer.serviceList.storage')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Networking
+                  {t('footer.serviceList.networking')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Security & Identity
+                  {t('footer.serviceList.security')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Analytics & AI
+                  {t('footer.serviceList.analytics')}
                 </a>
               </li>
             </ul>
@@ -78,36 +84,36 @@ export function Footer() {
 
           {/* Support */}
           <div className="space-y-6">
-            <h4 className="text-lg font-semibold">Hỗ trợ</h4>
+            <h4 className="text-lg font-semibold">{t('footer.support')}</h4>
             <ul className="space-y-3 text-sm">
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Tài liệu kỹ thuật
+                  {t('footer.supportList.docs')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Video hướng dẫn
+                  {t('footer.supportList.videos')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Diễn đàn cộng đồng
+                  {t('footer.supportList.forum')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Ticket hỗ trợ
+                  {t('footer.supportList.ticket')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  Đào tạo & Chứng chỉ
+                  {t('footer.supportList.training')}
                 </a>
               </li>
               <li>
                 <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
-                  API Documentation
+                  {t('footer.supportList.api')}
                 </a>
               </li>
             </ul>
@@ -115,41 +121,37 @@ export function Footer() {
 
           {/* Contact & Newsletter */}
           <div className="space-y-6">
-            <h4 className="text-lg font-semibold">Liên hệ</h4>
+            <h4 className="text-lg font-semibold">{t('footer.contact')}</h4>
             <div className="space-y-4 text-sm">
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 mt-1 opacity-80" />
                 <div>
-                  <p className="opacity-80 font-semibold">CÔNG TY CỔ PHẦN AN NINH MẠNG QUỐC TẾ - ICS</p>
-                  {/* <div className="flex items-start space-x-2">
-                    <MapPin className="h-4 w-4 mt-1 opacity-80" />
-                    <p className="opacity-80">Trụ sở: Đường Vũ Văn Cẩn, Phường Bần Yên Nhân, Thị Xã Mỹ Hào, Hưng Yên</p>
-                  </div> */}
+                  <p className="opacity-80 font-semibold">{t('footer.companyFull')}</p>
                   <div className="flex items-start space-x-2">
                     <MapPin className="h-4 w-4 mt-1 opacity-80" />
-                    <p className="opacity-80">Văn phòng: TT3-5 Khu đô thị Đại Kim mới, Định Công, Hà Nội</p>
+                    <p className="opacity-80">{t('footer.office')}</p>
                   </div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 opacity-80" />
-                <p className="opacity-80">Điện thoại: 0931.487.231 &nbsp; - &nbsp; Hotline: 0707.806.860</p>
+                <p className="opacity-80">{t('footer.phone')} &nbsp; - &nbsp; {t('footer.hotline')}</p>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 opacity-80" />
-                <p className="opacity-80">E-mail: info@icss.com.vn &nbsp; - &nbsp; www.icss.com.vn</p>
+                <p className="opacity-80">{t('footer.email')} &nbsp; - &nbsp; {t('footer.website')}</p>
               </div>
             </div>
 
             <div className="space-y-3">
-              <h5 className="font-medium">Đăng ký nhận tin</h5>
+              <h5 className="font-medium">{t('footer.newsletter')}</h5>
               <div className="flex space-x-2">
                 <Input
-                  placeholder="Email của bạn"
+                  placeholder={t('footer.newsletterPlaceholder')}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
                 />
                 <Button className="bg-primary hover:bg-primary/80 text-white" size="sm">
-                  Đăng ký
+                  {t('footer.newsletterButton')}
                 </Button>
               </div>
             </div>
@@ -160,19 +162,19 @@ export function Footer() {
         <div className="border-t border-white/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="flex flex-wrap gap-6 text-sm opacity-80">
             <a href="#" className="hover:opacity-100 hover:text-primary transition-colors">
-              Chính sách bảo mật
+              {t('footer.privacy')}
             </a>
             <a href="#" className="hover:opacity-100 hover:text-primary transition-colors">
-              Điều khoản sử dụng
+              {t('footer.terms')}
             </a>
             <a href="#" className="hover:opacity-100 hover:text-primary transition-colors">
-              SLA
+              {t('footer.sla')}
             </a>
             <a href="#" className="hover:opacity-100 hover:text-primary transition-colors">
-              Sitemap
+              {t('footer.sitemap')}
             </a>
           </div>
-          <p className="text-sm opacity-80">© 2024 Oracle Cloud Vietnam. Tất cả quyền được bảo lưu.</p>
+          <p className="text-sm opacity-80">{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

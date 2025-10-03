@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { useTranslation } from 'react-i18next'
 import {
   Dialog,
   DialogContent,
@@ -27,19 +28,17 @@ import { useToast } from '@/hooks/use-toast'
 import useAuthStore from '@/hooks/use-auth-store'
 import axios from 'axios'
 
-const formSchema = z.object({
-  userName: z.string().min(2, 'Tên người dùng phải có ít nhất 2 ký tự'),
-  email: z.string().email('Email không hợp lệ'),
-  phoneNumber: z.string().min(10, 'Số điện thoại phải có ít nhất 10 số').max(20, 'Số điện thoại không được quá 20 số'),
+const createFormSchema = (t: any) => z.object({
+  userName: z.string().min(2, t('homepage.form.customRegistration.validation.userNameMin')),
+  email: z.string().email(t('homepage.form.customRegistration.validation.emailInvalid')),
+  phoneNumber: z.string().min(10, t('homepage.form.customRegistration.validation.phoneNumberMin')).max(20, t('homepage.form.customRegistration.validation.phoneNumberMax')),
   company: z.string().optional(),
-    cpu: z.string().min(1, 'Vui lòng nhập thông tin CPU'),
-    ram: z.string().min(1, 'Vui lòng nhập thông tin RAM'),
+    cpu: z.string().min(1, t('homepage.form.customRegistration.validation.cpuRequired')),
+    ram: z.string().min(1, t('homepage.form.customRegistration.validation.ramRequired')),
     storage: z.string().optional(),
     bandwidth: z.string().optional(),
   additionalNotes: z.string().optional(),
 })
-
-type FormValues = z.infer<typeof formSchema>
 
 interface CustomRegistrationFormProps {
   open: boolean
@@ -50,6 +49,10 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const { user, isAuthenticated } = useAuthStore()
+  const { t } = useTranslation()
+  
+  const formSchema = createFormSchema(t)
+  type FormValues = z.infer<typeof formSchema>
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -110,8 +113,8 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
       await axios.post(`${API_URL}/custom-package-registrations`, payload)
 
       toast({
-        title: 'Đăng ký thành công!',
-        description: 'Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.',
+        title: t('homepage.form.customRegistration.success.title'),
+        description: t('homepage.form.customRegistration.success.description'),
         variant: 'success',
       })
 
@@ -120,8 +123,8 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
     } catch (error) {
       console.error('Registration error:', error)
       toast({
-        title: 'Có lỗi xảy ra',
-        description: 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
+        title: t('homepage.form.customRegistration.error.title'),
+        description: t('homepage.form.customRegistration.error.description'),
         variant: 'destructive',
       })
     } finally {
@@ -133,9 +136,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Đăng ký gói tùy chỉnh</DialogTitle>
+          <DialogTitle>{t('homepage.form.customRegistration.title')}</DialogTitle>
           <DialogDescription>
-            Vui lòng điền thông tin chi tiết để chúng tôi tư vấn gói dịch vụ phù hợp nhất cho bạn.
+            {t('homepage.form.customRegistration.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -147,9 +150,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                 name="userName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên người dùng *</FormLabel>
+                    <FormLabel>{t('homepage.form.customRegistration.userName')} *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nhập tên của bạn" {...field} className="placeholder:text-gray-400" />
+                      <Input placeholder={t('homepage.form.customRegistration.placeholders.userName')} {...field} className="placeholder:text-gray-400" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -161,9 +164,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email *</FormLabel>
+                    <FormLabel>{t('homepage.form.customRegistration.email')} *</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="example@company.com" {...field} className="placeholder:text-gray-400" />
+                      <Input type="email" placeholder={t('homepage.form.customRegistration.placeholders.email')} {...field} className="placeholder:text-gray-400" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -177,9 +180,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Số điện thoại *</FormLabel>
+                    <FormLabel>{t('homepage.form.customRegistration.phoneNumber')} *</FormLabel>
                     <FormControl>
-                      <Input placeholder="0987654321" {...field} className="placeholder:text-gray-400" />
+                      <Input placeholder={t('homepage.form.customRegistration.placeholders.phoneNumber')} {...field} className="placeholder:text-gray-400" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -191,9 +194,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                 name="company"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên công ty</FormLabel>
+                    <FormLabel>{t('homepage.form.customRegistration.company')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Công ty ABC" {...field} className="placeholder:text-gray-400" />
+                      <Input placeholder={t('homepage.form.customRegistration.placeholders.company')} {...field} className="placeholder:text-gray-400" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -202,7 +205,7 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Yêu cầu cấu hình</h3>
+              <h3 className="text-lg font-semibold">{t('homepage.form.customRegistration.configRequirements')}</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -210,9 +213,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                   name="cpu"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>CPU *</FormLabel>
+                      <FormLabel>{t('homepage.form.customRegistration.cpu')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="VD: 4 cores, Intel Xeon" {...field} className="placeholder:text-gray-400" />
+                        <Input placeholder={t('homepage.form.customRegistration.placeholders.cpu')} {...field} className="placeholder:text-gray-400" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -224,9 +227,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                   name="ram"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>RAM *</FormLabel>
+                      <FormLabel>{t('homepage.form.customRegistration.ram')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="VD: 16GB, 32GB" {...field} className="placeholder:text-gray-400" />
+                        <Input placeholder={t('homepage.form.customRegistration.placeholders.ram')} {...field} className="placeholder:text-gray-400" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -240,9 +243,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                   name="storage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Bộ nhớ *</FormLabel>
+                      <FormLabel>{t('homepage.form.customRegistration.storage')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="VD: 500GB SSD, 1TB HDD" {...field} className="placeholder:text-gray-400" />
+                        <Input placeholder={t('homepage.form.customRegistration.placeholders.storage')} {...field} className="placeholder:text-gray-400" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -254,9 +257,9 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                   name="bandwidth"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Đường truyền *</FormLabel>
+                      <FormLabel>{t('homepage.form.customRegistration.bandwidth')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="VD: 100Mbps, 1Gbps" {...field} className="placeholder:text-gray-400" />
+                        <Input placeholder={t('homepage.form.customRegistration.placeholders.bandwidth')} {...field} className="placeholder:text-gray-400" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -269,10 +272,10 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                 name="additionalNotes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ghi chú thêm</FormLabel>
+                    <FormLabel>{t('homepage.form.customRegistration.additionalNotes')}</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Mô tả thêm về yêu cầu đặc biệt, thời gian triển khai, ngân sách dự kiến..."
+                        placeholder={t('homepage.form.customRegistration.placeholders.additionalNotes')}
                         className="min-h-[100px] placeholder:text-gray-400"
                         {...field} 
                       />
@@ -290,11 +293,11 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
                 onClick={() => onOpenChange(false)}
                 disabled={isLoading}
               >
-                Hủy
+                {t('homepage.form.customRegistration.buttons.cancel')}
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Đăng ký
+                {t('homepage.form.customRegistration.buttons.register')}
               </Button>
             </div>
           </form>

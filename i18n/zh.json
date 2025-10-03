@@ -1,42 +1,448 @@
 {
+  "packageManagement": {
+    "title": "订阅套餐管理",
+    "subtitle": "跟踪和管理您正在使用的服务套餐",
+    "searchPlaceholder": "按套餐名称、电子邮件搜索...",
+    "status": "状态",
+    "type": "套餐类型",
+    "filter": {
+      "all": "全部",
+      "active": "活跃",
+      "inactive": "非活跃"
+    },
+    "stats": {
+      "total": "总套餐数",
+      "active": "活跃",
+      "inactive": "非活跃",
+      "revenue": "月收入"
+    },
+    "table": {
+      "title": "订阅套餐列表 ({{count}})",
+      "packageName": "套餐名称",
+      "type": "类型",
+      "paidAmount": "已支付金额",
+      "createdAt": "订阅日期",
+      "updatedAt": "最后更新",
+      "status": "状态",
+      "actions": "操作",
+      "noMatch": "未找到匹配的套餐",
+      "noPackage": "暂无订阅套餐",
+      "customPackage": "自定义套餐",
+      "active": "活跃",
+      "inactive": "非活跃",
+      "pauseTitle": "暂停套餐",
+      "activateTitle": "激活套餐",
+      "deleteTitle": "删除套餐"
+    }
+  },
+  "contactInfo": {
+    "heroTitle": "联系我们",
+    "heroDesc": "越南官方Oracle合作伙伴，随时为您提供24/7支持",
+    "companyInfo": "公司信息",
+    "companyName": "国际网络安全股份有限公司 - ICS",
+    "officeHanoi": "河内办公室",
+    "officeAddress": "河内市定功新大金城市区TT3-5",
+    "contactInfo": "联系方式",
+    "phoneHotline": "电话与热线",
+    "email": "电子邮件",
+    "website": "网站",
+    "mapTitle": "地图位置",
+    "mapDesc": "查找我们办公室的路线"
+  },
+  "dashboard": {
+    "title": "系统管理",
+    "user": {
+      "title": "用户管理",
+      "desc": "查看、编辑和管理用户账户",
+      "stats": "共{{count}}个用户"
+    },
+    "customRegistration": {
+      "title": "自定义套餐注册",
+      "desc": "管理自定义服务套餐注册请求",
+      "stats": "{{count}}个新请求"
+    },
+    "access": "访问"
+  },
+  "admin": {
+    "title": "管理仪表盘",
+    "userTitle": "用户管理",
+    "userDesc": "查看、编辑和管理用户账户",
+    "userStats": "共{{count}}位用户",
+    "customRegTitle": "自定义套餐申请管理",
+    "customRegDesc": "跟踪和处理自定义套餐申请",
+    "customRegStats": "{{count}}条新申请",
+    "access": "访问",
+    "user": {
+      "title": "用户管理",
+      "subtitle": "管理系统中的用户账户",
+      "exportExcel": "导出到Excel",
+      "searchPlaceholder": "按电子邮件、姓名、公司搜索...",
+      "stats": {
+        "total": "总用户数",
+        "active": "活跃",
+        "inactive": "已锁定"
+      },
+      "table": {
+        "id": "ID",
+        "email": "电子邮件",
+        "name": "全名",
+        "phone": "电话号码",
+        "company": "公司",
+        "role": "角色",
+        "status": "状态",
+        "createdAt": "创建日期",
+        "updatedAt": "更新日期",
+        "actions": "操作",
+        "noUserFound": "未找到用户",
+        "noUser": "暂无用户",
+        "noData": "暂无数据",
+        "admin": "管理员",
+        "customer": "客户",
+        "active": "活跃",
+        "inactive": "锁定"
+      },
+      "actions": {
+        "grantAdmin": "授予管理员权限",
+        "revokeAdmin": "撤销管理员权限",
+        "delete": "删除用户"
+      },
+      "loading": "加载中..."
+    },
+    "customRegistration": {
+      "title": "自定义套餐注册管理",
+      "subtitle": "跟踪和处理自定义服务套餐注册请求",
+      "exportExcel": "导出到Excel",
+      "stats": {
+        "total": "总注册数",
+        "processed": "已处理",
+        "unprocessed": "未处理"
+      },
+      "searchPlaceholder": "按电子邮件、电话号码、姓名、公司搜索...",
+      "filter": {
+        "all": "全部",
+        "processed": "已处理",
+        "unprocessed": "未处理"
+      },
+      "table": {
+        "id": "ID",
+        "user": "注册人",
+        "contact": "联系方式",
+        "company": "公司",
+        "config": "配置",
+        "note": "备注",
+        "time": "时间",
+        "status": "状态",
+        "noData": "无匹配数据",
+        "noCompany": "无",
+        "cpu": "CPU",
+        "ram": "内存",
+        "storage": "存储",
+        "bandwidth": "带宽"
+      },
+      "footer": "显示 {{current}} / {{total}} 注册",
+      "loading": "加载数据中..."
+    }
+  },
   "homepage": {
     "hero": {
       "title": "越南领先的Oracle云解决方案",
-      "subtitle": "Oracle在越南的官方合作伙伴",
-      "description": "我们通过Oracle云基础设施(OCI)提供全面的云计算解决方案，帮助企业优化成本并提高性能。",
+      "subtitle": "越南官方Oracle合作伙伴",
+      "description": "我们提供基于Oracle Cloud Infrastructure (OCI)的全面云计算解决方案，帮助企业优化成本并提升性能。",
       "getStarted": "立即开始",
       "dashboard": "查看仪表板",
-      "contact": "联系咨询"
+      "contact": "联系咨询",
+      "viewPricing": "查看配置和价格",
+      "imageAlt": "Oracle云仪表板",
+      "features": {
+        "security": {
+          "title": "绝对安全",
+          "description": "99.9%正常运行时间"
+        },
+        "performance": {
+          "title": "高性能",
+          "description": "卓越速度"
+        },
+        "global": {
+          "title": "全球化",
+          "description": "36+数据中心"
+        }
+      },
+      "trustIndicators": {
+        "customers": "客户",
+        "uptime": "正常运行时间",
+        "support": "支持"
+      },
+      "floatingElements": {
+        "costSaving": "节省40%成本",
+        "quickDeploy": "24小时内部署"
+      }
     },
     "services": {
       "title": "服务",
-      "subtitle": "全面的云解决方案"
+      "subtitle": "全面的云解决方案",
+      "description": "从数据库到人工智能，我们提供全方位的云服务，满足企业数字化转型的各种需求。",
+      "keyFeatures": "主要功能：",
+      "serviceList": {
+        "database": {
+          "title": "Oracle数据库云",
+          "description": "具有高性能和绝对安全的自管理Oracle数据库",
+          "features": ["自主数据库", "实时应用集群", "数据保护", "高级安全"]
+        },
+        "compute": {
+          "title": "计算云",
+          "description": "灵活的虚拟服务器，可根据企业需求自定义配置",
+          "features": ["裸金属", "虚拟机", "容器引擎", "函数"]
+        },
+        "storage": {
+          "title": "存储解决方案",
+          "description": "从块存储到对象存储的多样化存储解决方案",
+          "features": ["块存储", "对象存储", "文件存储", "归档存储"]
+        },
+        "networking": {
+          "title": "网络",
+          "description": "低延迟和高带宽的全球网络基础设施",
+          "features": ["虚拟云网络", "负载均衡器", "VPN连接", "快速连接"]
+        },
+        "security": {
+          "title": "安全与身份",
+          "description": "多层安全与高级身份和访问管理",
+          "features": ["身份管理", "密钥管理", "Web应用程序防火墙", "安全区域"]
+        },
+        "analytics": {
+          "title": "分析与人工智能",
+          "description": "集成机器学习智能数据分析",
+          "features": ["分析云", "数据科学", "机器学习", "大数据服务"]
+        }
+      },
+      "benefits": {
+        "fastDeploy": {
+          "title": "快速部署",
+          "description": "几分钟内完成设置"
+        },
+        "globalCoverage": {
+          "title": "全球覆盖",
+          "description": "36+数据中心"
+        },
+        "enterpriseSecurity": {
+          "title": "企业级安全",
+          "description": "符合国际标准"
+        },
+        "costOptimization": {
+          "title": "成本优化",
+          "description": "节省高达40%"
+        }
+      }
     },
     "pricing": {
-      "title": "价格",
+      "title": "定价",
       "subtitle": "适合各种规模企业的服务套餐",
+      "description": "灵活且可扩展的Oracle云服务套餐，提供越南市场上最具竞争力的价格。",
       "plans": {
-        "starter": "标准版",
-        "professional": "高级版",
-        "enterprise": "企业版",
-        "custom": "定制版"
+        "starter": "标准",
+        "professional": "高级",
+        "enterprise": "企业",
+        "ai": "AI-GPU",
+        "custom": "自定义"
+      },
+      "buttons": {
+        "viewDetails": "查看详情",
+        "hideDetails": "隐藏",
+        "showDetails": "显示",
+        "packages": "套餐",
+        "selectPlan": "选择此套餐",
+        "contactConsult": "联系咨询",
+        "close": "关闭"
+      },
+      "tooltips": {
+        "exchangeRate": "价格根据当前汇率计算。",
+        "todayRate": "今日汇率："
+      },
+      "sections": {
+        "selectSuitable": "选择最适合您的套餐",
+        "moreFeatures": "更多功能"
+      },
+      "auth": {
+        "loginRequired": "请登录",
+        "loginToRegister": "请登录以注册自定义套餐"
+      },
+      "additionalInfo": {
+        "support247": "所有套餐均包含24/7技术支持和99.9%正常运行时间保证",
+        "noSetupFee": "无设置费用",
+        "cancelAnytime": "随时取消",
+        "flexiblePayment": "灵活的支付选项",
+        "freeConsult": "免费咨询",
+        "hotlineSupport": "支持热线："
+      }
+    },
+    "form": {
+      "customRegistration": {
+        "title": "自定义套餐注册",
+        "description": "请填写详细信息，以便我们为您推荐最适合的服务套餐。",
+        "userName": "用户名",
+        "email": "电子邮件",
+        "phoneNumber": "电话号码",
+        "company": "公司名称",
+        "configRequirements": "配置要求",
+        "cpu": "CPU",
+        "ram": "内存",
+        "storage": "存储",
+        "bandwidth": "带宽",
+        "additionalNotes": "附加备注",
+        "placeholders": {
+          "userName": "输入您的姓名",
+          "email": "example@company.com",
+          "phoneNumber": "0987654321",
+          "company": "ABC公司",
+          "cpu": "例如：4核，Intel Xeon",
+          "ram": "例如：16GB，32GB",
+          "storage": "例如：500GB SSD，1TB HDD",
+          "bandwidth": "例如：100Mbps，1Gbps",
+          "additionalNotes": "描述特殊要求、部署时间、预计预算等..."
+        },
+        "validation": {
+          "userNameMin": "用户名至少2个字符",
+          "emailInvalid": "电子邮件无效",
+          "phoneNumberMin": "电话号码至少10位",
+          "phoneNumberMax": "电话号码不得超过20位",
+          "cpuRequired": "请输入CPU信息",
+          "ramRequired": "请输入内存信息"
+        },
+        "buttons": {
+          "cancel": "取消",
+          "register": "注册"
+        },
+        "success": {
+          "title": "注册成功！",
+          "description": "我们将尽快与您联系。"
+        },
+        "error": {
+          "title": "发生错误",
+          "description": "请稍后重试或联系支持。"
+        }
       }
     }
   },
   "header": {
     "home": "首页",
     "services": "服务",
-    "pricing": "价格",
-    "support": "支持", 
+    "pricing": "定价",
+    "support": "支持",
     "contact": "联系",
     "login": "登录",
     "register": "注册",
-    "hello": "您好",
+    "hello": "你好",
     "profile": "个人资料",
     "settings": "设置",
-    "logout": "登出"
+    "logout": "退出",
+    "logoTitle": "越南Oracle云",
+    "logoSubtitle": "官方合作伙伴",
+    "languageLabel": "语言",
+    "admin": "管理员",
+    "packageManagement": "已订购套餐管理"
+    
+  },
+  "footer": {
+    "companyName": "越南Oracle云",
+    "officialPartner": "官方合作伙伴",
+    "companyDescription": "越南官方Oracle合作伙伴，为企业提供领先的云计算解决方案，拥有超过10年的经验。",
+    "services": "服务",
+    "serviceList": {
+      "database": "Oracle数据库云",
+      "compute": "计算云",
+      "storage": "存储解决方案",
+      "networking": "网络",
+      "security": "安全与身份",
+      "analytics": "分析与人工智能"
+    },
+    "support": "支持",
+    "supportList": {
+      "docs": "技术文档",
+      "videos": "指导视频",
+      "forum": "社区论坛",
+      "ticket": "支持工单",
+      "training": "培训与认证",
+      "api": "API文档"
+    },
+    "contact": "联系",
+    "companyFull": "国际网络安全股份有限公司 - ICS",
+    "office": "办公室：河内市定功新大金城市区TT3-5",
+    "phone": "电话：0931.487.231",
+    "hotline": "热线：0707.806.860",
+    "email": "电子邮件：info@icss.com.vn",
+    "website": "www.icss.com.vn",
+    "newsletter": "订阅新闻",
+    "newsletterPlaceholder": "您的电子邮件",
+    "newsletterButton": "订阅",
+    "privacy": "隐私政策",
+    "terms": "使用条款",
+    "sla": "服务级别协议",
+    "sitemap": "网站地图",
+    "copyright": "© 2024 越南Oracle云。保留所有权利。"
+  },
+  "unauthorized": {
+    "title": "您无权访问此页面",
+    "description": "请检查您的访问权限或联系管理员以确认是否为错误。"
   },
   "common": {
-    "loading": "加载中..."
-  }
+    "loading": "加载中...",
+    "logoutSuccess": "退出成功！"
+  },
+  "checkout": {
+    "title": "结账",
+    "backButton": "返回",
+    "success": {
+      "title": "支付成功！",
+      "desc": "感谢您订阅服务套餐。我们已将确认电子邮件和使用说明发送到您的电子邮件地址。",
+      "manageBtn": "管理订阅套餐",
+      "homeBtn": "返回首页",
+      "note": "注意：如果您在5分钟内未收到电子邮件，请检查垃圾邮件文件夹或联系我们。"
+    },
+    "packageInfo": "服务套餐信息",
+    "packageName": "套餐名称",
+    "description": "描述",
+    "packageType": "套餐类型",
+    "features": "包含功能",
+    "totalAmount": "总金额",
+    "paymentQR": "通过QR支付",
+    "scanQR": "使用银行应用程序扫描QR码进行支付",
+    "bankName": "银行",
+    "accountNumber": "账户号码",
+    "amount": "金额",
+    "content": "内容",
+    "copyInfo": "复制转账信息",
+    "copiedSuccess": "成功复制转账信息",
+    "note": "注意：请确保转账内容准确，以便系统自动激活服务。",
+    "contactSupport": "联系支持",
+    "support247": "24/7技术支持",
+    "noSetupFee": "无设置费用",
+    "uptimeGuarantee": "99.9%正常运行时间保证",
+    "flexiblePayment": "灵活的支付选项",
+    "creatingQR": "正在创建QR码...",
+    "paidSuccessRedirect": "支付成功！正在重定向...",
+    "checkingPayment": "正在检查支付...",
+    "transferContentExact": "转账内容必须准确",
+    "paymentId": "支付ID",
+    "autoConfirmNote": "系统将在转账成功后自动确认。"
+  },
+  "login": {
+    "title": "登录",
+    "subtitle": "欢迎回来！请登录以继续。",
+    "email": "邮箱",
+    "emailPlaceholder": "请输入邮箱",
+    "password": "密码",
+    "passwordPlaceholder": "请输入密码",
+    "loginButton": "登录",
+    "loggingIn": "正在登录...",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "还没有账号？",
+    "registerNow": "立即注册",
+    "or": "或",
+    "loginWithGoogle": "使用Google登录",
+    "googleLoginComingSoon": "Google登录功能即将上线。",
+    "fillTestData": "填充测试数据 (test@gmail.com / 123123)",
+    "validationEmailRequired": "请输入邮箱",
+    "validationEmailInvalid": "邮箱格式不正确",
+    "validationPasswordRequired": "请输入密码",
+    "validationPasswordMinLength": "密码至少为{{length}}个字符"
+    }
 }

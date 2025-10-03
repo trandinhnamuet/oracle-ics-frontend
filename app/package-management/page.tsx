@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import useAuthStore from '@/hooks/use-auth-store'
 import { getPaidUserPackages, updateUserPackage, deleteUserPackage } from '@/api/user-package.api'
@@ -38,6 +39,7 @@ interface PackageSubscription {
 }
 
 export default function PackageManagementPage() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const [packages, setPackages] = useState<PackageSubscription[]>([])
   const [loading, setLoading] = useState(true)
@@ -163,8 +165,8 @@ export default function PackageManagementPage() {
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
       }`}>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Quản lý gói đã đăng ký</h1>
-          <p className="text-muted-foreground">Theo dõi và quản lý các gói dịch vụ đang sử dụng</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('packageManagement.title')}</h1>
+          <p className="text-muted-foreground">{t('packageManagement.subtitle')}</p>
         </div>
 
         {/* Search and Filters */}
@@ -174,7 +176,7 @@ export default function PackageManagementPage() {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Tìm kiếm theo tên gói, email..."
+              placeholder={t('packageManagement.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -183,25 +185,25 @@ export default function PackageManagementPage() {
           
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Trạng thái" />
+              <SelectValue placeholder={t('packageManagement.status')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="active">Hoạt động</SelectItem>
-              <SelectItem value="inactive">Không hoạt động</SelectItem>
+              <SelectItem value="all">{t('packageManagement.filter.all')}</SelectItem>
+              <SelectItem value="active">{t('packageManagement.filter.active')}</SelectItem>
+              <SelectItem value="inactive">{t('packageManagement.filter.inactive')}</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Loại gói" />
+              <SelectValue placeholder={t('packageManagement.type')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="starter">Starter</SelectItem>
-              <SelectItem value="professional">Professional</SelectItem>
-              <SelectItem value="enterprise">Enterprise</SelectItem>
-              <SelectItem value="custom">Custom</SelectItem>
+              <SelectItem value="all">{t('packageManagement.filter.all')}</SelectItem>
+              <SelectItem value="starter">{t('homepage.pricing.plans.starter')}</SelectItem>
+              <SelectItem value="professional">{t('homepage.pricing.plans.professional')}</SelectItem>
+              <SelectItem value="enterprise">{t('homepage.pricing.plans.enterprise')}</SelectItem>
+              <SelectItem value="custom">{t('homepage.pricing.plans.custom')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -213,7 +215,7 @@ export default function PackageManagementPage() {
       }`} style={{ transitionDelay: '400ms' }}>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng số gói</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('packageManagement.stats.total')}</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -223,7 +225,7 @@ export default function PackageManagementPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Đang hoạt động</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('packageManagement.stats.active')}</CardTitle>
             <Play className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -233,7 +235,7 @@ export default function PackageManagementPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Không hoạt động</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('packageManagement.stats.inactive')}</CardTitle>
             <Pause className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
@@ -243,7 +245,7 @@ export default function PackageManagementPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Doanh thu/tháng</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('packageManagement.stats.revenue')}</CardTitle>
             <DollarSign className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
@@ -259,7 +261,7 @@ export default function PackageManagementPage() {
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
       }`} style={{ transitionDelay: '600ms' }}>
         <CardHeader>
-          <CardTitle>Danh sách gói đăng ký ({filteredPackages.length})</CardTitle>
+          <CardTitle>{t('packageManagement.table.title', { count: filteredPackages.length })}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -267,13 +269,13 @@ export default function PackageManagementPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
-                  <TableHead>Tên gói</TableHead>
-                  <TableHead>Loại</TableHead>
-                  <TableHead>Số tiền đã trả</TableHead>
-                  <TableHead>Ngày đăng ký</TableHead>
-                  <TableHead>Cập nhật lần cuối</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead>Thao tác</TableHead>
+                  <TableHead>{t('packageManagement.table.packageName')}</TableHead>
+                  <TableHead>{t('packageManagement.table.type')}</TableHead>
+                  <TableHead>{t('packageManagement.table.paidAmount')}</TableHead>
+                  <TableHead>{t('packageManagement.table.createdAt')}</TableHead>
+                  <TableHead>{t('packageManagement.table.updatedAt')}</TableHead>
+                  <TableHead>{t('packageManagement.table.status')}</TableHead>
+                  <TableHead>{t('packageManagement.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -281,14 +283,14 @@ export default function PackageManagementPage() {
                   <TableRow>
                     <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       {searchTerm || statusFilter !== 'all' || typeFilter !== 'all' 
-                        ? 'Không tìm thấy gói nào phù hợp' 
-                        : 'Chưa có gói đăng ký nào'
+                        ? t('packageManagement.table.noMatch')
+                        : t('packageManagement.table.noPackage')
                       }
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredPackages.map(pkg => {
-                    const packageName = pkg.package?.name || 'Gói tùy chỉnh'
+                    const packageName = pkg.package?.name || t('packageManagement.table.customPackage')
                     const packageType = pkg.package?.type || 'custom'
                     
                     return (
@@ -311,12 +313,12 @@ export default function PackageManagementPage() {
                         </TableCell>
                         <TableCell>
                           <Badge variant={getStatusVariant(pkg.isActive)}>
-                            {pkg.isActive ? 'Hoạt động' : 'Không hoạt động'}
+                            {pkg.isActive ? t('packageManagement.table.active') : t('packageManagement.table.inactive')}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">
-                            <div title={pkg.isActive ? 'Tạm dừng gói' : 'Kích hoạt gói'}>
+                            <div title={pkg.isActive ? t('packageManagement.table.pauseTitle') : t('packageManagement.table.activateTitle')}>
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -329,7 +331,7 @@ export default function PackageManagementPage() {
                                 )}
                               </Button>
                             </div>
-                            <div title="Xóa gói">
+                            <div title={t('packageManagement.table.deleteTitle')}>
                               <Button
                                 variant="outline"
                                 size="sm"

@@ -88,8 +88,8 @@ export function Header() {
               </svg>
             </span>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Oracle Cloud Vietnam</h1>
-              <p className="text-xs text-muted-foreground">Đối tác chính thức</p>
+              <h1 className="text-xl font-bold text-foreground">{t('header.logoTitle')}</h1>
+              <p className="text-xs text-muted-foreground">{t('header.logoSubtitle')}</p>
             </div>
           </Link>
 
@@ -247,7 +247,7 @@ export function Header() {
               ) : (
                 <div className="flex flex-col space-y-2">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-muted-foreground">Ngôn ngữ</span>
+                    <span className="text-sm text-muted-foreground">{t('header.languageLabel')}</span>
                     <div className="flex items-center space-x-2">
                       <LanguageSelector />
                       <ThemeToggle />

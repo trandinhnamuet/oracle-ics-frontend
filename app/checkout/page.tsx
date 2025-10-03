@@ -52,7 +52,7 @@ function CheckoutContent() {
     const customContent = `${description} U${userId}P${planId}`
     // Chuyển số tiền sang VND
     const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
-  const vndAmount = roundMoney(parseFloat(amount || '0') * rate);
+    const vndAmount = roundMoney(parseFloat(amount || '0') * rate);
     const params = new URLSearchParams({
       acc: '66010901964',
       bank: 'TPBank',
@@ -121,7 +121,6 @@ ${t('checkout.accountNumber')}: 66010901964
 ${t('checkout.amount')}: ${formatPrice(planPrice)}₫
 ${t('checkout.content')}: ${customContent}
     `.trim()
-    
     navigator.clipboard.writeText(transferInfo)
     toast({
       title: t('checkout.copiedSuccess'),
@@ -205,10 +204,10 @@ ${t('checkout.content')}: ${customContent}
 
               <div className="bg-muted p-4 rounded-lg">
                 <p className="text-sm text-white">
-                  ✓ Hỗ trợ kỹ thuật 24/7<br/>
-                  ✓ Không phí setup<br/>
-                  ✓ Đảm bảo uptime 99.9%<br/>
-                  ✓ Thanh toán linh hoạt
+                  ✓ {t('checkout.support247')}<br/>
+                  ✓ {t('checkout.noSetupFee')}<br/>
+                  ✓ {t('checkout.uptimeGuarantee')}<br/>
+                  ✓ {t('checkout.flexiblePayment')}
                 </p>
               </div>
             </CardContent>
@@ -243,18 +242,18 @@ ${t('checkout.content')}: ${customContent}
                 ) : (
                   <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
                     <div className="w-[200px] h-[200px] flex items-center justify-center text-gray-400">
-                      Đang tạo QR...
+                      {t('checkout.creatingQR')}
                     </div>
                   </div>
                 )}
                 
                 {isPaid ? (
                   <p className="text-sm text-green-600 mt-2 font-medium">
-                    ✅ Thanh toán thành công! Đang chuyển hướng...
+                    ✅ {t('checkout.paidSuccessRedirect')}
                   </p>
                 ) : isChecking ? (
                   <p className="text-sm text-blue-600 mt-2">
-                    🔄 Đang kiểm tra thanh toán...
+                    🔄 {t('checkout.checkingPayment')}
                   </p>
                 ) : (
                   <p className="text-sm text-muted-foreground mt-2">
@@ -303,15 +302,15 @@ ${t('checkout.content')}: ${customContent}
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800">
                   <strong>{t('checkout.note')}</strong><br/>
-                  Nội dung chuyển khoản phải chính xác: <strong>{planName} U{userId}P{planId}</strong>
+                  {t('checkout.transferContentExact')}: <strong>{planName} U{userId}P{planId}</strong>
                 </p>
               </div>
 
               {paymentId && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-sm text-blue-800">
-                    <strong>Mã thanh toán:</strong> {paymentId}<br/>
-                    Hệ thống sẽ tự động xác nhận khi bạn chuyển khoản thành công.
+                    <strong>{t('checkout.paymentId')}:</strong> {paymentId}<br/>
+                    {t('checkout.autoConfirmNote')}
                   </p>
                 </div>
               )}
@@ -330,11 +329,12 @@ ${t('checkout.content')}: ${customContent}
 }
 
 export default function CheckoutPage() {
+  const { t } = useTranslation();
   return (
     <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-        <p className="mt-4 text-muted-foreground">Loading...</p>
+        <p className="mt-4 text-muted-foreground">{t('common.loading')}</p>
       </div>
     </div>}>
       <CheckoutContent />

@@ -5,27 +5,29 @@ import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Users, FileText } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
-const adminLinks = [
+const adminLinks = (t: any) => [
   {
-    title: 'Quản lý người dùng',
-    description: 'Xem, chỉnh sửa và quản lý tài khoản người dùng',
+    title: t('admin.userTitle'),
+    description: t('admin.userDesc'),
     href: '/admin/users',
     icon: Users,
     color: 'bg-blue-500',
-    stats: 'Tổng 24 người dùng'
+    stats: t('admin.userStats', { count: 24 })
   },
   {
-    title: 'Đăng ký gói tùy chỉnh',
-    description: 'Quản lý các yêu cầu đăng ký gói dịch vụ tùy chỉnh',
+    title: t('admin.customRegTitle'),
+    description: t('admin.customRegDesc'),
     href: '/admin/custom-registration',
     icon: FileText,
     color: 'bg-green-500',
-    stats: '5 yêu cầu mới'
+    stats: t('admin.customRegStats', { count: 5 })
   }
 ]
 
 export default function AdminDashboard() {
+  const { t } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -37,15 +39,17 @@ export default function AdminDashboard() {
     return () => clearTimeout(timer)
   }, [])
 
+  const links = adminLinks(t)
+
   return (
     <div className="container mx-auto py-8 px-4 space-y-8 min-h-screen">
       {/* Admin Links */}
       <div className={`space-y-4 transition-all duration-700 transform ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
       }`}>
-        <h2 className="text-2xl font-semibold">Quản lý hệ thống</h2>
+        <h2 className="text-2xl font-semibold">{t('admin.title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {adminLinks.map((link, index) => (
+          {links.map((link, index) => (
             <Card 
               key={index} 
               className={`hover:shadow-lg transition-all duration-700 transform ${
@@ -73,7 +77,7 @@ export default function AdminDashboard() {
                   <span className="text-sm text-muted-foreground">{link.stats}</span>
                   <Link href={link.href}>
                     <Button variant="outline" size="sm">
-                      Truy cập
+                      {t('admin.access')}
                     </Button>
                   </Link>
                 </div>

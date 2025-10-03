@@ -1,11 +1,11 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 import { CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { useTranslation } from 'react-i18next'
 
 export default function CheckoutSuccessPage() {
+  const { t } = useTranslation()
   const [showAnimation, setShowAnimation] = useState(false)
   const [showCheckmark, setShowCheckmark] = useState(false)
   const [showContent, setShowContent] = useState(false)
@@ -88,11 +88,10 @@ export default function CheckoutSuccessPage() {
             : 'translate-y-4 opacity-0'
         }`}>
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Thanh toán thành công!
+            {t('checkout.success.title')}
           </h1>
           <p className="text-gray-600 mb-8 leading-relaxed">
-            Cảm ơn bạn đã đăng ký gói dịch vụ. Chúng tôi đã gửi email xác nhận 
-            và hướng dẫn sử dụng đến địa chỉ email của bạn.
+            {t('checkout.success.desc')}
           </p>
         </div>
 
@@ -104,12 +103,12 @@ export default function CheckoutSuccessPage() {
         }`}>
           <Link href="/package-management" className="w-full">
             <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 transition-all duration-200 hover:scale-[1.02]">
-              Quản lý gói đã đăng ký
+              {t('checkout.success.manageBtn')}
             </Button>
           </Link>
           <Link href="/" className="w-full">
             <Button variant="outline" className="w-full py-3 transition-all duration-200 hover:scale-[1.02]">
-              Về trang chủ
+              {t('checkout.success.homeBtn')}
             </Button>
           </Link>
         </div>
@@ -121,8 +120,7 @@ export default function CheckoutSuccessPage() {
             : 'translate-y-4 opacity-0'
         }`}>
           <p className="text-sm text-gray-600">
-            <strong>Lưu ý:</strong> Nếu bạn không nhận được email trong vòng 5 phút, 
-            vui lòng kiểm tra thư mục spam hoặc liên hệ với chúng tôi.
+            <strong>{t('checkout.success.note').split(':')[0]}:</strong> {t('checkout.success.note').split(':').slice(1).join(':').trim()}
           </p>
         </div>
 

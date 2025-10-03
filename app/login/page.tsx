@@ -13,29 +13,30 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
+import { useTranslation } from 'react-i18next'
 
 import { authApi, LoginRequest } from '@/api/auth.api'
 import useAuthStore from '@/hooks/use-auth-store'
 
-// Schema validation cho form đăng nhập
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email không được để trống')
-    .email('Email không hợp lệ'),
-  password: z
-    .string()
-    .min(1, 'Mật khẩu không được để trống')
-    .min(process.env.NODE_ENV === 'development' ? 3 : 6, 
-         `Mật khẩu phải có ít nhất ${process.env.NODE_ENV === 'development' ? 3 : 6} ký tự`),
-})
-
-type LoginFormData = z.infer<typeof loginSchema>
-
 export default function LoginPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const { login, setLoading, setError, error, isLoading } = useAuthStore()
   const [showPassword, setShowPassword] = useState(false)
+
+  const loginSchema = z.object({
+    email: z
+      .string()
+      .min(1, t('login.validationEmailRequired'))
+      .email(t('login.validationEmailInvalid')),
+    password: z
+      .string()
+      .min(1, t('login.validationPasswordRequired'))
+      .min(process.env.NODE_ENV === 'development' ? 3 : 6, 
+           t('login.validationPasswordMinLength', { length: process.env.NODE_ENV === 'development' ? 3 : 6 })),
+  })
+
+  type LoginFormData = z.infer<typeof loginSchema>
 
   const {
     register,
@@ -45,7 +46,7 @@ export default function LoginPage() {
     clearErrors
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    mode: 'onChange', // Validate on change
+    mode: 'onChange',
     defaultValues: {
       email: '',
       password: ''
@@ -56,24 +57,13 @@ export default function LoginPage() {
     try {
       setLoading(true)
       setError(null)
-      clearErrors() // Clear any previous form errors
-      
-      console.log('Submitting login data:', data) // Debug log
-      
+      clearErrors()
       const response = await authApi.login(data)
-      
-      // Lưu user và token vào store
       login(response.user, response.access_token)
-      
-      // Reset form
       reset()
-      
-      // Redirect về trang chủ hoặc trang trước đó
       const returnUrl = new URLSearchParams(window.location.search).get('returnUrl')
       router.push(returnUrl || '/')
-      
     } catch (error: any) {
-      console.error('Login error:', error) // Debug log
       setError(error.message)
     } finally {
       setLoading(false)
@@ -84,11 +74,7 @@ export default function LoginPage() {
     try {
       setLoading(true)
       setError(null)
-      
-      // TODO: Implement Google OAuth
-      // Hiện tại chỉ hiển thị thông báo
-      setError('Tính năng đăng nhập bằng Google sẽ được cập nhật sớm')
-      
+      setError(t('login.googleLoginComingSoon'))
     } catch (error: any) {
       setError(error.message)
     } finally {
@@ -101,10 +87,10 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Đăng nhập
+            {t('login.title')}
           </CardTitle>
           <CardDescription className="text-center">
-            Nhập email và mật khẩu để truy cập tài khoản
+            {t('login.subtitle')}
           </CardDescription>
         </CardHeader>
 
@@ -116,7 +102,6 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Debug info - remove in production */}
             {process.env.NODE_ENV === 'development' && (
               <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded">
                 Form valid: {isValid ? 'Yes' : 'No'}<br/>
@@ -126,11 +111,11 @@ export default function LoginPage() {
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('login.email')}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="your@email.com"
+                placeholder={t('login.emailPlaceholder')}
                 autoComplete="email"
                 {...register('email')}
                 className={errors.email ? 'border-red-500' : ''}
@@ -141,12 +126,12 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
+              <Label htmlFor="password">{t('login.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
+                  placeholder={t('login.passwordPlaceholder')}
                   autoComplete="current-password"
                   {...register('password')}
                   className={errors.password ? 'border-red-500' : ''}
@@ -171,21 +156,18 @@ export default function LoginPage() {
               className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              {isLoading ? t('login.loggingIn') : t('login.loginButton')}
             </Button>
             
-            {/* Test button - remove in production */}
             {process.env.NODE_ENV === 'development' && (
               <Button
                 type="button"
                 variant="outline"
                 className="w-full text-xs"
                 onClick={() => {
-                  // Fill test data
                   const event = new Event('input', { bubbles: true })
                   const emailInput = document.getElementById('email') as HTMLInputElement
                   const passwordInput = document.getElementById('password') as HTMLInputElement
-                  
                   if (emailInput && passwordInput) {
                     if (emailInput.value == 'tranngocphong@gmail.com') emailInput.value = 'khucthuadu@gmail.com'
                     else emailInput.value = 'tranngocphong@gmail.com'
@@ -195,7 +177,7 @@ export default function LoginPage() {
                   }
                 }}
               >
-                Fill Test Data (test@gmail.com / 123123)
+                {t('login.fillTestData')}
               </Button>
             )}
           </form>
@@ -206,7 +188,7 @@ export default function LoginPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Hoặc
+                {t('login.or')}
               </span>
             </div>
           </div>
@@ -233,7 +215,7 @@ export default function LoginPage() {
                 d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h240z"
               ></path>
             </svg>
-            Đăng nhập bằng Google
+            {t('login.loginWithGoogle')}
           </Button>
         </CardContent>
 
@@ -243,16 +225,16 @@ export default function LoginPage() {
               href="/forgot-password"
               className="text-primary hover:underline"
             >
-              Quên mật khẩu?
+              {t('login.forgotPassword')}
             </Link>
           </div>
           <div className="text-sm text-center">
-            Chưa có tài khoản?{' '}
+            {t('login.noAccount')}{' '}
             <Link
               href="/register"
               className="text-primary hover:underline font-medium"
             >
-              Đăng ký ngay
+              {t('login.registerNow')}
             </Link>
           </div>
         </CardFooter>
