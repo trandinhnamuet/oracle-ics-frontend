@@ -323,6 +323,7 @@
     }
   },
   "pricing": {
+    "loginRequired": "请登录以注册套餐",
     "plans": {
       "starter": {
         "1": {
@@ -446,7 +447,7 @@
     "logoSubtitle": "官方合作伙伴",
     "languageLabel": "语言",
     "admin": "管理员",
-    "packageManagement": "已订购套餐管理"
+    "packageManagement": "我的云"
     
   },
   "footer": {

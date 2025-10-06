@@ -32,6 +32,7 @@ function CheckoutContent() {
   const planCategory = searchParams.get('category')
   const planPeriod = searchParams.get('period')
   const planFeaturesStr = searchParams.get('features')
+  const planMonths = searchParams.get('months') || '1'
   
   // Parse features từ JSON string
   const planFeatures = planFeaturesStr ? JSON.parse(planFeaturesStr) : []
@@ -176,6 +177,15 @@ ${t('checkout.content')}: ${customContent}
                 </div>
               )}
 
+              {parseInt(planMonths) > 1 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Số tháng đăng ký:</span>
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                    {planMonths} tháng
+                  </Badge>
+                </div>
+              )}
+
               {planFeatures && planFeatures.length > 0 && (
                 <div className="space-y-2">
                   <span className="text-sm text-muted-foreground font-medium">{t('checkout.features')}:</span>
@@ -199,7 +209,11 @@ ${t('checkout.content')}: ${customContent}
                       const vndPrice = roundMoney(parseFloat(planPrice || '0') * rate);
                       return formatPrice(vndPrice);
                     })()}₫
-                    {planPeriod && <span className="text-sm text-muted-foreground">/{planPeriod}</span>}
+                    {parseInt(planMonths) > 1 ? (
+                      <span className="text-sm text-muted-foreground"> (cho {planMonths} tháng)</span>
+                    ) : planPeriod ? (
+                      <span className="text-sm text-muted-foreground">/{planPeriod}</span>
+                    ) : null}
                   </span>
                 </div>
               </div>

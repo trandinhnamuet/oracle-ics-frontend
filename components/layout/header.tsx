@@ -17,7 +17,9 @@ import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 import useAuthStore from "@/hooks/use-auth-store"
 import { useToast } from "@/hooks/use-toast"
+import { useI18nReady } from "@/hooks/use-i18n-ready"
 import { authApi } from "@/api/auth.api"
+
 
 export function Header() {
   const { t } = useTranslation()
@@ -25,11 +27,44 @@ export function Header() {
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { user, isAuthenticated, logout, setLoading, setError, initAuth } = useAuthStore()
+  const isI18nReady = useI18nReady() // Hook để tránh hydration mismatch
 
   // Khởi tạo auth khi component mount
   useEffect(() => {
     initAuth()
   }, [initAuth])
+
+  // Không render cho đến khi i18n sẵn sàng để tránh hydration mismatch
+  if (!isI18nReady) {
+    return (
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
+            {/* Logo fallback - sử dụng text tĩnh để tránh hydration mismatch */}
+            <Link href="/" className="flex items-center space-x-2">
+              <span className="h-10 w-10 block">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 32 20">
+                  <g fill="#E55844">
+                    <path d="M9.9,20.1c-5.5,0-9.9-4.4-9.9-9.9c0-5.5,4.4-9.9,9.9-9.9h11.6c5.5,0,9.9,4.4,9.9,9.9c0,5.5-4.4,9.9-9.9,9.9H9.9 M21.2,16.6c3.6,0,6.4-2.9,6.4-6.4c0-3.6-2.9-6.4-6.4-6.4h-11c-3.6,0-6.4,2.9-6.4,6.4s2.9,6.4,6.4,6.4H21.2"/>
+                  </g>
+                </svg>
+              </span>
+              <div>
+                <h1 className="text-xl font-bold text-foreground">...</h1>
+                <p className="text-xs text-muted-foreground">...</p>
+              </div>
+            </Link>
+            
+            {/* Placeholder cho phần còn lại */}
+            <div className="flex items-center space-x-4">
+              <div className="w-8 h-8 bg-muted rounded animate-pulse"></div>
+              <div className="w-8 h-8 bg-muted rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </header>
+    )
+  }
 
   const handleLogout = async () => {
     try {
@@ -88,8 +123,12 @@ export function Header() {
               </svg>
             </span>
             <div>
-              <h1 className="text-xl font-bold text-foreground">{t('header.logoTitle')}</h1>
-              <p className="text-xs text-muted-foreground">{t('header.logoSubtitle')}</p>
+              <h1 className="text-xl font-bold text-foreground">
+                {t('header.logoTitle')}
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                {t('header.logoSubtitle')}
+              </p>
             </div>
           </Link>
 

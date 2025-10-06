@@ -20,6 +20,19 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value
   let userRole = null;
   
+  // Xử lý ngôn ngữ để tránh hydration mismatch
+  const response = NextResponse.next()
+  const currentLanguage = request.cookies.get('language')?.value
+  
+  // Nếu chưa có cookie ngôn ngữ, set mặc định là 'vi'
+  if (!currentLanguage) {
+    response.cookies.set('language', 'vi', {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 năm
+      sameSite: 'lax'
+    })
+  }
+  
   // Nếu có token, decode để lấy role
   if (token) {
     try {
@@ -50,17 +63,44 @@ export function middleware(request: NextRequest) {
   if (isProtectedRoute && !token) {
     // Nếu là /admin hoặc /admin/* thì redirect sang /unauthorized
     if (pathname.startsWith('/admin')) {
-      return NextResponse.redirect(new URL('/unauthorized', request.url));
+      const unauthorizedResponse = NextResponse.redirect(new URL('/unauthorized', request.url));
+      // Giữ nguyên cookie ngôn ngữ khi redirect
+      if (currentLanguage) {
+        unauthorizedResponse.cookies.set('language', currentLanguage, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: 'lax'
+        })
+      }
+      return unauthorizedResponse;
     }
     // Các route khác vẫn về /login như cũ
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('returnUrl', pathname)
-    return NextResponse.redirect(loginUrl)
+    const loginResponse = NextResponse.redirect(loginUrl)
+    // Giữ nguyên cookie ngôn ngữ khi redirect
+    if (currentLanguage) {
+      loginResponse.cookies.set('language', currentLanguage, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: 'lax'
+      })
+    }
+    return loginResponse
   }
 
   // Nếu đã đăng nhập nhưng vào /admin mà không phải admin thì redirect unauthorized
   if (token && pathname.startsWith('/admin') && userRole !== 'admin') {
-    return NextResponse.redirect(new URL('/unauthorized', request.url));
+    const unauthorizedResponse = NextResponse.redirect(new URL('/unauthorized', request.url));
+    // Giữ nguyên cookie ngôn ngữ khi redirect
+    if (currentLanguage) {
+      unauthorizedResponse.cookies.set('language', currentLanguage, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: 'lax'
+      })
+    }
+    return unauthorizedResponse;
   }
   
   // Nếu là guest-only route và đã có token
@@ -68,10 +108,19 @@ export function middleware(request: NextRequest) {
     // Redirect về trang chủ kèm message
     const homeUrl = new URL('/', request.url);
     homeUrl.searchParams.set('message', 'logged-in');
-    return NextResponse.redirect(homeUrl);
+    const redirectResponse = NextResponse.redirect(homeUrl);
+    // Giữ nguyên cookie ngôn ngữ khi redirect
+    if (currentLanguage) {
+      redirectResponse.cookies.set('language', currentLanguage, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: 'lax'
+      })
+    }
+    return redirectResponse;
   }
   
-  return NextResponse.next()
+  return response
 }
 
 // Cấu hình matcher để middleware chỉ chạy cho các routes cần thiết

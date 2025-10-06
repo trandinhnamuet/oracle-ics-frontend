@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -14,10 +14,15 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { Camera, Upload } from 'lucide-react'
 
 import useAuthStore, { User } from '@/hooks/use-auth-store'
 import withAuth from '@/components/auth/with-auth'
 import { authApi } from '@/api/auth.api'
+import { imageApi } from '@/api/image.api'
+import { updateUserAvatar } from '@/api/user.api'
+import { useToast } from '@/hooks/use-toast'
 
 type ProfileFormData = {
   firstName: string
@@ -30,6 +35,10 @@ function ProfilePage() {
   const { user, setUser, setLoading, setError, error, isLoading } = useAuthStore()
   const [isEditing, setIsEditing] = useState(false)
   const [updateSuccess, setUpdateSuccess] = useState(false)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const [showAvatarDialog, setShowAvatarDialog] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { toast } = useToast()
 
   // Schema validation cho form cập nhật profile
   const profileSchema = z.object({
@@ -112,6 +121,63 @@ function ProfilePage() {
     setError(null)
   }
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file || !user) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: 'Lỗi',
+        description: 'Vui lòng chọn file ảnh',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: 'Lỗi',
+        description: 'Kích thước file không được vượt quá 5MB',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    try {
+      setIsUploadingAvatar(true)
+      
+      // Upload image
+      const uploadedImage = await imageApi.uploadImage(file)
+      
+      // Update user avatar
+      const updatedUser = await updateUserAvatar(user.id, uploadedImage.url)
+      
+      // Update local user state
+      setUser({ ...user, avatarUrl: uploadedImage.url })
+      
+      toast({
+        title: 'Thành công',
+        description: 'Cập nhật ảnh đại diện thành công',
+        variant: 'default'
+      })
+      
+    } catch (error: any) {
+      console.error('Avatar upload error:', error)
+      toast({
+        title: 'Lỗi',
+        description: 'Không thể cập nhật ảnh đại diện',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsUploadingAvatar(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
+
   const getInitials = (firstName?: string, lastName?: string, email?: string) => {
     if (firstName && lastName) {
       return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
@@ -153,12 +219,58 @@ function ProfilePage() {
           <Card className="lg:col-span-1">
             <CardContent className="pt-6">
               <div className="flex flex-col items-center space-y-4">
-                <Avatar className="w-24 h-24">
-                  <AvatarImage src={user.avatar} alt={`${user.firstName} ${user.lastName}`} />
-                  <AvatarFallback className="text-lg">
-                    {getInitials(user.firstName, user.lastName, user.email)}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Dialog open={showAvatarDialog} onOpenChange={setShowAvatarDialog}>
+                    <DialogTrigger asChild>
+                      <div className="cursor-pointer">
+                        <Avatar className="w-24 h-24 hover:opacity-80 transition-opacity">
+                          <AvatarImage 
+                            src={user.avatarUrl ? imageApi.getImageUrl(user.avatarUrl) : undefined} 
+                            alt={`${user.firstName} ${user.lastName}`} 
+                          />
+                          <AvatarFallback className="text-lg">
+                            {getInitials(user.firstName, user.lastName, user.email)}
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-md">
+                      <div className="flex justify-center">
+                        <Avatar className="w-64 h-64">
+                          <AvatarImage 
+                            src={user.avatarUrl ? imageApi.getImageUrl(user.avatarUrl) : undefined} 
+                            alt={`${user.firstName} ${user.lastName}`} 
+                          />
+                          <AvatarFallback className="text-4xl">
+                            {getInitials(user.firstName, user.lastName, user.email)}
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingAvatar}
+                  >
+                    {isUploadingAvatar ? (
+                      <Upload className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Camera className="w-4 h-4" />
+                    )}
+                  </Button>
+                  
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarUpload}
+                  />
+                </div>
                 
                 <div className="text-center">
                   <h3 className="text-lg font-semibold">

@@ -38,3 +38,18 @@ export const getAllUsers = async () => {
     throw error
   }
 }
+
+// Update user avatar
+export const updateUserAvatar = async (userId: number, avatarUrl: string) => {
+  try {
+    const response = await axios.put(`${API_URL}/users/${userId}/avatar`, {
+      avatarUrl
+    }, {
+      withCredentials: true,
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error updating user avatar:', error)
+    throw error
+  }
+}

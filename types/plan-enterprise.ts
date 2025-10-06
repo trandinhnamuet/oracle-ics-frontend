@@ -147,7 +147,7 @@ export const enterprisePlans: PricingPlan[] = [
     limitations: [],
   },
   {
-    id: 9,
+    id: 0,
     name: "Tư vấn toàn diện",
     description: "pricing.plans.enterprise.9.description",
     price: "0.16",

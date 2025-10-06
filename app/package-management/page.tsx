@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import useAuthStore from '@/hooks/use-auth-store'
 import { getPaidUserPackages, updateUserPackage, deleteUserPackage } from '@/api/user-package.api'
@@ -11,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Search, Package, Calendar, DollarSign, Settings, Play, Pause, Trash2 } from 'lucide-react'
+import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye } from 'lucide-react'
 
 interface PackageSubscription {
   id: number
@@ -40,6 +41,7 @@ interface PackageSubscription {
 
 export default function PackageManagementPage() {
   const { t } = useTranslation()
+  const router = useRouter()
   const { user } = useAuthStore()
   const [packages, setPackages] = useState<PackageSubscription[]>([])
   const [loading, setLoading] = useState(true)
@@ -158,8 +160,25 @@ export default function PackageManagementPage() {
       .reduce((sum, p) => sum + (p.package?.price || p.totalPaidAmount || 0), 0)
   }
 
+  // Demo số dư
+  const demoBalance = 1500000;
   return (
     <div className="container mx-auto py-8 px-4 space-y-8">
+      {/* Balance Bar */}
+      <div className="w-full flex items-center justify-between bg-white rounded-lg shadow p-4 mb-4 border border-gray-100">
+        <div className="flex items-center gap-2">
+          <Banknote className="h-6 w-6 text-[#E60000]" />
+          <span className="text-lg font-semibold text-gray-900">Số dư:</span>
+          <span className="text-xl font-bold text-[#E60000]">{demoBalance.toLocaleString('vi-VN')} đ</span>
+        </div>
+        <button
+          className="bg-[#E60000] hover:bg-red-700 text-white font-semibold px-6 py-2 rounded transition-colors flex items-center gap-2 shadow"
+          onClick={() => router.push('/add-funds')}
+        >
+          <Banknote className="h-5 w-5" />
+          Nạp tiền
+        </button>
+      </div>
       {/* Header Section */}
       <div className={`flex flex-col space-y-4 transition-all duration-700 transform ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
@@ -246,7 +265,7 @@ export default function PackageManagementPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('packageManagement.stats.revenue')}</CardTitle>
-            <DollarSign className="h-4 w-4 text-blue-600" />
+            <Banknote className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
             <div className="text-lg font-bold text-blue-600">
@@ -296,7 +315,14 @@ export default function PackageManagementPage() {
                     return (
                       <TableRow key={pkg.id}>
                         <TableCell className="font-medium">{pkg.id}</TableCell>
-                        <TableCell className="font-medium">{packageName}</TableCell>
+                        <TableCell className="font-medium">
+                          <span
+                            className="text-blue-600 hover:underline cursor-pointer"
+                            onClick={() => router.push(`/package-management/${pkg.id}`)}
+                          >
+                            {packageName}
+                          </span>
+                        </TableCell>
                         <TableCell>
                           <Badge variant={getTypeVariant(packageType)}>
                             {packageType.charAt(0).toUpperCase() + packageType.slice(1)}
@@ -318,6 +344,15 @@ export default function PackageManagementPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">
+                            <div title="View Details">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => router.push(`/package-management/${pkg.id}`)}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </div>
                             <div title={pkg.isActive ? t('packageManagement.table.pauseTitle') : t('packageManagement.table.activateTitle')}>
                               <Button
                                 variant="outline"

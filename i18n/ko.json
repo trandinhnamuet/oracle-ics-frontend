@@ -323,6 +323,7 @@
     }
   },
   "pricing": {
+    "loginRequired": "패키지 등록을 위해 로그인하세요",
     "plans": {
       "starter": {
         "1": {
@@ -446,7 +447,7 @@
     "logoSubtitle": "공식 파트너",
     "languageLabel": "언어",
     "admin": "관리자",
-    "packageManagement": "등록된 패키지 관리"
+    "packageManagement": "내 클라우드"
   },
   "footer": {
     "companyName": "Oracle 클라우드 베트남",

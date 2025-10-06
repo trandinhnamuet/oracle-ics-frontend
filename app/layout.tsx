@@ -8,6 +8,7 @@ import { I18nProvider } from '@/components/providers/i18n-provider'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Toaster } from '@/components/ui/toaster'
+import { cookies } from 'next/headers'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -43,8 +44,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Đọc ngôn ngữ từ cookie để đồng bộ với server-side
+  const cookieStore = cookies()
+  const language = cookieStore.get('language')?.value || 'vi'
+  
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang={language} suppressHydrationWarning>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <ThemeProvider
           attribute="class"
@@ -52,7 +57,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <I18nProvider>
+          <I18nProvider initialLanguage={language}>
             <AuthProvider>
               <div className="min-h-screen flex flex-col">
                 <Header />

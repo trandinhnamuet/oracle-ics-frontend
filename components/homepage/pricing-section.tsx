@@ -3,7 +3,9 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Check, Star, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Info } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Check, Star, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Info, Wallet, CreditCard } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -25,6 +27,11 @@ export function PricingSection() {
   const [closingCategory, setClosingCategory] = useState<string | null>(null)
   const [showCustomForm, setShowCustomForm] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
+  const [showPaymentMethodPopup, setShowPaymentMethodPopup] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<any>(null)
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
+  const [monthsCount, setMonthsCount] = useState(1)
   
   // Refs for scrolling
   const mainCardsRef = useRef<HTMLDivElement>(null)
@@ -42,17 +49,19 @@ export function PricingSection() {
   }
 
   const handleSelectPlan = (plan: any, category: string) => {
-    const params = new URLSearchParams({
-      planId: plan.id,
-      name: plan.name,
-      price: plan.price,
-      description: plan.description,
-      category: category,
-      period: plan.period || '',
-      features: JSON.stringify(plan.features)
-    })
-    
-    router.push(`/checkout?${params.toString()}`)
+    if (!isAuthenticated) {
+      toast({
+        title: t('homepage.pricing.auth.loginRequired'),
+        description: t('pricing.loginRequired'),
+        variant: "destructive",
+      })
+      return
+    }
+    setSelectedPlan(plan)
+    setSelectedCategory(category)
+    setSelectedPaymentMethod('')
+    setMonthsCount(1)
+    setShowPaymentMethodPopup(true)
   }
 
   const handleCustomPlanClick = () => {
@@ -65,6 +74,64 @@ export function PricingSection() {
       return
     }
     setShowCustomForm(true)
+  }
+
+  const handleConfirmPaymentMethod = () => {
+    if (!selectedPaymentMethod) {
+      toast({
+        title: 'Lỗi',
+        description: 'Vui lòng chọn phương thức thanh toán',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    if (selectedPaymentMethod === 'account_balance') {
+      // Phương thức 1: Trừ tiền tài khoản
+      const currentBalance = 500000 // Current balance in VND
+      const planPriceVND = parseFloat(selectedPlan.price) * getExchangeRate()
+      
+      if (planPriceVND > currentBalance) {
+        toast({
+          title: 'Số dư không đủ',
+          description: 'Số dư của bạn không đủ, hãy nạp thêm.',
+          variant: 'destructive'
+        })
+        return
+      }
+      
+      setShowPaymentMethodPopup(false)
+      toast({
+        title: 'Đăng ký thành công!',
+        description: `Đã đăng ký gói ${selectedPlan?.name} thành công. Tiền đã được trừ từ tài khoản.`,
+        variant: 'success'
+      })
+    } else if (selectedPaymentMethod === 'direct_payment') {
+      // Phương thức 2: Thanh toán trực tiếp
+      if (monthsCount < 1) {
+        toast({
+          title: 'Lỗi',
+          description: 'Số tháng phải lớn hơn 0',
+          variant: 'destructive'
+        })
+        return
+      }
+
+      const totalPrice = parseFloat(selectedPlan.price) * monthsCount
+      const params = new URLSearchParams({
+        planId: selectedPlan.id,
+        name: selectedPlan.name,
+        price: totalPrice.toString(),
+        description: selectedPlan.description,
+        category: selectedCategory,
+        period: selectedPlan.period || '',
+        features: JSON.stringify(selectedPlan.features),
+        months: monthsCount.toString()
+      })
+      
+      setShowPaymentMethodPopup(false)
+      router.push(`/checkout?${params.toString()}`)
+    }
   }
 
       // Function để handle scroll khi đóng từ button "Đóng"
@@ -461,6 +528,143 @@ export function PricingSection() {
         open={showCustomForm} 
         onOpenChange={setShowCustomForm} 
       />
+
+      {/* Payment Method Selection Popup */}
+      <Dialog open={showPaymentMethodPopup} onOpenChange={setShowPaymentMethodPopup}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-center">
+              Chọn phương thức thanh toán
+            </DialogTitle>
+            <DialogDescription className="text-center text-muted-foreground">
+              Chọn cách thức thanh toán phù hợp cho gói {selectedPlan?.name}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid md:grid-cols-2 gap-4 my-6">
+            {/* Phương thức 1: Trừ tiền tài khoản */}
+            <Card 
+              className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                selectedPaymentMethod === 'account_balance' 
+                  ? 'border-[#E60000] border-2 bg-red-50' 
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              onClick={() => setSelectedPaymentMethod('account_balance')}
+            >
+              <CardHeader className="text-center pb-4">
+                <div className={`mx-auto mb-3 p-3 rounded-2xl w-fit ${
+                  selectedPaymentMethod === 'account_balance' 
+                    ? 'bg-[#E60000] text-white' 
+                    : 'bg-gray-100 text-gray-600'
+                }`}>
+                  <Wallet className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-lg">Trừ tiền tài khoản</CardTitle>
+                <CardDescription className="text-sm">
+                  Sử dụng số dư có sẵn trong tài khoản để thanh toán
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-center">
+                  <div className="text-sm text-muted-foreground">Số dư hiện tại</div>
+                  <div className="text-lg font-bold text-[#E60000]">500,000 đ</div>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-2 mb-2 text-xs"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      router.push('/add-funds')
+                    }}
+                  >
+                    Nạp tiền
+                  </Button>
+                  <div className="text-sm text-muted-foreground mt-2">
+                    ✓ Thanh toán ngay lập tức<br/>
+                    ✓ Không phí giao dịch
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Phương thức 2: Thanh toán trực tiếp */}
+            <Card 
+              className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                selectedPaymentMethod === 'direct_payment' 
+                  ? 'border-[#E60000] border-2 bg-red-50' 
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              onClick={() => setSelectedPaymentMethod('direct_payment')}
+            >
+              <CardHeader className="text-center pb-4">
+                <div className={`mx-auto mb-3 p-3 rounded-2xl w-fit ${
+                  selectedPaymentMethod === 'direct_payment' 
+                    ? 'bg-[#E60000] text-white' 
+                    : 'bg-gray-100 text-gray-600'
+                }`}>
+                  <CreditCard className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-lg">Thanh toán trực tiếp</CardTitle>
+                <CardDescription className="text-sm">
+                  Thanh toán qua chuyển khoản ngân hàng hoặc QR code
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">
+                      Số tháng đăng ký
+                    </label>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="24"
+                      value={monthsCount}
+                      onChange={(e) => setMonthsCount(parseInt(e.target.value) || 1)}
+                      className="text-center font-semibold"
+                      disabled={selectedPaymentMethod !== 'direct_payment'}
+                    />
+                  </div>
+                  {selectedPaymentMethod === 'direct_payment' && selectedPlan && (
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground">Tổng thanh toán</div>
+                      <div className="text-lg font-bold text-[#E60000]">
+                        {(() => {
+                          const usdPrice = parseFloat(selectedPlan.price) * monthsCount
+                          const exchangeRate = getExchangeRate()
+                          const vndPrice = Math.floor(usdPrice * exchangeRate)
+                          const roundedVnd = roundMoney(vndPrice)
+                          return formatPrice(roundedVnd)
+                        })()} VND
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {formatPrice(roundMoney(parseFloat(selectedPlan.price) * getExchangeRate()))} × {monthsCount} tháng
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 justify-end">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowPaymentMethodPopup(false)}
+            >
+              Đóng
+            </Button>
+            <Button 
+              className="bg-[#E60000] hover:bg-red-700"
+              onClick={handleConfirmPaymentMethod}
+              disabled={!selectedPaymentMethod}
+            >
+              Xác nhận
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   )
 }

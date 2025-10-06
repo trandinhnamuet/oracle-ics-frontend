@@ -1,6 +1,6 @@
 {
   "packageManagement": {
-    "title": "Subscription Package Management",
+    "title": "Subscription My Cloud",
     "subtitle": "Track and manage your active service packages",
     "searchPlaceholder": "Search by package name, email...",
     "status": "Status",
@@ -323,6 +323,7 @@
     }
   },
   "pricing": {
+    "loginRequired": "Please log in to register for a package", 
     "plans": {
       "starter": {
         "1": {
@@ -446,7 +447,7 @@
     "logoSubtitle": "Official Partner",
     "languageLabel": "Language",
     "admin": "Admin",
-    "packageManagement": "Package Management"
+    "packageManagement": "My Cloud"
 
   },
   "footer": {

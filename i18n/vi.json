@@ -1,6 +1,6 @@
 {
   "packageManagement": {
-    "title": "Quản lý gói đã đăng ký",
+    "title": "Cloud của tôi",
     "subtitle": "Theo dõi và quản lý các gói dịch vụ đang sử dụng",
     "searchPlaceholder": "Tìm kiếm theo tên gói, email...",
     "status": "Trạng thái",
@@ -323,6 +323,7 @@
     }
   },
   "pricing": {
+    "loginRequired": "Vui lòng đăng nhập để đăng ký gói cloud",
     "plans": {
       "starter": {
         "1": {
@@ -446,7 +447,7 @@
     "logoSubtitle": "Đối tác chính thức",
     "languageLabel": "Ngôn ngữ",
     "admin": "Quản trị",
-    "packageManagement": "Quản lý gói đã đăng ký"
+    "packageManagement": "Cloud của tôi"
   },
   "footer": {
     "companyName": "Oracle Cloud Vietnam",
@@ -500,7 +501,7 @@
     "success": {
       "title": "Thanh toán thành công!",
       "desc": "Cảm ơn bạn đã đăng ký gói dịch vụ. Chúng tôi đã gửi email xác nhận và hướng dẫn sử dụng đến địa chỉ email của bạn.",
-      "manageBtn": "Quản lý gói đã đăng ký",
+      "manageBtn": "Cloud của tôi",
       "homeBtn": "Về trang chủ",
       "note": "Lưu ý: Nếu bạn không nhận được email trong vòng 5 phút, vui lòng kiểm tra thư mục spam hoặc liên hệ với chúng tôi."
     },

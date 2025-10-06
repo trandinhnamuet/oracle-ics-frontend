@@ -3,13 +3,14 @@ import { persist } from 'zustand/middleware'
 import Cookies from 'js-cookie'
 
 interface User {
-  id: string
+  id: number
   email: string
   firstName?: string
   lastName?: string
   phoneNumber?: string
   company?: string
   avatar?: string
+  avatarUrl?: string
   createdAt: string
   updatedAt: string
   role?: string

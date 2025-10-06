@@ -6,24 +6,60 @@ import '@/i18n'
 
 interface I18nProviderProps {
   children: ReactNode
+  initialLanguage?: string
 }
 
-export function I18nProvider({ children }: I18nProviderProps) {
+export function I18nProvider({ children, initialLanguage = 'vi' }: I18nProviderProps) {
   const { i18n } = useTranslation()
   const [mounted, setMounted] = useState(false)
+  const [isHydrating, setIsHydrating] = useState(true)
 
+  // Đồng bộ ngôn ngữ server-provided ngay khi component mount
   useEffect(() => {
-    // Khôi phục ngôn ngữ từ localStorage khi component mount
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('selectedLanguage')
-      if (savedLanguage && ['vi', 'en', 'zh', 'ja', 'ko'].includes(savedLanguage)) {
-        if (i18n.language !== savedLanguage) {
-          i18n.changeLanguage(savedLanguage)
+    // Đảm bảo i18n sử dụng đúng ngôn ngữ từ server
+    if (i18n.language !== initialLanguage) {
+      i18n.changeLanguage(initialLanguage, () => {
+        console.log(`I18n synchronized to: ${initialLanguage}`)
+      })
+    }
+    
+    setMounted(true)
+    
+    // Chờ hydration hoàn tất trước khi cho phép thay đổi ngôn ngữ
+    const timer = setTimeout(() => {
+      setIsHydrating(false)
+    }, 200) // Tăng delay để đảm bảo hydration hoàn tất
+    
+    return () => clearTimeout(timer)
+  }, [i18n, initialLanguage])
+
+  // CHỈ sau khi hydration hoàn tất mới cho phép đồng bộ với client storage
+  useEffect(() => {
+    if (!isHydrating && mounted && typeof window !== 'undefined') {
+      const cookieLanguage = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('language='))
+        ?.split('=')[1]
+      
+      const localStorageLanguage = localStorage.getItem('selectedLanguage')
+      const targetLanguage = cookieLanguage || localStorageLanguage || initialLanguage
+      
+      if (['vi', 'en', 'zh', 'ja', 'ko'].includes(targetLanguage)) {
+        // Chỉ thay đổi ngôn ngữ nếu khác với hiện tại VÀ khác với server
+        if (i18n.language !== targetLanguage && targetLanguage !== initialLanguage) {
+          i18n.changeLanguage(targetLanguage)
+        }
+        
+        // Đồng bộ storage
+        localStorage.setItem('selectedLanguage', targetLanguage)
+        if (!cookieLanguage || cookieLanguage !== targetLanguage) {
+          const expires = new Date()
+          expires.setFullYear(expires.getFullYear() + 1)
+          document.cookie = `language=${targetLanguage}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`
         }
       }
     }
-    setMounted(true)
-  }, [i18n])
+  }, [isHydrating, mounted, i18n, initialLanguage])
 
   // Lắng nghe sự kiện thay đổi ngôn ngữ để lưu vào localStorage
   useEffect(() => {
@@ -40,7 +76,8 @@ export function I18nProvider({ children }: I18nProviderProps) {
     }
   }, [i18n])
 
-  if (!mounted) {
+  // Tránh hydration mismatch bằng cách chờ hydration hoàn tất
+  if (!mounted || isHydrating) {
     return <>{children}</>
   }
 
