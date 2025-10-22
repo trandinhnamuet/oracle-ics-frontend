@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { PricingSection } from '../../components/homepage/pricing-section';
+import { PricingSection } from '../../../components/homepage/pricing-section';
 
 export default function PricingPage() {
 	const [visible, setVisible] = useState(false);

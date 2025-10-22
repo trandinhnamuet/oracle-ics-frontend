@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, CreditCard, Smartphone, QrCode, AlertCircle } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
+import { paymentApi } from '@/api/payment.api'
+import useAuthStore from '@/hooks/use-auth-store'
 
 const QUICK_AMOUNTS = [100000, 500000, 1000000, 2000000, 5000000, 10000000]
 
@@ -44,6 +46,7 @@ export default function AddFundsPage() {
   const { t } = useTranslation()
   const router = useRouter()
   const { toast } = useToast()
+  const { user } = useAuthStore()
   
   const [amount, setAmount] = useState('')
   const [selectedMethod, setSelectedMethod] = useState('bank_transfer')
@@ -59,7 +62,7 @@ export default function AddFundsPage() {
     setAmount(value.toString())
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const numericAmount = parseInt(amount)
     
     if (!amount || numericAmount < 10000) {
@@ -99,14 +102,66 @@ export default function AddFundsPage() {
       return
     }
 
-    // Chuyển sang màn thanh toán
-    const queryParams = new URLSearchParams({
-      amount: amount,
-      method: selectedMethod,
-      type: 'add_funds'
-    })
-    
-    router.push(`/add-funds/payment?${queryParams.toString()}`)
+    if (!user?.id) {
+      toast({
+        title: 'Lỗi',
+        description: 'Vui lòng đăng nhập để tiếp tục',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    try {
+      setIsProcessing(true)
+      
+      // Tạo transaction code duy nhất
+      const transactionCode = `NAP${Date.now()}${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+      
+      // Tạo payment record
+      const paymentData = {
+        amount: numericAmount,
+        payment_type: 'deposit' as const,
+        payment_method: 'sepay_qr' as const,
+        description: `Nạp tiền vào tài khoản - ${formatPrice(numericAmount)}`,
+      }
+
+      const response = await paymentApi.createPayment(paymentData)
+      
+      console.log('Payment creation response:', response)
+      
+      toast({
+        title: 'Thành công',
+        description: 'Đã tạo lệnh nạp tiền, đang chuyển đến trang thanh toán...',
+        variant: 'default'
+      })
+
+      // Chuyển sang màn thanh toán với paymentId
+      const queryParams = new URLSearchParams({
+        paymentId: response.id.toString(),
+        amount: amount,
+        method: selectedMethod,
+        type: 'add_funds'
+      })
+      
+      router.push(`/add-funds/payment?${queryParams.toString()}`)
+    } catch (error: any) {
+      console.error('Error creating payment:', error)
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      })
+      
+      const errorMessage = error.response?.data?.message || error.message || 'Có lỗi xảy ra khi tạo lệnh thanh toán. Vui lòng thử lại.'
+      
+      toast({
+        title: 'Lỗi',
+        description: errorMessage,
+        variant: 'destructive'
+      })
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   const formatAmountDisplay = (value: string) => {
@@ -117,7 +172,7 @@ export default function AddFundsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-2xl">
+        <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="flex items-center mb-8">
           <Button
@@ -132,8 +187,64 @@ export default function AddFundsPage() {
           <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
         </div>
 
-        <div className="space-y-6">
-          {/* Nhập số tiền */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Chọn phương thức thanh toán - bên trái */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Chọn phương thức thanh toán</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {PAYMENT_METHODS.map((method) => {
+                const Icon = method.icon
+                const isSelected = selectedMethod === method.id
+                return (
+                  <div
+                    key={method.id}
+                    className={`
+                      relative p-4 border rounded-lg cursor-pointer transition-all
+                      ${isSelected 
+                        ? 'border-[#E60000] bg-red-50' 
+                        : 'border-gray-200 hover:border-gray-300'
+                      }
+                      ${!method.enabled ? 'opacity-50 cursor-not-allowed' : ''}
+                    `}
+                    onClick={() => {
+                      if (method.enabled) {
+                        setSelectedMethod(method.id)
+                      }
+                    }}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`
+                        p-2 rounded-lg
+                        ${isSelected ? 'bg-[#E60000] text-white' : 'bg-gray-100 text-gray-600'}
+                      `}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="font-medium text-gray-900">{method.name}</h3>
+                          {method.comingSoon && (
+                            <Badge variant="outline" className="text-xs">
+                              Sắp có
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600">{method.description}</p>
+                      </div>
+                      {isSelected && method.enabled && (
+                        <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </CardContent>
+          </Card>
+
+          {/* Nhập số tiền - bên phải */}
           <Card>
             <CardHeader>
               <CardTitle>Nhập số tiền muốn nạp</CardTitle>
@@ -163,7 +274,6 @@ export default function AddFundsPage() {
                   </p>
                 )}
               </div>
-
               {/* Các mức nạp nhanh */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
@@ -183,7 +293,6 @@ export default function AddFundsPage() {
                   ))}
                 </div>
               </div>
-
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <div className="flex items-start space-x-2">
                   <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -197,77 +306,18 @@ export default function AddFundsPage() {
               </div>
             </CardContent>
           </Card>
+        </div>
 
-          {/* Chọn phương thức thanh toán */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Chọn phương thức thanh toán</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {PAYMENT_METHODS.map((method) => {
-                const Icon = method.icon
-                const isSelected = selectedMethod === method.id
-                
-                return (
-                  <div
-                    key={method.id}
-                    className={`
-                      relative p-4 border rounded-lg cursor-pointer transition-all
-                      ${isSelected 
-                        ? 'border-[#E60000] bg-red-50' 
-                        : 'border-gray-200 hover:border-gray-300'
-                      }
-                      ${!method.enabled ? 'opacity-50 cursor-not-allowed' : ''}
-                    `}
-                    onClick={() => {
-                      if (method.enabled) {
-                        setSelectedMethod(method.id)
-                      }
-                    }}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className={`
-                        p-2 rounded-lg
-                        ${isSelected ? 'bg-[#E60000] text-white' : 'bg-gray-100 text-gray-600'}
-                      `}>
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <h3 className="font-medium text-gray-900">{method.name}</h3>
-                          {method.comingSoon && (
-                            <Badge variant="outline" className="text-xs">
-                              Sắp có
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600">{method.description}</p>
-                      </div>
-
-                      {isSelected && method.enabled && (
-                        <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </CardContent>
-          </Card>
-
-          {/* Button xác nhận */}
-          <div className="sticky bottom-4">
-            <Button
-              onClick={handleSubmit}
-              disabled={!amount || !selectedMethod || isProcessing}
-              className="w-full bg-[#E60000] hover:bg-red-700 text-white py-4 text-lg font-semibold"
-              size="lg"
-            >
-              {isProcessing ? 'Đang xử lý...' : `Xác nhận nạp ${amount ? formatAmountDisplay(amount) : '0'} VND`}
-            </Button>
-          </div>
+        {/* Button xác nhận */}
+        <div className="sticky bottom-4 mt-6">
+          <Button
+            onClick={handleSubmit}
+            disabled={!amount || !selectedMethod || isProcessing}
+            className="w-full bg-[#E60000] hover:bg-red-700 text-white py-4 text-lg font-semibold"
+            size="lg"
+          >
+            {isProcessing ? 'Đang xử lý...' : `Xác nhận nạp ${amount ? formatAmountDisplay(amount) : '0'} VND`}
+          </Button>
         </div>
       </div>
     </div>

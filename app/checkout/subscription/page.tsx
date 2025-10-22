@@ -12,7 +12,7 @@ import { paymentApi } from '@/api/payment.api'
 import Image from 'next/image'
 import { Suspense, useEffect, useState } from 'react'
 
-function AddFundsPaymentContent() {
+function SubscriptionCheckoutContent() {
   const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -28,9 +28,10 @@ function AddFundsPaymentContent() {
   
   // Lấy data từ query params
   const paymentId = searchParams.get('paymentId')
+  const subscriptionId = searchParams.get('subscriptionId')
   const amount = searchParams.get('amount') || '0'
-  const method = searchParams.get('method') || 'bank_transfer'
-  const type = searchParams.get('type') || 'add_funds'
+  const method = searchParams.get('method') || 'sepay_qr'
+  const type = searchParams.get('type') || 'subscription'
 
   // Tạo URL QR Sepay 
   const createQRUrl = (amount: string, transactionCode: string) => {
@@ -61,8 +62,8 @@ function AddFundsPaymentContent() {
         }
         
         toast({
-          title: 'Nạp tiền thành công!',
-          description: 'Tiền đã được cộng vào tài khoản của bạn.',
+          title: 'Thanh toán thành công!',
+          description: 'Subscription đã được kích hoạt.',
           variant: 'default'
         })
         
@@ -81,7 +82,7 @@ function AddFundsPaymentContent() {
   // Setup polling khi component mount
   useEffect(() => {
     if (!paymentId) {
-      router.push('/add-funds')
+      router.push('/')
       return
     }
 
@@ -133,7 +134,7 @@ Nội dung: ${paymentData.transaction_code}
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
-  if (!paymentId || !amount || parseInt(amount) < 10000) {
+  if (!paymentId || !amount || parseInt(amount) < 1) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md">
@@ -142,8 +143,8 @@ Nội dung: ${paymentData.transaction_code}
             <p className="text-muted-foreground mb-4">
               Không tìm thấy thông tin thanh toán. Vui lòng thử lại.
             </p>
-            <Button onClick={() => router.push('/add-funds')}>
-              Quay lại trang nạp tiền
+            <Button onClick={() => router.push('/')}>
+              Quay lại trang chủ
             </Button>
           </CardContent>
         </Card>
@@ -165,7 +166,7 @@ Nội dung: ${paymentData.transaction_code}
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
           </Button>
-          <h1 className="text-3xl font-bold text-foreground">Nạp tiền vào tài khoản</h1>
+          <h1 className="text-3xl font-bold text-foreground">Thanh toán Subscription</h1>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -180,8 +181,8 @@ Nội dung: ${paymentData.transaction_code}
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Loại giao dịch:</span>
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                  Nạp tiền
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  Đăng ký Subscription
                 </Badge>
               </div>
               
@@ -190,9 +191,16 @@ Nội dung: ${paymentData.transaction_code}
                 <Badge variant="secondary">Chuyển khoản ngân hàng</Badge>
               </div>
 
+              {subscriptionId && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Subscription ID:</span>
+                  <span className="text-sm font-mono">{subscriptionId}</span>
+                </div>
+              )}
+
               <div className="border-t pt-4">
                 <div className="flex items-center justify-between text-lg font-semibold">
-                  <span>Số tiền nạp:</span>
+                  <span>Số tiền thanh toán:</span>
                   <span className="text-[#E60000]">
                     {formatPrice(parseInt(amount))} VND
                   </span>
@@ -223,7 +231,7 @@ Nội dung: ${paymentData.transaction_code}
 
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <p className="text-sm text-green-800">
-                  ✓ Tiền nạp sẽ được cộng vào tài khoản ngay lập tức<br/>
+                  ✓ Subscription sẽ được kích hoạt ngay lập tức<br/>
                   ✓ Không có phí giao dịch<br/>
                   ✓ Hỗ trợ 24/7<br/>
                   ✓ Giao dịch được mã hóa bảo mật
@@ -252,7 +260,7 @@ Nội dung: ${paymentData.transaction_code}
                   <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
                     <Image
                       src={createQRUrl(amount, paymentData.transaction_code)}
-                      alt="QR Code nạp tiền"
+                      alt="QR Code thanh toán subscription"
                       width={200}
                       height={200}
                       className="mx-auto"
@@ -268,7 +276,7 @@ Nội dung: ${paymentData.transaction_code}
                 
                 {paymentStatus === 'success' ? (
                   <p className="text-sm text-green-600 mt-2 font-medium">
-                    ✅ Nạp tiền thành công! Đang chuyển hướng...
+                    ✅ Thanh toán thành công! Đang chuyển hướng...
                   </p>
                 ) : paymentStatus === 'pending' ? (
                   <p className="text-sm text-blue-600 mt-2 flex items-center justify-center">
@@ -344,7 +352,7 @@ Nội dung: ${paymentData.transaction_code}
   )
 }
 
-export default function AddFundsPaymentPage() {
+export default function SubscriptionCheckoutPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -354,7 +362,7 @@ export default function AddFundsPaymentPage() {
         </div>
       </div>
     }>
-      <AddFundsPaymentContent />
+      <SubscriptionCheckoutContent />
     </Suspense>
   )
 }

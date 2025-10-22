@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw } from 'lucide-react'
+import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp } from 'lucide-react'
 import {
   LineChart,
   Line,
@@ -365,6 +365,27 @@ export default function PackageDetailPage() {
                 <Download className="h-4 w-4 mr-2" />
                 Create Backup
               </Button>
+
+              <Button 
+                className="w-full justify-start"
+                variant="outline"
+                onClick={() => handleAction('backup')}
+                disabled={isLoading}
+              >
+                <Terminal className="h-4 w-4 mr-2" />
+                Console
+              </Button>
+
+              <Button 
+                className="w-full justify-start"
+                variant="outline"
+                onClick={() => handleAction('backup')}
+                disabled={isLoading}
+              >
+                <MonitorUp className="h-4 w-4 mr-2" />
+                Change/Reinstall OS
+              </Button>
+              
               
               <div className="pt-2 border-t">
                 <Button 

@@ -15,6 +15,9 @@ import { formatPrice, roundMoney } from "@/lib/utils"
 import CustomRegistrationForm from "./customRegistrationForm"
 import useAuthStore from "@/hooks/use-auth-store"
 import { useToast } from "@/hooks/use-toast"
+import BalanceDisplay from "@/components/wallet/balance-display"
+import { subscribeWithBalance, subscribeWithPayment } from "@/api/subscription.api"
+import { getUserBalance } from "@/api/user-wallet.api"
 
 export function PricingSection() {
   const { t } = useTranslation()
@@ -32,6 +35,7 @@ export function PricingSection() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
   const [monthsCount, setMonthsCount] = useState(1)
+  const [userBalance, setUserBalance] = useState<number>(0)
   
   // Refs for scrolling
   const mainCardsRef = useRef<HTMLDivElement>(null)
@@ -47,6 +51,22 @@ export function PricingSection() {
     }
     return 26500;
   }
+
+  // Fetch user balance when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchBalance = async () => {
+        try {
+          const response = await getUserBalance()
+          setUserBalance(response.balance)
+        } catch (error) {
+          console.error('Error fetching balance:', error)
+          setUserBalance(0)
+        }
+      }
+      fetchBalance()
+    }
+  }, [isAuthenticated])
 
   const handleSelectPlan = (plan: any, category: string) => {
     if (!isAuthenticated) {
@@ -76,7 +96,7 @@ export function PricingSection() {
     setShowCustomForm(true)
   }
 
-  const handleConfirmPaymentMethod = () => {
+  const handleConfirmPaymentMethod = async () => {
     if (!selectedPaymentMethod) {
       toast({
         title: 'Lỗi',
@@ -88,49 +108,83 @@ export function PricingSection() {
 
     if (selectedPaymentMethod === 'account_balance') {
       // Phương thức 1: Trừ tiền tài khoản
-      const currentBalance = 500000 // Current balance in VND
-      const planPriceVND = parseFloat(selectedPlan.price) * getExchangeRate()
-      
-      if (planPriceVND > currentBalance) {
+      try {
+        const currentBalance = userBalance // Current balance in VND
+        const planPriceVND = parseFloat(selectedPlan.price) * getExchangeRate()
+        
+        if (planPriceVND > currentBalance) {
+          toast({
+            title: 'Số dư không đủ',
+            description: 'Số dư của bạn không đủ, hãy nạp thêm.',
+            variant: 'destructive'
+          })
+          return
+        }
+
+        // Call API to subscribe with balance
+        await subscribeWithBalance({
+          cloudPackageId: selectedPlan.id,
+          autoRenew: false
+        })
+        
+        setShowPaymentMethodPopup(false)
         toast({
-          title: 'Số dư không đủ',
-          description: 'Số dư của bạn không đủ, hãy nạp thêm.',
+          title: 'Đăng ký thành công!',
+          description: `Đã đăng ký gói ${selectedPlan?.name} thành công. Tiền đã được trừ từ tài khoản.`,
+          variant: 'default'
+        })
+
+        // Refresh balance
+        const response = await getUserBalance()
+        setUserBalance(response.balance)
+        
+      } catch (error: any) {
+        console.error('Error subscribing with balance:', error)
+        toast({
+          title: 'Lỗi đăng ký',
+          description: error.response?.data?.message || 'Có lỗi xảy ra khi đăng ký gói.',
           variant: 'destructive'
         })
-        return
       }
-      
-      setShowPaymentMethodPopup(false)
-      toast({
-        title: 'Đăng ký thành công!',
-        description: `Đã đăng ký gói ${selectedPlan?.name} thành công. Tiền đã được trừ từ tài khoản.`,
-        variant: 'success'
-      })
     } else if (selectedPaymentMethod === 'direct_payment') {
       // Phương thức 2: Thanh toán trực tiếp
-      if (monthsCount < 1) {
+      try {
+        if (monthsCount < 1) {
+          toast({
+            title: 'Lỗi',
+            description: 'Số tháng phải lớn hơn 0',
+            variant: 'destructive'
+          })
+          return
+        }
+
+        // Call API to create subscription with payment
+        const result = await subscribeWithPayment({
+          cloudPackageId: selectedPlan.id,
+          monthsCount: monthsCount,
+          autoRenew: false
+        })
+
+        setShowPaymentMethodPopup(false)
+        
+        // Navigate to checkout page with payment info
+        const params = new URLSearchParams({
+          paymentId: result.payment.id,
+          subscriptionId: result.subscription.id.toString(),
+          amount: result.payment.amount.toString(),
+          method: 'sepay_qr',
+          type: 'subscription'
+        })
+        
+        router.push(`/checkout/subscription?${params.toString()}`)
+      } catch (error: any) {
+        console.error('Error creating subscription payment:', error)
         toast({
-          title: 'Lỗi',
-          description: 'Số tháng phải lớn hơn 0',
+          title: 'Lỗi tạo thanh toán',
+          description: error.response?.data?.message || 'Có lỗi xảy ra khi tạo thanh toán.',
           variant: 'destructive'
         })
-        return
       }
-
-      const totalPrice = parseFloat(selectedPlan.price) * monthsCount
-      const params = new URLSearchParams({
-        planId: selectedPlan.id,
-        name: selectedPlan.name,
-        price: totalPrice.toString(),
-        description: selectedPlan.description,
-        category: selectedCategory,
-        period: selectedPlan.period || '',
-        features: JSON.stringify(selectedPlan.features),
-        months: monthsCount.toString()
-      })
-      
-      setShowPaymentMethodPopup(false)
-      router.push(`/checkout?${params.toString()}`)
     }
   }
 
@@ -567,7 +621,7 @@ export function PricingSection() {
               <CardContent className="pt-0">
                 <div className="text-center">
                   <div className="text-sm text-muted-foreground">Số dư hiện tại</div>
-                  <div className="text-lg font-bold text-[#E60000]">500,000 đ</div>
+                  <div className="text-lg font-bold text-[#E60000]">{formatPrice(userBalance)} đ</div>
                   <Button 
                     variant="outline" 
                     size="sm" 

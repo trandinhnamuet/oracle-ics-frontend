@@ -21,10 +21,21 @@ function CheckoutContent() {
 
   // States
   const [qrUrl, setQrUrl] = useState<string>('')
-  const [paymentId, setPaymentId] = useState<string>('')
+  const [paymentData, setPaymentData] = useState<any>(null)
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed'>('pending')
+  const [isLoading, setIsLoading] = useState(true)
   const [isCreatingPayment, setIsCreatingPayment] = useState(false)
+  const [isPaid, setIsPaid] = useState(false)
+  const [isChecking, setIsChecking] = useState(false)
   
-  // Lấy data từ query params
+  // Lấy data từ query params  
+  const paymentId = searchParams.get('paymentId')
+  const subscriptionId = searchParams.get('subscriptionId')
+  const amount = searchParams.get('amount') || '0'
+  const method = searchParams.get('method') || 'sepay_qr'
+  const type = searchParams.get('type') || 'subscription'
+  
+  // Legacy params for old checkout (keep for backward compatibility)
   const planId = searchParams.get('planId')
   const planName = searchParams.get('name')
   const planPrice = searchParams.get('price')
@@ -33,98 +44,105 @@ function CheckoutContent() {
   const planPeriod = searchParams.get('period')
   const planFeaturesStr = searchParams.get('features')
   const planMonths = searchParams.get('months') || '1'
+  const userId = searchParams.get('userId')
   
-  // Parse features từ JSON string
-  const planFeatures = planFeaturesStr ? JSON.parse(planFeaturesStr) : []
-
-  // Mock userId - trong thực tế sẽ lấy từ auth context
-  const userId = 1 // TODO: Lấy từ auth context
-
-  // Theo dõi trạng thái thanh toán
-  const { isPaid, isChecking } = usePaymentStatus(
-    userId, 
-    parseInt(planId || '0'), 
-    !!paymentId // Chỉ bắt đầu theo dõi khi đã tạo payment
-  )
-
-  // Tạo URL QR Sepay với custom content
-  const createCustomQRUrl = (amount: string, description: string) => {
+  // Parse features từ string
+  const planFeatures = planFeaturesStr ? planFeaturesStr.split(',').map(f => f.trim()) : []
+  
+  // Tạo URL QR Sepay 
+  const createQRUrl = (amount: string, transactionCode: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
-    const customContent = `${description} U${userId}P${planId}`
-    // Chuyển số tiền sang VND
-    const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
-    const vndAmount = roundMoney(parseFloat(amount || '0') * rate);
     const params = new URLSearchParams({
       acc: '66010901964',
       bank: 'TPBank',
-      amount: String(vndAmount),
-      des: customContent
+      amount: amount,
+      des: transactionCode
     })
     return `${baseUrl}?${params.toString()}`
   }
 
-  // Tạo thanh toán khi component mount
+  // Fetch payment status từ API
+  const fetchPaymentStatus = async () => {
+    if (!paymentId) return
+    
+    try {
+      setIsChecking(true)
+      const response = await paymentApi.getPaymentStatus(paymentId)
+      setPaymentData(response)
+      setPaymentStatus(response.status)
+      
+      if (response.status === 'success') {
+        setIsPaid(true)
+        toast({
+          title: 'Thanh toán thành công!',
+          description: 'Đang chuyển đến trang thành công...',
+          variant: 'default'
+        })
+        
+        // Chờ 2 giây rồi chuyển trang
+        setTimeout(() => {
+          router.push('/checkout/success')
+        }, 2000)
+      }
+      
+      // Create QR URL if we have transaction code
+      if (response.transaction_code && !qrUrl) {
+        const qrUrlGenerated = createQRUrl(amount, response.transaction_code)
+        setQrUrl(qrUrlGenerated)
+      }
+      
+    } catch (error) {
+      console.error('Error fetching payment status:', error)
+    } finally {
+      setIsLoading(false)
+      setIsChecking(false)
+      setIsCreatingPayment(false)
+    }
+  }
+
+  // Setup polling khi component mount  
   useEffect(() => {
-    if (!planId || !planName || !planPrice) {
+    if (!paymentId) {
       router.push('/')
       return
     }
 
-    const createPayment = async () => {
-      try {
-        setIsCreatingPayment(true)
-        
-        // Tạo QR code với custom content
-  const customQrUrl = createCustomQRUrl(planPrice, planName)
-  console.log('QR URL:', customQrUrl)
-  setQrUrl(customQrUrl)
+    // Set initial states
+    setIsCreatingPayment(true)
+    
+    // Fetch ngay lần đầu
+    fetchPaymentStatus()
 
-        // Gọi API để tạo bản ghi payment (với is_paid = false)
-        const result = await paymentApi.createPayment({
-          userId,
-          packageId: parseInt(planId),
-          amount: parseInt(planPrice),
-          planName: planName
-        })
-
-        setPaymentId(result.paymentId)
-        
-        toast({
-          title: 'Đã tạo thanh toán',
-          description: 'Vui lòng quét QR code để thanh toán',
-          variant: 'default'
-        })
-      } catch (error) {
-        console.error('Error creating payment:', error)
-        toast({
-          title: 'Lỗi tạo thanh toán',
-          description: 'Vui lòng thử lại',
-          variant: 'destructive'
-        })
-      } finally {
-        setIsCreatingPayment(false)
+    // Setup polling mỗi 5 giây
+    const interval = setInterval(() => {
+      if (paymentStatus !== 'success') {
+        fetchPaymentStatus()
       }
-    }
+    }, 5000)
 
-    createPayment()
-  }, [planId, planName, planPrice, userId, router, toast])
+    // Cleanup khi component unmount
+    return () => clearInterval(interval)
+  }, [paymentId, router])
 
-  // Nếu không có data, redirect về trang chính
-  if (!planId || !planName || !planPrice) {
+  // Nếu không có paymentId, redirect
+  if (!paymentId) {
     return null
   }
 
   const handleCopyTransferInfo = () => {
-    const customContent = `${planName} U${userId}P${planId}`
+    const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
+    const vndPrice = roundMoney(parseFloat(planPrice || '0') * rate);
+    const transactionCode = paymentData?.transaction_code || `${planName} U${userId}P${planId}`;
+    
     const transferInfo = `
-${t('checkout.bankName')}: TPBank
-${t('checkout.accountNumber')}: 66010901964
-${t('checkout.amount')}: ${formatPrice(planPrice)}₫
-${t('checkout.content')}: ${customContent}
+Ngân hàng: TPBank
+Số tài khoản: 66010901964
+Số tiền: ${formatPrice(vndPrice)} VND
+Nội dung: ${transactionCode}
     `.trim()
     navigator.clipboard.writeText(transferInfo)
     toast({
-      title: t('checkout.copiedSuccess'),
+      title: 'Đã sao chép thông tin chuyển khoản',
       variant: 'default'
     })
   }
