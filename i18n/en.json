@@ -72,6 +72,12 @@
     "customRegDesc": "Track and process custom package registration requests",
     "customRegStats": "{{count}} new requests",
     "access": "Access",
+    "packagesTitle": "Manage Cloud Packages",
+    "packagesDesc": "Create, edit, and manage cloud service packages",
+    "packagesStats": "Total: {{count}} packages",
+    "subscriptionsTitle": "Manage Service Subscriptions",
+    "subscriptionsDesc": "View and manage user-subscribed service packages (subscriptions)",
+    "subscriptionsStats": "Feature not yet implemented",
     "user": {
       "title": "User Management",
       "subtitle": "Manage user accounts in the system",

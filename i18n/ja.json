@@ -72,6 +72,12 @@
     "customRegDesc": "カスタムパッケージ申請の追跡と処理",
     "customRegStats": "{{count}}件の新規申請",
     "access": "アクセス",
+    "packagesTitle": "クラウドパッケージ管理",
+    "packagesDesc": "クラウドサービスパッケージの作成、編集、管理",
+    "packagesStats": "合計：{{count}}個のパッケージ",
+    "subscriptionsTitle": "サービスサブスクリプション管理",
+    "subscriptionsDesc": "ユーザーがサブスクライブしたサービスパッケージ（サブスクリプション）の表示と管理",
+    "subscriptionsStats": "機能はまだ実装されていません",
     "user": {
       "title": "ユーザー管理",
       "subtitle": "システム内のユーザーアカウントを管理",

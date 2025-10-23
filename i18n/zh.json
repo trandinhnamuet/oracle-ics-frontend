@@ -72,6 +72,12 @@
     "customRegDesc": "跟踪和处理自定义套餐申请",
     "customRegStats": "{{count}}条新申请",
     "access": "访问",
+    "packagesTitle": "管理云包",
+    "packagesDesc": "创建、编辑和管理云服务包",
+    "packagesStats": "总计：{{count}}个包",
+    "subscriptionsTitle": "管理服务订阅",
+    "subscriptionsDesc": "查看和管理用户订阅的服务包（订阅）",
+    "subscriptionsStats": "功能尚未实现",
     "user": {
       "title": "用户管理",
       "subtitle": "管理系统中的用户账户",

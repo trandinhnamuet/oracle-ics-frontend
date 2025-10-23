@@ -72,6 +72,12 @@
     "customRegDesc": "Theo dõi và xử lý các yêu cầu đăng ký gói dịch vụ tùy chỉnh",
     "customRegStats": "{{count}} yêu cầu mới",
     "access": "Truy cập",
+    "packagesTitle": "Quản lý các Cloud Package",
+    "packagesDesc": "Tạo, chỉnh sửa và quản lý các gói dịch vụ cloud",
+    "packagesStats": "Tổng: {{count}} gói",
+    "subscriptionsTitle": "Quản lý đăng ký dịch vụ",
+    "subscriptionsDesc": "Xem và quản lý các gói người dùng đã đăng ký (subscription)",
+    "subscriptionsStats": "Chưa có chức năng",
     "user": {
       "title": "Quản lý người dùng",
       "subtitle": "Quản lý tài khoản người dùng trong hệ thống",

@@ -25,20 +25,20 @@ const adminLinks = (t: any) => [
 		stats: t('admin.customRegStats', { count: 5 }),
 	},
 	{
-		title: 'Quản lý các Cloud Package',
-		description: 'Tạo, chỉnh sửa và quản lý các gói dịch vụ cloud',
+		title: t('admin.packagesTitle'),
+		description: t('admin.packagesDesc'),
 		href: '/admin/packages',
 		icon: Package,
 		color: 'bg-purple-500',
-		stats: 'Tổng: 25 gói',
+		stats: t('admin.packagesStats', { count: 25 }),
 	},
     {
-        title: 'Quản lý đăng ký dịch vụ',
-        description: 'Xem và quản lý các gói người dùng đã đăng ký (subscription)',
+        title: t('admin.subscriptionsTitle'),
+        description: t('admin.subscriptionsDesc'),
         href: '/admin/subscriptions',
         icon: Package,
         color: 'bg-orange-500',
-        stats: 'Chưa có chức năng',
+        stats: t('admin.subscriptionsStats'),
     },
 ]
 

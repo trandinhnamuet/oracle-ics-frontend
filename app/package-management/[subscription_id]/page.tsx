@@ -18,6 +18,8 @@ import {
   AreaChart,
   Area
 } from 'recharts'
+import { getSubscriptionById, Subscription } from '@/api/subscription.api'
+import { toast } from '@/hooks/use-toast'
 
 // Demo data for charts
 const cpuData = [
@@ -39,18 +41,27 @@ const memoryData = [
 ]
 
 interface CloudPackageDetail {
-  id: number
+  id: string
   vmName: string
   packageName: string
-  status: 'active' | 'paused' | 'stopped'
+  status: 'active' | 'inactive' | 'expired' | 'suspended' | 'cancelled' | 'pending'
   cpu: string
   memory: string
   storage: string
   bandwidth: string
+  feature: string
   ipAddress: string
   createdAt: string
+  startDate: string
+  endDate: string
   nextBilling: string
   monthlyPrice: number
+  autoRenew: boolean
+  user?: {
+    firstName: string
+    lastName: string
+    email: string
+  }
 }
 
 export default function PackageDetailPage() {
@@ -59,25 +70,61 @@ export default function PackageDetailPage() {
   const { t } = useTranslation()
   const subscriptionId = params.subscription_id as string
 
-  const [packageDetail, setPackageDetail] = useState<CloudPackageDetail>({
-    id: 1,
-    vmName: '1365442-01',
-    packageName: 'CloudForce Premium',
-    status: 'active',
-    cpu: '4 vCPU',
-    memory: '8 GB RAM',
-    storage: '200 GB SSD',
-    bandwidth: '1000 Mbps',
-    ipAddress: '192.168.1.100',
-    createdAt: '2024-09-15',
-    nextBilling: '2024-10-15',
-    monthlyPrice: 99.99
-  })
-
+  const [subscription, setSubscription] = useState<Subscription | null>(null)
+  const [packageDetail, setPackageDetail] = useState<CloudPackageDetail | null>(null)
   const [selectedVM, setSelectedVM] = useState('1365442-01')
   const [selectedTime, setSelectedTime] = useState('1 hour ago')
   const [selectedTheme, setSelectedTheme] = useState('Light')
   const [isLoading, setIsLoading] = useState(false)
+  const [isDataLoading, setIsDataLoading] = useState(true)
+
+  // Fetch subscription data
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        setIsDataLoading(true)
+        const data = await getSubscriptionById(subscriptionId)
+        setSubscription(data)
+        
+        // Transform subscription data to package detail format
+        const detail: CloudPackageDetail = {
+          id: data.id,
+          vmName: `VM-${data.id.slice(-8)}`, // Generate VM name from subscription ID
+          packageName: data.cloudPackage?.name || 'Unknown Package',
+          status: data.status,
+          cpu: data.cloudPackage?.cpu || 'N/A',
+          memory: data.cloudPackage?.ram || 'N/A', 
+          storage: data.cloudPackage?.memory || 'N/A',
+          bandwidth: data.cloudPackage?.bandwidth || 'N/A',
+          feature: data.cloudPackage?.feature || 'N/A',
+          ipAddress: '192.168.1.100', // This would come from VM management system
+          createdAt: new Date(data.created_at).toLocaleDateString('vi-VN'),
+          startDate: new Date(data.start_date).toLocaleDateString('vi-VN'),
+          endDate: new Date(data.end_date).toLocaleDateString('vi-VN'),
+          nextBilling: new Date(data.end_date).toLocaleDateString('vi-VN'),
+          monthlyPrice: data.cloudPackage?.cost_vnd ? parseFloat(data.cloudPackage.cost_vnd) : 0,
+          autoRenew: data.auto_renew,
+          user: data.user
+        }
+        setPackageDetail(detail)
+        setSelectedVM(`VM-${data.id.slice(-8)}`)
+        
+      } catch (error: any) {
+        console.error('Error fetching subscription:', error)
+        toast({
+          title: "Lỗi",
+          description: "Không thể tải thông tin subscription",
+          variant: "destructive"
+        })
+      } finally {
+        setIsDataLoading(false)
+      }
+    }
+
+    if (subscriptionId) {
+      fetchSubscription()
+    }
+  }, [subscriptionId])
 
   const handleAction = async (action: string) => {
     setIsLoading(true)
@@ -91,10 +138,54 @@ export default function PackageDetailPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800'
-      case 'paused': return 'bg-yellow-100 text-yellow-800'
-      case 'stopped': return 'bg-red-100 text-red-800'
+      case 'inactive': return 'bg-gray-100 text-gray-800'
+      case 'expired': return 'bg-red-100 text-red-800'
+      case 'suspended': return 'bg-yellow-100 text-yellow-800'
+      case 'cancelled': return 'bg-red-100 text-red-800'
+      case 'pending': return 'bg-blue-100 text-blue-800'
       default: return 'bg-gray-100 text-gray-800'
     }
+  }
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'active': return 'Đang hoạt động'
+      case 'inactive': return 'Không hoạt động'  
+      case 'expired': return 'Hết hạn'
+      case 'suspended': return 'Tạm dừng'
+      case 'cancelled': return 'Đã hủy'
+      case 'pending': return 'Đang chờ'
+      default: return status.toUpperCase()
+    }
+  }
+
+  if (isDataLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <div className="text-lg">Đang tải thông tin subscription...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!subscription || !packageDetail) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-red-600">Không tìm thấy subscription</div>
+          <Button 
+            onClick={() => router.back()} 
+            className="mt-4"
+            variant="outline"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Quay lại
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -123,10 +214,56 @@ export default function PackageDetailPage() {
           </div>
           <div className="text-right">
             <Badge className={getStatusColor(packageDetail.status)}>
-              {packageDetail.status.toUpperCase()}
+              {getStatusLabel(packageDetail.status)}
             </Badge>
           </div>
         </div>
+          {/* Server Details Demo Card */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between w-full">
+                <CardTitle>Server details</CardTitle>
+                <Badge className="ml-2 bg-blue-500 text-white text-xs font-semibold">Demo data</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600">Trạng thái</p>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">BẬT</span>
+                      <Button variant="link" size="sm" className="p-0 h-auto min-h-0">Làm mới lại</Button>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Tên miền/ Hostname</p>
+                    <p className="font-semibold">trandinhnamz.xyz</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Tên đăng nhập</p>
+                    <p className="font-semibold">root</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Mật khẩu</p>
+                    <div className="flex items-center gap-2">
+                      <input type="password" value="password-demo" readOnly className="border rounded px-2 py-1 text-sm w-32" />
+                      <Button variant="ghost" size="icon" className="h-7 w-7"><span role="img" aria-label="eye">👁️</span></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7"><span role="img" aria-label="key">🔑</span></Button>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">IP</p>
+                    <a href="http://160.22.161.44" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 underline">160.22.161.44</a>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Uptime</p>
+                    <p className="font-semibold">2 Ngày 17:41:14</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
         {/* Control Panel */}
         <Card>
@@ -309,12 +446,50 @@ export default function PackageDetailPage() {
                   <p className="font-semibold">{packageDetail.bandwidth}</p>
                 </div>
                 <div>
+                  <p className="text-sm text-gray-600">Feature</p>
+                  <p className="font-semibold">{packageDetail.feature}</p>
+                </div>
+                <div>
                   <p className="text-sm text-gray-600">IP Address</p>
                   <p className="font-semibold">{packageDetail.ipAddress}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Monthly Price</p>
-                  <p className="font-semibold">${packageDetail.monthlyPrice}</p>
+                  <p className="text-sm text-gray-600">Subscriber</p>
+                  <p className="font-semibold">
+                    {packageDetail.user ? 
+                      `${packageDetail.user.firstName} ${packageDetail.user.lastName}` : 
+                      'N/A'
+                    }
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Email</p>
+                  <p className="font-semibold">{packageDetail.user?.email || 'N/A'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Start Date</p>
+                  <p className="font-semibold">{packageDetail.startDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">End Date</p>
+                  <p className="font-semibold">{packageDetail.endDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Auto Renew</p>
+                  <p className="font-semibold">
+                    <Badge variant={packageDetail.autoRenew ? 'default' : 'outline'}>
+                      {packageDetail.autoRenew ? 'Có' : 'Không'}
+                    </Badge>
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Monthly Cost</p>
+                  <p className="font-semibold">
+                    {new Intl.NumberFormat('vi-VN', {
+                      style: 'currency',
+                      currency: 'VND'
+                    }).format(packageDetail.monthlyPrice)}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -340,7 +515,7 @@ export default function PackageDetailPage() {
                 className="w-full justify-start"
                 variant="outline"
                 onClick={() => handleAction('pause')}
-                disabled={isLoading || packageDetail.status === 'paused'}
+                disabled={isLoading || packageDetail.status === 'suspended'}
               >
                 <Pause className="h-4 w-4 mr-2" />
                 Pause VM
@@ -419,7 +594,12 @@ export default function PackageDetailPage() {
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
                 <p className="text-sm text-gray-600">Monthly Cost</p>
-                <p className="text-xl font-bold text-purple-600">${packageDetail.monthlyPrice}</p>
+                <p className="text-xl font-bold text-purple-600">
+                  {new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                  }).format(packageDetail.monthlyPrice)}
+                </p>
               </div>
             </div>
           </CardContent>

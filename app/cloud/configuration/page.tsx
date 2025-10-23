@@ -64,6 +64,53 @@ const OPERATING_SYSTEMS = [
   }
 ]
 
+// Applications
+const APPLICATIONS = [
+  {
+    id: 'docker',
+    name: 'Docker x64',
+    icon: '🐳',
+    description: 'Containerization platform'
+  },
+  {
+    id: 'lamp',
+    name: 'LAMP x64',
+    icon: '🔥',
+    description: 'Linux, Apache, MySQL, PHP'
+  },
+  {
+    id: 'lemp',
+    name: 'LEMP x64',
+    icon: '🚀',
+    description: 'Linux, Nginx, MySQL, PHP'
+  },
+  {
+    id: 'wordpress',
+    name: 'WordPress x64',
+    icon: '📝',
+    description: 'Content management system'
+  },
+  {
+    id: 'gitlab',
+    name: 'GitLab CE x64',
+    icon: '🦊',
+    description: 'Git repository management'
+  },
+  {
+    id: 'openvpn',
+    name: 'OpenVPN AS x64',
+    icon: '🔒',
+    description: 'VPN access server'
+  }
+]
+
+// Ubuntu versions for applications
+const UBUNTU_VERSIONS = [
+  { id: 'ubuntu-22', name: 'Ubuntu 22.04 LTS', recommended: true },
+  { id: 'ubuntu-20', name: 'Ubuntu 20.04 LTS' },
+  { id: 'ubuntu-18', name: 'Ubuntu 18.04 LTS' }
+]
+
 // Oracle Cloud Regions
 const ORACLE_REGIONS = [
   {
@@ -134,8 +181,11 @@ export default function CloudConfigurationPage() {
   const router = useRouter()
   const { toast } = useToast()
   
+  const [configType, setConfigType] = useState('os') // 'os' or 'app'
   const [selectedOS, setSelectedOS] = useState('')
   const [selectedVersion, setSelectedVersion] = useState('')
+  const [selectedApp, setSelectedApp] = useState('')
+  const [selectedUbuntuVersion, setSelectedUbuntuVersion] = useState('')
   const [selectedRegion, setSelectedRegion] = useState('ap-singapore-1') // Default to Singapore
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -144,6 +194,20 @@ export default function CloudConfigurationPage() {
   const handleOSChange = (osId: string) => {
     setSelectedOS(osId)
     setSelectedVersion('') // Reset version when OS changes
+  }
+
+  const handleConfigTypeChange = (type: string) => {
+    setConfigType(type)
+    // Reset selections when switching between OS and App
+    setSelectedOS('')
+    setSelectedVersion('')
+    setSelectedApp('')
+    setSelectedUbuntuVersion('')
+  }
+
+  const handleAppChange = (appId: string) => {
+    setSelectedApp(appId)
+    setSelectedUbuntuVersion('') // Reset Ubuntu version when app changes
   }
 
   const validatePassword = (pwd: string) => {
@@ -166,22 +230,42 @@ export default function CloudConfigurationPage() {
   const passwordValidation = validatePassword(password)
 
   const handleSubmit = () => {
-    if (!selectedOS) {
-      toast({
-        title: 'Lỗi',
-        description: 'Vui lòng chọn hệ điều hành',
-        variant: 'destructive'
-      })
-      return
-    }
+    if (configType === 'os') {
+      if (!selectedOS) {
+        toast({
+          title: 'Lỗi',
+          description: 'Vui lòng chọn hệ điều hành',
+          variant: 'destructive'
+        })
+        return
+      }
 
-    if (!selectedVersion) {
-      toast({
-        title: 'Lỗi',
-        description: 'Vui lòng chọn phiên bản hệ điều hành',
-        variant: 'destructive'
-      })
-      return
+      if (!selectedVersion) {
+        toast({
+          title: 'Lỗi',
+          description: 'Vui lòng chọn phiên bản hệ điều hành',
+          variant: 'destructive'
+        })
+        return
+      }
+    } else {
+      if (!selectedApp) {
+        toast({
+          title: 'Lỗi',
+          description: 'Vui lòng chọn ứng dụng',
+          variant: 'destructive'
+        })
+        return
+      }
+
+      if (!selectedUbuntuVersion) {
+        toast({
+          title: 'Lỗi',
+          description: 'Vui lòng chọn phiên bản Ubuntu',
+          variant: 'destructive'
+        })
+        return
+      }
     }
 
     if (!selectedRegion) {
@@ -219,6 +303,7 @@ export default function CloudConfigurationPage() {
   }
 
   const selectedOSData = OPERATING_SYSTEMS.find(os => os.id === selectedOS)
+  const selectedAppData = APPLICATIONS.find(app => app.id === selectedApp)
   const selectedRegionData = ORACLE_REGIONS.find(region => region.id === selectedRegion)
 
   return (
@@ -239,85 +324,176 @@ export default function CloudConfigurationPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cột 1: Chọn hệ điều hành */}
+          {/* Cột 1: Chọn hệ điều hành hoặc ứng dụng */}
           <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Monitor className="h-5 w-5 mr-2" />
-                  Chọn hệ điều hành
+                  Cấu hình
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                  {OPERATING_SYSTEMS.map((os) => (
-                    <div
-                      key={os.id}
-                      className={`
-                        p-4 border rounded-lg cursor-pointer transition-all
-                        ${selectedOS === os.id 
-                          ? 'border-[#E60000] bg-red-50' 
-                          : 'border-gray-200 hover:border-gray-300'
-                        }
-                      `}
-                      onClick={() => handleOSChange(os.id)}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{os.icon}</span>
-                        <div>
-                          <h3 className="font-medium text-gray-900">{os.name}</h3>
-                          <p className="text-sm text-gray-600">{os.versions.length} phiên bản</p>
-                        </div>
-                        {selectedOS === os.id && (
-                          <div className="ml-auto">
-                            <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
-                              <Check className="w-2 h-2 text-white" />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                {/* Toggle between OS and Application */}
+                <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+                  <button
+                    onClick={() => handleConfigTypeChange('os')}
+                    className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                      configType === 'os'
+                        ? 'bg-white text-gray-900 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Hệ điều hành
+                  </button>
+                  <button
+                    onClick={() => handleConfigTypeChange('app')}
+                    className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                      configType === 'app'
+                        ? 'bg-white text-gray-900 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Chọn ứng dụng
+                  </button>
                 </div>
-                {/* Version Selection */}
-                {selectedOSData && (
-                  <div className="mt-6">
-                    <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                      Chọn phiên bản {selectedOSData.name}
-                    </Label>
-                    <div className="space-y-2">
-                      {selectedOSData.versions.map((version) => (
+
+                {configType === 'os' ? (
+                  /* Operating Systems Selection */
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                      {OPERATING_SYSTEMS.map((os) => (
                         <div
-                          key={version.id}
+                          key={os.id}
                           className={`
-                            p-3 border rounded-lg cursor-pointer transition-all flex items-center justify-between
-                            ${selectedVersion === version.id 
+                            p-4 border rounded-lg cursor-pointer transition-all
+                            ${selectedOS === os.id 
                               ? 'border-[#E60000] bg-red-50' 
                               : 'border-gray-200 hover:border-gray-300'
                             }
                           `}
-                          onClick={() => setSelectedVersion(version.id)}
+                          onClick={() => handleOSChange(os.id)}
                         >
                           <div className="flex items-center space-x-3">
-                            <span className="text-lg">{selectedOSData.icon}</span>
+                            <span className="text-2xl">{os.icon}</span>
                             <div>
-                              <h4 className="font-medium text-gray-900">{version.name}</h4>
-                              {version.recommended && (
-                                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 mt-1">
-                                  Khuyến nghị
-                                </Badge>
-                              )}
+                              <h3 className="font-medium text-gray-900">{os.name}</h3>
+                              <p className="text-sm text-gray-600">{os.versions.length} phiên bản</p>
                             </div>
+                            {selectedOS === os.id && (
+                              <div className="ml-auto">
+                                <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
+                                  <Check className="w-2 h-2 text-white" />
+                                </div>
+                              </div>
+                            )}
                           </div>
-                          {selectedVersion === version.id && (
-                            <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
-                              <Check className="w-2 h-2 text-white" />
-                            </div>
-                          )}
                         </div>
                       ))}
                     </div>
-                  </div>
+                    {/* OS Version Selection */}
+                    {selectedOSData && (
+                      <div className="mt-6">
+                        <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                          Chọn phiên bản {selectedOSData.name}
+                        </Label>
+                        <div className="space-y-2">
+                          {selectedOSData.versions.map((version) => (
+                            <div
+                              key={version.id}
+                              className={`
+                                p-3 border rounded-lg cursor-pointer transition-all flex items-center justify-between
+                                ${selectedVersion === version.id 
+                                  ? 'border-[#E60000] bg-red-50' 
+                                  : 'border-gray-200 hover:border-gray-300'
+                                }
+                              `}
+                              onClick={() => setSelectedVersion(version.id)}
+                            >
+                              <div className="flex items-center space-x-3">
+                                <span className="text-lg">{selectedOSData.icon}</span>
+                                <div>
+                                  <h4 className="font-medium text-gray-900">{version.name}</h4>
+                                  {version.recommended && (
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 mt-1">
+                                      Khuyến nghị
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                              {selectedVersion === version.id && (
+                                <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
+                                  <Check className="w-2 h-2 text-white" />
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  /* Applications Selection */
+                  <>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                        Chọn ứng dụng
+                      </Label>
+                      <CustomSelect
+                        options={[
+                          { value: 'placeholder', title: 'Chọn ứng dụng...', subtitle: '' },
+                          ...APPLICATIONS.map(app => ({
+                            value: app.id,
+                            title: app.name,
+                            subtitle: app.description
+                          }))
+                        ]}
+                        value={selectedApp || 'placeholder'}
+                        onChange={(value) => handleAppChange(value === 'placeholder' ? '' : value)}
+                      />
+                    </div>
+
+                    {/* Ubuntu Version Selection for Applications */}
+                    {selectedApp && (
+                      <div className="mt-6">
+                        <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                          Chọn phiên bản Ubuntu
+                        </Label>
+                        <div className="space-y-2">
+                          {UBUNTU_VERSIONS.map((version) => (
+                            <div
+                              key={version.id}
+                              className={`
+                                p-3 border rounded-lg cursor-pointer transition-all flex items-center justify-between
+                                ${selectedUbuntuVersion === version.id 
+                                  ? 'border-[#E60000] bg-red-50' 
+                                  : 'border-gray-200 hover:border-gray-300'
+                                }
+                              `}
+                              onClick={() => setSelectedUbuntuVersion(version.id)}
+                            >
+                              <div className="flex items-center space-x-3">
+                                <span className="text-lg">🐧</span>
+                                <div>
+                                  <h4 className="font-medium text-gray-900">{version.name}</h4>
+                                  {version.recommended && (
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 mt-1">
+                                      Khuyến nghị
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                              {selectedUbuntuVersion === version.id && (
+                                <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
+                                  <Check className="w-2 h-2 text-white" />
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -442,29 +618,67 @@ export default function CloudConfigurationPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div>
-                    <Label className="text-sm text-gray-600">Hệ điều hành</Label>
+                    <Label className="text-sm text-gray-600">Loại cấu hình</Label>
                     <p className="font-medium">
-                      {selectedOSData ? (
-                        <span className="flex items-center space-x-2">
-                          <span>{selectedOSData.icon}</span>
-                          <span>{selectedOSData.name}</span>
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">Chưa chọn</span>
-                      )}
+                      {configType === 'os' ? 'Hệ điều hành' : 'Ứng dụng'}
                     </p>
                   </div>
 
-                  <div>
-                    <Label className="text-sm text-gray-600">Phiên bản</Label>
-                    <p className="font-medium">
-                      {selectedVersion ? (
-                        selectedOSData?.versions.find(v => v.id === selectedVersion)?.name
-                      ) : (
-                        <span className="text-gray-400">Chưa chọn</span>
-                      )}
-                    </p>
-                  </div>
+                  {configType === 'os' ? (
+                    <>
+                      <div>
+                        <Label className="text-sm text-gray-600">Hệ điều hành</Label>
+                        <p className="font-medium">
+                          {selectedOSData ? (
+                            <span className="flex items-center space-x-2">
+                              <span>{selectedOSData.icon}</span>
+                              <span>{selectedOSData.name}</span>
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">Chưa chọn</span>
+                          )}
+                        </p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm text-gray-600">Phiên bản</Label>
+                        <p className="font-medium">
+                          {selectedVersion ? (
+                            selectedOSData?.versions.find(v => v.id === selectedVersion)?.name
+                          ) : (
+                            <span className="text-gray-400">Chưa chọn</span>
+                          )}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <Label className="text-sm text-gray-600">Ứng dụng</Label>
+                        <p className="font-medium">
+                          {selectedAppData ? (
+                            <span className="flex items-center space-x-2">
+                              <span>{selectedAppData.icon}</span>
+                              <span>{selectedAppData.name}</span>
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">Chưa chọn</span>
+                          )}
+                        </p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm text-gray-600">Ubuntu version</Label>
+                        <p className="font-medium">
+                          {selectedUbuntuVersion ? (
+                            UBUNTU_VERSIONS.find(v => v.id === selectedUbuntuVersion)?.name
+                          ) : (
+                            <span className="text-gray-400">Chưa chọn</span>
+                          )}
+                        </p>
+                      </div>
+                    </>
+                  )}
 
                   <div>
                     <Label className="text-sm text-gray-600">Region</Label>
@@ -517,7 +731,13 @@ export default function CloudConfigurationPage() {
                 <div className="border-t pt-4 mt-4">
                   <Button
                     onClick={handleSubmit}
-                    disabled={!selectedOS || !selectedVersion || !selectedRegion || !passwordValidation.isValid || isProcessing}
+                    disabled={
+                      (configType === 'os' && (!selectedOS || !selectedVersion)) ||
+                      (configType === 'app' && (!selectedApp || !selectedUbuntuVersion)) ||
+                      !selectedRegion || 
+                      !passwordValidation.isValid || 
+                      isProcessing
+                    }
                     className="w-full bg-[#E60000] hover:bg-red-700"
                     size="lg"
                   >

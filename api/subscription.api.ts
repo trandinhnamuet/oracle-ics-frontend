@@ -3,7 +3,7 @@ import axios from 'axios'
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
 export interface Subscription {
-  id: number
+  id: string
   user_id: number
   cloud_package_id: number
   start_date: string
@@ -12,17 +12,31 @@ export interface Subscription {
   auto_renew: boolean
   created_at: string
   updated_at: string
-  cloud_package?: {
+  user?: {
+    id: number
+    firstName: string
+    lastName: string
+    email: string
+    role?: string
+    isActive?: boolean
+    avatarUrl?: string
+    createdAt?: string
+    updatedAt?: string
+  }
+  cloudPackage?: {
     id: number
     name: string
     type: string
-    cost: number
-    cost_vnd: number
+    cost: string
+    cost_vnd: string
     cpu: string
     ram: string
     memory: string
     feature: string
     bandwidth: string
+    updated_at?: string
+    updated_by?: any
+    is_active?: boolean
   }
 }
 
@@ -73,6 +87,29 @@ export const subscribeWithPayment = async (data: CreateSubscriptionWithPaymentRe
   }
 }
 
+// Get all subscriptions (admin only)
+export const getAllSubscriptions = async (): Promise<Subscription[]> => {
+  try {
+    const response = await axios.get(`${API_URL}/subscriptions`, {
+      withCredentials: true,
+    })
+    return response.data || []
+  } catch (error: any) {
+    console.error('Error fetching all subscriptions:', error)
+    
+    // Log more detailed error information
+    if (error.response) {
+      console.error('Response error:', error.response.status, error.response.data)
+    } else if (error.request) {
+      console.error('Request error:', error.request)
+    } else {
+      console.error('Error:', error.message)
+    }
+    
+    throw error
+  }
+}
+
 // Get user subscriptions (always uses my-subscriptions endpoint)
 export const getUserSubscriptions = async (userId?: number): Promise<Subscription[]> => {
   try {
@@ -108,7 +145,7 @@ export const getActiveSubscriptions = async (userId?: number): Promise<Subscript
 }
 
 // Get subscription by ID
-export const getSubscriptionById = async (subscriptionId: number): Promise<Subscription> => {
+export const getSubscriptionById = async (subscriptionId: string): Promise<Subscription> => {
   try {
     const response = await axios.get(`${API_URL}/subscriptions/${subscriptionId}`, {
       withCredentials: true,
@@ -121,7 +158,7 @@ export const getSubscriptionById = async (subscriptionId: number): Promise<Subsc
 }
 
 // Update subscription
-export const updateSubscription = async (subscriptionId: number, updateData: any): Promise<Subscription> => {
+export const updateSubscription = async (subscriptionId: string, updateData: any): Promise<Subscription> => {
   try {
     const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}`, updateData, {
       withCredentials: true,
@@ -134,7 +171,7 @@ export const updateSubscription = async (subscriptionId: number, updateData: any
 }
 
 // Toggle auto renew
-export const toggleAutoRenew = async (subscriptionId: number, autoRenew: boolean): Promise<Subscription> => {
+export const toggleAutoRenew = async (subscriptionId: string, autoRenew: boolean): Promise<Subscription> => {
   try {
     const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}/auto-renew`, {
       auto_renew: autoRenew
@@ -149,7 +186,7 @@ export const toggleAutoRenew = async (subscriptionId: number, autoRenew: boolean
 }
 
 // Cancel subscription
-export const cancelSubscription = async (subscriptionId: number): Promise<Subscription> => {
+export const cancelSubscription = async (subscriptionId: string): Promise<Subscription> => {
   try {
     const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}/cancel`, {}, {
       withCredentials: true,
@@ -162,7 +199,7 @@ export const cancelSubscription = async (subscriptionId: number): Promise<Subscr
 }
 
 // Suspend subscription
-export const suspendSubscription = async (subscriptionId: number): Promise<Subscription> => {
+export const suspendSubscription = async (subscriptionId: string): Promise<Subscription> => {
   try {
     const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}/suspend`, {}, {
       withCredentials: true,
@@ -175,7 +212,7 @@ export const suspendSubscription = async (subscriptionId: number): Promise<Subsc
 }
 
 // Reactivate subscription
-export const reactivateSubscription = async (subscriptionId: number): Promise<Subscription> => {
+export const reactivateSubscription = async (subscriptionId: string): Promise<Subscription> => {
   try {
     const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}/reactivate`, {}, {
       withCredentials: true,
@@ -183,6 +220,18 @@ export const reactivateSubscription = async (subscriptionId: number): Promise<Su
     return response.data
   } catch (error) {
     console.error('Error reactivating subscription:', error)
+    throw error
+  }
+}
+
+// Delete subscription
+export const deleteSubscription = async (subscriptionId: string): Promise<void> => {
+  try {
+    await axios.delete(`${API_URL}/subscriptions/${subscriptionId}`, {
+      withCredentials: true,
+    })
+  } catch (error) {
+    console.error('Error deleting subscription:', error)
     throw error
   }
 }

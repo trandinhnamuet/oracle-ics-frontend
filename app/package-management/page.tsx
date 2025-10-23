@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import useAuthStore from '@/hooks/use-auth-store'
-import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, cancelSubscription, suspendSubscription, reactivateSubscription } from '@/api/subscription.api'
+import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, cancelSubscription, suspendSubscription, reactivateSubscription, Subscription } from '@/api/subscription.api'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
@@ -16,7 +16,7 @@ import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye
 import BalanceDisplay from '@/components/wallet/balance-display'
 
 interface PackageSubscription {
-  id: number
+  id: string
   user_id: number
   cloud_package_id: number
   start_date: string
@@ -130,7 +130,7 @@ export default function PackageManagementPage() {
   }
 
   // Handle subscription actions
-  const toggleSubscriptionStatus = async (id: number) => {
+  const toggleSubscriptionStatus = async (id: string) => {
     try {
       const subscription = subscriptions.find(s => s.id === id)
       if (!subscription) return
@@ -151,7 +151,7 @@ export default function PackageManagementPage() {
     }
   }
 
-  const cancelUserSubscription = async (id: number) => {
+  const cancelUserSubscription = async (id: string) => {
     if (confirm('Bạn có chắc chắn muốn hủy subscription này?')) {
       try {
         await cancelSubscription(id)
