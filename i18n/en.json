@@ -508,6 +508,7 @@
     "success": {
       "title": "Payment Successful!",
       "desc": "Thank you for subscribing to the service package. We have sent a confirmation email and usage instructions to your email address.",
+      "configBtn": "Configure Virtual Machine",
       "manageBtn": "Manage Subscribed Packages",
       "homeBtn": "Back to Home",
       "note": "Note: If you do not receive the email within 5 minutes, please check your spam folder or contact us."

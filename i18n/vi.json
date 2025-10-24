@@ -507,6 +507,7 @@
     "success": {
       "title": "Thanh toán thành công!",
       "desc": "Cảm ơn bạn đã đăng ký gói dịch vụ. Chúng tôi đã gửi email xác nhận và hướng dẫn sử dụng đến địa chỉ email của bạn.",
+      "configBtn": "Cài đặt cấu hình máy ảo",
       "manageBtn": "Cloud của tôi",
       "homeBtn": "Về trang chủ",
       "note": "Lưu ý: Nếu bạn không nhận được email trong vòng 5 phút, vui lòng kiểm tra thư mục spam hoặc liên hệ với chúng tôi."

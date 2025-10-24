@@ -68,7 +68,7 @@ function AddFundsPaymentContent() {
         
         // Chờ 2 giây rồi chuyển trang
         setTimeout(() => {
-          router.push('/checkout/success')
+          router.push('/add-funds/payment/success')
         }, 2000)
       }
     } catch (error) {

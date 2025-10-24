@@ -573,6 +573,17 @@ export default function PackageDetailPage() {
                   Delete Package
                 </Button>
               </div>
+
+              <div className="pt-4 border-t mt-4">
+                <Button 
+                  className="w-full justify-center bg-blue-600 hover:bg-blue-700 text-white"
+                  size="lg"
+                  onClick={() => router.push('/cloud/configuration')}
+                >
+                  <MonitorUp className="h-5 w-5 mr-2" />
+                  Configurate VM
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
