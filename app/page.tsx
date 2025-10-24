@@ -117,8 +117,8 @@ export default function HomePage() {
 
       // Tích hợp chatbot GIM
       if (!document.getElementById('gim-bot-sdk')) {
-        window.__gim = window.__gim || {};
-        window.__gim.licenseId = "586508500633432247";
+        (window as any).__gim = (window as any).__gim || {};
+        (window as any).__gim.licenseId = "586508500633432247";
         const script = document.createElement('script');
         script.id = 'gim-bot-sdk';
         script.async = true;
