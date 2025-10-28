@@ -30,6 +30,10 @@
       "customPackage": "맞춤 패키지",
       "active": "활성",
       "inactive": "비활성",
+      "pending": "대기 중",
+      "suspended": "일시정지",
+      "cancelled": "취소됨",
+      "expired": "만료됨",
       "pauseTitle": "패키지 일시 중지",
       "activateTitle": "패키지 활성화",
       "deleteTitle": "패키지 삭제"

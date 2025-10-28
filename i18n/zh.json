@@ -30,6 +30,10 @@
       "customPackage": "自定义套餐",
       "active": "活跃",
       "inactive": "非活跃",
+      "pending": "待处理",
+      "suspended": "已暂停",
+      "cancelled": "已取消",
+      "expired": "已过期",
       "pauseTitle": "暂停套餐",
       "activateTitle": "激活套餐",
       "deleteTitle": "删除套餐"

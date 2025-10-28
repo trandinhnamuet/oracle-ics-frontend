@@ -30,6 +30,10 @@
       "customPackage": "Custom Package",
       "active": "Active",
       "inactive": "Inactive",
+      "pending": "Pending",
+      "suspended": "Suspended",
+      "cancelled": "Cancelled", 
+      "expired": "Expired",
       "pauseTitle": "Pause Package",
       "activateTitle": "Activate Package",
       "deleteTitle": "Delete Package"

@@ -351,10 +351,10 @@ export default function PackageManagementPage() {
                             sub.status === 'expired' ? 'outline' : 'secondary'
                           }>
                             {sub.status === 'active' ? t('packageManagement.table.active') : 
-                             sub.status === 'pending' ? 'Pending' :
-                             sub.status === 'suspended' ? 'Suspended' :
-                             sub.status === 'cancelled' ? 'Cancelled' :
-                             sub.status === 'expired' ? 'Expired' :
+                             sub.status === 'pending' ? t('packageManagement.table.pending') :
+                             sub.status === 'suspended' ? t('packageManagement.table.suspended') :
+                             sub.status === 'cancelled' ? t('packageManagement.table.cancelled') :
+                             sub.status === 'expired' ? t('packageManagement.table.expired') :
                              t('packageManagement.table.inactive')}
                           </Badge>
                         </TableCell>

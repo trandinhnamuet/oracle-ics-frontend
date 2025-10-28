@@ -30,6 +30,10 @@
       "customPackage": "Gói tùy chỉnh",
       "active": "Hoạt động",
       "inactive": "Không hoạt động",
+      "pending": "Đang chờ",
+      "suspended": "Tạm dừng", 
+      "cancelled": "Đã hủy",
+      "expired": "Hết hạn",
       "pauseTitle": "Tạm dừng gói",
       "activateTitle": "Kích hoạt gói",
       "deleteTitle": "Xóa gói"

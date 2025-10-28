@@ -30,6 +30,10 @@
       "customPackage": "カスタムパッケージ",
       "active": "アクティブ",
       "inactive": "非アクティブ",
+      "pending": "保留中",
+      "suspended": "一時停止",
+      "cancelled": "キャンセル済み",
+      "expired": "期限切れ",
       "pauseTitle": "パッケージ一時停止",
       "activateTitle": "パッケージ有効化",
       "deleteTitle": "パッケージ削除"
