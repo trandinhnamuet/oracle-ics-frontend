@@ -147,6 +147,144 @@
       },
       "footer": "{{current}} / {{total}} 登録を表示",
       "loading": "データ読み込み中..."
+    },
+    "packages": {
+      "createPackage": {
+        "title": {
+          "create": "新しいパッケージを作成",
+          "edit": "パッケージを編集"
+        },
+        "form": {
+          "packageName": "パッケージ名",
+          "packageNamePlaceholder": "例：Starter 1",
+          "category": "カテゴリ",
+          "categoryOptions": {
+            "starter": "Starter",
+            "professional": "Professional",
+            "enterprise": "Enterprise",
+            "ai": "AI-GPU",
+            "custom": "Custom"
+          },
+          "description": "説明",
+          "descriptionPlaceholder": "サービスパッケージの説明",
+          "price": "価格 ($)",
+          "period": "期間",
+          "periodOptions": {
+            "month": "月",
+            "year": "年"
+          },
+          "popularPackage": "人気パッケージ",
+          "features": "機能",
+          "featurePlaceholder": "例：4 vCPU",
+          "addFeature": "機能を追加"
+        },
+        "buttons": {
+          "cancel": "キャンセル",
+          "create": "パッケージを作成",
+          "update": "更新"
+        },
+        "validation": {
+          "error": "エラー",
+          "fillAllFields": "すべての必要な情報を入力してください"
+        }
+      },
+      "management": {
+        "title": "パッケージ管理",
+        "subtitle": "クラウドサービスパッケージの作成、編集、管理",
+        "createNewPackage": "新しいパッケージを作成",
+        "searchPlaceholder": "サービスパッケージを検索...",
+        "filter": {
+          "allCategories": "すべてのカテゴリ",
+          "starter": "Starter",
+          "professional": "Professional",
+          "enterprise": "Enterprise",
+          "ai": "AI-GPU",
+          "custom": "Custom"
+        },
+        "categories": {
+          "starter": "Starter",
+          "professional": "Professional",
+          "enterprise": "Enterprise",
+          "ai": "AI-GPU",
+          "custom": "Custom"
+        },
+        "table": {
+          "servicePackage": "サービスパッケージ",
+          "category": "カテゴリ",
+          "price": "価格",
+          "description": "説明",
+          "features": "機能",
+          "status": "ステータス",
+          "actions": "操作",
+          "moreFeatures": "その他の機能",
+          "popular": "人気",
+          "noPackagesFound": "サービスパッケージが見つかりません"
+        },
+        "toast": {
+          "createSuccess": "成功",
+          "createSuccessDesc": "パッケージが正常に作成されました",
+          "updateSuccess": "成功",
+          "updateSuccessDesc": "パッケージが正常に更新されました",
+          "deleteSuccess": "成功",
+          "deleteSuccessDesc": "パッケージが正常に削除されました"
+        }
+      }
+    },
+    "subscriptions": {
+      "title": "サブスクリプション管理",
+      "backButton": "戻る",
+      "searchPlaceholder": "ユーザー名、メール、パッケージ名、IDで検索...",
+      "filterByStatus": "ステータスでフィルター",
+      "confirmDelete": "このサブスクリプションを削除してもよろしいですか？",
+      "filter": {
+        "allStatus": "すべてのステータス"
+      },
+      "status": {
+        "active": "アクティブ",
+        "pending": "保留中",
+        "inactive": "非アクティブ",
+        "expired": "期限切れ",
+        "suspended": "一時停止",
+        "cancelled": "キャンセル済み"
+      },
+      "stats": {
+        "total": "総サブスクリプション数",
+        "pending": "保留中",
+        "active": "アクティブ",
+        "expired": "期限切れ",
+        "cancelled": "キャンセル済み"
+      },
+      "table": {
+        "title": "サブスクリプション一覧",
+        "showing": "{{current}} / {{total}} サブスクリプションを表示",
+        "noData": "サブスクリプションが見つかりません",
+        "id": "ID",
+        "user": "ユーザー",
+        "package": "パッケージ",
+        "startDate": "開始日",
+        "endDate": "終了日",
+        "status": "ステータス",
+        "autoRenew": "自動更新",
+        "price": "価格",
+        "createdAt": "作成日",
+        "actions": "操作",
+        "yes": "はい",
+        "no": "いいえ"
+      },
+      "actions": {
+        "viewDetail": "詳細を表示",
+        "edit": "編集",
+        "delete": "削除"
+      },
+      "toast": {
+        "success": "成功",
+        "error": "エラー",
+        "info": "情報",
+        "loadError": "サブスクリプションリストを読み込めません",
+        "deleteSuccess": "サブスクリプションが正常に削除されました",
+        "deleteError": "サブスクリプションを削除できません",
+        "editInDevelopment": "編集機能は開発中です"
+      }
     }
   },
   "homepage": {
@@ -590,6 +728,100 @@
       "lastNameMax": "姓は50文字以内で入力してください",
       "emailRequired": "メールアドレスの入力が必要です",
       "emailInvalid": "無効なメールアドレスです"
+    }
+  },
+  "packageDetail": {
+    "title": "デバイス負荷状態の表示",
+    "subtitle": "クラウドパッケージのパフォーマンスを監視・管理",
+    "loading": {
+      "subscription": "サブスクリプション情報を読み込み中..."
+    },
+    "error": {
+      "notFound": "サブスクリプションが見つかりません"
+    },
+    "buttons": {
+      "back": "戻る"
+    },
+    "status": {
+      "active": "アクティブ",
+      "inactive": "非アクティブ",
+      "expired": "期限切れ",
+      "suspended": "一時停止",
+      "cancelled": "キャンセル済み",
+      "pending": "保留中"
+    },
+    "serverDetails": {
+      "title": "サーバー詳細",
+      "demoData": "デモデータ",
+      "status": "ステータス",
+      "on": "オン",
+      "refresh": "更新",
+      "hostname": "ドメイン/ホスト名",
+      "username": "ユーザー名",
+      "password": "パスワード",
+      "ip": "IPアドレス",
+      "uptime": "稼働時間",
+      "days": "日"
+    },
+    "controls": {
+      "vmName": "VM名：",
+      "time": "時間：",
+      "theme": "テーマ：",
+      "showPerformance": "パフォーマンス使用状況を表示",
+      "timeOptions": {
+        "oneHour": "1時間前",
+        "sixHours": "6時間前",
+        "twentyFourHours": "24時間前",
+        "sevenDays": "7日前"
+      },
+      "themeOptions": {
+        "light": "ライト",
+        "dark": "ダーク"
+      }
+    },
+    "charts": {
+      "cpuUsage": "CPU使用率 (%)",
+      "memoryUsage": "メモリ使用率 (%)"
+    },
+    "packageInfo": {
+      "title": "パッケージ情報",
+      "packageName": "パッケージ名",
+      "vmName": "VM名",
+      "cpu": "CPU",
+      "memory": "メモリ",
+      "storage": "ストレージ",
+      "bandwidth": "帯域幅",
+      "feature": "機能",
+      "ipAddress": "IPアドレス",
+      "subscriber": "利用者",
+      "email": "メール",
+      "startDate": "開始日",
+      "endDate": "終了日",
+      "autoRenew": "自動更新",
+      "monthlyCost": "月額費用",
+      "yes": "はい",
+      "no": "いいえ"
+    },
+    "actions": {
+      "title": "パッケージ管理",
+      "startVM": "VM開始",
+      "pauseVM": "VM一時停止",
+      "restartVM": "VM再起動",
+      "createBackup": "バックアップ作成",
+      "console": "コンソール",
+      "changeOS": "OS変更/再インストール",
+      "deletePackage": "パッケージ削除",
+      "configurateVM": "VM設定"
+    },
+    "billing": {
+      "title": "請求情報",
+      "createdDate": "作成日",
+      "nextBilling": "次回請求",
+      "monthlyCost": "月額費用"
+    },
+    "toast": {
+      "error": "エラー",
+      "loadError": "サブスクリプション情報を読み込めません"
     }
   }
 }

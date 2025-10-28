@@ -147,6 +147,144 @@
       },
       "footer": "Showing {{current}} / {{total}} registrations",
       "loading": "Loading data..."
+    },
+    "packages": {
+      "createPackage": {
+        "title": {
+          "create": "Create New Package",
+          "edit": "Edit Package"
+        },
+        "form": {
+          "packageName": "Package Name",
+          "packageNamePlaceholder": "E.g: Starter 1",
+          "category": "Category",
+          "categoryOptions": {
+            "starter": "Starter",
+            "professional": "Professional",
+            "enterprise": "Enterprise",
+            "ai": "AI-GPU",
+            "custom": "Custom"
+          },
+          "description": "Description",
+          "descriptionPlaceholder": "Service package description",
+          "price": "Price ($)",
+          "period": "Period",
+          "periodOptions": {
+            "month": "month",
+            "year": "year"
+          },
+          "popularPackage": "Popular Package",
+          "features": "Features",
+          "featurePlaceholder": "E.g: 4 vCPU",
+          "addFeature": "Add Feature"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create Package",
+          "update": "Update"
+        },
+        "validation": {
+          "error": "Error",
+          "fillAllFields": "Please fill in all required information"
+        }
+      },
+      "management": {
+        "title": "Package Management",
+        "subtitle": "Create, edit, and manage cloud service packages",
+        "createNewPackage": "Create New Package",
+        "searchPlaceholder": "Search service packages...",
+        "filter": {
+          "allCategories": "All Categories",
+          "starter": "Starter",
+          "professional": "Professional",
+          "enterprise": "Enterprise",
+          "ai": "AI-GPU",
+          "custom": "Custom"
+        },
+        "categories": {
+          "starter": "Starter",
+          "professional": "Professional",
+          "enterprise": "Enterprise",
+          "ai": "AI-GPU",
+          "custom": "Custom"
+        },
+        "table": {
+          "servicePackage": "Service Package",
+          "category": "Category",
+          "price": "Price",
+          "description": "Description",
+          "features": "Features",
+          "status": "Status",
+          "actions": "Actions",
+          "moreFeatures": "more features",
+          "popular": "Popular",
+          "noPackagesFound": "No service packages found"
+        },
+        "toast": {
+          "createSuccess": "Success",
+          "createSuccessDesc": "Package created successfully",
+          "updateSuccess": "Success",
+          "updateSuccessDesc": "Package updated successfully",
+          "deleteSuccess": "Success",
+          "deleteSuccessDesc": "Package deleted successfully"
+        }
+      }
+    },
+    "subscriptions": {
+      "title": "Subscription Management",
+      "backButton": "Go Back",
+      "searchPlaceholder": "Search by username, email, package name, ID...",
+      "filterByStatus": "Filter by status",
+      "confirmDelete": "Are you sure you want to delete this subscription?",
+      "filter": {
+        "allStatus": "All Status"
+      },
+      "status": {
+        "active": "Active",
+        "pending": "Pending",
+        "inactive": "Inactive",
+        "expired": "Expired",
+        "suspended": "Suspended",
+        "cancelled": "Cancelled"
+      },
+      "stats": {
+        "total": "Total Subscriptions",
+        "pending": "Pending",
+        "active": "Active",
+        "expired": "Expired",
+        "cancelled": "Cancelled"
+      },
+      "table": {
+        "title": "Subscription List",
+        "showing": "Showing {{current}} / {{total}} subscriptions",
+        "noData": "No subscriptions found",
+        "id": "ID",
+        "user": "User",
+        "package": "Package",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "status": "Status",
+        "autoRenew": "Auto Renew",
+        "price": "Price",
+        "createdAt": "Created Date",
+        "actions": "Actions",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "actions": {
+        "viewDetail": "View Details",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "toast": {
+        "success": "Success",
+        "error": "Error",
+        "info": "Information",
+        "loadError": "Unable to load subscription list",
+        "deleteSuccess": "Subscription deleted successfully",
+        "deleteError": "Unable to delete subscription",
+        "editInDevelopment": "Edit functionality is under development"
+      }
     }
   },
   "homepage": {
@@ -591,6 +729,100 @@
       "lastNameMax": "Last name cannot exceed 50 characters",
       "emailRequired": "Email is required",
       "emailInvalid": "Invalid email address"
+    }
+  },
+  "packageDetail": {
+    "title": "Display device load status",
+    "subtitle": "Monitor and manage your cloud package performance",
+    "loading": {
+      "subscription": "Loading subscription information..."
+    },
+    "error": {
+      "notFound": "Subscription not found"
+    },
+    "buttons": {
+      "back": "Back"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "suspended": "Suspended", 
+      "cancelled": "Cancelled",
+      "pending": "Pending"
+    },
+    "serverDetails": {
+      "title": "Server details",
+      "demoData": "Demo data",
+      "status": "Status",
+      "on": "ON",
+      "refresh": "Refresh",
+      "hostname": "Domain/Hostname",
+      "username": "Username",
+      "password": "Password",
+      "ip": "IP",
+      "uptime": "Uptime",
+      "days": "Days"
+    },
+    "controls": {
+      "vmName": "VM Name:",
+      "time": "Time:",
+      "theme": "Theme:",
+      "showPerformance": "Show Performance Usage",
+      "timeOptions": {
+        "oneHour": "1 hour ago",
+        "sixHours": "6 hours ago",
+        "twentyFourHours": "24 hours ago", 
+        "sevenDays": "7 days ago"
+      },
+      "themeOptions": {
+        "light": "Light",
+        "dark": "Dark"
+      }
+    },
+    "charts": {
+      "cpuUsage": "CPU Usage (%)",
+      "memoryUsage": "Memory Usage (%)"
+    },
+    "packageInfo": {
+      "title": "Package Information",
+      "packageName": "Package Name",
+      "vmName": "VM Name",
+      "cpu": "CPU",
+      "memory": "Memory",
+      "storage": "Storage",
+      "bandwidth": "Bandwidth",
+      "feature": "Feature",
+      "ipAddress": "IP Address",
+      "subscriber": "Subscriber",
+      "email": "Email",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "autoRenew": "Auto Renew",
+      "monthlyCost": "Monthly Cost",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "actions": {
+      "title": "Manage Package",
+      "startVM": "Start VM",
+      "pauseVM": "Pause VM",
+      "restartVM": "Restart VM", 
+      "createBackup": "Create Backup",
+      "console": "Console",
+      "changeOS": "Change/Reinstall OS",
+      "deletePackage": "Delete Package",
+      "configurateVM": "Configurate VM"
+    },
+    "billing": {
+      "title": "Billing Information",
+      "createdDate": "Created Date",
+      "nextBilling": "Next Billing",
+      "monthlyCost": "Monthly Cost"
+    },
+    "toast": {
+      "error": "Error",
+      "loadError": "Unable to load subscription information"
     }
   }
 }

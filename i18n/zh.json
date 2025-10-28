@@ -147,6 +147,144 @@
       },
       "footer": "显示 {{current}} / {{total}} 注册",
       "loading": "加载数据中..."
+    },
+    "packages": {
+      "createPackage": {
+        "title": {
+          "create": "创建新套餐",
+          "edit": "编辑套餐"
+        },
+        "form": {
+          "packageName": "套餐名称",
+          "packageNamePlaceholder": "例如：Starter 1",
+          "category": "类别",
+          "categoryOptions": {
+            "starter": "Starter",
+            "professional": "Professional",
+            "enterprise": "Enterprise",
+            "ai": "AI-GPU",
+            "custom": "Custom"
+          },
+          "description": "描述",
+          "descriptionPlaceholder": "服务套餐描述",
+          "price": "价格 ($)",
+          "period": "周期",
+          "periodOptions": {
+            "month": "月",
+            "year": "年"
+          },
+          "popularPackage": "热门套餐",
+          "features": "功能",
+          "featurePlaceholder": "例如：4 vCPU",
+          "addFeature": "添加功能"
+        },
+        "buttons": {
+          "cancel": "取消",
+          "create": "创建套餐",
+          "update": "更新"
+        },
+        "validation": {
+          "error": "错误",
+          "fillAllFields": "请填写所有必需信息"
+        }
+      },
+      "management": {
+        "title": "套餐管理",
+        "subtitle": "创建、编辑和管理云服务套餐",
+        "createNewPackage": "创建新套餐",
+        "searchPlaceholder": "搜索服务套餐...",
+        "filter": {
+          "allCategories": "所有类别",
+          "starter": "Starter",
+          "professional": "Professional",
+          "enterprise": "Enterprise",
+          "ai": "AI-GPU",
+          "custom": "Custom"
+        },
+        "categories": {
+          "starter": "Starter",
+          "professional": "Professional",
+          "enterprise": "Enterprise",
+          "ai": "AI-GPU",
+          "custom": "Custom"
+        },
+        "table": {
+          "servicePackage": "服务套餐",
+          "category": "类别",
+          "price": "价格",
+          "description": "描述",
+          "features": "功能",
+          "status": "状态",
+          "actions": "操作",
+          "moreFeatures": "更多功能",
+          "popular": "热门",
+          "noPackagesFound": "未找到服务套餐"
+        },
+        "toast": {
+          "createSuccess": "成功",
+          "createSuccessDesc": "套餐创建成功",
+          "updateSuccess": "成功",
+          "updateSuccessDesc": "套餐更新成功",
+          "deleteSuccess": "成功",
+          "deleteSuccessDesc": "套餐删除成功"
+        }
+      }
+    },
+    "subscriptions": {
+      "title": "订阅管理",
+      "backButton": "返回",
+      "searchPlaceholder": "按用户名、邮箱、套餐名称、ID搜索...",
+      "filterByStatus": "按状态筛选",
+      "confirmDelete": "您确定要删除此订阅吗？",
+      "filter": {
+        "allStatus": "所有状态"
+      },
+      "status": {
+        "active": "活跃",
+        "pending": "保留中",
+        "inactive": "非活跃",
+        "expired": "已过期",
+        "suspended": "已暂停",
+        "cancelled": "已取消"
+      },
+      "stats": {
+        "total": "总订阅数",
+        "pending": "保留中",
+        "active": "活跃",
+        "expired": "已过期",
+        "cancelled": "已取消"
+      },
+      "table": {
+        "title": "订阅列表",
+        "showing": "显示 {{current}} / {{total}} 个订阅",
+        "noData": "未找到订阅",
+        "id": "ID",
+        "user": "用户",
+        "package": "套餐",
+        "startDate": "开始日期",
+        "endDate": "结束日期",
+        "status": "状态",
+        "autoRenew": "自动续费",
+        "price": "价格",
+        "createdAt": "创建日期",
+        "actions": "操作",
+        "yes": "是",
+        "no": "否"
+      },
+      "actions": {
+        "viewDetail": "查看详情",
+        "edit": "编辑",
+        "delete": "删除"
+      },
+      "toast": {
+        "success": "成功",
+        "error": "错误",
+        "info": "信息",
+        "loadError": "无法加载订阅列表",
+        "deleteSuccess": "订阅删除成功",
+        "deleteError": "无法删除订阅",
+        "editInDevelopment": "编辑功能正在开发中"
+      }
     }
   },
   "homepage": {
@@ -591,6 +729,100 @@
       "lastNameMax": "姓氏不能超过50个字符",
       "emailRequired": "电子邮箱不能为空",
       "emailInvalid": "电子邮箱格式不正确"
+    }
+  },
+  "packageDetail": {
+    "title": "显示设备负载状态",
+    "subtitle": "监控和管理您的云包性能",
+    "loading": {
+      "subscription": "正在加载订阅信息..."
+    },
+    "error": {
+      "notFound": "未找到订阅"
+    },
+    "buttons": {
+      "back": "返回"
+    },
+    "status": {
+      "active": "活跃",
+      "inactive": "非活跃",
+      "expired": "已过期",
+      "suspended": "已暂停",
+      "cancelled": "已取消",
+      "pending": "待处理"
+    },
+    "serverDetails": {
+      "title": "服务器详情",
+      "demoData": "演示数据",
+      "status": "状态",
+      "on": "开启",
+      "refresh": "刷新",
+      "hostname": "域名/主机名",
+      "username": "用户名",
+      "password": "密码",
+      "ip": "IP地址",
+      "uptime": "运行时间",
+      "days": "天"
+    },
+    "controls": {
+      "vmName": "虚拟机名称：",
+      "time": "时间：",
+      "theme": "主题：",
+      "showPerformance": "显示性能使用情况",
+      "timeOptions": {
+        "oneHour": "1小时前",
+        "sixHours": "6小时前",
+        "twentyFourHours": "24小时前",
+        "sevenDays": "7天前"
+      },
+      "themeOptions": {
+        "light": "浅色",
+        "dark": "深色"
+      }
+    },
+    "charts": {
+      "cpuUsage": "CPU使用率 (%)",
+      "memoryUsage": "内存使用率 (%)"
+    },
+    "packageInfo": {
+      "title": "包信息",
+      "packageName": "包名称",
+      "vmName": "虚拟机名称",
+      "cpu": "CPU",
+      "memory": "内存",
+      "storage": "存储",
+      "bandwidth": "带宽",
+      "feature": "功能",
+      "ipAddress": "IP地址",
+      "subscriber": "订阅者",
+      "email": "邮箱",
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "autoRenew": "自动续费",
+      "monthlyCost": "月费用",
+      "yes": "是",
+      "no": "否"
+    },
+    "actions": {
+      "title": "管理包",
+      "startVM": "启动虚拟机",
+      "pauseVM": "暂停虚拟机",
+      "restartVM": "重启虚拟机",
+      "createBackup": "创建备份",
+      "console": "控制台",
+      "changeOS": "更改/重装操作系统",
+      "deletePackage": "删除包",
+      "configurateVM": "配置虚拟机"
+    },
+    "billing": {
+      "title": "账单信息",
+      "createdDate": "创建日期",
+      "nextBilling": "下次账单",
+      "monthlyCost": "月费用"
+    },
+    "toast": {
+      "error": "错误",
+      "loadError": "无法加载订阅信息"
     }
   }
 }

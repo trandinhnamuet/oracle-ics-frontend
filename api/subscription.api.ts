@@ -8,7 +8,7 @@ export interface Subscription {
   cloud_package_id: number
   start_date: string
   end_date: string
-  status: 'active' | 'inactive' | 'expired' | 'suspended' | 'cancelled'
+  status: 'active' | 'inactive' | 'pending' | 'expired' | 'suspended' | 'cancelled'
   auto_renew: boolean
   created_at: string
   updated_at: string

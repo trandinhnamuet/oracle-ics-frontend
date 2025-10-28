@@ -19,6 +19,7 @@ import {
   BrainCircuit
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useTranslation } from 'react-i18next'
 import { PricingPlan } from '@/types/pricing-types'
 import { starterPlans } from '@/types/plan-starter'
 import { professionalPlans } from '@/types/plan-professional'
@@ -34,21 +35,22 @@ const allPlans = [
   ...aiPlans
 ]
 
-const categoryInfo = {
-  starter: { name: 'Starter', icon: Zap, color: 'bg-blue-500' },
-  professional: { name: 'Professional', icon: Shield, color: 'bg-green-500' },
-  enterprise: { name: 'Enterprise', icon: Crown, color: 'bg-purple-500' },
-  ai: { name: 'AI-GPU', icon: BrainCircuit, color: 'bg-orange-500' },
-  custom: { name: 'Custom', icon: Star, color: 'bg-gray-500' }
-}
-
 export default function PackagesManagementPage() {
   const { toast } = useToast()
+  const { t } = useTranslation()
   const [packages, setPackages] = useState<PricingPlan[]>(allPlans)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [editingPackage, setEditingPackage] = useState<PricingPlan | null>(null)
+
+  const categoryInfo = {
+    starter: { name: t('admin.packages.management.categories.starter'), icon: Zap, color: 'bg-blue-500' },
+    professional: { name: t('admin.packages.management.categories.professional'), icon: Shield, color: 'bg-green-500' },
+    enterprise: { name: t('admin.packages.management.categories.enterprise'), icon: Crown, color: 'bg-purple-500' },
+    ai: { name: t('admin.packages.management.categories.ai'), icon: BrainCircuit, color: 'bg-orange-500' },
+    custom: { name: t('admin.packages.management.categories.custom'), icon: Star, color: 'bg-gray-500' }
+  }
 
   // Filter packages
   const filteredPackages = packages.filter(pkg => {
@@ -75,8 +77,8 @@ export default function PackagesManagementPage() {
 
     setPackages([...packages, newPackage])
     toast({
-      title: 'Thành công',
-      description: 'Tạo gói mới thành công',
+      title: t('admin.packages.management.toast.createSuccess'),
+      description: t('admin.packages.management.toast.createSuccessDesc'),
       variant: 'default'
     })
   }
@@ -103,8 +105,8 @@ export default function PackagesManagementPage() {
 
     setPackages(packages.map(p => p.id === editingPackage.id ? updatedPackage : p))
     toast({
-      title: 'Thành công',
-      description: 'Cập nhật gói thành công',
+      title: t('admin.packages.management.toast.updateSuccess'),
+      description: t('admin.packages.management.toast.updateSuccessDesc'),
       variant: 'default'
     })
   }
@@ -112,8 +114,8 @@ export default function PackagesManagementPage() {
   const handleDeletePackage = (id: number) => {
     setPackages(packages.filter(p => p.id !== id))
     toast({
-      title: 'Thành công',
-      description: 'Xóa gói thành công',
+      title: t('admin.packages.management.toast.deleteSuccess'),
+      description: t('admin.packages.management.toast.deleteSuccessDesc'),
       variant: 'default'
     })
   }
@@ -129,15 +131,15 @@ export default function PackagesManagementPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Quản lý gói dịch vụ</h1>
-            <p className="text-gray-600">Tạo, chỉnh sửa và quản lý các gói dịch vụ cloud</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t('admin.packages.management.title')}</h1>
+            <p className="text-gray-600">{t('admin.packages.management.subtitle')}</p>
           </div>
           <Button 
             onClick={() => setIsCreateModalOpen(true)}
             className="bg-[#E60000] hover:bg-red-700"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Tạo gói mới
+            {t('admin.packages.management.createNewPackage')}
           </Button>
         </div>
 
@@ -149,7 +151,7 @@ export default function PackagesManagementPage() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
-                    placeholder="Tìm kiếm gói dịch vụ..."
+                    placeholder={t('admin.packages.management.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -163,12 +165,12 @@ export default function PackagesManagementPage() {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-md bg-white"
                 >
-                  <option value="all">Tất cả danh mục</option>
-                  <option value="starter">Starter</option>
-                  <option value="professional">Professional</option>
-                  <option value="enterprise">Enterprise</option>
-                  <option value="ai">AI-GPU</option>
-                  <option value="custom">Custom</option>
+                  <option value="all">{t('admin.packages.management.filter.allCategories')}</option>
+                  <option value="starter">{t('admin.packages.management.filter.starter')}</option>
+                  <option value="professional">{t('admin.packages.management.filter.professional')}</option>
+                  <option value="enterprise">{t('admin.packages.management.filter.enterprise')}</option>
+                  <option value="ai">{t('admin.packages.management.filter.ai')}</option>
+                  <option value="custom">{t('admin.packages.management.filter.custom')}</option>
                 </select>
               </div>
             </div>
@@ -206,25 +208,25 @@ export default function PackagesManagementPage() {
                 <thead className="bg-gray-50 border-b">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Gói dịch vụ
+                      {t('admin.packages.management.table.servicePackage')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Danh mục
+                      {t('admin.packages.management.table.category')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Giá
+                      {t('admin.packages.management.table.price')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Mô tả
+                      {t('admin.packages.management.table.description')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Tính năng
+                      {t('admin.packages.management.table.features')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Trạng thái
+                      {t('admin.packages.management.table.status')}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Thao tác
+                      {t('admin.packages.management.table.actions')}
                     </th>
                   </tr>
                 </thead>
@@ -269,7 +271,7 @@ export default function PackagesManagementPage() {
                             ))}
                             {pkg.features.length > 2 && (
                               <div className="text-gray-400">
-                                +{pkg.features.length - 2} tính năng khác
+                                +{pkg.features.length - 2} {t('admin.packages.management.table.moreFeatures')}
                               </div>
                             )}
                           </div>
@@ -278,7 +280,7 @@ export default function PackagesManagementPage() {
                           {pkg.popular && (
                             <Badge className="bg-[#E60000] text-white">
                               <Star className="h-3 w-3 mr-1" />
-                              Phổ biến
+                              {t('admin.packages.management.table.popular')}
                             </Badge>
                           )}
                         </td>
@@ -310,7 +312,7 @@ export default function PackagesManagementPage() {
               
               {filteredPackages.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-gray-500">Không tìm thấy gói dịch vụ nào</p>
+                  <p className="text-gray-500">{t('admin.packages.management.table.noPackagesFound')}</p>
                 </div>
               )}
             </div>

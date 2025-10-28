@@ -147,6 +147,144 @@
       },
       "footer": "Hiển thị {{current}} / {{total}} đăng ký",
       "loading": "Đang tải dữ liệu..."
+    },
+    "packages": {
+      "createPackage": {
+        "title": {
+          "create": "Tạo gói mới",
+          "edit": "Chỉnh sửa gói"
+        },
+        "form": {
+          "packageName": "Tên gói",
+          "packageNamePlaceholder": "VD: Starter 1",
+          "category": "Danh mục",
+          "categoryOptions": {
+            "starter": "Starter",
+            "professional": "Professional",
+            "enterprise": "Enterprise",
+            "ai": "AI-GPU",
+            "custom": "Custom"
+          },
+          "description": "Mô tả",
+          "descriptionPlaceholder": "Mô tả gói dịch vụ",
+          "price": "Giá ($)",
+          "period": "Kỳ hạn",
+          "periodOptions": {
+            "month": "tháng",
+            "year": "năm"
+          },
+          "popularPackage": "Gói phổ biến",
+          "features": "Tính năng",
+          "featurePlaceholder": "VD: 4 vCPU",
+          "addFeature": "Thêm tính năng"
+        },
+        "buttons": {
+          "cancel": "Hủy",
+          "create": "Tạo gói",
+          "update": "Cập nhật"
+        },
+        "validation": {
+          "error": "Lỗi",
+          "fillAllFields": "Vui lòng điền đầy đủ thông tin"
+        }
+      },
+      "management": {
+        "title": "Quản lý gói dịch vụ",
+        "subtitle": "Tạo, chỉnh sửa và quản lý các gói dịch vụ cloud",
+        "createNewPackage": "Tạo gói mới",
+        "searchPlaceholder": "Tìm kiếm gói dịch vụ...",
+        "filter": {
+          "allCategories": "Tất cả danh mục",
+          "starter": "Starter",
+          "professional": "Professional",
+          "enterprise": "Enterprise",
+          "ai": "AI-GPU",
+          "custom": "Custom"
+        },
+        "categories": {
+          "starter": "Starter",
+          "professional": "Professional",
+          "enterprise": "Enterprise",
+          "ai": "AI-GPU",
+          "custom": "Custom"
+        },
+        "table": {
+          "servicePackage": "Gói dịch vụ",
+          "category": "Danh mục",
+          "price": "Giá",
+          "description": "Mô tả",
+          "features": "Tính năng",
+          "status": "Trạng thái",
+          "actions": "Thao tác",
+          "moreFeatures": "tính năng khác",
+          "popular": "Phổ biến",
+          "noPackagesFound": "Không tìm thấy gói dịch vụ nào"
+        },
+        "toast": {
+          "createSuccess": "Thành công",
+          "createSuccessDesc": "Tạo gói mới thành công",
+          "updateSuccess": "Thành công",
+          "updateSuccessDesc": "Cập nhật gói thành công",
+          "deleteSuccess": "Thành công",
+          "deleteSuccessDesc": "Xóa gói thành công"
+        }
+      }
+    },
+    "subscriptions": {
+      "title": "Quản lý đăng ký dịch vụ",
+      "backButton": "Quay lại",
+      "searchPlaceholder": "Tìm kiếm theo tên người dùng, email, tên gói, ID...",
+      "filterByStatus": "Lọc theo trạng thái",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa subscription này?",
+      "filter": {
+        "allStatus": "Tất cả trạng thái"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "pending": "Đang chờ",
+        "inactive": "Không hoạt động",
+        "expired": "Hết hạn",
+        "suspended": "Tạm dừng",
+        "cancelled": "Đã hủy"
+      },
+      "stats": {
+        "total": "Tổng đăng ký",
+        "pending": "Đang chờ",
+        "active": "Đang hoạt động",
+        "expired": "Hết hạn",
+        "cancelled": "Đã hủy"
+      },
+      "table": {
+        "title": "Danh sách đăng ký dịch vụ",
+        "showing": "Hiển thị {{current}} / {{total}} đăng ký",
+        "noData": "Không tìm thấy đăng ký nào",
+        "id": "ID",
+        "user": "Người dùng",
+        "package": "Gói dịch vụ",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "status": "Trạng thái",
+        "autoRenew": "Tự động gia hạn",
+        "price": "Giá",
+        "createdAt": "Ngày tạo",
+        "actions": "Hành động",
+        "yes": "Có",
+        "no": "Không"
+      },
+      "actions": {
+        "viewDetail": "Xem chi tiết",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa"
+      },
+      "toast": {
+        "success": "Thành công",
+        "error": "Lỗi",
+        "info": "Thông báo",
+        "loadError": "Không thể tải danh sách đăng ký dịch vụ",
+        "deleteSuccess": "Đã xóa subscription thành công",
+        "deleteError": "Không thể xóa subscription",
+        "editInDevelopment": "Chức năng chỉnh sửa đang được phát triển"
+      }
     }
   },
   "homepage": {
@@ -590,6 +728,100 @@
       "lastNameMax": "Tên không được quá 50 ký tự",
       "emailRequired": "Email không được để trống",
       "emailInvalid": "Email không hợp lệ"
+    }
+  },
+  "packageDetail": {
+    "title": "Hiển thị trạng thái tải thiết bị",
+    "subtitle": "Theo dõi và quản lý hiệu suất gói cloud của bạn",
+    "loading": {
+      "subscription": "Đang tải thông tin subscription..."
+    },
+    "error": {
+      "notFound": "Không tìm thấy subscription"
+    },
+    "buttons": {
+      "back": "Quay lại"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Không hoạt động",
+      "expired": "Hết hạn", 
+      "suspended": "Tạm dừng",
+      "cancelled": "Đã hủy",
+      "pending": "Đang chờ"
+    },
+    "serverDetails": {
+      "title": "Chi tiết máy chủ",
+      "demoData": "Dữ liệu demo",
+      "status": "Trạng thái",
+      "on": "BẬT",
+      "refresh": "Làm mới lại",
+      "hostname": "Tên miền/ Hostname",
+      "username": "Tên đăng nhập",
+      "password": "Mật khẩu",
+      "ip": "IP",
+      "uptime": "Uptime",
+      "days": "Ngày"
+    },
+    "controls": {
+      "vmName": "Tên VM:",
+      "time": "Thời gian:",
+      "theme": "Giao diện:",
+      "showPerformance": "Hiển thị sử dụng hiệu suất",
+      "timeOptions": {
+        "oneHour": "1 tiếng trước",
+        "sixHours": "6 tiếng trước", 
+        "twentyFourHours": "24 tiếng trước",
+        "sevenDays": "7 ngày trước"
+      },
+      "themeOptions": {
+        "light": "Sáng",
+        "dark": "Tối"
+      }
+    },
+    "charts": {
+      "cpuUsage": "Sử dụng CPU (%)",
+      "memoryUsage": "Sử dụng bộ nhớ (%)"
+    },
+    "packageInfo": {
+      "title": "Thông tin gói",
+      "packageName": "Tên gói",
+      "vmName": "Tên VM",
+      "cpu": "CPU",
+      "memory": "Bộ nhớ",
+      "storage": "Lưu trữ",
+      "bandwidth": "Băng thông",
+      "feature": "Tính năng",
+      "ipAddress": "Địa chỉ IP",
+      "subscriber": "Người đăng ký",
+      "email": "Email",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "autoRenew": "Tự động gia hạn",
+      "monthlyCost": "Chi phí hàng tháng",
+      "yes": "Có",
+      "no": "Không"
+    },
+    "actions": {
+      "title": "Quản lý gói",
+      "startVM": "Khởi động VM",
+      "pauseVM": "Tạm dừng VM", 
+      "restartVM": "Khởi động lại VM",
+      "createBackup": "Tạo bản sao lưu",
+      "console": "Console",
+      "changeOS": "Thay đổi/Cài đặt lại OS",
+      "deletePackage": "Xóa gói",
+      "configurateVM": "Cấu hình VM"
+    },
+    "billing": {
+      "title": "Thông tin thanh toán",
+      "createdDate": "Ngày tạo",
+      "nextBilling": "Thanh toán tiếp theo",
+      "monthlyCost": "Chi phí hàng tháng"
+    },
+    "toast": {
+      "error": "Lỗi",
+      "loadError": "Không thể tải thông tin subscription"
     }
   }
 }

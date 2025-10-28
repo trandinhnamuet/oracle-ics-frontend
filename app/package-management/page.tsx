@@ -21,7 +21,7 @@ interface PackageSubscription {
   cloud_package_id: number
   start_date: string
   end_date: string
-  status: 'active' | 'inactive' | 'expired' | 'suspended' | 'cancelled'
+  status: 'active' | 'inactive' | 'pending' | 'expired' | 'suspended' | 'cancelled'
   auto_renew: boolean
   created_at: string
   updated_at: string
@@ -166,7 +166,7 @@ export default function PackageManagementPage() {
   const stats = {
     total: subscriptions.length,
     active: subscriptions.filter(s => s.status === 'active').length,
-    inactive: subscriptions.filter(s => ['suspended', 'cancelled', 'expired'].includes(s.status)).length,
+    inactive: subscriptions.filter(s => ['pending', 'suspended', 'cancelled', 'expired'].includes(s.status)).length,
     totalRevenue: subscriptions
       .filter(s => s.status === 'active')
       .reduce((sum, s) => sum + (s.cloud_package?.cost_vnd || 0), 0)
@@ -345,11 +345,13 @@ export default function PackageManagementPage() {
                         <TableCell>
                           <Badge variant={
                             sub.status === 'active' ? 'default' : 
+                            sub.status === 'pending' ? 'secondary' :
                             sub.status === 'suspended' ? 'secondary' :
                             sub.status === 'cancelled' ? 'destructive' :
                             sub.status === 'expired' ? 'outline' : 'secondary'
                           }>
                             {sub.status === 'active' ? t('packageManagement.table.active') : 
+                             sub.status === 'pending' ? 'Pending' :
                              sub.status === 'suspended' ? 'Suspended' :
                              sub.status === 'cancelled' ? 'Cancelled' :
                              sub.status === 'expired' ? 'Expired' :

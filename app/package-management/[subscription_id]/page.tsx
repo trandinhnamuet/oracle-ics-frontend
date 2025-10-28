@@ -112,8 +112,8 @@ export default function PackageDetailPage() {
       } catch (error: any) {
         console.error('Error fetching subscription:', error)
         toast({
-          title: "Lỗi",
-          description: "Không thể tải thông tin subscription",
+          title: t('packageDetail.toast.error'),
+          description: t('packageDetail.toast.loadError'),
           variant: "destructive"
         })
       } finally {
@@ -149,12 +149,12 @@ export default function PackageDetailPage() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'active': return 'Đang hoạt động'
-      case 'inactive': return 'Không hoạt động'  
-      case 'expired': return 'Hết hạn'
-      case 'suspended': return 'Tạm dừng'
-      case 'cancelled': return 'Đã hủy'
-      case 'pending': return 'Đang chờ'
+      case 'active': return t('packageDetail.status.active')
+      case 'inactive': return t('packageDetail.status.inactive')  
+      case 'expired': return t('packageDetail.status.expired')
+      case 'suspended': return t('packageDetail.status.suspended')
+      case 'cancelled': return t('packageDetail.status.cancelled')
+      case 'pending': return t('packageDetail.status.pending')
       default: return status.toUpperCase()
     }
   }
@@ -164,7 +164,7 @@ export default function PackageDetailPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <div className="text-lg">Đang tải thông tin subscription...</div>
+          <div className="text-lg">{t('packageDetail.loading.subscription')}</div>
         </div>
       </div>
     )
@@ -174,14 +174,14 @@ export default function PackageDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-lg text-red-600">Không tìm thấy subscription</div>
+          <div className="text-lg text-red-600">{t('packageDetail.error.notFound')}</div>
           <Button 
             onClick={() => router.back()} 
             className="mt-4"
             variant="outline"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Quay lại
+            {t('packageDetail.buttons.back')}
           </Button>
         </div>
       </div>
@@ -201,14 +201,14 @@ export default function PackageDetailPage() {
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back
+              {t('packageDetail.buttons.back')}
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Display device load status
+                {t('packageDetail.title')}
               </h1>
               <p className="text-gray-600 mt-1">
-                Monitor and manage your cloud package performance
+                {t('packageDetail.subtitle')}
               </p>
             </div>
           </div>
@@ -222,30 +222,30 @@ export default function PackageDetailPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between w-full">
-                <CardTitle>Server details</CardTitle>
-                <Badge className="ml-2 bg-blue-500 text-white text-xs font-semibold">Demo data</Badge>
+                <CardTitle>{t('packageDetail.serverDetails.title')}</CardTitle>
+                <Badge className="ml-2 bg-blue-500 text-white text-xs font-semibold">{t('packageDetail.serverDetails.demoData')}</Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Trạng thái</p>
+                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.status')}</p>
                     <div className="flex items-center gap-2">
-                      <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">BẬT</span>
-                      <Button variant="link" size="sm" className="p-0 h-auto min-h-0">Làm mới lại</Button>
+                      <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">{t('packageDetail.serverDetails.on')}</span>
+                      <Button variant="link" size="sm" className="p-0 h-auto min-h-0">{t('packageDetail.serverDetails.refresh')}</Button>
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Tên miền/ Hostname</p>
+                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.hostname')}</p>
                     <p className="font-semibold">trandinhnamz.xyz</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Tên đăng nhập</p>
+                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.username')}</p>
                     <p className="font-semibold">root</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Mật khẩu</p>
+                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.password')}</p>
                     <div className="flex items-center gap-2">
                       <input type="password" value="password-demo" readOnly className="border rounded px-2 py-1 text-sm w-32" />
                       <Button variant="ghost" size="icon" className="h-7 w-7"><span role="img" aria-label="eye">👁️</span></Button>
@@ -253,12 +253,12 @@ export default function PackageDetailPage() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">IP</p>
+                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.ip')}</p>
                     <a href="http://160.22.161.44" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 underline">160.22.161.44</a>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Uptime</p>
-                    <p className="font-semibold">2 Ngày 17:41:14</p>
+                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.uptime')}</p>
+                    <p className="font-semibold">2 {t('packageDetail.serverDetails.days')} 17:41:14</p>
                   </div>
                 </div>
               </div>
@@ -271,7 +271,7 @@ export default function PackageDetailPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  VM Name:
+                  {t('packageDetail.controls.vmName')}
                 </label>
                 <Select value={selectedVM} onValueChange={setSelectedVM}>
                   <SelectTrigger>
@@ -287,32 +287,32 @@ export default function PackageDetailPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Time:
+                  {t('packageDetail.controls.time')}
                 </label>
                 <Select value={selectedTime} onValueChange={setSelectedTime}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1 hour ago">1 hour ago</SelectItem>
-                    <SelectItem value="6 hours ago">6 hours ago</SelectItem>
-                    <SelectItem value="24 hours ago">24 hours ago</SelectItem>
-                    <SelectItem value="7 days ago">7 days ago</SelectItem>
+                    <SelectItem value="1 hour ago">{t('packageDetail.controls.timeOptions.oneHour')}</SelectItem>
+                    <SelectItem value="6 hours ago">{t('packageDetail.controls.timeOptions.sixHours')}</SelectItem>
+                    <SelectItem value="24 hours ago">{t('packageDetail.controls.timeOptions.twentyFourHours')}</SelectItem>
+                    <SelectItem value="7 days ago">{t('packageDetail.controls.timeOptions.sevenDays')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Theme:
+                  {t('packageDetail.controls.theme')}
                 </label>
                 <Select value={selectedTheme} onValueChange={setSelectedTheme}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Light">Light</SelectItem>
-                    <SelectItem value="Dark">Dark</SelectItem>
+                    <SelectItem value="Light">{t('packageDetail.controls.themeOptions.light')}</SelectItem>
+                    <SelectItem value="Dark">{t('packageDetail.controls.themeOptions.dark')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -326,7 +326,7 @@ export default function PackageDetailPage() {
                   {isLoading ? (
                     <RefreshCw className="h-4 w-4 animate-spin mr-2" />
                   ) : null}
-                  Show Performance Usage
+                  {t('packageDetail.controls.showPerformance')}
                 </Button>
               </div>
             </div>
@@ -338,7 +338,7 @@ export default function PackageDetailPage() {
           {/* CPU Usage Chart */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">CPU Usage (%)</CardTitle>
+              <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.cpuUsage')}</CardTitle>
               <Button variant="ghost" size="sm">
                 <Download className="h-4 w-4" />
               </Button>
@@ -376,7 +376,7 @@ export default function PackageDetailPage() {
           {/* Memory Usage Chart */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">Memory Usage (%)</CardTitle>
+              <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.memoryUsage')}</CardTitle>
               <Button variant="ghost" size="sm">
                 <Download className="h-4 w-4" />
               </Button>
@@ -417,44 +417,44 @@ export default function PackageDetailPage() {
           {/* Package Details */}
           <Card className="lg:col-span-2">
             <CardHeader>
-              <CardTitle>Package Information</CardTitle>
+              <CardTitle>{t('packageDetail.packageInfo.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Package Name</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.packageName')}</p>
                   <p className="font-semibold">{packageDetail.packageName}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">VM Name</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.vmName')}</p>
                   <p className="font-semibold">{packageDetail.vmName}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">CPU</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.cpu')}</p>
                   <p className="font-semibold">{packageDetail.cpu}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Memory</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.memory')}</p>
                   <p className="font-semibold">{packageDetail.memory}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Storage</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.storage')}</p>
                   <p className="font-semibold">{packageDetail.storage}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Bandwidth</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.bandwidth')}</p>
                   <p className="font-semibold">{packageDetail.bandwidth}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Feature</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.feature')}</p>
                   <p className="font-semibold">{packageDetail.feature}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">IP Address</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.ipAddress')}</p>
                   <p className="font-semibold">{packageDetail.ipAddress}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Subscriber</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.subscriber')}</p>
                   <p className="font-semibold">
                     {packageDetail.user ? 
                       `${packageDetail.user.firstName} ${packageDetail.user.lastName}` : 
@@ -463,27 +463,27 @@ export default function PackageDetailPage() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Email</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.email')}</p>
                   <p className="font-semibold">{packageDetail.user?.email || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Start Date</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.startDate')}</p>
                   <p className="font-semibold">{packageDetail.startDate}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">End Date</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.endDate')}</p>
                   <p className="font-semibold">{packageDetail.endDate}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Auto Renew</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.autoRenew')}</p>
                   <p className="font-semibold">
                     <Badge variant={packageDetail.autoRenew ? 'default' : 'outline'}>
-                      {packageDetail.autoRenew ? 'Có' : 'Không'}
+                      {packageDetail.autoRenew ? t('packageDetail.packageInfo.yes') : t('packageDetail.packageInfo.no')}
                     </Badge>
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Monthly Cost</p>
+                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.monthlyCost')}</p>
                   <p className="font-semibold">
                     {new Intl.NumberFormat('vi-VN', {
                       style: 'currency',
@@ -498,7 +498,7 @@ export default function PackageDetailPage() {
           {/* Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Manage Package</CardTitle>
+              <CardTitle>{t('packageDetail.actions.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <Button 
@@ -508,7 +508,7 @@ export default function PackageDetailPage() {
                 disabled={isLoading || packageDetail.status === 'active'}
               >
                 <Play className="h-4 w-4 mr-2" />
-                Start VM
+                {t('packageDetail.actions.startVM')}
               </Button>
               
               <Button 
@@ -518,7 +518,7 @@ export default function PackageDetailPage() {
                 disabled={isLoading || packageDetail.status === 'suspended'}
               >
                 <Pause className="h-4 w-4 mr-2" />
-                Pause VM
+                {t('packageDetail.actions.pauseVM')}
               </Button>
               
               <Button 
@@ -528,7 +528,7 @@ export default function PackageDetailPage() {
                 disabled={isLoading}
               >
                 <RotateCcw className="h-4 w-4 mr-2" />
-                Restart VM
+                {t('packageDetail.actions.restartVM')}
               </Button>
               
               <Button 
@@ -538,7 +538,7 @@ export default function PackageDetailPage() {
                 disabled={isLoading}
               >
                 <Download className="h-4 w-4 mr-2" />
-                Create Backup
+                {t('packageDetail.actions.createBackup')}
               </Button>
 
               <Button 
@@ -548,7 +548,7 @@ export default function PackageDetailPage() {
                 disabled={isLoading}
               >
                 <Terminal className="h-4 w-4 mr-2" />
-                Console
+                {t('packageDetail.actions.console')}
               </Button>
 
               <Button 
@@ -558,7 +558,7 @@ export default function PackageDetailPage() {
                 disabled={isLoading}
               >
                 <MonitorUp className="h-4 w-4 mr-2" />
-                Change/Reinstall OS
+                {t('packageDetail.actions.changeOS')}
               </Button>
               
               
@@ -570,7 +570,7 @@ export default function PackageDetailPage() {
                   disabled={isLoading}
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Package
+                  {t('packageDetail.actions.deletePackage')}
                 </Button>
               </div>
 
@@ -581,7 +581,7 @@ export default function PackageDetailPage() {
                   onClick={() => router.push('/cloud/configuration')}
                 >
                   <MonitorUp className="h-5 w-5 mr-2" />
-                  Configurate VM
+                  {t('packageDetail.actions.configurateVM')}
                 </Button>
               </div>
             </CardContent>
@@ -591,20 +591,20 @@ export default function PackageDetailPage() {
         {/* Billing Information */}
         <Card>
           <CardHeader>
-            <CardTitle>Billing Information</CardTitle>
+            <CardTitle>{t('packageDetail.billing.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <p className="text-sm text-gray-600">Created Date</p>
+                <p className="text-sm text-gray-600">{t('packageDetail.billing.createdDate')}</p>
                 <p className="text-xl font-bold text-blue-600">{packageDetail.createdAt}</p>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
-                <p className="text-sm text-gray-600">Next Billing</p>
+                <p className="text-sm text-gray-600">{t('packageDetail.billing.nextBilling')}</p>
                 <p className="text-xl font-bold text-green-600">{packageDetail.nextBilling}</p>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <p className="text-sm text-gray-600">Monthly Cost</p>
+                <p className="text-sm text-gray-600">{t('packageDetail.billing.monthlyCost')}</p>
                 <p className="text-xl font-bold text-purple-600">
                   {new Intl.NumberFormat('vi-VN', {
                     style: 'currency',

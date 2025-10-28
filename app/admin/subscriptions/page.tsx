@@ -11,9 +11,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ArrowLeft, Search, Filter, Eye, Edit, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/hooks/use-toast'
+import { useTranslation } from 'react-i18next'
 
 export default function AdminSubscriptionsPage() {
   const router = useRouter()
+  const { t } = useTranslation()
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
@@ -36,8 +38,8 @@ export default function AdminSubscriptionsPage() {
     } catch (error: any) {
       console.error('Error fetching subscriptions:', error)
       toast({
-        title: "Lỗi",
-        description: "Không thể tải danh sách đăng ký dịch vụ",
+        title: t('admin.subscriptions.toast.error'),
+        description: t('admin.subscriptions.toast.loadError'),
         variant: "destructive"
       })
     } finally {
@@ -69,23 +71,23 @@ export default function AdminSubscriptionsPage() {
   }
 
   const handleDeleteSubscription = async (subscriptionId: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa subscription này?')) {
+    if (!confirm(t('admin.subscriptions.confirmDelete'))) {
       return
     }
 
     try {
       await deleteSubscription(subscriptionId)
       toast({
-        title: "Thành công",
-        description: "Đã xóa subscription thành công",
+        title: t('admin.subscriptions.toast.success'),
+        description: t('admin.subscriptions.toast.deleteSuccess'),
       })
       // Refresh data
       fetchAllSubscriptions()
     } catch (error: any) {
       console.error('Error deleting subscription:', error)
       toast({
-        title: "Lỗi",
-        description: "Không thể xóa subscription",
+        title: t('admin.subscriptions.toast.error'),
+        description: t('admin.subscriptions.toast.deleteError'),
         variant: "destructive"
       })
     }
@@ -99,8 +101,8 @@ export default function AdminSubscriptionsPage() {
   const handleEditSubscription = (subscriptionId: string) => {
     // TODO: Implement edit functionality
     toast({
-      title: "Thông báo",
-      description: "Chức năng chỉnh sửa đang được phát triển",
+      title: t('admin.subscriptions.toast.info'),
+      description: t('admin.subscriptions.toast.editInDevelopment'),
     })
   }
 
@@ -108,6 +110,8 @@ export default function AdminSubscriptionsPage() {
     switch (status) {
       case 'active':
         return 'default'
+      case 'pending':
+        return 'secondary'
       case 'expired':
         return 'destructive'
       case 'suspended':
@@ -122,15 +126,17 @@ export default function AdminSubscriptionsPage() {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'active':
-        return 'Đang hoạt động'
+        return t('admin.subscriptions.status.active')
+      case 'pending':
+        return t('admin.subscriptions.status.pending')
       case 'inactive':
-        return 'Không hoạt động'
+        return t('admin.subscriptions.status.inactive')
       case 'expired':
-        return 'Hết hạn'
+        return t('admin.subscriptions.status.expired')
       case 'suspended':
-        return 'Tạm dừng'
+        return t('admin.subscriptions.status.suspended')
       case 'cancelled':
-        return 'Đã hủy'
+        return t('admin.subscriptions.status.cancelled')
       default:
         return status
     }
@@ -150,7 +156,7 @@ export default function AdminSubscriptionsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Đang tải...</div>
+        <div className="text-lg">{t('common.loading')}</div>
       </div>
     )
   }
@@ -165,9 +171,9 @@ export default function AdminSubscriptionsPage() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Quay lại
+            {t('admin.subscriptions.backButton')}
           </Button>
-          <h1 className="text-3xl font-bold">Quản lý đăng ký dịch vụ</h1>
+          <h1 className="text-3xl font-bold">{t('admin.subscriptions.title')}</h1>
         </div>
 
         {/* Filters */}
@@ -175,7 +181,7 @@ export default function AdminSubscriptionsPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Tìm kiếm theo tên người dùng, email, tên gói, ID..."
+              placeholder={t('admin.subscriptions.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -184,24 +190,25 @@ export default function AdminSubscriptionsPage() {
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-48">
               <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Lọc theo trạng thái" />
+              <SelectValue placeholder={t('admin.subscriptions.filterByStatus')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả trạng thái</SelectItem>
-              <SelectItem value="active">Đang hoạt động</SelectItem>
-              <SelectItem value="inactive">Không hoạt động</SelectItem>
-              <SelectItem value="expired">Hết hạn</SelectItem>
-              <SelectItem value="suspended">Tạm dừng</SelectItem>
-              <SelectItem value="cancelled">Đã hủy</SelectItem>
+              <SelectItem value="all">{t('admin.subscriptions.filter.allStatus')}</SelectItem>
+              <SelectItem value="active">{t('admin.subscriptions.status.active')}</SelectItem>
+              <SelectItem value="pending">{t('admin.subscriptions.status.pending')}</SelectItem>
+              <SelectItem value="inactive">{t('admin.subscriptions.status.inactive')}</SelectItem>
+              <SelectItem value="expired">{t('admin.subscriptions.status.expired')}</SelectItem>
+              <SelectItem value="suspended">{t('admin.subscriptions.status.suspended')}</SelectItem>
+              <SelectItem value="cancelled">{t('admin.subscriptions.status.cancelled')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Tổng đăng ký</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.subscriptions.stats.total')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{subscriptions.length}</div>
@@ -209,7 +216,7 @@ export default function AdminSubscriptionsPage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Đang hoạt động</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.subscriptions.stats.active')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
@@ -219,7 +226,17 @@ export default function AdminSubscriptionsPage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Hết hạn</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.subscriptions.stats.pending')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-yellow-600">
+                {subscriptions.filter(s => s.status === 'pending').length}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">{t('admin.subscriptions.stats.expired')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-600">
@@ -229,7 +246,7 @@ export default function AdminSubscriptionsPage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Đã hủy</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.subscriptions.stats.cancelled')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gray-600">
@@ -243,31 +260,34 @@ export default function AdminSubscriptionsPage() {
       {/* Subscriptions Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Danh sách đăng ký dịch vụ</CardTitle>
+          <CardTitle>{t('admin.subscriptions.table.title')}</CardTitle>
           <div className="text-sm text-gray-500">
-            Hiển thị {filteredSubscriptions.length} / {subscriptions.length} đăng ký
+            {t('admin.subscriptions.table.showing', { 
+              current: filteredSubscriptions.length, 
+              total: subscriptions.length 
+            })}
           </div>
         </CardHeader>
         <CardContent>
           {filteredSubscriptions.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              Không tìm thấy đăng ký nào
+              {t('admin.subscriptions.table.noData')}
             </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Người dùng</TableHead>
-                    <TableHead>Gói dịch vụ</TableHead>
-                    <TableHead>Ngày bắt đầu</TableHead>
-                    <TableHead>Ngày kết thúc</TableHead>
-                    <TableHead>Trạng thái</TableHead>
-                    <TableHead>Tự động gia hạn</TableHead>
-                    <TableHead>Giá</TableHead>
-                    <TableHead>Ngày tạo</TableHead>
-                    <TableHead>Hành động</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.id')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.user')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.package')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.startDate')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.endDate')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.status')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.autoRenew')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.price')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.createdAt')}</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -316,7 +336,7 @@ export default function AdminSubscriptionsPage() {
                       </TableCell>
                       <TableCell>
                         <Badge variant={subscription.auto_renew ? 'default' : 'outline'}>
-                          {subscription.auto_renew ? 'Có' : 'Không'}
+                          {subscription.auto_renew ? t('admin.subscriptions.table.yes') : t('admin.subscriptions.table.no')}
                         </Badge>
                       </TableCell>
                       <TableCell>
