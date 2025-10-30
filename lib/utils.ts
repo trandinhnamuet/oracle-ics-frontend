@@ -101,9 +101,14 @@ export function userInfo() {
         // Thông tin từ cookies
         const cookieToken = document.cookie
           .split('; ')
+          .find(row => row.startsWith('access_token='))
+          ?.split('=')[1];
+        const legacyCookieToken = document.cookie
+          .split('; ')
           .find(row => row.startsWith('auth-token='))
           ?.split('=')[1];
-        console.log('   🍪 Cookie Token:', cookieToken ? `${cookieToken.substring(0, 20)}...` : 'No cookie token');
+        console.log('   🍪 Cookie Token (access_token):', cookieToken ? `${cookieToken.substring(0, 20)}...` : 'No cookie token');
+        console.log('   🍪 Legacy Cookie Token (auth-token):', legacyCookieToken ? `${legacyCookieToken.substring(0, 20)}...` : 'No legacy cookie token');
         // Thông tin từ localStorage
         const localStorageAuth = localStorage.getItem('auth-storage');
         console.log('   💾 LocalStorage Auth:', localStorageAuth ? JSON.parse(localStorageAuth) : 'No localStorage data');
@@ -114,6 +119,7 @@ export function userInfo() {
           isLoading,
           error,
           cookieToken,
+          legacyCookieToken,
           localStorageAuth: localStorageAuth ? JSON.parse(localStorageAuth) : null
         };
       } else {

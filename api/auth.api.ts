@@ -17,7 +17,8 @@ const api = axios.create({
 // Interceptor để tự động thêm auth token vào mọi request
 api.interceptors.request.use(
   (config) => {
-    const token = Cookies.get('auth-token')
+    // Sử dụng tên cookie đúng với backend
+    const token = Cookies.get('access_token') || Cookies.get('auth-token') // fallback compatibility
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -28,13 +29,25 @@ api.interceptors.request.use(
   }
 )
 
-// Interceptor để xử lý response và redirect khi token hết hạn
+// Interceptor để xử lý response và tự động gia hạn token
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Kiểm tra xem có token mới trong response headers không
+    const newToken = response.headers['x-new-token']
+    if (newToken) {
+      Cookies.set('access_token', newToken, {
+        expires: 1,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+      })
+    }
+    return response
+  },
   (error) => {
     if (error.response?.status === 401) {
       // Token hết hạn hoặc không hợp lệ
-      Cookies.remove('auth-token')
+      Cookies.remove('access_token')
+      Cookies.remove('auth-token') // cleanup legacy cookie
       // Có thể redirect về trang login
       if (typeof window !== 'undefined') {
         window.location.href = '/login'
@@ -78,7 +91,8 @@ export const authApi = {
         console.log('Using mock login response for development')
         return {
           user: {
-            id: 'mock-user-id',
+            id: 1, // Mock user ID as number
+            role: 'admin',
             email: 'test@gmail.com',
             firstName: 'Test',
             lastName: 'User',
@@ -132,7 +146,8 @@ export const authApi = {
       // Vẫn xóa token local dù API call thất bại
       console.error('Logout API failed:', error)
     } finally {
-      Cookies.remove('auth-token')
+      Cookies.remove('access_token')
+      Cookies.remove('auth-token') // cleanup legacy cookie
     }
   },
 

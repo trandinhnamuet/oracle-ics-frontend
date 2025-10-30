@@ -189,6 +189,10 @@ export function Header() {
             </button>
           </nav>
 
+          <span className="hidden 2xl:inline-block bg-red-600 text-white font-semibold rounded-full px-4 py-1 text-sm shadow-md mr-2 select-none">
+            {t('header.hotline')}
+          </span>
+
           {/* Auth Section */}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated && user ? (

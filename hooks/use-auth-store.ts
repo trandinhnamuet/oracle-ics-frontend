@@ -50,12 +50,14 @@ const useAuthStore = create<AuthState>()(
 
       setToken: (token: string) => {
         set({ token })
-        // Lưu token vào cookie
-        Cookies.set('auth-token', token, { 
-          expires: 7, // 7 days
+        // Lưu token vào cookie - sử dụng cùng tên với backend
+        Cookies.set('access_token', token, { 
+          expires: 1, // 1 day để khớp với backend JWT expiry
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict'
         })
+        // Cleanup old cookie name nếu có
+        Cookies.remove('auth-token')
       },
 
       setLoading: (isLoading: boolean) => {
@@ -73,12 +75,14 @@ const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
           error: null
         })
-        // Lưu token vào cookie
-        Cookies.set('auth-token', token, { 
-          expires: 7, // 7 days
+        // Lưu token vào cookie - sử dụng cùng tên với backend
+        Cookies.set('access_token', token, { 
+          expires: 1, // 1 day để khớp với backend JWT expiry
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict'
         })
+        // Cleanup old cookie name nếu có
+        Cookies.remove('auth-token')
       },
 
       logout: () => {
@@ -88,7 +92,8 @@ const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
           error: null
         })
-        // Xóa token khỏi cookie
+        // Xóa token khỏi cookie - xóa cả 2 tên cookie để đảm bảo
+        Cookies.remove('access_token')
         Cookies.remove('auth-token')
       },
 
@@ -97,10 +102,14 @@ const useAuthStore = create<AuthState>()(
       },
 
       initAuth: () => {
-        // Khôi phục token từ cookie khi khởi tạo app
-        const token = Cookies.get('auth-token')
+        // Khôi phục token từ cookie khi khởi tạo app - sử dụng tên cookie đúng
+        const token = Cookies.get('access_token') || Cookies.get('auth-token') // fallback cho compatibility
         if (token) {
           set({ token })
+          // Cleanup old cookie name nếu có
+          if (Cookies.get('auth-token')) {
+            Cookies.remove('auth-token')
+          }
           // Token có sẵn nhưng chưa có user info
           // Sẽ được fetch ở component cao hơn
         }

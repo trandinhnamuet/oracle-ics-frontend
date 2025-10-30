@@ -2,7 +2,9 @@
 
 import { useEffect, ReactNode } from 'react'
 import useAuthStore from '@/hooks/use-auth-store'
+import { useTokenRefresh } from '@/hooks/use-token-refresh'
 import { authApi } from '@/api/auth.api'
+import '@/lib/cookie-migration' // Auto-run cookie migration
 
 interface AuthProviderProps {
   children: ReactNode
@@ -10,6 +12,9 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const { token, user, login, logout, initAuth, setLoading } = useAuthStore()
+  
+  // Sử dụng hook tự động refresh token
+  useTokenRefresh()
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -40,7 +45,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     initializeAuth()
   }, [token, user, login, logout, initAuth, setLoading])
 
-  return <>{children}</>
+  return (
+    <>
+      {children}
+    </>
+  )
 }
 
 export default AuthProvider
