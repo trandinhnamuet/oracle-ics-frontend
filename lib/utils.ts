@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { getTokenInfo } from './token-expiry'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -68,7 +69,7 @@ export function printEnv() {
 }
 
 /**
- * In ra thông tin user hiện tại đang đăng nhập
+ * In ra thông tin user hiện tại đang đăng nhập + token expiry info
  * Có thể gọi từ console trình duyệt: userInfo()
  */
 export function userInfo() {
@@ -98,6 +99,32 @@ export function userInfo() {
         console.log('   🎫 Token:', token ? `${token.substring(0, 20)}...` : 'No token');
         console.log('   ⏳ Loading:', isLoading);
         console.log('   ❌ Error:', error);
+        
+        // Token expiry information
+        if (token) {
+          try {
+            const tokenInfo = getTokenInfo(token);
+            console.log('🔐 Token Details:');
+            if (tokenInfo.payload?.iat) {
+              console.log('   ⏰ Issued At:', new Date(tokenInfo.payload.iat * 1000).toLocaleString());
+            }
+            if (tokenInfo.expiryTime) {
+              console.log('   ⏰ Expires At:', tokenInfo.expiryTime.toLocaleString());
+            }
+            console.log('   ⏱️  Time Remaining:', tokenInfo.timeRemainingFormatted);
+            console.log('   ✅ Valid:', tokenInfo.isValid);
+            console.log('   ❌ Expired:', tokenInfo.isExpired);
+            console.log('   ⚠️  Expiring Soon:', tokenInfo.isExpiringSoon);
+            if (tokenInfo.timeRemaining > 0) {
+              const totalDuration = 24 * 60 * 60 * 1000; // 24 hours
+              const progress = Math.round((tokenInfo.timeRemaining / totalDuration) * 100);
+              console.log('   📊 Progress:', `${progress}%`);
+            }
+          } catch (err) {
+            console.log('   ❌ Error parsing token:', err);
+          }
+        }
+        
         // Thông tin từ cookies
         const cookieToken = document.cookie
           .split('; ')
@@ -120,7 +147,8 @@ export function userInfo() {
           error,
           cookieToken,
           legacyCookieToken,
-          localStorageAuth: localStorageAuth ? JSON.parse(localStorageAuth) : null
+          localStorageAuth: localStorageAuth ? JSON.parse(localStorageAuth) : null,
+          tokenInfo: token ? getTokenInfo(token) : null
         };
       } else {
         console.log('❌ Auth store not found. Make sure useAuthStore is exposed on window.');
