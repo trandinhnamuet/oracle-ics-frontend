@@ -25,6 +25,7 @@ interface PackageSubscription {
   auto_renew: boolean
   created_at: string
   updated_at: string
+  vm_instance_id?: string | null // Foreign key to VM instance
   // Thông tin từ bảng cloud_packages
   cloud_package?: {
     id: number
@@ -343,20 +344,33 @@ export default function PackageManagementPage() {
                           {new Date(sub.updated_at).toLocaleDateString('vi-VN')}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={
-                            sub.status === 'active' ? 'default' : 
-                            sub.status === 'pending' ? 'secondary' :
-                            sub.status === 'suspended' ? 'secondary' :
-                            sub.status === 'cancelled' ? 'destructive' :
-                            sub.status === 'expired' ? 'outline' : 'secondary'
-                          }>
-                            {sub.status === 'active' ? t('packageManagement.table.active') : 
-                             sub.status === 'pending' ? t('packageManagement.table.pending') :
-                             sub.status === 'suspended' ? t('packageManagement.table.suspended') :
-                             sub.status === 'cancelled' ? t('packageManagement.table.cancelled') :
-                             sub.status === 'expired' ? t('packageManagement.table.expired') :
-                             t('packageManagement.table.inactive')}
-                          </Badge>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant={
+                              sub.status === 'active' ? 'default' : 
+                              sub.status === 'pending' ? 'secondary' :
+                              sub.status === 'suspended' ? 'secondary' :
+                              sub.status === 'cancelled' ? 'destructive' :
+                              sub.status === 'expired' ? 'outline' : 'secondary'
+                            }>
+                              {sub.status === 'active' ? t('packageManagement.table.active') : 
+                               sub.status === 'pending' ? t('packageManagement.table.pending') :
+                               sub.status === 'suspended' ? t('packageManagement.table.suspended') :
+                               sub.status === 'cancelled' ? t('packageManagement.table.cancelled') :
+                               sub.status === 'expired' ? t('packageManagement.table.expired') :
+                               t('packageManagement.table.inactive')}
+                            </Badge>
+                            {/* VM Configuration Status */}
+                            {sub.status === 'active' && !sub.vm_instance_id && (
+                              <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-300">
+                                Not Configured
+                              </Badge>
+                            )}
+                            {sub.vm_instance_id && (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-300">
+                                VM Active
+                              </Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">
@@ -369,6 +383,20 @@ export default function PackageManagementPage() {
                                 <Eye className="h-4 w-4" />
                               </Button>
                             </div>
+                            {/* Configure VM button for active subscriptions without VM */}
+                            {sub.status === 'active' && !sub.vm_instance_id && (
+                              <div title="Configure VM">
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  onClick={() => router.push(`/cloud/configuration/${sub.id}`)}
+                                  className="bg-blue-600 hover:bg-blue-700"
+                                >
+                                  <Settings className="h-4 w-4 mr-1" />
+                                  Configure
+                                </Button>
+                              </div>
+                            )}
                             {(sub.status === 'active' || sub.status === 'suspended') && (
                               <div title={sub.status === 'active' ? t('packageManagement.table.pauseTitle') : t('packageManagement.table.activateTitle')}>
                                 <Button

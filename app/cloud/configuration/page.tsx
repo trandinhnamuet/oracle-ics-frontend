@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,9 +18,11 @@ import {
   ChevronDown,
   Eye,
   EyeOff,
-  Check
+  Check,
+  Loader2
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { getComputeImages, getMarketplaceImages, ComputeImage, MarketplaceImage } from '@/api/oci.api'
 
 // Operating Systems with versions
 const OPERATING_SYSTEMS = [
@@ -190,6 +192,93 @@ export default function CloudConfigurationPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  
+  // OCI Data states
+  const [computeImages, setComputeImages] = useState<ComputeImage[]>([])
+  const [marketplaceImages, setMarketplaceImages] = useState<MarketplaceImage[]>([])
+  const [isLoadingImages, setIsLoadingImages] = useState(false)
+  const [isLoadingMarketplace, setIsLoadingMarketplace] = useState(false)
+
+  // Fetch compute images from OCI
+  useEffect(() => {
+    if (configType === 'os') {
+      fetchComputeImages()
+    }
+  }, [configType])
+
+  // Fetch marketplace images from OCI
+  useEffect(() => {
+    if (configType === 'app') {
+      fetchMarketplaceImages()
+    }
+  }, [configType])
+
+  const fetchComputeImages = async () => {
+    setIsLoadingImages(true)
+    try {
+      const images = await getComputeImages()
+      setComputeImages(images)
+    } catch (error) {
+      console.error('Error fetching compute images:', error)
+      toast({
+        title: 'Lỗi',
+        description: 'Không thể tải danh sách hệ điều hành từ Oracle Cloud',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsLoadingImages(false)
+    }
+  }
+
+  const fetchMarketplaceImages = async () => {
+    setIsLoadingMarketplace(true)
+    try {
+      const images = await getMarketplaceImages()
+      setMarketplaceImages(images)
+    } catch (error) {
+      console.error('Error fetching marketplace images:', error)
+      toast({
+        title: 'Lỗi',
+        description: 'Không thể tải danh sách ứng dụng từ Oracle Cloud',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsLoadingMarketplace(false)
+    }
+  }
+
+  // Group images by OS
+  const groupedImages = computeImages.reduce((acc, image) => {
+    const os = image.operatingSystem
+    if (!acc[os]) {
+      acc[os] = []
+    }
+    acc[os].push(image)
+    return acc
+  }, {} as Record<string, ComputeImage[]>)
+
+  const operatingSystems = Object.keys(groupedImages).map(os => ({
+    id: os,
+    name: os,
+    icon: getOSIcon(os),
+    versions: groupedImages[os].map(img => ({
+      id: img.id,
+      name: `${img.displayName} ${img.operatingSystemVersion}`,
+      displayName: img.displayName,
+      version: img.operatingSystemVersion,
+      recommended: img.lifecycleState === 'AVAILABLE'
+    }))
+  }))
+
+  function getOSIcon(os: string): string {
+    if (os.toLowerCase().includes('ubuntu')) return '🐧'
+    if (os.toLowerCase().includes('centos')) return '🔴'
+    if (os.toLowerCase().includes('oracle')) return '🔶'
+    if (os.toLowerCase().includes('windows')) return '🪟'
+    if (os.toLowerCase().includes('debian')) return '🌀'
+    if (os.toLowerCase().includes('red hat')) return '🎩'
+    return '💻'
+  }
 
   const handleOSChange = (osId: string) => {
     setSelectedOS(osId)
@@ -257,15 +346,6 @@ export default function CloudConfigurationPage() {
         })
         return
       }
-
-      if (!selectedUbuntuVersion) {
-        toast({
-          title: 'Lỗi',
-          description: 'Vui lòng chọn phiên bản Ubuntu',
-          variant: 'destructive'
-        })
-        return
-      }
     }
 
     if (!selectedRegion) {
@@ -302,8 +382,8 @@ export default function CloudConfigurationPage() {
     }, 2000)
   }
 
-  const selectedOSData = OPERATING_SYSTEMS.find(os => os.id === selectedOS)
-  const selectedAppData = APPLICATIONS.find(app => app.id === selectedApp)
+  const selectedOSData = operatingSystems.find(os => os.id === selectedOS)
+  const selectedAppData = marketplaceImages.find(app => app.listingId === selectedApp)
   const selectedRegionData = ORACLE_REGIONS.find(region => region.id === selectedRegion)
 
   return (
@@ -361,137 +441,123 @@ export default function CloudConfigurationPage() {
                 {configType === 'os' ? (
                   /* Operating Systems Selection */
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                      {OPERATING_SYSTEMS.map((os) => (
-                        <div
-                          key={os.id}
-                          className={`
-                            p-4 border rounded-lg cursor-pointer transition-all
-                            ${selectedOS === os.id 
-                              ? 'border-[#E60000] bg-red-50' 
-                              : 'border-gray-200 hover:border-gray-300'
-                            }
-                          `}
-                          onClick={() => handleOSChange(os.id)}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <span className="text-2xl">{os.icon}</span>
-                            <div>
-                              <h3 className="font-medium text-gray-900">{os.name}</h3>
-                              <p className="text-sm text-gray-600">{os.versions.length} phiên bản</p>
-                            </div>
-                            {selectedOS === os.id && (
-                              <div className="ml-auto">
-                                <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
-                                  <Check className="w-2 h-2 text-white" />
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {/* OS Version Selection */}
-                    {selectedOSData && (
-                      <div className="mt-6">
-                        <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                          Chọn phiên bản {selectedOSData.name}
-                        </Label>
-                        <div className="space-y-2">
-                          {selectedOSData.versions.map((version) => (
+                    {isLoadingImages ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                        <span className="ml-2 text-gray-600">Đang tải danh sách hệ điều hành...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                          {operatingSystems.map((os) => (
                             <div
-                              key={version.id}
+                              key={os.id}
                               className={`
-                                p-3 border rounded-lg cursor-pointer transition-all flex items-center justify-between
-                                ${selectedVersion === version.id 
+                                p-4 border rounded-lg cursor-pointer transition-all
+                                ${selectedOS === os.id 
                                   ? 'border-[#E60000] bg-red-50' 
                                   : 'border-gray-200 hover:border-gray-300'
                                 }
                               `}
-                              onClick={() => setSelectedVersion(version.id)}
+                              onClick={() => handleOSChange(os.id)}
                             >
                               <div className="flex items-center space-x-3">
-                                <span className="text-lg">{selectedOSData.icon}</span>
+                                <span className="text-2xl">{os.icon}</span>
                                 <div>
-                                  <h4 className="font-medium text-gray-900">{version.name}</h4>
-                                  {version.recommended && (
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 mt-1">
-                                      Khuyến nghị
-                                    </Badge>
-                                  )}
+                                  <h3 className="font-medium text-gray-900">{os.name}</h3>
+                                  <p className="text-sm text-gray-600">{os.versions.length} phiên bản</p>
                                 </div>
+                                {selectedOS === os.id && (
+                                  <div className="ml-auto">
+                                    <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
+                                      <Check className="w-2 h-2 text-white" />
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                              {selectedVersion === version.id && (
-                                <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
-                                  <Check className="w-2 h-2 text-white" />
-                                </div>
-                              )}
                             </div>
                           ))}
                         </div>
-                      </div>
+                        {/* OS Version Selection */}
+                        {selectedOSData && (
+                          <div className="mt-6">
+                            <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                              Chọn phiên bản {selectedOSData.name}
+                            </Label>
+                            <div className="space-y-2 max-h-96 overflow-y-auto">
+                              {selectedOSData.versions.map((version) => (
+                                <div
+                                  key={version.id}
+                                  className={`
+                                    p-3 border rounded-lg cursor-pointer transition-all flex items-center justify-between
+                                    ${selectedVersion === version.id 
+                                      ? 'border-[#E60000] bg-red-50' 
+                                      : 'border-gray-200 hover:border-gray-300'
+                                    }
+                                  `}
+                                  onClick={() => setSelectedVersion(version.id)}
+                                >
+                                  <div className="flex items-center space-x-3">
+                                    <span className="text-lg">{selectedOSData.icon}</span>
+                                    <div>
+                                      <h4 className="font-medium text-gray-900 text-sm">{version.name}</h4>
+                                      {version.recommended && (
+                                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 mt-1">
+                                          Khuyến nghị
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {selectedVersion === version.id && (
+                                    <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
+                                      <Check className="w-2 h-2 text-white" />
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
                   </>
                 ) : (
                   /* Applications Selection */
                   <>
-                    <div>
-                      <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                        Chọn ứng dụng
-                      </Label>
-                      <CustomSelect
-                        options={[
-                          { value: 'placeholder', title: 'Chọn ứng dụng...', subtitle: '' },
-                          ...APPLICATIONS.map(app => ({
-                            value: app.id,
-                            title: app.name,
-                            subtitle: app.description
-                          }))
-                        ]}
-                        value={selectedApp || 'placeholder'}
-                        onChange={(value) => handleAppChange(value === 'placeholder' ? '' : value)}
-                      />
-                    </div>
-
-                    {/* Ubuntu Version Selection for Applications */}
-                    {selectedApp && (
-                      <div className="mt-6">
-                        <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                          Chọn phiên bản Ubuntu
-                        </Label>
-                        <div className="space-y-2">
-                          {UBUNTU_VERSIONS.map((version) => (
-                            <div
-                              key={version.id}
-                              className={`
-                                p-3 border rounded-lg cursor-pointer transition-all flex items-center justify-between
-                                ${selectedUbuntuVersion === version.id 
-                                  ? 'border-[#E60000] bg-red-50' 
-                                  : 'border-gray-200 hover:border-gray-300'
-                                }
-                              `}
-                              onClick={() => setSelectedUbuntuVersion(version.id)}
-                            >
-                              <div className="flex items-center space-x-3">
-                                <span className="text-lg">🐧</span>
-                                <div>
-                                  <h4 className="font-medium text-gray-900">{version.name}</h4>
-                                  {version.recommended && (
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 mt-1">
-                                      Khuyến nghị
-                                    </Badge>
-                                  )}
-                                </div>
-                              </div>
-                              {selectedUbuntuVersion === version.id && (
-                                <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
-                                  <Check className="w-2 h-2 text-white" />
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
+                    {isLoadingMarketplace ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                        <span className="ml-2 text-gray-600">Đang tải danh sách ứng dụng...</span>
                       </div>
+                    ) : (
+                      <>
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                            Chọn ứng dụng
+                          </Label>
+                          <CustomSelect
+                            options={[
+                              { value: 'placeholder', title: 'Chọn ứng dụng...', subtitle: '' },
+                              ...marketplaceImages.map(app => ({
+                                value: app.listingId,
+                                title: app.displayName,
+                                subtitle: app.summary || app.publisherName
+                              }))
+                            ]}
+                            value={selectedApp || 'placeholder'}
+                            onChange={(value) => handleAppChange(value === 'placeholder' ? '' : value)}
+                          />
+                        </div>
+
+                        {/* Display selected application info */}
+                        {selectedApp && selectedAppData && (
+                          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h4 className="font-medium text-blue-900">{selectedAppData.displayName}</h4>
+                            <p className="text-sm text-blue-700 mt-1">{selectedAppData.summary}</p>
+                            <p className="text-xs text-blue-600 mt-2">Publisher: {selectedAppData.publisherName}</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </>
                 )}

@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp } from 'lucide-react'
 import {
@@ -19,6 +18,8 @@ import {
   Area
 } from 'recharts'
 import { getSubscriptionById, Subscription } from '@/api/subscription.api'
+import { getSubscriptionVm, performVmAction, requestNewSshKey, VmDetails } from '@/api/vm-subscription.api'
+import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
 
 // Demo data for charts
@@ -72,11 +73,13 @@ export default function PackageDetailPage() {
 
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [packageDetail, setPackageDetail] = useState<CloudPackageDetail | null>(null)
-  const [selectedVM, setSelectedVM] = useState('1365442-01')
-  const [selectedTime, setSelectedTime] = useState('1 hour ago')
-  const [selectedTheme, setSelectedTheme] = useState('Light')
+  const [vmDetails, setVmDetails] = useState<VmDetails | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isDataLoading, setIsDataLoading] = useState(true)
+  const [isLoadingVm, setIsLoadingVm] = useState(false)
+  const [metrics, setMetrics] = useState<InstanceMetrics | null>(null)
+  const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d'>('1h')
+  const [isLoadingMetrics, setIsLoadingMetrics] = useState(false)
 
   // Fetch subscription data
   useEffect(() => {
@@ -97,7 +100,7 @@ export default function PackageDetailPage() {
           storage: data.cloudPackage?.memory || 'N/A',
           bandwidth: data.cloudPackage?.bandwidth || 'N/A',
           feature: data.cloudPackage?.feature || 'N/A',
-          ipAddress: '192.168.1.100', // This would come from VM management system
+          ipAddress: '', // Will be populated from vmDetails
           createdAt: new Date(data.created_at).toLocaleDateString('vi-VN'),
           startDate: new Date(data.start_date).toLocaleDateString('vi-VN'),
           endDate: new Date(data.end_date).toLocaleDateString('vi-VN'),
@@ -107,7 +110,6 @@ export default function PackageDetailPage() {
           user: data.user
         }
         setPackageDetail(detail)
-        setSelectedVM(`VM-${data.id.slice(-8)}`)
         
       } catch (error: any) {
         console.error('Error fetching subscription:', error)
@@ -125,6 +127,157 @@ export default function PackageDetailPage() {
       fetchSubscription()
     }
   }, [subscriptionId])
+
+  // Fetch VM details if subscription has VM
+  useEffect(() => {
+    const fetchVmDetails = async () => {
+      if (!subscription?.vm_instance_id) {
+        console.log('No vm_instance_id, skipping fetch:', subscription?.vm_instance_id)
+        return
+      }
+
+      try {
+        setIsLoadingVm(true)
+        console.log('Fetching VM details for subscription:', subscriptionId)
+        const vmData = await getSubscriptionVm(subscriptionId)
+        console.log('VM data received:', vmData)
+        setVmDetails(vmData)
+      } catch (error: any) {
+        console.error('Error fetching VM details:', error)
+        // Don't show error toast as VM might not be configured yet
+      } finally {
+        setIsLoadingVm(false)
+      }
+    }
+
+    if (subscription) {
+      fetchVmDetails()
+    }
+  }, [subscription, subscriptionId])
+
+  // Fetch metrics when VM details are available
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      if (!vmDetails?.vm?.instanceId || vmDetails?.vm?.lifecycleState !== 'RUNNING') return
+
+      try {
+        setIsLoadingMetrics(true)
+        const metricsData = await getInstanceMetrics(vmDetails.vm.instanceId, timeRange)
+        setMetrics(metricsData)
+      } catch (error: any) {
+        console.error('Error fetching metrics:', error)
+        // Don't show error for metrics as it's not critical
+      } finally {
+        setIsLoadingMetrics(false)
+      }
+    }
+
+    if (vmDetails?.vm?.instanceId && vmDetails.vm.lifecycleState === 'RUNNING') {
+      fetchMetrics()
+      // Refresh metrics every 60 seconds
+      const interval = setInterval(fetchMetrics, 60000)
+      return () => clearInterval(interval)
+    }
+  }, [vmDetails?.vm?.instanceId, vmDetails?.vm?.lifecycleState, timeRange])
+
+  // Calculate network combined data (bytes in + out)
+  const getNetworkData = () => {
+    if (!metrics?.network.in || !metrics?.network.out) return []
+    
+    const combined = metrics.network.in.map((inData, index) => ({
+      time: inData.time,
+      in: inData.value / 1024 / 1024, // Convert to MB
+      out: (metrics.network.out[index]?.value || 0) / 1024 / 1024,
+    }))
+    
+    return combined
+  }
+
+  // Calculate disk combined data (read + write)
+  const getDiskData = () => {
+    if (!metrics?.disk.read || !metrics?.disk.write) return []
+    
+    const combined = metrics.disk.read.map((readData, index) => ({
+      time: readData.time,
+      read: readData.value / 1024 / 1024, // Convert to MB
+      write: (metrics.disk.write[index]?.value || 0) / 1024 / 1024,
+    }))
+    
+    return combined
+  }
+
+  const handleVmAction = async (action: 'START' | 'STOP' | 'RESTART' | 'TERMINATE') => {
+    if (!subscription?.vm_instance_id) {
+      toast({
+        title: 'VM Not Configured',
+        description: 'Please configure your VM first',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      await performVmAction(subscriptionId, action)
+      toast({
+        title: 'Success',
+        description: `VM ${action.toLowerCase()} command sent successfully`,
+        variant: 'default'
+      })
+      
+      // Refresh VM details after action
+      setTimeout(async () => {
+        try {
+          const vmData = await getSubscriptionVm(subscriptionId)
+          setVmDetails(vmData)
+        } catch (error) {
+          console.error('Error refreshing VM details:', error)
+        }
+      }, 2000)
+    } catch (error: any) {
+      console.error(`Error performing VM ${action}:`, error)
+      toast({
+        title: 'Action Failed',
+        description: error.response?.data?.message || `Failed to ${action.toLowerCase()} VM`,
+        variant: 'destructive'
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleRequestNewKey = async () => {
+    if (!subscription?.vm_instance_id) {
+      toast({
+        title: 'VM Not Configured',
+        description: 'Please configure your VM first',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    const email = subscription.user?.email || prompt('Enter email to receive new SSH key:')
+    if (!email) return
+
+    setIsLoading(true)
+    try {
+      await requestNewSshKey(subscriptionId, email)
+      toast({
+        title: 'Success',
+        description: 'New SSH key has been generated and sent to your email',
+        variant: 'default'
+      })
+    } catch (error: any) {
+      console.error('Error requesting new SSH key:', error)
+      toast({
+        title: 'Request Failed',
+        description: error.response?.data?.message || 'Failed to generate new SSH key',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleAction = async (action: string) => {
     setIsLoading(true)
@@ -218,49 +371,87 @@ export default function PackageDetailPage() {
             </Badge>
           </div>
         </div>
-          {/* Server Details Demo Card */}
+          {/* Server Details Card */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between w-full">
-                <CardTitle>{t('packageDetail.serverDetails.title')}</CardTitle>
-                <Badge className="ml-2 bg-blue-500 text-white text-xs font-semibold">{t('packageDetail.serverDetails.demoData')}</Badge>
-              </div>
+              <CardTitle>Thông tin máy ảo của bạn</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.status')}</p>
-                    <div className="flex items-center gap-2">
-                      <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">{t('packageDetail.serverDetails.on')}</span>
-                      <Button variant="link" size="sm" className="p-0 h-auto min-h-0">{t('packageDetail.serverDetails.refresh')}</Button>
+                {!subscription?.vm_instance_id ? (
+                  <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <p className="text-sm text-yellow-700">
+                      VM not configured yet. Configure your VM to see server details.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.status')}</p>
+                      <div className="flex items-center gap-2">
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                          vmDetails?.vm?.lifecycleState === 'RUNNING' 
+                            ? 'bg-green-100 text-green-700'
+                            : vmDetails?.vm?.lifecycleState === 'STOPPED'
+                            ? 'bg-gray-100 text-gray-700'
+                            : vmDetails?.vm?.lifecycleState === 'PROVISIONING'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {vmDetails?.vm?.lifecycleState || 'N/A'}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.hostname')}</p>
-                    <p className="font-semibold">trandinhnamz.xyz</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.username')}</p>
-                    <p className="font-semibold">root</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.password')}</p>
-                    <div className="flex items-center gap-2">
-                      <input type="password" value="password-demo" readOnly className="border rounded px-2 py-1 text-sm w-32" />
-                      <Button variant="ghost" size="icon" className="h-7 w-7"><span role="img" aria-label="eye">👁️</span></Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7"><span role="img" aria-label="key">🔑</span></Button>
+                    <div>
+                      <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.hostname')}</p>
+                      <p className="font-semibold">{vmDetails?.vm?.instanceName || 'N/A'}</p>
                     </div>
+                    <div>
+                      <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.username')}</p>
+                      <p className="font-semibold">root</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.ip')}</p>
+                      {vmDetails?.vm?.publicIp ? (
+                        <a href={`http://${vmDetails.vm.publicIp}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 underline">
+                          {vmDetails.vm.publicIp}
+                        </a>
+                      ) : (
+                        <p className="font-semibold text-gray-400">-</p>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Instance ID <span className="text-xs text-gray-400">(will be hide in production)</span></p>
+                      <p className="font-semibold text-xs break-all">{vmDetails?.vm?.instanceId || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Compartment ID <span className="text-xs text-gray-400">(will be hide in production)</span></p>
+                      <p className="font-semibold text-xs break-all">{vmDetails?.vm?.compartmentId || 'N/A'}</p>
+                    </div>
+                    {vmDetails?.vm?.startedAt && (
+                      <>
+                        <div>
+                          <p className="text-sm text-gray-600">Thời điểm bắt đầu chạy</p>
+                          <p className="font-semibold">{new Date(vmDetails.vm.startedAt).toLocaleString('vi-VN')}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Uptime</p>
+                          <p className="font-semibold">
+                            {(() => {
+                              const startTime = new Date(vmDetails.vm.startedAt).getTime()
+                              const now = new Date().getTime()
+                              const diff = now - startTime
+                              const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+                              const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+                              const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+                              return `${days}d ${hours}h ${minutes}m`
+                            })()}
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.ip')}</p>
-                    <a href="http://160.22.161.44" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 underline">160.22.161.44</a>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.uptime')}</p>
-                    <p className="font-semibold">2 {t('packageDetail.serverDetails.days')} 17:41:14</p>
-                  </div>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -269,148 +460,334 @@ export default function PackageDetailPage() {
         <Card>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('packageDetail.controls.vmName')}
-                </label>
-                <Select value={selectedVM} onValueChange={setSelectedVM}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1365442-01">1365442-01</SelectItem>
-                    <SelectItem value="1365442-02">1365442-02</SelectItem>
-                    <SelectItem value="1365442-03">1365442-03</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {subscription?.vm_instance_id ? (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('packageDetail.controls.vmName')}
+                    </label>
+                    <div className="px-3 py-2 border rounded bg-gray-50">
+                      <p className="text-sm font-semibold">{vmDetails?.vm?.instanceName || 'N/A'}</p>
+                    </div>
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('packageDetail.controls.time')}
-                </label>
-                <Select value={selectedTime} onValueChange={setSelectedTime}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1 hour ago">{t('packageDetail.controls.timeOptions.oneHour')}</SelectItem>
-                    <SelectItem value="6 hours ago">{t('packageDetail.controls.timeOptions.sixHours')}</SelectItem>
-                    <SelectItem value="24 hours ago">{t('packageDetail.controls.timeOptions.twentyFourHours')}</SelectItem>
-                    <SelectItem value="7 days ago">{t('packageDetail.controls.timeOptions.sevenDays')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Shape
+                    </label>
+                    <div className="px-3 py-2 border rounded bg-gray-50">
+                      <p className="text-sm font-semibold">{vmDetails?.vm?.shape || 'N/A'}</p>
+                    </div>
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('packageDetail.controls.theme')}
-                </label>
-                <Select value={selectedTheme} onValueChange={setSelectedTheme}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Light">{t('packageDetail.controls.themeOptions.light')}</SelectItem>
-                    <SelectItem value="Dark">{t('packageDetail.controls.themeOptions.dark')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Region
+                    </label>
+                    <div className="px-3 py-2 border rounded bg-gray-50">
+                      <p className="text-sm font-semibold">{vmDetails?.vm?.region || vmDetails?.vm?.availabilityDomain?.split(':')[0] || 'N/A'}</p>
+                    </div>
+                  </div>
 
-              <div className="flex justify-end">
-                <Button 
-                  className="bg-red-500 hover:bg-red-600 text-white px-8"
-                  onClick={() => handleAction('show-performance')}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                  ) : null}
-                  {t('packageDetail.controls.showPerformance')}
-                </Button>
-              </div>
+                  <div className="flex justify-end">
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+                      onClick={() => {
+                        if (vmDetails?.vm?.instanceId) {
+                          window.open(`https://cloud.oracle.com/compute/instances/${vmDetails.vm.instanceId}`, '_blank')
+                        }
+                      }}
+                      disabled={!vmDetails?.vm}
+                    >
+                      {t('packageDetail.controls.showPerformance')}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="col-span-4">
+                  <p className="text-sm text-gray-600 mb-4">
+                    No VM configured. Please configure your VM first.
+                  </p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* CPU Usage Chart */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.cpuUsage')}</CardTitle>
-              <Button variant="ghost" size="sm">
-                <Download className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={cpuData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="time" 
-                      axisLine={false}
-                      tickLine={false}
-                      className="text-sm"
-                    />
-                    <YAxis 
-                      domain={[0, 125]}
-                      axisLine={false}
-                      tickLine={false}
-                      className="text-sm"
-                    />
-                    <Area 
-                      type="stepAfter" 
-                      dataKey="usage" 
-                      stroke="#ef4444" 
-                      fill="#fecaca" 
-                      strokeWidth={2}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+        {subscription?.vm_instance_id && vmDetails?.vm?.lifecycleState === 'RUNNING' ? (
+          <>
+            {/* Time Range Selector */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">Time Range:</span>
+                    <div className="flex gap-2">
+                      {(['1h', '6h', '24h', '7d'] as const).map((range) => (
+                        <Button
+                          key={range}
+                          variant={timeRange === range ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setTimeRange(range)}
+                          disabled={isLoadingMetrics}
+                        >
+                          {range}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={async () => {
+                      if (vmDetails?.vm?.instanceId) {
+                        setIsLoadingMetrics(true)
+                        try {
+                          const metricsData = await getInstanceMetrics(vmDetails.vm.instanceId, timeRange)
+                          setMetrics(metricsData)
+                        } finally {
+                          setIsLoadingMetrics(false)
+                        }
+                      }
+                    }}
+                    disabled={isLoadingMetrics}
+                  >
+                    <RefreshCw className={`h-4 w-4 mr-2 ${isLoadingMetrics ? 'animate-spin' : ''}`} />
+                    Refresh
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Memory Usage Chart */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* CPU Usage Chart */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-lg font-semibold">CPU Utilization (%)</CardTitle>
+                  <Button variant="ghost" size="sm">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    {isLoadingMetrics ? (
+                      <div className="flex items-center justify-center h-full">
+                        <RefreshCw className="h-8 w-8 animate-spin text-blue-500" />
+                      </div>
+                    ) : metrics?.cpu && metrics.cpu.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={metrics.cpu}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="time" 
+                            axisLine={false}
+                            tickLine={false}
+                            className="text-sm"
+                          />
+                          <YAxis 
+                            domain={[0, 100]}
+                            axisLine={false}
+                            tickLine={false}
+                            className="text-sm"
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="value" 
+                            stroke="#ef4444" 
+                            fill="#fecaca" 
+                            strokeWidth={2}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        <p>No data available</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Memory Usage Chart */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-lg font-semibold">Memory Utilization (%)</CardTitle>
+                  <Button variant="ghost" size="sm">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    {isLoadingMetrics ? (
+                      <div className="flex items-center justify-center h-full">
+                        <RefreshCw className="h-8 w-8 animate-spin text-purple-500" />
+                      </div>
+                    ) : metrics?.memory && metrics.memory.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={metrics.memory}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="time" 
+                            axisLine={false}
+                            tickLine={false}
+                            className="text-sm"
+                          />
+                          <YAxis 
+                            domain={[0, 100]}
+                            axisLine={false}
+                            tickLine={false}
+                            className="text-sm"
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="value" 
+                            stroke="#8b5cf6" 
+                            fill="#ddd6fe" 
+                            strokeWidth={2}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        <p>No data available</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Network Traffic Chart */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-lg font-semibold">Network Traffic (MB/s)</CardTitle>
+                  <Button variant="ghost" size="sm">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    {isLoadingMetrics ? (
+                      <div className="flex items-center justify-center h-full">
+                        <RefreshCw className="h-8 w-8 animate-spin text-green-500" />
+                      </div>
+                    ) : getNetworkData().length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={getNetworkData()}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="time" 
+                            axisLine={false}
+                            tickLine={false}
+                            className="text-sm"
+                          />
+                          <YAxis 
+                            axisLine={false}
+                            tickLine={false}
+                            className="text-sm"
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="in" 
+                            stackId="1"
+                            stroke="#10b981" 
+                            fill="#d1fae5" 
+                            strokeWidth={2}
+                            name="In"
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="out" 
+                            stackId="1"
+                            stroke="#3b82f6" 
+                            fill="#bfdbfe" 
+                            strokeWidth={2}
+                            name="Out"
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        <p>No data available</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Disk I/O Chart */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-lg font-semibold">Disk I/O (MB/s)</CardTitle>
+                  <Button variant="ghost" size="sm">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    {isLoadingMetrics ? (
+                      <div className="flex items-center justify-center h-full">
+                        <RefreshCw className="h-8 w-8 animate-spin text-orange-500" />
+                      </div>
+                    ) : getDiskData().length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={getDiskData()}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="time" 
+                            axisLine={false}
+                            tickLine={false}
+                            className="text-sm"
+                          />
+                          <YAxis 
+                            axisLine={false}
+                            tickLine={false}
+                            className="text-sm"
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="read" 
+                            stackId="1"
+                            stroke="#f59e0b" 
+                            fill="#fed7aa" 
+                            strokeWidth={2}
+                            name="Read"
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="write" 
+                            stackId="1"
+                            stroke="#ef4444" 
+                            fill="#fecaca" 
+                            strokeWidth={2}
+                            name="Write"
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        <p>No data available</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        ) : (
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.memoryUsage')}</CardTitle>
-              <Button variant="ghost" size="sm">
-                <Download className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={memoryData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="time" 
-                      axisLine={false}
-                      tickLine={false}
-                      className="text-sm"
-                    />
-                    <YAxis 
-                      domain={[0, 100]}
-                      axisLine={false}
-                      tickLine={false}
-                      className="text-sm"
-                    />
-                    <Area 
-                      type="stepAfter" 
-                      dataKey="usage" 
-                      stroke="#8b5cf6" 
-                      fill="#ddd6fe" 
-                      strokeWidth={2}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+            <CardContent className="p-6">
+              <div className="text-center py-8 text-gray-500">
+                <p>
+                  {subscription?.vm_instance_id 
+                    ? 'Charts available when VM is running' 
+                    : 'Charts available after VM configuration'
+                  }
+                </p>
               </div>
             </CardContent>
           </Card>
-        </div>
+        )}
 
         {/* Package Information */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -423,56 +800,56 @@ export default function PackageDetailPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.packageName')}</p>
-                  <p className="font-semibold">{packageDetail.packageName}</p>
+                  <p className="font-semibold">{packageDetail.packageName || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.vmName')}</p>
-                  <p className="font-semibold">{packageDetail.vmName}</p>
+                  <p className="font-semibold">{vmDetails?.vm?.instanceName || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.cpu')}</p>
-                  <p className="font-semibold">{packageDetail.cpu}</p>
+                  <p className="font-semibold">{packageDetail.cpu || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.memory')}</p>
-                  <p className="font-semibold">{packageDetail.memory}</p>
+                  <p className="font-semibold">{packageDetail.memory || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.storage')}</p>
-                  <p className="font-semibold">{packageDetail.storage}</p>
+                  <p className="font-semibold">{packageDetail.storage || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.bandwidth')}</p>
-                  <p className="font-semibold">{packageDetail.bandwidth}</p>
+                  <p className="font-semibold">{packageDetail.bandwidth || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.feature')}</p>
-                  <p className="font-semibold">{packageDetail.feature}</p>
+                  <p className="font-semibold">{packageDetail.feature || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.ipAddress')}</p>
-                  <p className="font-semibold">{packageDetail.ipAddress}</p>
+                  <p className="font-semibold">{vmDetails?.vm?.publicIp || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.subscriber')}</p>
                   <p className="font-semibold">
                     {packageDetail.user ? 
                       `${packageDetail.user.firstName} ${packageDetail.user.lastName}` : 
-                      'N/A'
+                      '-'
                     }
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.email')}</p>
-                  <p className="font-semibold">{packageDetail.user?.email || 'N/A'}</p>
+                  <p className="font-semibold">{packageDetail.user?.email || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.startDate')}</p>
-                  <p className="font-semibold">{packageDetail.startDate}</p>
+                  <p className="font-semibold">{packageDetail.startDate || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.endDate')}</p>
-                  <p className="font-semibold">{packageDetail.endDate}</p>
+                  <p className="font-semibold">{packageDetail.endDate || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.autoRenew')}</p>
@@ -491,6 +868,28 @@ export default function PackageDetailPage() {
                     }).format(packageDetail.monthlyPrice)}
                   </p>
                 </div>
+                {vmDetails && vmDetails.vm && (
+                  <>
+                    <div>
+                      <p className="text-sm text-gray-600">VM Shape</p>
+                      <p className="font-semibold">{vmDetails.vm.shape || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Region</p>
+                      <p className="font-semibold">{vmDetails.vm.region || vmDetails.vm.availabilityDomain?.split(':')[0] || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">VM Status</p>
+                      <p className="font-semibold">{vmDetails.vm.lifecycleState || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Created Date</p>
+                      <p className="font-semibold">
+                        {vmDetails.vm.createdAt ? new Date(vmDetails.vm.createdAt).toLocaleDateString('vi-VN') : '-'}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -501,55 +900,84 @@ export default function PackageDetailPage() {
               <CardTitle>{t('packageDetail.actions.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button 
-                className="w-full justify-start"
-                variant="outline"
-                onClick={() => handleAction('start')}
-                disabled={isLoading || packageDetail.status === 'active'}
-              >
-                <Play className="h-4 w-4 mr-2" />
-                {t('packageDetail.actions.startVM')}
-              </Button>
-              
-              <Button 
-                className="w-full justify-start"
-                variant="outline"
-                onClick={() => handleAction('pause')}
-                disabled={isLoading || packageDetail.status === 'suspended'}
-              >
-                <Pause className="h-4 w-4 mr-2" />
-                {t('packageDetail.actions.pauseVM')}
-              </Button>
-              
-              <Button 
-                className="w-full justify-start"
-                variant="outline"
-                onClick={() => handleAction('restart')}
-                disabled={isLoading}
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                {t('packageDetail.actions.restartVM')}
-              </Button>
-              
-              <Button 
-                className="w-full justify-start"
-                variant="outline"
-                onClick={() => handleAction('backup')}
-                disabled={isLoading}
-              >
-                <Download className="h-4 w-4 mr-2" />
-                {t('packageDetail.actions.createBackup')}
-              </Button>
+              {!subscription?.vm_instance_id ? (
+                <div className="space-y-3">
+                  <p className="text-sm text-yellow-600 mb-3">VM not configured yet</p>
+                  <Button 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={() => router.push(`/cloud/configuration/${subscriptionId}`)}
+                  >
+                    Configure VM
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-2 mb-3">
+                    {vmDetails && vmDetails.vm && (
+                      <>
+                        <p className="text-sm text-gray-600">
+                          <strong>VM State:</strong> {vmDetails.vm.lifecycleState}
+                        </p>
+                        {vmDetails.vm.publicIp && (
+                          <p className="text-sm text-gray-600">
+                            <strong>Public IP:</strong> {vmDetails.vm.publicIp}
+                          </p>
+                        )}
+                      </>
+                    )}
+                  </div>
 
-              <Button 
-                className="w-full justify-start"
-                variant="outline"
-                onClick={() => handleAction('backup')}
-                disabled={isLoading}
-              >
-                <Terminal className="h-4 w-4 mr-2" />
-                {t('packageDetail.actions.console')}
-              </Button>
+                  <Button 
+                    className="w-full justify-start"
+                    variant="outline"
+                    onClick={() => handleVmAction('START')}
+                    disabled={isLoading || vmDetails?.vm?.lifecycleState === 'RUNNING' || vmDetails?.vm?.lifecycleState === 'PROVISIONING'}
+                  >
+                    <Play className="h-4 w-4 mr-2" />
+                    {t('packageDetail.actions.startVM')}
+                  </Button>
+                  
+                  <Button 
+                    className="w-full justify-start"
+                    variant="outline"
+                    onClick={() => handleVmAction('STOP')}
+                    disabled={isLoading || vmDetails?.vm?.lifecycleState === 'STOPPED' || vmDetails?.vm?.lifecycleState === 'PROVISIONING'}
+                  >
+                    <Pause className="h-4 w-4 mr-2" />
+                    {t('packageDetail.actions.pauseVM')}
+                  </Button>
+                  
+                  <Button 
+                    className="w-full justify-start"
+                    variant="outline"
+                    onClick={() => handleVmAction('RESTART')}
+                    disabled={isLoading || vmDetails?.vm?.lifecycleState !== 'RUNNING'}
+                  >
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    {t('packageDetail.actions.restartVM')}
+                  </Button>
+                  
+                  <Button 
+                    className="w-full justify-start"
+                    variant="outline"
+                    onClick={handleRequestNewKey}
+                    disabled={isLoading}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Request New SSH Key
+                  </Button>
+
+                  <Button 
+                    className="w-full justify-start"
+                    variant="outline"
+                    onClick={() => handleAction('console')}
+                    disabled={isLoading}
+                  >
+                    <Terminal className="h-4 w-4 mr-2" />
+                    {t('packageDetail.actions.console')}
+                  </Button>
+                </>
+              )}
 
               <Button 
                 className="w-full justify-start"
@@ -571,17 +999,6 @@ export default function PackageDetailPage() {
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   {t('packageDetail.actions.deletePackage')}
-                </Button>
-              </div>
-
-              <div className="pt-4 border-t mt-4">
-                <Button 
-                  className="w-full justify-center bg-blue-600 hover:bg-blue-700 text-white"
-                  size="lg"
-                  onClick={() => router.push('/cloud/configuration')}
-                >
-                  <MonitorUp className="h-5 w-5 mr-2" />
-                  {t('packageDetail.actions.configurateVM')}
                 </Button>
               </div>
             </CardContent>

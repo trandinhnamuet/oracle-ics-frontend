@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,8 +21,24 @@ import useAuthStore from '@/hooks/use-auth-store'
 export default function LoginPage() {
   const { t } = useTranslation()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { login, setLoading, setError, error, isLoading } = useAuthStore()
   const [showPassword, setShowPassword] = useState(false)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
+  // Check if user just verified email
+  useEffect(() => {
+    const verified = searchParams.get('verified')
+    const passwordReset = searchParams.get('passwordReset')
+    
+    if (verified === 'true') {
+      setSuccessMessage('Email đã được xác thực thành công! Vui lòng đăng nhập.')
+    }
+    
+    if (passwordReset === 'true') {
+      setSuccessMessage('Đặt lại mật khẩu thành công! Vui lòng đăng nhập với mật khẩu mới.')
+    }
+  }, [searchParams])
 
   const loginSchema = z.object({
     email: z
@@ -59,7 +75,13 @@ export default function LoginPage() {
       setError(null)
       clearErrors()
       const response = await authApi.login(data)
-      login(response.user, response.access_token)
+      console.log('✅ Login API response:', response)
+      
+      // Đảm bảo có token (dù là placeholder)
+      const token = response.access_token || 'token-in-httponly-cookie'
+      login(response.user, token)
+      console.log('✅ Login store updated with user:', response.user)
+      
       reset()
       const returnUrl = new URLSearchParams(window.location.search).get('returnUrl')
       router.push(returnUrl || '/')
@@ -95,6 +117,12 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent className="space-y-4">
+          {successMessage && (
+            <Alert className="border-green-500 bg-green-50">
+              <AlertDescription className="text-green-700">{successMessage}</AlertDescription>
+            </Alert>
+          )}
+
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
@@ -222,7 +250,7 @@ export default function LoginPage() {
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center">
             <Link
-              href="/forgot-password"
+              href="/login/forgot-password/recover-email"
               className="text-primary hover:underline"
             >
               {t('login.forgotPassword')}

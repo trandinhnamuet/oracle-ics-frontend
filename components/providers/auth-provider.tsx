@@ -27,45 +27,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         
         // Initialize auth (load token from cookie)
         initAuth()
-        
-        // Check if token is expired when app loads
-        if (token && isTokenExpired(token)) {
-          console.log('🔴 Token đã hết hạn khi khởi động app, đang logout...')
-          logout()
-          
-          // Show toast notification
-          if (toast) {
-            toast({
-              title: 'Phiên đăng nhập hết hạn',
-              description: 'Vui lòng đăng nhập lại',
-              variant: 'destructive',
-              duration: 5000,
-            })
-          }
-          return
-        }
-        
-        // If we have valid token but no user data, fetch user
-        if (token && !isTokenExpired(token) && !user) {
-          try {
-            const userData = await authApi.getCurrentUser()
-            login(userData, token)
-            console.log('✅ User data loaded successfully')
-          } catch (error) {
-            console.error('❌ Failed to fetch user data:', error)
-            // If token is invalid, logout
-            logout()
-            
-            if (toast) {
-              toast({
-                title: 'Lỗi xác thực',
-                description: 'Vui lòng đăng nhập lại',
-                variant: 'destructive',
-                duration: 5000,
-              })
-            }
-          }
-        }
       } catch (error) {
         console.error('❌ Auth initialization failed:', error)
       } finally {
@@ -74,7 +35,54 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     initializeAuth()
-  }, [token, user, login, logout, initAuth, setLoading, toast])
+  }, [initAuth, setLoading])
+
+  // Separate effect để fetch user data khi cần
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Nếu đã có user data, không cần fetch lại
+        if (user) {
+          console.log('✅ User data already available, skip fetching')
+          return
+        }
+        
+        // Chỉ fetch nếu không có user nhưng có token (tức là sau khi reload)
+        // Không fetch ngay sau login vì user đã có từ login response
+        if (token === 'token-in-httponly-cookie' && !user) {
+          try {
+            console.log('📥 Fetching user data to verify session...')
+            const userData = await authApi.getCurrentUser()
+            login(userData, token)
+            console.log('✅ User data loaded and verified successfully')
+          } catch (error: any) {
+            console.error('❌ Failed to fetch user data:', error)
+            // Nếu 401, backend cookie không hợp lệ -> logout
+            if (error.response?.status === 401) {
+              console.log('🔴 Session không hợp lệ (401), đang logout...')
+              logout()
+              
+              if (toast) {
+                toast({
+                  title: 'Phiên đăng nhập hết hạn',
+                  description: 'Vui lòng đăng nhập lại',
+                  variant: 'destructive',
+                  duration: 5000,
+                })
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('❌ User data fetch failed:', error)
+      }
+    }
+
+    // Chỉ fetch khi không có user
+    if (!user && token) {
+      fetchUserData()
+    }
+  }, [token, user, login, logout, toast])
 
   return (
     <>

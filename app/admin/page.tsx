@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Users, FileText, Package } from 'lucide-react'
+import { Users, FileText, Package, HardDrive } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const adminLinks = (t: any) => [
@@ -40,6 +40,14 @@ const adminLinks = (t: any) => [
         color: 'bg-orange-500',
         stats: t('admin.subscriptionsStats'),
     },
+	{
+		title: 'Quản lý Compartments',
+		description: 'Xem và xóa compartments trong OCI',
+		href: '/admin/compartment',
+		icon: HardDrive,
+		color: 'bg-red-500',
+		stats: 'OCI Resources',
+	},
 ]
 
 export default function AdminDashboard() {

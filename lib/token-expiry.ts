@@ -28,6 +28,12 @@ export function decodeJWT(token: string): Record<string, any> | null {
  * @returns true nếu token đã hết hạn, false nếu còn hạn
  */
 export function isTokenExpired(token: string): boolean {
+  // Token placeholder từ httpOnly cookie không cần check expiry
+  // Backend sẽ validate qua cookie
+  if (token === 'token-in-httponly-cookie') {
+    return false
+  }
+  
   const payload = decodeJWT(token)
   if (!payload || !payload.exp) return true
   
@@ -43,6 +49,11 @@ export function isTokenExpired(token: string): boolean {
  * @returns Thời gian còn lại (ms) hoặc -1 nếu invalid
  */
 export function getTokenTimeRemaining(token: string): number {
+  // Token placeholder từ httpOnly cookie không cần check expiry
+  if (token === 'token-in-httponly-cookie') {
+    return 24 * 60 * 60 * 1000 // Return 24 hours (giá trị giả)
+  }
+  
   const payload = decodeJWT(token)
   if (!payload || !payload.exp) return -1
   

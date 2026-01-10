@@ -5,6 +5,21 @@ import { User } from '@/hooks/use-auth-store'
 // Cấu hình base URL cho API backend
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
+// Function để clear auth khi 401 xảy ra
+const handleUnauthorized = () => {
+  console.log('🔴 Unauthorized (401), clearing auth...')
+  Cookies.remove('access_token')
+  Cookies.remove('auth-token')
+  if (typeof window !== 'undefined') {
+    // Clear Zustand persisted state
+    localStorage.removeItem('auth-storage')
+    // Redirect về login
+    if (!window.location.pathname.includes('/login')) {
+      window.location.href = '/login'
+    }
+  }
+}
+
 // Tạo axios instance với config mặc định
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -17,11 +32,8 @@ const api = axios.create({
 // Interceptor để tự động thêm auth token vào mọi request
 api.interceptors.request.use(
   (config) => {
-    // Sử dụng tên cookie đúng với backend
-    const token = Cookies.get('access_token') || Cookies.get('auth-token') // fallback compatibility
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
+    // Backend sẽ tự động đọc token từ httpOnly cookie
+    // Không cần thêm Authorization header
     return config
   },
   (error) => {
@@ -45,13 +57,7 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Token hết hạn hoặc không hợp lệ
-      Cookies.remove('access_token')
-      Cookies.remove('auth-token') // cleanup legacy cookie
-      // Có thể redirect về trang login
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login'
-      }
+      handleUnauthorized()
     }
     return Promise.reject(error)
   }
@@ -70,9 +76,34 @@ export interface RegisterRequest {
   lastName?: string
 }
 
+export interface RegisterResponse {
+  message: string
+  email: string
+  requiresVerification: boolean
+}
+
+export interface VerifyOtpRequest {
+  email: string
+  otp: string
+}
+
+export interface VerifyOtpResponse {
+  message: string
+  success: boolean
+}
+
+export interface ResendOtpRequest {
+  email: string
+}
+
+export interface ResendOtpResponse {
+  message: string
+  success: boolean
+}
+
 export interface LoginResponse {
   user: User
-  access_token: string
+  access_token?: string // Optional vì backend set httpOnly cookie thay vì return trong body
 }
 
 export interface ApiError {
@@ -86,25 +117,15 @@ export const authApi = {
   // Đăng nhập
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     try {
-      // Mock response for development testing
-      if (process.env.NODE_ENV === 'development' && data.email === 'test@gmail.com' && data.password === '123123') {
-        console.log('Using mock login response for development')
-        return {
-          user: {
-            id: 1, // Mock user ID as number
-            role: 'admin',
-            email: 'test@gmail.com',
-            firstName: 'Test',
-            lastName: 'User',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          access_token: 'mock-jwt-token-for-dev'
-        }
-      }
+      // Backend response chỉ return { user }, token đã được set trong httpOnly cookie
+      const response = await api.post<{ user: User }>('/auth/login', data)
       
-      const response = await api.post<LoginResponse>('/auth/login', data)
-      return response.data
+      // Return với access_token giả để giữ compatibility với code cũ
+      // Token thật nằm trong httpOnly cookie
+      return {
+        user: response.data.user,
+        access_token: 'token-in-httponly-cookie'
+      }
     } catch (error: any) {
       console.error('Login API error:', error)
       
@@ -117,12 +138,32 @@ export const authApi = {
   },
 
   // Đăng ký
-  register: async (data: RegisterRequest): Promise<LoginResponse> => {
+  register: async (data: RegisterRequest): Promise<RegisterResponse> => {
     try {
-      const response = await api.post<LoginResponse>('/auth/register', data)
+      const response = await api.post<RegisterResponse>('/auth/register', data)
       return response.data
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Đăng ký thất bại')
+    }
+  },
+
+  // Verify OTP
+  verifyOtp: async (data: VerifyOtpRequest): Promise<VerifyOtpResponse> => {
+    try {
+      const response = await api.post<VerifyOtpResponse>('/auth/verify-otp', data)
+      return response.data
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Xác thực OTP thất bại')
+    }
+  },
+
+  // Resend OTP
+  resendOtp: async (data: ResendOtpRequest): Promise<ResendOtpResponse> => {
+    try {
+      const response = await api.post<ResendOtpResponse>('/auth/resend-otp', data)
+      return response.data
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Gửi lại OTP thất bại')
     }
   },
 
@@ -173,10 +214,10 @@ export const authApi = {
     }
   },
 
-  // Quên mật khẩu
-  forgotPassword: async (email: string): Promise<{ message: string }> => {
+  // Quên mật khẩu - Gửi OTP
+  forgotPassword: async (email: string): Promise<{ message: string; email: string; success: boolean }> => {
     try {
-      const response = await api.post<{ message: string }>('/auth/forgot-password', {
+      const response = await api.post<{ message: string; email: string; success: boolean }>('/auth/forgot-password', {
         email
       })
       return response.data
@@ -185,12 +226,26 @@ export const authApi = {
     }
   },
 
-  // Reset mật khẩu
-  resetPassword: async (token: string, newPassword: string): Promise<{ message: string }> => {
+  // Xác thực OTP đặt lại mật khẩu
+  verifyResetOtp: async (email: string, otp: string): Promise<{ message: string; success: boolean }> => {
     try {
-      const response = await api.post<{ message: string }>('/auth/reset-password', {
-        token,
-        password: newPassword
+      const response = await api.post<{ message: string; success: boolean }>('/auth/verify-reset-otp', {
+        email,
+        otp
+      })
+      return response.data
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Xác thực OTP thất bại')
+    }
+  },
+
+  // Reset mật khẩu với OTP
+  resetPassword: async (email: string, otp: string, newPassword: string): Promise<{ message: string; success: boolean }> => {
+    try {
+      const response = await api.post<{ message: string; success: boolean }>('/auth/reset-password', {
+        email,
+        otp,
+        newPassword
       })
       return response.data
     } catch (error: any) {

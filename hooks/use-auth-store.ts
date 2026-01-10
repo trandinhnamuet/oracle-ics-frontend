@@ -50,14 +50,7 @@ const useAuthStore = create<AuthState>()(
 
       setToken: (token: string) => {
         set({ token })
-        // Lưu token vào cookie - sử dụng cùng tên với backend
-        Cookies.set('access_token', token, { 
-          expires: 1, // 1 day để khớp với backend JWT expiry
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict'
-        })
-        // Cleanup old cookie name nếu có
-        Cookies.remove('auth-token')
+        // Token đã được backend set trong httpOnly cookie, không cần set lại
       },
 
       setLoading: (isLoading: boolean) => {
@@ -69,32 +62,30 @@ const useAuthStore = create<AuthState>()(
       },
 
       login: (user: User, token: string) => {
+        console.log('🔐 Login action called with user:', user, 'token:', token)
         set({ 
           user, 
           token, 
           isAuthenticated: true,
           error: null
         })
-        // Lưu token vào cookie - sử dụng cùng tên với backend
-        Cookies.set('access_token', token, { 
-          expires: 1, // 1 day để khớp với backend JWT expiry
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict'
-        })
-        // Cleanup old cookie name nếu có
-        Cookies.remove('auth-token')
+        console.log('✅ Auth state updated in store')
+        // Token đã được backend set trong httpOnly cookie, không cần set lại từ frontend
       },
 
       logout: () => {
+        console.log('🔓 Logout action called')
         set({ 
           user: null, 
           token: null, 
           isAuthenticated: false,
-          error: null
+          error: null,
+          isLoading: false
         })
-        // Xóa token khỏi cookie - xóa cả 2 tên cookie để đảm bảo
-        Cookies.remove('access_token')
-        Cookies.remove('auth-token')
+        // Backend httpOnly cookie sẽ được xóa bởi API call logout
+        // Chỉ cần xóa các cookie/storage từ frontend
+        Cookies.remove('access_token') // Cleanup nếu có
+        Cookies.remove('auth-token') // Cleanup legacy
       },
 
       clearError: () => {
@@ -102,16 +93,24 @@ const useAuthStore = create<AuthState>()(
       },
 
       initAuth: () => {
-        // Khôi phục token từ cookie khi khởi tạo app - sử dụng tên cookie đúng
-        const token = Cookies.get('access_token') || Cookies.get('auth-token') // fallback cho compatibility
-        if (token) {
-          set({ token })
-          // Cleanup old cookie name nếu có
-          if (Cookies.get('auth-token')) {
-            Cookies.remove('auth-token')
+        // Backend đã set httpOnly cookie, frontend chỉ cần check xem có user data trong localStorage không
+        // Token sẽ được backend validate qua cookie khi gọi API
+        const storedState = typeof window !== 'undefined' ? localStorage.getItem('auth-storage') : null
+        if (storedState) {
+          try {
+            const parsed = JSON.parse(storedState)
+            if (parsed.state?.user && parsed.state?.isAuthenticated) {
+              // Set một token placeholder vì token thật nằm trong httpOnly cookie
+              set({ 
+                user: parsed.state.user,
+                isAuthenticated: parsed.state.isAuthenticated,
+                token: 'token-in-httponly-cookie'
+              })
+              console.log('✅ Auth state restored from localStorage')
+            }
+          } catch (error) {
+            console.error('❌ Failed to parse auth-storage:', error)
           }
-          // Token có sẵn nhưng chưa có user info
-          // Sẽ được fetch ở component cao hơn
         }
       }
     }),

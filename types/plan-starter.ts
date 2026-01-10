@@ -6,7 +6,7 @@ export const starterPlans: PricingPlan[] = [
     id: 1,
     name: "Starter 1",
     description: "pricing.plans.starter.1.description",
-    price: "12.75",
+    price: "1",
     period: "tháng",
     icon: Zap,
     popular: true,

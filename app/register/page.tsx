@@ -74,14 +74,11 @@ export default function RegisterPage() {
       
       const response = await authApi.register(registerData)
       
-      // Tự động đăng nhập sau khi đăng ký thành công
-      login(response.user, response.access_token)
-      
       // Reset form
       reset()
       
-      // Redirect về trang chủ
-      router.push('/')
+      // Redirect to OTP verification page with email
+      router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`)
       
     } catch (error: any) {
       setError(error.message)

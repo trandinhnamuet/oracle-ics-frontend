@@ -10,6 +10,7 @@ export interface Subscription {
   end_date: string
   status: 'active' | 'inactive' | 'pending' | 'expired' | 'suspended' | 'cancelled'
   auto_renew: boolean
+  vm_instance_id?: string | null
   created_at: string
   updated_at: string
   user?: {
@@ -146,10 +147,12 @@ export const getActiveSubscriptions = async (userId?: number): Promise<Subscript
 
 // Get subscription by ID
 export const getSubscriptionById = async (subscriptionId: string): Promise<Subscription> => {
+  console.log('Fetching subscription with ID:', subscriptionId)
   try {
     const response = await axios.get(`${API_URL}/subscriptions/${subscriptionId}`, {
       withCredentials: true,
     })
+    
     return response.data
   } catch (error) {
     console.error('Error fetching subscription:', error)
