@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { OtpInput } from '@/components/auth/otp-input';
 import { OtpStatus } from '@/components/auth/otp-status';
 import { ArrowLeft } from 'lucide-react';
+import { authApi } from '@/api/auth.api';
 
 interface VerifyOtpPageProps {
   email: string;
@@ -44,47 +45,28 @@ export function VerifyOtpPage({ email, onBack, onSuccess }: VerifyOtpPageProps) 
     setError('');
 
     try {
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          otpCode,
-        }),
-        credentials: 'include',
+      const response = await authApi.verifyOtp({
+        email,
+        otp: otpCode,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setStatus('success');
-        
-        // Call success callback if provided
-        if (onSuccess && data.user) {
-          onSuccess(data);
-        } else if (data.user) {
-          // Default redirect to dashboard
-          setTimeout(() => {
-            router.push('/cloud');
-          }, 1500);
-        } else {
-          // User data missing even though response was OK
-          setError('Verification successful but failed to retrieve user data');
-          setStatus('error');
-        }
+      setStatus('success');
+      
+      // Call success callback if provided
+      if (onSuccess) {
+        onSuccess(response);
       } else {
-        setError(data.message || 'Invalid verification code');
-        setStatus('error');
-        
-        // Clear OTP on error
-        setOtpCode('');
+        // Default redirect to dashboard
+        setTimeout(() => {
+          router.push('/cloud');
+        }, 1500);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('OTP verification error:', error);
-      setError('Network error. Please try again.');
+      setError(error.message || 'Invalid verification code');
       setStatus('error');
+      
+      // Clear OTP on error
       setOtpCode('');
     }
   };
@@ -96,28 +78,14 @@ export function VerifyOtpPage({ email, onBack, onSuccess }: VerifyOtpPageProps) 
     setError('');
 
     try {
-      const response = await fetch('/api/auth/resend-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-        credentials: 'include',
-      });
+      await authApi.resendOtp({ email });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setStatus('sent');
-        setResendTimeLeft(30); // 30 second cooldown
-        setOtpCode(''); // Clear current input
-      } else {
-        setError(data.message || 'Failed to resend code');
-        setStatus('error');
-      }
-    } catch (error) {
+      setStatus('sent');
+      setResendTimeLeft(30); // 30 second cooldown
+      setOtpCode(''); // Clear current input
+    } catch (error: any) {
       console.error('Resend OTP error:', error);
-      setError('Network error. Please try again.');
+      setError(error.message || 'Failed to resend code');
       setStatus('error');
     }
   };

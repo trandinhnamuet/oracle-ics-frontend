@@ -5,17 +5,17 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, otpCode } = body;
+    const { email, otp } = body;
 
     // Validate input
-    if (!email || !otpCode) {
+    if (!email || !otp) {
       return NextResponse.json(
         { message: 'Email and OTP code are required' },
         { status: 400 }
       );
     }
 
-    if (otpCode.length !== 6 || !/^\d{6}$/.test(otpCode)) {
+    if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
       return NextResponse.json(
         { message: 'OTP code must be exactly 6 digits' },
         { status: 400 }
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, otp: otpCode }),
+      body: JSON.stringify({ email, otp }),
     });
 
     const data = await response.json();
