@@ -44,7 +44,7 @@ export default function VerifyOtpPageRoute() {
     login(data.user, data.token);
     
     // Redirect to dashboard
-    router.push('/cloud');
+    router.push('/');
   };
 
   if (loading) {

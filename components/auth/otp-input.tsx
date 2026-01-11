@@ -49,21 +49,22 @@ export function OtpInput({
     
     // Handle paste - if multiple characters, distribute across inputs
     if (numericValue.length > 1) {
+      const chars = numericValue.split('');
       const newValue = value.split('');
-      const chars = numericValue.split('').slice(0, length - index);
       
-      chars.forEach((char, i) => {
-        if (index + i < length) {
-          newValue[index + i] = char;
-        }
-      });
+      // Fill from current index onwards
+      for (let i = 0; i < chars.length && index + i < length; i++) {
+        newValue[index + i] = chars[i];
+      }
       
-      const finalValue = newValue.join('').padEnd(length, '').slice(0, length);
+      const finalValue = newValue.join('').slice(0, length);
       onChange(finalValue);
       
       // Focus next empty input or last input
       const nextIndex = Math.min(index + chars.length, length - 1);
-      focusInput(nextIndex);
+      setTimeout(() => {
+        focusInput(nextIndex);
+      }, 0);
       return;
     }
 
@@ -144,17 +145,22 @@ export function OtpInput({
     selectInput(index);
   };
 
-  const handlePaste = (e: React.ClipboardEvent) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
     
-    if (pastedData) {
+    // Try to get paste data from clipboard
+    const pastedData = e.clipboardData?.getData('text')?.replace(/[^0-9]/g, '') || '';
+    
+    if (pastedData && pastedData.length > 0) {
+      // Slice to max length and pad with empty strings
       const newValue = pastedData.slice(0, length).padEnd(length, '');
       onChange(newValue);
       
-      // Focus the next empty input or last input
+      // Focus the last filled input or the last input
       const nextIndex = Math.min(pastedData.length, length - 1);
-      focusInput(nextIndex);
+      setTimeout(() => {
+        focusInput(nextIndex);
+      }, 0);
     }
   };
 
@@ -167,14 +173,14 @@ export function OtpInput({
             inputsRef.current[index] = el;
           }}
           type="text"
-          inputMode="numeric"
+          inputMode="decimal"
           pattern="[0-9]*"
           maxLength={1}
           value={value[index] || ''}
           onChange={(e) => handleInputChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
           onFocus={() => handleFocus(index)}
-          onPaste={handlePaste}
+          onPaste={(e) => handlePaste(e)}
           disabled={disabled}
           className={cn(
             'w-12 h-12 text-center text-lg font-semibold border-2 rounded-lg',

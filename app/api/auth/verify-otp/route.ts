@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, otpCode }),
+      body: JSON.stringify({ email, otp: otpCode }),
     });
 
     const data = await response.json();

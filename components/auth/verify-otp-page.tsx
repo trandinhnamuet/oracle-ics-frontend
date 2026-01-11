@@ -62,13 +62,17 @@ export function VerifyOtpPage({ email, onBack, onSuccess }: VerifyOtpPageProps) 
         setStatus('success');
         
         // Call success callback if provided
-        if (onSuccess) {
-          onSuccess(data.user);
-        } else {
+        if (onSuccess && data.user) {
+          onSuccess(data);
+        } else if (data.user) {
           // Default redirect to dashboard
           setTimeout(() => {
             router.push('/cloud');
           }, 1500);
+        } else {
+          // User data missing even though response was OK
+          setError('Verification successful but failed to retrieve user data');
+          setStatus('error');
         }
       } else {
         setError(data.message || 'Invalid verification code');
