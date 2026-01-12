@@ -93,4 +93,33 @@ export const paymentApi = {
       return { isPaid: false }
     }
   },
+
+  // Admin APIs
+  getAllPayments: async (): Promise<any[]> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/payments/admin/all`, {
+        withCredentials: true,
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error fetching all payments:', error)
+      throw error
+    }
+  },
+
+  acceptPayment: async (paymentId: string): Promise<any> => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/payments/admin/${paymentId}/accept`,
+        {},
+        {
+          withCredentials: true,
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error accepting payment:', error)
+      throw error
+    }
+  },
 }
