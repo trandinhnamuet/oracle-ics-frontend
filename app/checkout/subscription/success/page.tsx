@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -8,6 +9,8 @@ import { useTranslation } from 'react-i18next'
 
 export default function CheckoutSuccessPage() {
   const { t } = useTranslation()
+  const searchParams = useSearchParams()
+  const subscriptionId = searchParams.get('subscriptionId')
   const [showAnimation, setShowAnimation] = useState(false)
   const [showCheckmark, setShowCheckmark] = useState(false)
   const [showContent, setShowContent] = useState(false)
@@ -103,7 +106,7 @@ export default function CheckoutSuccessPage() {
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-4 opacity-0'
         }`}>
-          <Link href="/cloud/configuration" className="w-full">
+          <Link href={subscriptionId ? `/cloud/configuration/${subscriptionId}` : '/cloud/configuration'} className="w-full">
             <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 transition-all duration-200 hover:scale-[1.02]">
               {t('checkout.success.configBtn')}
             </Button>

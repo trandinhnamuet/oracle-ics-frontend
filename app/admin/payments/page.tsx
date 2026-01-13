@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 interface Payment {
   id: string
   user_id: number
+  subscription_id?: string
   amount: number
   status: 'pending' | 'success' | 'failed'
   payment_type: 'subscription' | 'deposit'
@@ -190,6 +191,7 @@ export default function PaymentManagementPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Mã giao dịch</TableHead>
+                    <TableHead>Subscription ID</TableHead>
                     <TableHead>Người dùng</TableHead>
                     <TableHead>Số tiền</TableHead>
                     <TableHead>Loại</TableHead>
@@ -202,6 +204,7 @@ export default function PaymentManagementPage() {
                 <TableBody>
                   {filteredPayments.map((payment) => (
                     <TableRow key={payment.id}>
+                      <TableCell className="font-mono text-sm">{payment.subscription_id || '-'}</TableCell>
                       <TableCell className="font-mono text-sm">{payment.transaction_code}</TableCell>
                       <TableCell>
                         <div>

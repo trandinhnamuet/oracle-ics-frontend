@@ -69,7 +69,7 @@ function SubscriptionCheckoutContent() {
         
         // Chờ 2 giây rồi chuyển trang
         setTimeout(() => {
-          router.push('/checkout/subscription/success')
+          router.push(`/checkout/subscription/success?subscriptionId=${subscriptionId}`)
         }, 2000)
       }
     } catch (error) {
