@@ -11,7 +11,7 @@ import { ArrowLeft, CreditCard, Smartphone, QrCode, AlertCircle } from 'lucide-r
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { paymentApi } from '@/api/payment.api'
-import useAuthStore from '@/hooks/use-auth-store'
+import { useAuth } from '@/lib/auth-context'
 
 const QUICK_AMOUNTS = [100000, 500000, 1000000, 2000000, 5000000, 10000000]
 
@@ -46,7 +46,7 @@ export default function AddFundsPage() {
   const { t } = useTranslation()
   const router = useRouter()
   const { toast } = useToast()
-  const { user } = useAuthStore()
+  const { user } = useAuth()
   
   const [amount, setAmount] = useState('')
   const [selectedMethod, setSelectedMethod] = useState('bank_transfer')

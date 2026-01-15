@@ -25,7 +25,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import useAuthStore from '@/hooks/use-auth-store'
+import { useAuth } from '@/lib/auth-context'
 import { getSubscriptionById } from '@/api/subscription.api'
 import { configureSubscriptionVm } from '@/api/vm-subscription.api'
 import { getComputeImages, type ComputeImage } from '@/api/oci.api'
@@ -87,7 +87,7 @@ export default function CloudConfigurationBySubscriptionPage() {
   const router = useRouter()
   const params = useParams()
   const { toast } = useToast()
-  const { user } = useAuthStore()
+  const { user } = useAuth()
   
   const subscriptionId = params?.subscriptionId as string
   

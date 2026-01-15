@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
@@ -42,14 +42,14 @@ export const paymentApi = {
         // Không gửi user_id vì backend sẽ tự gán từ JWT
       }
       
-      const response = await axios.post(`${API_BASE_URL}/payments`, backendPayload, {
-        withCredentials: true,
+      const backendData = await fetchJsonWithAuth<any>(`${API_BASE_URL}/payments`, {
+        method: 'POST',
+        body: JSON.stringify(backendPayload)
       })
       
-      console.log('Payment API Response:', response.data)
+      console.log('Payment API Response:', backendData)
       
       // Map backend response to frontend interface
-      const backendData = response.data
       const mappedResponse = {
         id: backendData.id,
         paymentId: backendData.id, // Use string ID as is
@@ -68,10 +68,10 @@ export const paymentApi = {
   // Lấy trạng thái payment
   getPaymentStatus: async (paymentId: string | number): Promise<PaymentStatus> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/payments/${paymentId}`, {
-        withCredentials: true,
+      const result = await fetchJsonWithAuth<PaymentStatus>(`${API_BASE_URL}/payments/${paymentId}`, {
+        method: 'GET'
       })
-      return response.data
+      return result
     } catch (error) {
       console.error('Error fetching payment status:', error)
       throw error
@@ -81,13 +81,12 @@ export const paymentApi = {
   // Kiểm tra trạng thái thanh toán subscription (legacy)
   checkPaymentStatus: async (userId: number, packageId: number): Promise<{ isPaid: boolean }> => {
     try {
-      const response = await axios.get(
+      const userPackage = await fetchJsonWithAuth<any>(
         `${API_BASE_URL}/user-packages/user/${userId}/package/${packageId}`,
         {
-          withCredentials: true,
+          method: 'GET'
         }
       )
-      const userPackage = response.data
       return { isPaid: userPackage?.isPaid || false }
     } catch (error) {
       return { isPaid: false }
@@ -97,10 +96,10 @@ export const paymentApi = {
   // Admin APIs
   getAllPayments: async (): Promise<any[]> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/payments/admin/all`, {
-        withCredentials: true,
+      const result = await fetchJsonWithAuth<any[]>(`${API_BASE_URL}/payments/admin/all`, {
+        method: 'GET'
       })
-      return response.data
+      return result
     } catch (error) {
       console.error('Error fetching all payments:', error)
       throw error
@@ -109,14 +108,14 @@ export const paymentApi = {
 
   acceptPayment: async (paymentId: string): Promise<any> => {
     try {
-      const response = await axios.post(
+      const result = await fetchJsonWithAuth<any>(
         `${API_BASE_URL}/payments/admin/${paymentId}/accept`,
-        {},
         {
-          withCredentials: true,
+          method: 'POST',
+          body: JSON.stringify({})
         }
       )
-      return response.data
+      return result
     } catch (error) {
       console.error('Error accepting payment:', error)
       throw error

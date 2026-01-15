@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
@@ -55,13 +55,14 @@ export interface CreateSubscriptionWithPaymentRequest {
 // Subscribe with account balance
 export const subscribeWithBalance = async (data: CreateSubscriptionRequest): Promise<Subscription> => {
   try {
-    const response = await axios.post(`${API_URL}/subscriptions/subscribe-with-balance`, {
-      cloudPackageId: data.cloudPackageId,
-      autoRenew: data.autoRenew || false
-    }, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/subscribe-with-balance`, {
+      method: 'POST',
+      body: JSON.stringify({
+        cloudPackageId: data.cloudPackageId,
+        autoRenew: data.autoRenew || false
+      })
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error subscribing with balance:', error)
     throw error
@@ -74,14 +75,15 @@ export const subscribeWithPayment = async (data: CreateSubscriptionWithPaymentRe
   payment: any
 }> => {
   try {
-    const response = await axios.post(`${API_URL}/subscriptions/subscribe-with-payment`, {
-      cloudPackageId: data.cloudPackageId,
-      monthsCount: data.monthsCount,
-      autoRenew: data.autoRenew || false
-    }, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<{ subscription: Subscription; payment: any }>(`${API_URL}/subscriptions/subscribe-with-payment`, {
+      method: 'POST',
+      body: JSON.stringify({
+        cloudPackageId: data.cloudPackageId,
+        monthsCount: data.monthsCount,
+        autoRenew: data.autoRenew || false
+      })
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error subscribing with payment:', error)
     throw error
@@ -91,10 +93,10 @@ export const subscribeWithPayment = async (data: CreateSubscriptionWithPaymentRe
 // Get all subscriptions (admin only)
 export const getAllSubscriptions = async (): Promise<Subscription[]> => {
   try {
-    const response = await axios.get(`${API_URL}/subscriptions`, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription[]>(`${API_URL}/subscriptions`, {
+      method: 'GET'
     })
-    return response.data || []
+    return result || []
   } catch (error: any) {
     console.error('Error fetching all subscriptions:', error)
     
@@ -114,10 +116,10 @@ export const getAllSubscriptions = async (): Promise<Subscription[]> => {
 // Get user subscriptions (always uses my-subscriptions endpoint)
 export const getUserSubscriptions = async (userId?: number): Promise<Subscription[]> => {
   try {
-    const response = await axios.get(`${API_URL}/subscriptions/my-subscriptions`, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription[]>(`${API_URL}/subscriptions/my-subscriptions`, {
+      method: 'GET'
     })
-    return response.data || []
+    return result || []
   } catch (error: any) {
     console.error('Error fetching user subscriptions:', error)
     
@@ -149,11 +151,11 @@ export const getActiveSubscriptions = async (userId?: number): Promise<Subscript
 export const getSubscriptionById = async (subscriptionId: string): Promise<Subscription> => {
   console.log('Fetching subscription with ID:', subscriptionId)
   try {
-    const response = await axios.get(`${API_URL}/subscriptions/${subscriptionId}`, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}`, {
+      method: 'GET'
     })
     
-    return response.data
+    return result
   } catch (error) {
     console.error('Error fetching subscription:', error)
     throw error
@@ -163,10 +165,11 @@ export const getSubscriptionById = async (subscriptionId: string): Promise<Subsc
 // Update subscription
 export const updateSubscription = async (subscriptionId: string, updateData: any): Promise<Subscription> => {
   try {
-    const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}`, updateData, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updateData)
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error updating subscription:', error)
     throw error
@@ -176,12 +179,13 @@ export const updateSubscription = async (subscriptionId: string, updateData: any
 // Toggle auto renew
 export const toggleAutoRenew = async (subscriptionId: string, autoRenew: boolean): Promise<Subscription> => {
   try {
-    const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}/auto-renew`, {
-      auto_renew: autoRenew
-    }, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}/auto-renew`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        auto_renew: autoRenew
+      })
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error toggling auto renew:', error)
     throw error
@@ -191,10 +195,11 @@ export const toggleAutoRenew = async (subscriptionId: string, autoRenew: boolean
 // Cancel subscription
 export const cancelSubscription = async (subscriptionId: string): Promise<Subscription> => {
   try {
-    const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}/cancel`, {}, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({})
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error canceling subscription:', error)
     throw error
@@ -204,10 +209,11 @@ export const cancelSubscription = async (subscriptionId: string): Promise<Subscr
 // Suspend subscription
 export const suspendSubscription = async (subscriptionId: string): Promise<Subscription> => {
   try {
-    const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}/suspend`, {}, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}/suspend`, {
+      method: 'PATCH',
+      body: JSON.stringify({})
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error suspending subscription:', error)
     throw error
@@ -217,10 +223,11 @@ export const suspendSubscription = async (subscriptionId: string): Promise<Subsc
 // Reactivate subscription
 export const reactivateSubscription = async (subscriptionId: string): Promise<Subscription> => {
   try {
-    const response = await axios.patch(`${API_URL}/subscriptions/${subscriptionId}/reactivate`, {}, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}/reactivate`, {
+      method: 'PATCH',
+      body: JSON.stringify({})
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error reactivating subscription:', error)
     throw error
@@ -230,8 +237,8 @@ export const reactivateSubscription = async (subscriptionId: string): Promise<Su
 // Delete subscription
 export const deleteSubscription = async (subscriptionId: string): Promise<void> => {
   try {
-    await axios.delete(`${API_URL}/subscriptions/${subscriptionId}`, {
-      withCredentials: true,
+    await fetchJsonWithAuth<void>(`${API_URL}/subscriptions/${subscriptionId}`, {
+      method: 'DELETE'
     })
   } catch (error) {
     console.error('Error deleting subscription:', error)

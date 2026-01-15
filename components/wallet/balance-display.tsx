@@ -6,6 +6,7 @@ import { formatPrice } from '@/lib/utils'
 import { Wallet, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 
 interface BalanceDisplayProps {
   userId?: number
@@ -18,12 +19,19 @@ export default function BalanceDisplay({
   showAddFunds = true, 
   className = '' 
 }: BalanceDisplayProps) {
+  const { isAuthenticated, isLoading } = useAuth()
   const [balance, setBalance] = useState<number>(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   const fetchBalance = async () => {
+    // Only fetch if user is authenticated
+    if (!isAuthenticated) {
+      setLoading(false)
+      return
+    }
+
     try {
       setLoading(true)
       setError(null)
@@ -39,13 +47,18 @@ export default function BalanceDisplay({
   }
 
   useEffect(() => {
+    // Don't fetch if still loading auth state
+    if (isLoading) {
+      return
+    }
+
     // Debounce để tránh gọi API nhiều lần
     const timer = setTimeout(() => {
       fetchBalance()
     }, 100)
     
     return () => clearTimeout(timer)
-  }, [userId])
+  }, [userId, isAuthenticated, isLoading])
 
   const handleAddFunds = () => {
     router.push('/add-funds')

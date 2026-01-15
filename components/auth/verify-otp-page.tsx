@@ -56,9 +56,9 @@ export function VerifyOtpPage({ email, onBack, onSuccess }: VerifyOtpPageProps) 
       if (onSuccess) {
         onSuccess(response);
       } else {
-        // Default redirect to dashboard
+        // Default redirect to login page after verification
         setTimeout(() => {
-          router.push('/cloud');
+          router.push('/login?verified=true');
         }, 1500);
       }
     } catch (error: any) {

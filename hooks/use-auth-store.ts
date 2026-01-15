@@ -20,14 +20,16 @@ interface User {
 interface AuthState {
   user: User | null
   token: string | null
+  refreshToken: string | null
   isLoading: boolean
   error: string | null
   isAuthenticated: boolean
   setUser: (user: User) => void
   setToken: (token: string) => void
+  setRefreshToken: (token: string) => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
-  login: (user: User, token: string) => void
+  login: (user: User, token: string, refreshToken?: string) => void
   logout: () => void
   clearError: () => void
   initAuth: () => void
@@ -39,6 +41,7 @@ const useAuthStore = create<AuthState>()(
       // State
       user: null,
       token: null,
+      refreshToken: null,
       isLoading: false,
       error: null,
       isAuthenticated: false,
@@ -50,7 +53,10 @@ const useAuthStore = create<AuthState>()(
 
       setToken: (token: string) => {
         set({ token })
-        // Token đã được backend set trong httpOnly cookie, không cần set lại
+      },
+
+      setRefreshToken: (refreshToken: string) => {
+        set({ refreshToken })
       },
 
       setLoading: (isLoading: boolean) => {
@@ -61,16 +67,16 @@ const useAuthStore = create<AuthState>()(
         set({ error })
       },
 
-      login: (user: User, token: string) => {
+      login: (user: User, token: string, refreshToken?: string) => {
         console.log('🔐 Login action called with user:', user, 'token:', token)
         set({ 
           user, 
           token, 
+          refreshToken: refreshToken || token,
           isAuthenticated: true,
           error: null
         })
         console.log('✅ Auth state updated in store')
-        // Token đã được backend set trong httpOnly cookie, không cần set lại từ frontend
       },
 
       logout: () => {
@@ -78,13 +84,14 @@ const useAuthStore = create<AuthState>()(
         set({ 
           user: null, 
           token: null, 
+          refreshToken: null,
           isAuthenticated: false,
           error: null,
           isLoading: false
         })
-        // Backend httpOnly cookie sẽ được xóa bởi API call logout
-        // Chỉ cần xóa các cookie/storage từ frontend
-        Cookies.remove('access_token') // Cleanup nếu có
+        // Clear cookies
+        Cookies.remove('access_token')
+        Cookies.remove('refresh_token')
         Cookies.remove('auth-token') // Cleanup legacy
       },
 
@@ -93,18 +100,17 @@ const useAuthStore = create<AuthState>()(
       },
 
       initAuth: () => {
-        // Backend đã set httpOnly cookie, frontend chỉ cần check xem có user data trong localStorage không
-        // Token sẽ được backend validate qua cookie khi gọi API
+        // Khôi phục state từ localStorage
         const storedState = typeof window !== 'undefined' ? localStorage.getItem('auth-storage') : null
         if (storedState) {
           try {
             const parsed = JSON.parse(storedState)
             if (parsed.state?.user && parsed.state?.isAuthenticated) {
-              // Set một token placeholder vì token thật nằm trong httpOnly cookie
               set({ 
                 user: parsed.state.user,
                 isAuthenticated: parsed.state.isAuthenticated,
-                token: 'token-in-httponly-cookie'
+                token: parsed.state.token || 'token-in-httponly-cookie',
+                refreshToken: parsed.state.refreshToken || 'token-in-httponly-cookie'
               })
               console.log('✅ Auth state restored from localStorage')
             }
@@ -116,9 +122,11 @@ const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      // Chỉ persist user info, không persist token vì đã có trong cookie
+      // Persist user info và tokens
       partialize: (state: any) => ({ 
         user: state.user,
+        token: state.token,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated
       }),
     }

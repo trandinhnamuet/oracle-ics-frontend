@@ -5,11 +5,11 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Shield, Zap, Globe, Award } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
-import useAuthStore from "@/hooks/use-auth-store"
+import { useAuth } from "@/lib/auth-context"
 
 export function HeroSection() {
   const { t } = useTranslation()
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated } = useAuth()
 
   return (
     <section id="home" className="relative py-15 lg:py-24 overflow-hidden">

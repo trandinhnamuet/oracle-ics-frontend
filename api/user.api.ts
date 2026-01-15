@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
@@ -7,10 +7,13 @@ export const toggleUserAdminRole = async (userId: number, currentRole: string) =
   const newRole = currentRole === 'admin' ? 'customer' : 'admin'
   
   try {
-    const response = await axios.patch(`${API_URL}/users/${userId}`, {
-      role: newRole
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/users/${userId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        role: newRole
+      })
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error toggling user admin role:', error)
     throw error
@@ -20,8 +23,10 @@ export const toggleUserAdminRole = async (userId: number, currentRole: string) =
 // Get user by ID
 export const getUserById = async (userId: number) => {
   try {
-    const response = await axios.get(`${API_URL}/users/${userId}`)
-    return response.data
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/users/${userId}`, {
+      method: 'GET'
+    })
+    return result
   } catch (error) {
     console.error('Error fetching user:', error)
     throw error
@@ -31,8 +36,10 @@ export const getUserById = async (userId: number) => {
 // Get all users
 export const getAllUsers = async () => {
   try {
-    const response = await axios.get(`${API_URL}/users`)
-    return response.data
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/users`, {
+      method: 'GET'
+    })
+    return result
   } catch (error) {
     console.error('Error fetching users:', error)
     throw error
@@ -42,12 +49,13 @@ export const getAllUsers = async () => {
 // Update user avatar
 export const updateUserAvatar = async (userId: number, avatarUrl: string) => {
   try {
-    const response = await axios.put(`${API_URL}/users/${userId}/avatar`, {
-      avatarUrl
-    }, {
-      withCredentials: true,
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/users/${userId}/avatar`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        avatarUrl
+      })
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error updating user avatar:', error)
     throw error

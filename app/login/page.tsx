@@ -14,17 +14,16 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { useTranslation } from 'react-i18next'
-
-import { authApi, LoginRequest } from '@/api/auth.api'
-import useAuthStore from '@/hooks/use-auth-store'
+import { useAuth } from '@/lib/auth-context'
 
 export default function LoginPage() {
   const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, setLoading, setError, error, isLoading } = useAuthStore()
+  const { login, isLoading } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Check if user just verified email
   useEffect(() => {
@@ -71,36 +70,22 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      setLoading(true)
       setError(null)
       clearErrors()
-      const response = await authApi.login(data)
-      console.log('✅ Login API response:', response)
-      
-      // Đảm bảo có token (dù là placeholder)
-      const token = response.access_token || 'token-in-httponly-cookie'
-      login(response.user, token)
-      console.log('✅ Login store updated with user:', response.user)
-      
+      await login(data.email, data.password)
+      console.log('✅ Login successful')
       reset()
-      const returnUrl = new URLSearchParams(window.location.search).get('returnUrl')
-      router.push(returnUrl || '/')
     } catch (error: any) {
       setError(error.message)
-    } finally {
-      setLoading(false)
     }
   }
 
   const handleGoogleLogin = async () => {
     try {
-      setLoading(true)
       setError(null)
       setError(t('login.googleLoginComingSoon'))
     } catch (error: any) {
       setError(error.message)
-    } finally {
-      setLoading(false)
     }
   }
 

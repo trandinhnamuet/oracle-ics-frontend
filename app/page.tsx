@@ -13,7 +13,7 @@ import { Footer } from "@/components/layout/footer";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { printEnv, userInfo } from "@/lib/utils";
-import useAuthStore from "@/hooks/use-auth-store";
+import { useAuth } from "@/lib/auth-context";
 
 // Khai báo type cho window.__gim để tránh lỗi TS
 declare global {
@@ -113,7 +113,6 @@ export default function HomePage() {
     if (typeof window !== 'undefined') {
       (window as any).printEnv = printEnv;
       (window as any).userInfo = userInfo;
-      (window as any).useAuthStore = useAuthStore;
 
       // Tích hợp chatbot GIM
       if (!document.getElementById('gim-bot-sdk')) {

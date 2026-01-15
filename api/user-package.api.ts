@@ -1,12 +1,14 @@
-import axios from 'axios'
+import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
 // Get user packages by user ID
 export const getUserPackages = async (userId: number) => {
   try {
-    const response = await axios.get(`${API_URL}/user-packages/user/${userId}`)
-    return response.data
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/user-packages/user/${userId}`, {
+      method: 'GET'
+    })
+    return result
   } catch (error) {
     console.error('Error fetching user packages:', error)
     throw error
@@ -27,8 +29,11 @@ export const getPaidUserPackages = async (userId: number) => {
 // Update user package
 export const updateUserPackage = async (packageId: number, updateData: any) => {
   try {
-    const response = await axios.patch(`${API_URL}/user-packages/${packageId}`, updateData)
-    return response.data
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/user-packages/${packageId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updateData)
+    })
+    return result
   } catch (error) {
     console.error('Error updating user package:', error)
     throw error
@@ -38,8 +43,10 @@ export const updateUserPackage = async (packageId: number, updateData: any) => {
 // Delete user package
 export const deleteUserPackage = async (packageId: number) => {
   try {
-    const response = await axios.delete(`${API_URL}/user-packages/${packageId}`)
-    return response.data
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/user-packages/${packageId}`, {
+      method: 'DELETE'
+    })
+    return result
   } catch (error) {
     console.error('Error deleting user package:', error)
     throw error
@@ -49,8 +56,10 @@ export const deleteUserPackage = async (packageId: number) => {
 // Mark package as paid
 export const markPackageAsPaid = async (packageId: number) => {
   try {
-    const response = await axios.patch(`${API_URL}/user-packages/${packageId}/mark-paid`)
-    return response.data
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/user-packages/${packageId}/mark-paid`, {
+      method: 'PATCH'
+    })
+    return result
   } catch (error) {
     console.error('Error marking package as paid:', error)
     throw error
@@ -60,8 +69,10 @@ export const markPackageAsPaid = async (packageId: number) => {
 // Mark package as unpaid
 export const markPackageAsUnpaid = async (packageId: number) => {
   try {
-    const response = await axios.patch(`${API_URL}/user-packages/${packageId}/mark-unpaid`)
-    return response.data
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/user-packages/${packageId}/mark-unpaid`, {
+      method: 'PATCH'
+    })
+    return result
   } catch (error) {
     console.error('Error marking package as unpaid:', error)
     throw error
@@ -71,11 +82,14 @@ export const markPackageAsUnpaid = async (packageId: number) => {
 // Update payment amount when payment is successful
 export const updatePaymentAmount = async (packageId: number, amount: number) => {
   try {
-    const response = await axios.patch(`${API_URL}/user-packages/${packageId}`, {
-      isPaid: true,
-      totalPaidAmount: amount
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/user-packages/${packageId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        isPaid: true,
+        totalPaidAmount: amount
+      })
     })
-    return response.data
+    return result
   } catch (error) {
     console.error('Error updating payment amount:', error)
     throw error
