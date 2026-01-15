@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
@@ -28,10 +28,9 @@ export interface WalletTransaction {
 export const getUserWallet = async (userId?: number): Promise<UserWallet> => {
   try {
     const url = userId ? `${API_URL}/user-wallets/user/${userId}` : `${API_URL}/user-wallets/my-wallet`
-    const response = await axios.get(url, {
-      withCredentials: true,
+    return await fetchJsonWithAuth<UserWallet>(url, {
+      method: 'GET',
     })
-    return response.data
   } catch (error) {
     console.error('Error fetching user wallet:', error)
     throw error
@@ -52,16 +51,14 @@ export const getUserBalance = async (userId?: number): Promise<{ balance: number
       return cached.data
     }
     
-    const response = await axios.get(url, {
-      withCredentials: true,
+    const data = await fetchJsonWithAuth<{ balance: number }>(url, {
+      method: 'GET',
     })
     
-    const data = response.data || { balance: 0 }
-    
     // Cache kết quả
-    balanceCache.set(cacheKey, { data, timestamp: now })
+    balanceCache.set(cacheKey, { data: data || { balance: 0 }, timestamp: now })
     
-    return data
+    return data || { balance: 0 }
   } catch (error) {
     console.error('Error fetching user balance:', error)
     throw error
@@ -72,10 +69,9 @@ export const getUserBalance = async (userId?: number): Promise<{ balance: number
 export const getWalletTransactions = async (userId?: number): Promise<WalletTransaction[]> => {
   try {
     const url = userId ? `${API_URL}/wallet-transactions/user/${userId}` : `${API_URL}/wallet-transactions/my-transactions`
-    const response = await axios.get(url, {
-      withCredentials: true,
+    return await fetchJsonWithAuth<WalletTransaction[]>(url, {
+      method: 'GET',
     })
-    return response.data
   } catch (error) {
     console.error('Error fetching wallet transactions:', error)
     throw error

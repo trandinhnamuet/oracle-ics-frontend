@@ -17,9 +17,7 @@ import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Camera, Upload } from 'lucide-react'
 
-import useAuthStore, { User } from '@/hooks/use-auth-store'
-import withAuth from '@/components/auth/with-auth'
-import { authApi } from '@/api/auth.api'
+import { useAuth, type User } from '@/lib/auth-context'
 import { imageApi } from '@/api/image.api'
 import { updateUserAvatar } from '@/api/user.api'
 import { useToast } from '@/hooks/use-toast'
@@ -32,11 +30,12 @@ type ProfileFormData = {
 
 function ProfilePage() {
   const { t } = useTranslation()
-  const { user, setUser, setLoading, setError, error, isLoading } = useAuthStore()
+  const { user, isLoading } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
   const [updateSuccess, setUpdateSuccess] = useState(false)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [showAvatarDialog, setShowAvatarDialog] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
 
@@ -77,25 +76,15 @@ function ProfilePage() {
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
-      setLoading(true)
       setError(null)
       setUpdateSuccess(false)
       
       // TODO: Implement update profile API call
-      // const updatedUser = await authApi.updateProfile(data)
+      // const updatedUser = await updateProfile(data)
       
       // Simulate API call for now
       await new Promise(resolve => setTimeout(resolve, 1000))
       
-      const updatedUser: User = {
-        ...user!,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        updatedAt: new Date().toISOString()
-      }
-      
-      setUser(updatedUser)
       setIsEditing(false)
       setUpdateSuccess(true)
       
@@ -104,8 +93,6 @@ function ProfilePage() {
       
     } catch (error: any) {
       setError(error.message || t('profile.updateFailed'))
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -424,4 +411,4 @@ function ProfilePage() {
   )
 }
 
-export default withAuth(ProfilePage, { requireAuth: true })
+export default ProfilePage

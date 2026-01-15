@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
@@ -67,13 +67,13 @@ export interface ConfigureVmResponse {
  * Get VM details for a subscription
  */
 export const getSubscriptionVm = async (subscriptionId: string): Promise<VmDetails> => {
-  const response = await axios.get(
+  const result = await fetchJsonWithAuth<VmDetails>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}`,
     {
-      withCredentials: true
+      method: 'GET'
     }
   )
-  return response.data
+  return result
 }
 
 /**
@@ -83,14 +83,14 @@ export const configureSubscriptionVm = async (
   subscriptionId: string,
   data: ConfigureVmDto
 ): Promise<ConfigureVmResponse> => {
-  const response = await axios.post(
+  const result = await fetchJsonWithAuth<ConfigureVmResponse>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/configure`,
-    data,
     {
-      withCredentials: true
+      method: 'POST',
+      body: JSON.stringify(data)
     }
   )
-  return response.data
+  return result
 }
 
 /**
@@ -100,14 +100,14 @@ export const performVmAction = async (
   subscriptionId: string,
   action: VmActionDto['action']
 ): Promise<{ success: boolean; message: string }> => {
-  const response = await axios.post(
+  const result = await fetchJsonWithAuth<{ success: boolean; message: string }>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/action`,
-    { action },
     {
-      withCredentials: true
+      method: 'POST',
+      body: JSON.stringify({ action })
     }
   )
-  return response.data
+  return result
 }
 
 /**
@@ -117,12 +117,12 @@ export const requestNewSshKey = async (
   subscriptionId: string,
   email: string
 ): Promise<{ success: boolean; message: string }> => {
-  const response = await axios.post(
+  const result = await fetchJsonWithAuth<{ success: boolean; message: string }>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/request-key`,
-    { email },
     {
-      withCredentials: true
+      method: 'POST',
+      body: JSON.stringify({ email })
     }
   )
-  return response.data
+  return result
 }

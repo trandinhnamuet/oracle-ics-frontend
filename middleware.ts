@@ -17,7 +17,8 @@ const guestOnlyRoutes = [
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const token = request.cookies.get('access_token')?.value
+  // Only check refreshToken since accessToken is in localStorage (client-side only)
+  const refreshToken = request.cookies.get('refreshToken')?.value
   let userRole = null;
   
   // Xử lý ngôn ngữ để tránh hydration mismatch
@@ -33,19 +34,18 @@ export function middleware(request: NextRequest) {
     })
   }
   
-  // Nếu có token, decode để lấy role
-  if (token) {
+  // If we have refresh token, try to extract role from it
+  // Note: accessToken is stored in localStorage, not cookie
+  if (refreshToken) {
     try {
-      // JWT: header.payload.signature
-      const payload = token.split('.')[1];
+      const payload = refreshToken.split('.')[1];
       if (payload) {
         const decoded = JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'));
         userRole = decoded.role;
-        console.log(`Middleware: User ${decoded.email} with role ${userRole} accessing ${pathname}`);
+        console.log(`✅ Middleware: User with role ${userRole} accessing ${pathname}`);
       }
     } catch (e) {
-      console.log('Middleware: Invalid JWT token');
-      userRole = null;
+      console.log('⚠️ Middleware: Invalid refresh token');
     }
   }
   
@@ -59,12 +59,14 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(route)
   )
   
-  // Nếu là protected route và không có token
-  if (isProtectedRoute && !token) {
+  // Nếu là protected route và không có valid token
+  if (isProtectedRoute && !refreshToken) {
+    console.log(`🔴 Middleware: Protecting route ${pathname} - no refresh token`);
+    
     // Nếu là /admin hoặc /admin/* thì redirect sang /unauthorized
     if (pathname.startsWith('/admin')) {
       const unauthorizedResponse = NextResponse.redirect(new URL('/unauthorized', request.url));
-      // Giữ nguyên cookie ngôn ngữ khi redirect
+      unauthorizedResponse.cookies.delete('refreshToken')
       if (currentLanguage) {
         unauthorizedResponse.cookies.set('language', currentLanguage, {
           path: '/',
@@ -74,11 +76,12 @@ export function middleware(request: NextRequest) {
       }
       return unauthorizedResponse;
     }
-    // Các route khác vẫn về /login như cũ
+    
+    // Các route khác redirect về /login
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('returnUrl', pathname)
     const loginResponse = NextResponse.redirect(loginUrl)
-    // Giữ nguyên cookie ngôn ngữ khi redirect
+    loginResponse.cookies.delete('refreshToken')
     if (currentLanguage) {
       loginResponse.cookies.set('language', currentLanguage, {
         path: '/',
@@ -89,10 +92,10 @@ export function middleware(request: NextRequest) {
     return loginResponse
   }
 
-  // Nếu đã đăng nhập nhưng vào /admin mà không phải admin thì redirect unauthorized
-  if (token && pathname.startsWith('/admin') && userRole !== 'admin') {
+  // Nếu đã đăng nhập nhưng vào /admin mà không phải admin
+  if (refreshToken && pathname.startsWith('/admin') && userRole !== 'admin') {
+    console.log(`🔴 Middleware: User ${userRole} trying to access admin route`);
     const unauthorizedResponse = NextResponse.redirect(new URL('/unauthorized', request.url));
-    // Giữ nguyên cookie ngôn ngữ khi redirect
     if (currentLanguage) {
       unauthorizedResponse.cookies.set('language', currentLanguage, {
         path: '/',
@@ -103,51 +106,24 @@ export function middleware(request: NextRequest) {
     return unauthorizedResponse;
   }
   
-  // Nếu là guest-only route và đã có token
-  if (isGuestOnlyRoute && token) {
-    // Kiểm tra token có hợp lệ không
-    let isValidToken = false
-    try {
-      const payload = token.split('.')[1];
-      if (payload) {
-        const decoded = JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'));
-        const now = Math.floor(Date.now() / 1000)
-        // Token hợp lệ nếu chưa hết hạn
-        isValidToken = decoded.exp && decoded.exp > now
-      }
-    } catch (e) {
-      isValidToken = false
+  // Nếu là guest-only route và đã có valid token, redirect về home
+  if (isGuestOnlyRoute && refreshToken) {
+    console.log(`ℹ️ Middleware: User already logged in, redirecting from ${pathname}`);
+    const homeUrl = new URL('/', request.url);
+    const redirectResponse = NextResponse.redirect(homeUrl);
+    if (currentLanguage) {
+      redirectResponse.cookies.set('language', currentLanguage, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: 'lax'
+      })
     }
-    
-    if (!isValidToken) {
-      // Token không hợp lệ hoặc hết hạn - xóa và cho phép truy cập guest route
-      const response = NextResponse.next()
-      response.cookies.delete('access_token')
-      // Giữ nguyên cookie ngôn ngữ
-      if (currentLanguage) {
-        response.cookies.set('language', currentLanguage, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 365,
-          sameSite: 'lax'
-        })
-      }
-      return response
-    } else {
-      // Token hợp lệ - redirect về trang chủ kèm message
-      const homeUrl = new URL('/', request.url);
-      homeUrl.searchParams.set('message', 'logged-in');
-      const redirectResponse = NextResponse.redirect(homeUrl);
-      // Giữ nguyên cookie ngôn ngữ khi redirect
-      if (currentLanguage) {
-        redirectResponse.cookies.set('language', currentLanguage, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 365,
-          sameSite: 'lax'
-        })
-      }
-      return redirectResponse;
-    }
+    return redirectResponse;
   }
+  
+  // Nếu token hết hạn nhưng có refresh token, middleware không xử lý
+  // (API interceptor sẽ handle refresh bằng fetch-wrapper)
+  // Chỉ redirect và clear cookies nếu là protected route không có token
   
   return response
 }

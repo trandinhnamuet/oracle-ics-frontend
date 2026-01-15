@@ -15,10 +15,9 @@ import { SimpleDropdown } from "@/components/ui/simple-dropdown"
 import { LanguageSelector } from "@/components/ui/language-selector"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
-import useAuthStore from "@/hooks/use-auth-store"
+import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
 import { useI18nReady } from "@/hooks/use-i18n-ready"
-import { authApi } from "@/api/auth.api"
 
 
 export function Header() {
@@ -26,13 +25,8 @@ export function Header() {
   const { toast } = useToast()
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { user, isAuthenticated, logout, setLoading, setError, initAuth } = useAuthStore()
+  const { user, isAuthenticated, logout } = useAuth()
   const isI18nReady = useI18nReady() // Hook để tránh hydration mismatch
-
-  // Khởi tạo auth khi component mount
-  useEffect(() => {
-    initAuth()
-  }, [initAuth])
 
   // Không render cho đến khi i18n sẵn sàng để tránh hydration mismatch
   if (!isI18nReady) {
@@ -68,18 +62,17 @@ export function Header() {
 
   const handleLogout = async () => {
     try {
-      setLoading(true)
-      await authApi.logout()
-      logout()
+      await logout()
       toast({
         title: t('common.logoutSuccess'),
         variant: 'success'
       })
-      router.push('/')
     } catch (error: any) {
-      setError(error.message)
-    } finally {
-      setLoading(false)
+      toast({
+        title: t('common.error'),
+        description: error.message,
+        variant: 'destructive'
+      })
     }
   }
 

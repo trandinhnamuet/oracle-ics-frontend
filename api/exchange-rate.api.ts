@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { fetchJsonWithAuth } from '@/lib/fetch-wrapper';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -13,6 +13,6 @@ export async function getTodayExchangeRates(params?: {
         .map(([k, v]) => `${k}=${encodeURIComponent(v as string)}`)
         .join('&')
     : '';
-  const res = await axios.get(`${BASE_URL}/exchange-rate/today${query}`);
-  return res.data;
+  const res = await fetchJsonWithAuth(`${BASE_URL}/exchange-rate/today${query}`);
+  return res;
 }

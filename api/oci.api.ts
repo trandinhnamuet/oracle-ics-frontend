@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { fetchJsonWithAuth } from '@/lib/fetch-wrapper';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
 
@@ -56,14 +56,11 @@ export const getComputeImages = async (
     if (operatingSystem) params.append('operatingSystem', operatingSystem);
     if (shape) params.append('shape', shape);
 
-    const response = await axios.get<{ success: boolean; data: ComputeImage[] }>(
-      `${API_URL}/oci/images?${params.toString()}`,
-      {
-        withCredentials: true,
-      }
+    const response = await fetchJsonWithAuth<{ success: boolean; data: ComputeImage[] }>(
+      `${API_URL}/oci/images?${params.toString()}`
     );
 
-    return response.data.data || [];
+    return response.data || [];
   } catch (error: any) {
     console.error('Error fetching compute images:', error);
 
@@ -90,14 +87,11 @@ export const getMarketplaceImages = async (
     const params = new URLSearchParams();
     if (compartmentId) params.append('compartmentId', compartmentId);
 
-    const response = await axios.get<{ success: boolean; data: MarketplaceImage[] }>(
-      `${API_URL}/oci/marketplace-images?${params.toString()}`,
-      {
-        withCredentials: true,
-      }
+    const response = await fetchJsonWithAuth<{ success: boolean; data: MarketplaceImage[] }>(
+      `${API_URL}/oci/marketplace-images?${params.toString()}`
     );
 
-    return response.data.data || [];
+    return response.data || [];
   } catch (error: any) {
     console.error('Error fetching marketplace images:', error);
 
@@ -122,14 +116,11 @@ export const getShapes = async (compartmentId?: string): Promise<Shape[]> => {
     const params = new URLSearchParams();
     if (compartmentId) params.append('compartmentId', compartmentId);
 
-    const response = await axios.get<{ success: boolean; data: Shape[] }>(
-      `${API_URL}/oci/shapes?${params.toString()}`,
-      {
-        withCredentials: true,
-      }
+    const response = await fetchJsonWithAuth<{ success: boolean; data: Shape[] }>(
+      `${API_URL}/oci/shapes?${params.toString()}`
     );
 
-    return response.data.data || [];
+    return response.data || [];
   } catch (error: any) {
     console.error('Error fetching shapes:', error);
 
@@ -151,14 +142,11 @@ export const getShapes = async (compartmentId?: string): Promise<Shape[]> => {
  */
 export const getCompartments = async (): Promise<Compartment[]> => {
   try {
-    const response = await axios.get<{ success: boolean; data: Compartment[] }>(
-      `${API_URL}/oci/compartments`,
-      {
-        withCredentials: true,
-      }
+    const response = await fetchJsonWithAuth<{ success: boolean; data: Compartment[] }>(
+      `${API_URL}/oci/compartments`
     );
 
-    return response.data.data || [];
+    return response.data || [];
   } catch (error: any) {
     console.error('Error fetching compartments:', error);
 
@@ -180,14 +168,12 @@ export const getCompartments = async (): Promise<Compartment[]> => {
  */
 export const deleteCompartment = async (compartmentName: string): Promise<any> => {
   try {
-    const response = await axios.delete(
+    const response = await fetchJsonWithAuth(
       `${API_URL}/oci/compartment/${encodeURIComponent(compartmentName)}`,
-      {
-        withCredentials: true,
-      }
+      { method: 'DELETE' }
     );
 
-    return response.data;
+    return response;
   } catch (error: any) {
     console.error('Error deleting compartment:', error);
 
@@ -229,15 +215,12 @@ export const getInstanceMetrics = async (
   timeRange: '1h' | '6h' | '24h' | '7d' = '1h'
 ): Promise<InstanceMetrics> => {
   try {
-    const response = await axios.get<{ success: boolean; data: InstanceMetrics }>(
-      `${API_URL}/oci/instance/${encodeURIComponent(instanceId)}/metrics`,
-      {
-        params: { timeRange },
-        withCredentials: true,
-      }
+    const params = new URLSearchParams({ timeRange });
+    const response = await fetchJsonWithAuth<{ success: boolean; data: InstanceMetrics }>(
+      `${API_URL}/oci/instance/${encodeURIComponent(instanceId)}/metrics?${params.toString()}`
     );
 
-    return response.data.data;
+    return response.data;
   } catch (error: any) {
     console.error('Error fetching instance metrics:', error);
     throw error;

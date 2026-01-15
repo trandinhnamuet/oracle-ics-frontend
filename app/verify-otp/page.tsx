@@ -5,14 +5,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { VerifyOtpPage } from '@/components/auth/verify-otp-page';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
-import useAuthStore from '@/hooks/use-auth-store';
+import { useAuth } from '@/lib/auth-context';
 
 export default function VerifyOtpPageRoute() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState(true);
-  const { login } = useAuthStore();
+  const { login } = useAuth();
 
   useEffect(() => {
     // Get email from URL params or localStorage
@@ -40,11 +40,9 @@ export default function VerifyOtpPageRoute() {
     // Clear stored email
     localStorage.removeItem('pendingVerificationEmail');
     
-    // Login user (set in auth store) with both user and token
-    login(data.user, data.token);
-    
-    // Redirect to dashboard
-    router.push('/');
+    // After OTP verification, redirect to login page
+    // Backend only activates user, doesn't return token
+    router.push('/login?verified=true');
   };
 
   if (loading) {

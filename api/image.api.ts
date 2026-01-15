@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
@@ -20,35 +20,29 @@ export const imageApi = {
     const formData = new FormData()
     formData.append('file', file)
     
-    const response = await axios.post(`${API_URL}/images/upload`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      withCredentials: true,
+    const response = await fetchJsonWithAuth<Image>(`${API_URL}/images/upload`, {
+      method: 'POST',
+      body: formData,
     })
     
-    return response.data
+    return response
   },
 
   async getImage(id: string): Promise<Image> {
-    const response = await axios.get(`${API_URL}/images/${id}`, {
-      withCredentials: true,
-    })
-    return response.data
+    const response = await fetchJsonWithAuth<Image>(`${API_URL}/images/${id}`)
+    return response
   },
 
   async getUserImages(userId: number): Promise<Image[]> {
-    const response = await axios.get(`${API_URL}/images/user/${userId}`, {
-      withCredentials: true,
-    })
-    return response.data
+    const response = await fetchJsonWithAuth<Image[]>(`${API_URL}/images/user/${userId}`)
+    return response
   },
 
   async deleteImage(id: string): Promise<{ message: string }> {
-    const response = await axios.delete(`${API_URL}/images/${id}`, {
-      withCredentials: true,
+    const response = await fetchJsonWithAuth<{ message: string }>(`${API_URL}/images/${id}`, {
+      method: 'DELETE',
     })
-    return response.data
+    return response
   },
 
   getImageUrl(url: string): string {

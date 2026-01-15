@@ -13,7 +13,7 @@ import { pricingCategories, customPlan } from "@/types/pricing-plans"
 import { PricingCategory } from "@/types/pricing-types"
 import { formatPrice, roundMoney } from "@/lib/utils"
 import CustomRegistrationForm from "./customRegistrationForm"
-import useAuthStore from "@/hooks/use-auth-store"
+import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
 import BalanceDisplay from "@/components/wallet/balance-display"
 import { subscribeWithBalance, subscribeWithPayment } from "@/api/subscription.api"
@@ -23,7 +23,7 @@ export function PricingSection() {
   const { t } = useTranslation()
   const router = useRouter()
   const { toast } = useToast()
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated } = useAuth()
   const [expandedCategory, setExpandedCategory] = useState<string | null>('starter')
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isClosing, setIsClosing] = useState(false)

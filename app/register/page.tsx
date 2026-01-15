@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 
 import { authApi, RegisterRequest } from '@/api/auth.api'
-import useAuthStore from '@/hooks/use-auth-store'
+import { useAuth } from '@/lib/auth-context'
 
 // Schema validation cho form đăng ký
 const registerSchema = z.object({
@@ -47,9 +47,11 @@ type RegisterFormData = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
   const router = useRouter()
-  const { login, setLoading, setError, error, isLoading } = useAuthStore()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -62,7 +64,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      setLoading(true)
+      setIsLoading(true)
       setError(null)
       
       const registerData: RegisterRequest = {
@@ -83,13 +85,13 @@ export default function RegisterPage() {
     } catch (error: any) {
       setError(error.message)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   const handleGoogleSignup = async () => {
     try {
-      setLoading(true)
+      setIsLoading(true)
       setError(null)
       
       // TODO: Implement Google OAuth
@@ -99,7 +101,7 @@ export default function RegisterPage() {
     } catch (error: any) {
       setError(error.message)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 

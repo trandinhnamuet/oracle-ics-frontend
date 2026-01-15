@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
-import useAuthStore from '@/hooks/use-auth-store'
+import { useAuth } from '@/lib/auth-context'
 import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, cancelSubscription, suspendSubscription, reactivateSubscription, Subscription } from '@/api/subscription.api'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -44,7 +44,7 @@ interface PackageSubscription {
 export default function PackageManagementPage() {
   const { t } = useTranslation()
   const router = useRouter()
-  const { user } = useAuthStore()
+  const { user } = useAuth()
   const [subscriptions, setSubscriptions] = useState<PackageSubscription[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
