@@ -15,6 +15,15 @@ export const metadata: Metadata = {
   title: 'Oracle Cloud Vietnam',
   description: 'Giải pháp Oracle Cloud hàng đầu tại Việt Nam',
   generator: 'Next.js',
+  icons: {
+    icon: [
+      {
+        url: '/logo_oracle.png',
+        type: 'image/png',
+      },
+    ],
+    apple: '/logo_oracle.png',
+  },
   openGraph: {
     title: 'Oracle Cloud Vietnam',
     description: 'Giải pháp Oracle Cloud hàng đầu tại Việt Nam',
