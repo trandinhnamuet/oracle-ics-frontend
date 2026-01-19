@@ -76,7 +76,6 @@ export function middleware(request: NextRequest) {
       }
       return unauthorizedResponse;
     }
-    
     // Các route khác redirect về /login
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('returnUrl', pathname)

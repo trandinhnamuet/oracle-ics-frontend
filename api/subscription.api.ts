@@ -113,7 +113,7 @@ export const getAllSubscriptions = async (): Promise<Subscription[]> => {
   }
 }
 
-// Get user subscriptions (always uses my-subscriptions endpoint)
+
 export const getUserSubscriptions = async (userId?: number): Promise<Subscription[]> => {
   try {
     const result = await fetchJsonWithAuth<Subscription[]>(`${API_URL}/subscriptions/my-subscriptions`, {

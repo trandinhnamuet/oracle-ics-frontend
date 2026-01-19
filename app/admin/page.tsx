@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Users, FileText, Package, HardDrive, DollarSign } from 'lucide-react'
+import { Users, FileText, Package, HardDrive, DollarSign, LogIn } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const adminLinks = (t: any) => [
@@ -47,6 +47,14 @@ const adminLinks = (t: any) => [
 		icon: DollarSign,
 		color: 'bg-emerald-500',
 		stats: 'Payment Management',
+	},
+	{
+		title: 'Lịch sử Đăng nhập',
+		description: 'Theo dõi các hoạt động đăng nhập của admin',
+		href: '/admin/login-history',
+		icon: LogIn,
+		color: 'bg-indigo-500',
+		stats: 'Security Audit',
 	},
 	{
 		title: 'Quản lý Compartments',

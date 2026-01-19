@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { authService, type User } from "@/services/auth.service"
+import useAuthStore from "@/hooks/use-auth-store"
 
 interface AuthContextType {
   user: User | null
@@ -44,8 +45,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const currentUser = await authService.getCurrentUser()
         setUser(currentUser)
+        // Sync to Zustand store
+        if (currentUser) {
+          useAuthStore.setState({
+            user: currentUser,
+            isAuthenticated: true,
+            isLoading: false,
+            token: 'from-httponly-cookie'
+          })
+          console.log('✅ User synced to store:', currentUser)
+        }
       } catch (error) {
         setUser(null)
+        useAuthStore.setState({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false
+        })
+        console.warn('❌ Auth check failed:', error)
       } finally {
         setIsLoading(false)
       }
@@ -58,6 +75,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authService.login(email, password)
       setUser(response.user)
+      // Sync to Zustand store
+      useAuthStore.setState({
+        user: response.user,
+        isAuthenticated: true,
+        isLoading: false,
+        token: 'from-httponly-cookie'
+      })
+      console.log('✅ Login synced to store:', response.user)
       // Redirect to homepage after successful login
       router.push("/")
     } catch (error) {
@@ -70,6 +95,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.logout()
     } finally {
       setUser(null)
+      useAuthStore.setState({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false
+      })
       router.push("/")
     }
   }, [router])
@@ -79,6 +109,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.logoutAll()
     } finally {
       setUser(null)
+      useAuthStore.setState({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false
+      })
       router.push("/")
     }
   }, [router])

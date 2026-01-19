@@ -4,6 +4,7 @@ import { GeistMono } from 'geist/font/mono'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from '@/lib/auth-context'
+import { AuthStoreInitializer } from '@/components/providers/auth-store-initializer'
 import { I18nProvider } from '@/components/providers/i18n-provider'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -68,6 +69,7 @@ export default function RootLayout({
         >
           <I18nProvider initialLanguage={language}>
             <AuthProvider>
+              <AuthStoreInitializer />
               <div className="min-h-screen flex flex-col">
                 <Header />
                 <main className="flex-1">
