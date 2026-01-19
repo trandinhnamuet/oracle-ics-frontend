@@ -1,4 +1,5 @@
 import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper';
+import { getClientIp } from '@/lib/ip-service';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
 
@@ -35,6 +36,10 @@ class AuthService {
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
+    // Get client IP from ipify.org (public IP)
+    const ipData = await getClientIp();
+    console.log('Client IP data in login:', ipData);
+
     // Login should NOT use fetchWithAuth wrapper to avoid circular refresh
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
@@ -42,7 +47,7 @@ class AuthService {
         'Content-Type': 'application/json',
       },
       credentials: 'include', // Important: send cookies
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, ipv4: ipData.ipv4, ipv6: ipData.ipv6 }),
     });
 
     if (!response.ok) {

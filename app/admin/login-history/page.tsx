@@ -401,6 +401,9 @@ export default function AdminLoginHistoryPage() {
                     IP Address
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                    IPv6
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Location
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -423,13 +426,13 @@ export default function AdminLoginHistoryPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={9} className="px-6 py-4 text-center text-gray-500">
+                    <td colSpan={10} className="px-6 py-4 text-center text-gray-500">
                       Loading...
                     </td>
                   </tr>
                 ) : loginHistory.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="px-6 py-4 text-center text-gray-500">
+                    <td colSpan={10} className="px-6 py-4 text-center text-gray-500">
                       No login records found
                     </td>
                   </tr>
@@ -453,6 +456,15 @@ export default function AdminLoginHistoryPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {record.ipV4 || record.ipV6 || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {record.ipV6 ? (
+                          <span className="font-mono text-xs text-blue-600" title={record.ipV6}>
+                            {record.ipV6.length > 20 ? record.ipV6.substring(0, 20) + '...' : record.ipV6}
+                          </span>
+                        ) : (
+                          'N/A'
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {record.country && record.city ? `${record.city}, ${record.country}` : record.country || 'N/A'}
