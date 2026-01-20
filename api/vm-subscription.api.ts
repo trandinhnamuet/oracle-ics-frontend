@@ -36,7 +36,7 @@ export interface VmDetails {
 }
 
 export interface ConfigureVmDto {
-  displayName: string
+  displayName?: string
   imageId: string
   shape: string
   ocpus: number

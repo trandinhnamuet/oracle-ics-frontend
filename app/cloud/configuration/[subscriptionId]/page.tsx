@@ -97,12 +97,10 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [selectedImageId, setSelectedImageId] = useState('')
   const [imageSearchTerm, setImageSearchTerm] = useState('')
   const [selectedShape, setSelectedShape] = useState('VM.Standard.A1.Flex')
-  const [vmName, setVmName] = useState(`vm-${subscriptionId?.slice(0, 8) || 'instance'}`)
   const [ocpus, setOcpus] = useState(1)
   const [memoryInGBs, setMemoryInGBs] = useState(4)
   const [bootVolumeSize, setBootVolumeSize] = useState(50)
   const [notificationEmail, setNotificationEmail] = useState(user?.email || '')
-  const [description, setDescription] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [subscription, setSubscription] = useState<any>(null)
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true)
@@ -174,7 +172,6 @@ export default function CloudConfigurationBySubscriptionPage() {
       selectedOS &&
       selectedImageId &&
       selectedShape &&
-      vmName.trim() &&
       notificationEmail.trim() &&
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail)
     )
@@ -225,14 +222,12 @@ export default function CloudConfigurationBySubscriptionPage() {
       }
 
       const response = await configureSubscriptionVm(subscriptionId, {
-        displayName: vmName,
         imageId: selectedImageId,
         shape: selectedShape,
         ocpus: ocpus,
         memoryInGBs: memoryInGBs,
         bootVolumeSizeInGBs: bootVolumeSize,
-        notificationEmail: notificationEmail,
-        description: description || `VM for subscription ${subscriptionId}`
+        notificationEmail: notificationEmail
       })
 
       toast({
@@ -331,9 +326,9 @@ export default function CloudConfigurationBySubscriptionPage() {
 
         {/* 3-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Column 1: VM Details + Shape + OS Selection */}
+          {/* Column 1: VM Details + Notification */}
           <div className="lg:col-span-1 space-y-6">
-            {/* VM Name */}
+            {/* VM Instance Details */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -343,28 +338,45 @@ export default function CloudConfigurationBySubscriptionPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="vmName">VM Instance Name *</Label>
-                  <Input
-                    id="vmName"
-                    value={vmName}
-                    onChange={(e) => setVmName(e.target.value)}
-                    placeholder="Enter VM name"
-                    className="mt-2 bg-white"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="description">Description (Optional)</Label>
-                  <Input
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Enter description"
-                    className="mt-2 bg-white"
-                  />
+                  <Label>VM Instance Name</Label>
+                  <p className="text-sm text-gray-600 mt-2 p-3 bg-blue-50 rounded-md border border-blue-200">
+                    ℹ️ VM name will be auto-generated based on your email address in format: <code className="font-mono text-xs bg-white px-1 py-0.5 rounded">email-vm-{'{id}'}</code>
+                  </p>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Notification Email */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Mail className="h-5 w-5 mr-2" />
+                  Notification Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div>
+                  <Label htmlFor="email">
+                    Email Address * (SSH keys will be sent here)
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={notificationEmail}
+                    onChange={(e) => setNotificationEmail(e.target.value)}
+                    placeholder="your-email@example.com"
+                    className="mt-2 bg-white"
+                  />
+                  <p className="text-sm text-gray-500 mt-2">
+                    Your SSH private key will be sent to this email address. Please keep it secure.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Column 2: VM Shape + OS Selection */}
+          <div className="lg:col-span-1 space-y-6">
 
             {/* VM Shape Selection */}
             <Card>
@@ -562,52 +574,6 @@ export default function CloudConfigurationBySubscriptionPage() {
             </Card>
           </div>
 
-          {/* Column 2: Region + Notification Settings */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Region Selection (Placeholder) */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MapPin className="h-5 w-5 mr-2" />
-                  Region
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <p className="text-sm text-gray-600">Region selection coming soon</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Notification Email */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Mail className="h-5 w-5 mr-2" />
-                  Notification Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div>
-                  <Label htmlFor="email">
-                    Email Address * (SSH keys will be sent here)
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={notificationEmail}
-                    onChange={(e) => setNotificationEmail(e.target.value)}
-                    placeholder="your-email@example.com"
-                    className="mt-2 bg-white"
-                  />
-                  <p className="text-sm text-gray-500 mt-2">
-                    Your SSH private key will be sent to this email address. Please keep it secure.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
           {/* Column 3: Configuration Summary + Actions */}
           <div className="lg:col-span-1">
             <Card className="sticky top-4">
@@ -615,12 +581,6 @@ export default function CloudConfigurationBySubscriptionPage() {
                 <CardTitle>Configuration Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* VM Name */}
-                <div className="border-b pb-3">
-                  <p className="text-xs text-gray-600 uppercase tracking-wide">VM Name</p>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">{vmName || 'Not specified'}</p>
-                </div>
-
                 {/* OS */}
                 <div className="border-b pb-3">
                   <p className="text-xs text-gray-600 uppercase tracking-wide">Operating System</p>
@@ -680,7 +640,6 @@ export default function CloudConfigurationBySubscriptionPage() {
                       <ul className="text-xs mt-2 space-y-1">
                         {!selectedOS && <li>• Select Operating System</li>}
                         {!selectedImageId && <li>• Select OS Version</li>}
-                        {!vmName.trim() && <li>• Enter VM Name</li>}
                         {!notificationEmail.trim() && <li>• Enter Email Address</li>}
                         {notificationEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail) && <li>• Enter valid Email Address</li>}
                       </ul>

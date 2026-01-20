@@ -10,7 +10,7 @@ export interface Subscription {
   end_date: string
   status: 'active' | 'inactive' | 'pending' | 'expired' | 'suspended' | 'cancelled'
   auto_renew: boolean
-  vm_instance_id?: string | null
+  vm_instance_id?: number | null
   created_at: string
   updated_at: string
   user?: {
