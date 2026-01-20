@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Users, FileText, Package, HardDrive, DollarSign, LogIn } from 'lucide-react'
+import { Users, FileText, Package, HardDrive, DollarSign, LogIn, BarChart3 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const adminLinks = (t: any) => [
@@ -63,6 +63,14 @@ const adminLinks = (t: any) => [
 		icon: HardDrive,
 		color: 'bg-red-500',
 		stats: 'OCI Resources',
+	},
+	{
+		title: 'Analytics',
+		description: 'Xem thống kê lượt truy cập và tương tác người dùng',
+		href: '/admin/analytics',
+		icon: BarChart3,
+		color: 'bg-cyan-500',
+		stats: 'Website Analytics',
 	},
 ]
 

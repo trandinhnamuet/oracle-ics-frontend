@@ -1,7 +1,7 @@
 import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper';
 import { getClientIp } from '@/lib/ip-service';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003';
 
 export interface User {
   id: number;
@@ -68,6 +68,9 @@ class AuthService {
     // Refresh should NOT use fetchWithAuth to avoid circular refresh
     const response = await fetch(`${API_URL}/auth/refresh`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       credentials: 'include',
     });
 

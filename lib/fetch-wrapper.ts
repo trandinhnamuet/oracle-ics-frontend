@@ -9,6 +9,17 @@ export async function fetchWithAuth(
   options: RequestInit = {},
   skipAuthRefresh: boolean = false
 ): Promise<Response> {
+  // Resolve API_BASE_URL dynamically (so it picks up env changes)
+  const API_BASE_URL = (typeof window === 'undefined' 
+    ? process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL 
+    : process.env.NEXT_PUBLIC_API_BASE_URL) || ''
+  const baseUrl = API_BASE_URL.replace(/\/$/, '')
+  
+  // Build final URL: if relative, prefix with API_BASE_URL
+  const finalUrl = /^https?:\/\//i.test(url)
+    ? url
+    : `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> || {}),
@@ -20,7 +31,7 @@ export async function fetchWithAuth(
     headers['Authorization'] = `Bearer ${accessToken}`;
   }
 
-  let response = await fetch(url, {
+  let response = await fetch(finalUrl, {
     ...options,
     headers,
     credentials: 'include',
@@ -50,7 +61,7 @@ export async function fetchWithAuth(
           'Authorization': `Bearer ${newAccessToken}`,
         };
 
-        response = await fetch(url, {
+        response = await fetch(finalUrl, {
           ...options,
           headers: retryHeaders,
           credentials: 'include',
