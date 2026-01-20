@@ -175,7 +175,7 @@ export const trackScrollDepth = () => {
 export const recordAnalytics = async (analyticsData: any) => {
   try {
     // Get the API base URL from environment variable
-    const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003'
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
     const response = await fetch(`${apiUrl}/api/analytics`, {
       method: 'POST',

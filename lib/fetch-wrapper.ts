@@ -11,8 +11,8 @@ export async function fetchWithAuth(
 ): Promise<Response> {
   // Resolve API_BASE_URL dynamically (so it picks up env changes)
   const API_BASE_URL = (typeof window === 'undefined' 
-    ? process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL 
-    : process.env.NEXT_PUBLIC_API_BASE_URL) || ''
+    ? process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL 
+    : process.env.NEXT_PUBLIC_API_URL) || ''
   const baseUrl = API_BASE_URL.replace(/\/$/, '')
   
   // Build final URL: if relative, prefix with API_BASE_URL
