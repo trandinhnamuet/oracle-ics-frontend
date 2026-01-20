@@ -1,6 +1,6 @@
 import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003'
 
 export interface Subscription {
   id: string
@@ -10,7 +10,7 @@ export interface Subscription {
   end_date: string
   status: 'active' | 'inactive' | 'pending' | 'expired' | 'suspended' | 'cancelled'
   auto_renew: boolean
-  vm_instance_id?: string | null
+  vm_instance_id?: number | null
   created_at: string
   updated_at: string
   user?: {

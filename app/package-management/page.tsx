@@ -25,7 +25,7 @@ interface PackageSubscription {
   auto_renew: boolean
   created_at: string
   updated_at: string
-  vm_instance_id?: string | null // Foreign key to VM instance
+  vm_instance_id?: number | null // Foreign key to VM instance
   // Thông tin từ bảng cloud_packages
   cloud_package?: {
     id: number
@@ -39,6 +39,14 @@ interface PackageSubscription {
     feature: string
     bandwidth: string
   }
+  // Thông tin từ bảng vm_instances
+  vmInstance?: {
+    id: number
+    instance_name: string
+    public_ip: string | null
+    private_ip: string | null
+    lifecycle_state: string
+  } | null
 }
 
 export default function PackageManagementPage() {
@@ -293,12 +301,11 @@ export default function PackageManagementPage() {
               <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>ID</TableHead>
                   <TableHead>{t('packageManagement.table.packageName')}</TableHead>
                   <TableHead>{t('packageManagement.table.type')}</TableHead>
-                  <TableHead>{t('packageManagement.table.paidAmount')}</TableHead>
+                  <TableHead>VM Name</TableHead>
+                  <TableHead>IPv4</TableHead>
                   <TableHead>{t('packageManagement.table.createdAt')}</TableHead>
-                  <TableHead>{t('packageManagement.table.updatedAt')}</TableHead>
                   <TableHead>{t('packageManagement.table.status')}</TableHead>
                   <TableHead>{t('packageManagement.table.actions')}</TableHead>
                 </TableRow>
@@ -306,7 +313,7 @@ export default function PackageManagementPage() {
               <TableBody>
                 {filteredSubscriptions.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       {searchTerm || statusFilter !== 'all' || typeFilter !== 'all' 
                         ? t('packageManagement.table.noMatch')
                         : t('packageManagement.table.noPackage')
@@ -317,10 +324,11 @@ export default function PackageManagementPage() {
                   filteredSubscriptions.map(sub => {
                     const packageName = sub.cloud_package?.name || t('packageManagement.table.customPackage')
                     const packageType = sub.cloud_package?.type || 'custom'
+                    const vmName = sub.vmInstance?.instance_name || ''
+                    const vmIpv4 = sub.vmInstance?.public_ip || ''
                     
                     return (
                       <TableRow key={sub.id}>
-                        <TableCell className="font-medium">{sub.id}</TableCell>
                         <TableCell className="font-medium">
                           <span
                             className="text-blue-600 hover:underline cursor-pointer"
@@ -334,14 +342,14 @@ export default function PackageManagementPage() {
                             {packageType.charAt(0).toUpperCase() + packageType.slice(1)}
                           </Badge>
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {formatPrice(sub.cloud_package?.cost_vnd || 0)}
+                        <TableCell className="font-mono text-sm">
+                          {vmName || <span className="text-muted-foreground">-</span>}
+                        </TableCell>
+                        <TableCell className="font-mono text-sm">
+                          {vmIpv4 || <span className="text-muted-foreground">-</span>}
                         </TableCell>
                         <TableCell>
                           {new Date(sub.created_at).toLocaleDateString('vi-VN')}
-                        </TableCell>
-                        <TableCell>
-                          {new Date(sub.updated_at).toLocaleDateString('vi-VN')}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">

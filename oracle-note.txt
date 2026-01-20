@@ -121,7 +121,7 @@
 - Cập nhật metadata cho Oracle Cloud Vietnam
 
 ### .env.local
-- NEXT_PUBLIC_API_URL=http://localhost:3001
+- NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
 
 ## Tính năng đã hoàn thành:
 

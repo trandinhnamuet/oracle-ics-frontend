@@ -33,7 +33,7 @@ export default function UserManagementPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [isVisible, setIsVisible] = useState(false)
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003'
 
   const fetchUsers = async () => {
     try {
