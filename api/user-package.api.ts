@@ -1,6 +1,6 @@
 import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
 // Get user packages by user ID
 export const getUserPackages = async (userId: number) => {

@@ -56,8 +56,8 @@ export function printEnv() {
     }
     
     // Thử truy cập trực tiếp
-    const directAccess = process.env.NEXT_PUBLIC_API_BASE_URL;
-    console.log('🎯 Direct access NEXT_PUBLIC_API_BASE_URL:', directAccess);
+    const directAccess = process.env.NEXT_PUBLIC_API_URL;
+    console.log('🎯 Direct access NEXT_PUBLIC_API_URL:', directAccess);
     
     console.log('🌍 Client Environment Variables:', env);
     console.log('📝 Tip: Only NEXT_PUBLIC_* variables are accessible on client side');

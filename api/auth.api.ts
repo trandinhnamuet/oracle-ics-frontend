@@ -2,7 +2,7 @@ import { authService, User, LoginResponse } from '@/services/auth.service';
 import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper';
 
 // Cấu hình base URL cho API backend
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
 
 // Types cho API requests
 export interface LoginRequest {

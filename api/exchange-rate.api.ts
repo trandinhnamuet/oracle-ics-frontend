@@ -1,6 +1,6 @@
 import { fetchJsonWithAuth } from '@/lib/fetch-wrapper';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export async function getTodayExchangeRates(params?: {
   currency_from?: string;

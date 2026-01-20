@@ -27,7 +27,7 @@ pnpm dev
 Tạo file `.env.local`:
 
 ```
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3003
+NEXT_PUBLIC_API_URL=http://localhost:3003
 ```
 
 ## Port
@@ -36,7 +36,7 @@ Mặc định chạy trên port **3000** (khách hàng)
 
 ## Kết nối Backend
 
-Backend API được cấu hình ở `NEXT_PUBLIC_API_BASE_URL`
+Backend API được cấu hình ở `NEXT_PUBLIC_API_URL`
 
 ## Cấu trúc thư mục
 

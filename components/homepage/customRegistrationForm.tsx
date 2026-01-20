@@ -109,7 +109,7 @@ export default function CustomRegistrationForm({ open, onOpenChange }: CustomReg
         createdBy: values.userName,
       }
 
-      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003'
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
       await axios.post(`${API_URL}/custom-package-registrations`, payload)
 
       toast({
