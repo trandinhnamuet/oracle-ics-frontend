@@ -33,7 +33,7 @@ export default function CustomRegistrationAdminPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isVisible, setIsVisible] = useState(false)
   const [filterProcessed, setFilterProcessed] = useState<'all' | 'processed' | 'unprocessed'>('all')
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003'
 
   const handleProcessedChange = async (id: number, value: boolean) => {
     try {
@@ -81,7 +81,7 @@ export default function CustomRegistrationAdminPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+        const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3003'
         const res = await axios.get(`${API_URL}/custom-package-registrations`)
         setData(res.data)
         setFilteredData(res.data)
