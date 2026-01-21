@@ -299,6 +299,64 @@ export default function CloudConfigurationBySubscriptionPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4">
+      {/* VM Provisioning Overlay */}
+      {isProcessing && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+            <div className="text-center">
+              {/* Animated Spinner */}
+              <div className="relative w-24 h-24 mx-auto mb-6">
+                <Loader2 className="w-24 h-24 text-blue-600 animate-spin" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Server className="w-10 h-10 text-blue-600 animate-pulse" />
+                </div>
+              </div>
+              
+              {/* Main Message */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                Creating Your VM Instance
+              </h3>
+              
+              {/* Submessage */}
+              <p className="text-gray-600 mb-4">
+                Your virtual machine is being provisioned...
+              </p>
+              
+              {/* Progress Steps */}
+              <div className="space-y-3 text-left bg-blue-50 rounded-lg p-4 mb-4">
+                <div className="flex items-center text-sm">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse"></div>
+                  <span className="text-gray-700">Provisioning compartment and network</span>
+                </div>
+                <div className="flex items-center text-sm">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                  <span className="text-gray-700">Launching compute instance</span>
+                </div>
+                <div className="flex items-center text-sm">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                  <span className="text-gray-700">Configuring networking and security</span>
+                </div>
+                <div className="flex items-center text-sm">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.6s' }}></div>
+                  <span className="text-gray-700">Generating SSH keys</span>
+                </div>
+              </div>
+              
+              {/* Estimated Time */}
+              <div className="flex items-center justify-center text-sm text-gray-500">
+                <AlertCircle className="w-4 h-4 mr-2" />
+                <span>This may take 1-3 minutes</span>
+              </div>
+              
+              {/* Warning */}
+              <p className="text-xs text-amber-600 mt-4">
+                ⚠️ Please do not close this window or navigate away
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
