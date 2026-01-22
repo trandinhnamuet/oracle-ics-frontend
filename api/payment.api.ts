@@ -93,6 +93,19 @@ export const paymentApi = {
     }
   },
 
+  // User APIs
+  getMyPayments: async (): Promise<any[]> => {
+    try {
+      const result = await fetchJsonWithAuth<any[]>(`${API_BASE_URL}/payments/my-payments`, {
+        method: 'GET'
+      })
+      return result
+    } catch (error) {
+      console.error('Error fetching my payments:', error)
+      throw error
+    }
+  },
+
   // Admin APIs
   getAllPayments: async (): Promise<any[]> => {
     try {

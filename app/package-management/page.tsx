@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye } from 'lucide-react'
 import BalanceDisplay from '@/components/wallet/balance-display'
+import WalletSidebar from '@/components/wallet/wallet-sidebar'
 
 interface PackageSubscription {
   id: string
@@ -182,21 +183,27 @@ export default function PackageManagementPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 space-y-8">
-      {/* Balance Bar */}
-      <div className="w-full flex items-center justify-between bg-white rounded-lg shadow p-4 mb-4 border border-gray-100">
-        <BalanceDisplay showAddFunds={true} className="flex items-center gap-2" />
-      </div>
-      {/* Header Section */}
-      <div className={`flex flex-col space-y-4 transition-all duration-700 transform ${
-        isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
-      }`}>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('packageManagement.title')}</h1>
-          <p className="text-muted-foreground">{t('packageManagement.subtitle')}</p>
-        </div>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <WalletSidebar />
 
-        {/* Search and Filters */}
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto pt-16 md:pt-0">
+        <div className="container mx-auto py-8 px-4 space-y-8 max-w-6xl">
+          {/* Balance Bar */}
+          <div className="w-full flex items-center justify-between bg-white rounded-lg shadow p-4 mb-4 border border-gray-100">
+            <BalanceDisplay showAddFunds={true} className="flex items-center gap-2" />
+          </div>
+          {/* Header Section */}
+          <div className={`flex flex-col space-y-4 transition-all duration-700 transform ${
+            isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
+          }`}>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">{t('packageManagement.title')}</h1>
+              <p className="text-muted-foreground">{t('packageManagement.subtitle')}</p>
+            </div>
+
+            {/* Search and Filters */}
         <div className={`flex flex-col md:flex-row gap-4 transition-all duration-700 transform ${
           isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
         }`} style={{ transitionDelay: '200ms' }}>
@@ -441,6 +448,8 @@ export default function PackageManagementPage() {
           )}
         </CardContent>
       </Card>
+        </div>
+      </div>
     </div>
   )
 }

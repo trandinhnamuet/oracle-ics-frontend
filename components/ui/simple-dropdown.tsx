@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { User, Settings, LogOut, Shield, Package } from 'lucide-react'
+import { User, Settings, LogOut, Shield, Package, CreditCard } from 'lucide-react'
 
 interface SimpleDropdownProps {
   user: any
@@ -96,6 +96,17 @@ export function SimpleDropdown({ user, onProfileClick, onLogout }: SimpleDropdow
             >
               <Package className="mr-2 h-4 w-4" />
               {t('header.packageManagement')}
+            </button>
+
+            <button
+              onClick={() => {
+                router.push('/checkout/history')
+                setIsOpen(false)
+              }}
+              className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <CreditCard className="mr-2 h-4 w-4" />
+              Quản lý thanh toán
             </button>
 
             {/* <button
