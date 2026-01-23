@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp } from 'lucide-react'
+import { TerminalComponent } from '@/components/terminal/terminal-component'
 import {
   LineChart,
   Line,
@@ -80,6 +81,7 @@ export default function PackageDetailPage() {
   const [metrics, setMetrics] = useState<InstanceMetrics | null>(null)
   const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d'>('1h')
   const [isLoadingMetrics, setIsLoadingMetrics] = useState(false)
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false)
 
   // Fetch subscription data
   useEffect(() => {
@@ -968,13 +970,12 @@ export default function PackageDetailPage() {
                   </Button>
 
                   <Button 
-                    className="w-full justify-start"
-                    variant="outline"
-                    onClick={() => handleAction('console')}
-                    disabled={isLoading}
+                    className="w-full justify-start bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => setIsTerminalOpen(true)}
+                    disabled={isLoading || vmDetails?.vm?.lifecycleState !== 'RUNNING'}
                   >
                     <Terminal className="h-4 w-4 mr-2" />
-                    {t('packageDetail.actions.console')}
+                    Open Terminal
                   </Button>
                 </>
               )}
@@ -1033,6 +1034,16 @@ export default function PackageDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Terminal Modal */}
+      {vmDetails?.vm && (
+        <TerminalComponent
+          vmId={vmDetails.vm.id}
+          vmName={vmDetails.vm.instanceName}
+          isOpen={isTerminalOpen}
+          onClose={() => setIsTerminalOpen(false)}
+        />
+      )}
     </div>
   )
 }
