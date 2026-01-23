@@ -76,10 +76,6 @@ export function Header() {
     }
   }
 
-  const handleLoginClick = () => {
-    router.push('/login')
-  }
-
   const handleProfileClick = () => {
     router.push('/profile')
   }
@@ -200,8 +196,8 @@ export function Header() {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button variant="outline" onClick={handleLoginClick}>
-                  {t('header.login')}
+                <Button variant="outline" asChild>
+                  <Link href="/login">{t('header.login')}</Link>
                 </Button>
                 <Button asChild>
                   <Link href="/register">{t('header.register')}</Link>
@@ -289,8 +285,8 @@ export function Header() {
                       <ThemeToggle />
                     </div>
                   </div>
-                  <Button variant="outline" onClick={handleLoginClick} className="w-full bg-transparent">
-                    {t('header.login')}
+                  <Button variant="outline" asChild className="w-full bg-transparent">
+                    <Link href="/login">{t('header.login')}</Link>
                   </Button>
                   <Button asChild className="w-full">
                     <Link href="/register">{t('header.register')}</Link>

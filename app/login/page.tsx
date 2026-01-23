@@ -20,10 +20,21 @@ export default function LoginPage() {
   const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, isLoading } = useAuth()
+  const { login, isLoading, isAuthenticated } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  // Check if user is already logged in
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      setSuccessMessage('Bạn đã đăng nhập rồi! Đang chuyển hướng về trang chủ...')
+      const timer = setTimeout(() => {
+        router.push('/')
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [isAuthenticated, isLoading, router])
 
   // Check if user just verified email
   useEffect(() => {

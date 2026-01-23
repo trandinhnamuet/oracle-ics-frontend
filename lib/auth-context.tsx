@@ -43,24 +43,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        // Kiểm tra xem có access token không
+        let accessToken = authService.getAccessToken()
+        
+        // Nếu không có access token, thử refresh từ cookie
+        if (!accessToken) {
+          console.log('⚠️ No access token found, attempting to refresh from cookie...')
+          try {
+            const newToken = await authService.refresh()
+            accessToken = newToken
+            console.log('✅ Access token refreshed successfully')
+            
+            // Sync access token to Zustand store
+            useAuthStore.setState({
+              token: accessToken,
+              isAuthenticated: true,
+              isLoading: false
+            })
+          } catch (refreshError) {
+            console.log('❌ No valid refresh token in cookie')
+            // Không có refresh token hợp lệ, clear state
+            setUser(null)
+            useAuthStore.setState({
+              user: null,
+              isAuthenticated: false,
+              isLoading: false,
+              token: null
+            })
+            setIsLoading(false)
+            return
+          }
+        }
+        
+        // Lấy thông tin user với access token (mới hoặc đã có)
         const currentUser = await authService.getCurrentUser()
         setUser(currentUser)
+        
         // Sync to Zustand store
         if (currentUser) {
           useAuthStore.setState({
             user: currentUser,
             isAuthenticated: true,
             isLoading: false,
-            token: 'from-httponly-cookie'
+            token: accessToken || 'from-httponly-cookie'
           })
           console.log('✅ User synced to store:', currentUser)
+        } else {
+          // Không lấy được user, clear state
+          setUser(null)
+          useAuthStore.setState({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+            token: null
+          })
         }
       } catch (error) {
         setUser(null)
         useAuthStore.setState({
           user: null,
           isAuthenticated: false,
-          isLoading: false
+          isLoading: false,
+          token: null
         })
         console.warn('❌ Auth check failed:', error)
       } finally {
