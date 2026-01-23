@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Users, FileText, Package, HardDrive, DollarSign, LogIn, BarChart3 } from 'lucide-react'
+import { Users, FileText, Package, HardDrive, DollarSign, LogIn, BarChart3, Activity } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const adminLinks = (t: any) => [
@@ -71,6 +71,14 @@ const adminLinks = (t: any) => [
 		icon: BarChart3,
 		color: 'bg-cyan-500',
 		stats: 'Website Analytics',
+	},
+	{
+		title: 'Giám sát Băng thông',
+		description: 'Theo dõi băng thông của tất cả máy ảo (giới hạn 10TB)',
+		href: '/admin/bandwidth-management',
+		icon: Activity,
+		color: 'bg-pink-500',
+		stats: 'Bandwidth Monitor',
 	},
 ]
 

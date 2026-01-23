@@ -98,17 +98,6 @@ export function SimpleDropdown({ user, onProfileClick, onLogout }: SimpleDropdow
               {t('header.packageManagement')}
             </button>
 
-            <button
-              onClick={() => {
-                router.push('/checkout/history')
-                setIsOpen(false)
-              }}
-              className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <CreditCard className="mr-2 h-4 w-4" />
-              Quản lý thanh toán
-            </button>
-
             {/* <button
               onClick={() => setIsOpen(false)}
               className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
