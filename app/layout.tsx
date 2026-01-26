@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
-import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from '@/lib/auth-context'
 import { AuthStoreInitializer } from '@/components/providers/auth-store-initializer'
@@ -84,7 +83,6 @@ export default function RootLayout({
             </AuthProvider>
           </I18nProvider>
         </ThemeProvider>
-        <Analytics />
       </body>
     </html>
   )

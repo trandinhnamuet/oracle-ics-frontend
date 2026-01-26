@@ -248,7 +248,7 @@ export default function AdminLoginHistoryPage() {
 
             <div className="bg-white rounded-lg shadow p-6">
               <div className="text-sm text-gray-600">Success Rate</div>
-              <div className="text-3xl font-bold text-green-600">{(statistics.successRate * 100).toFixed(1)}%</div>
+              <div className="text-3xl font-bold text-green-600">{statistics.successRate.toFixed(1)}%</div>
               <div className="text-xs text-gray-500 mt-2">{statistics.successfulLogins} successful</div>
             </div>
 
