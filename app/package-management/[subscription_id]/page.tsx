@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp } from 'lucide-react'
 import { TerminalComponent } from '@/components/terminal/terminal-component'
+import { ConfirmSshKeyRequestDialog } from '@/components/dialogs/confirm-ssh-key-request-dialog'
 import {
   LineChart,
   Line,
@@ -82,6 +83,8 @@ export default function PackageDetailPage() {
   const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d'>('1h')
   const [isLoadingMetrics, setIsLoadingMetrics] = useState(false)
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
+  const [showSshKeyConfirm, setShowSshKeyConfirm] = useState(false)
+  const [isRequestingSshKey, setIsRequestingSshKey] = useState(false)
 
   // Fetch subscription data
   useEffect(() => {
@@ -258,26 +261,62 @@ export default function PackageDetailPage() {
       return
     }
 
-    const email = subscription.user?.email || prompt('Enter email to receive new SSH key:')
+    // Check if user email exists
+    const email = subscription.user?.email
+    if (!email) {
+      toast({
+        title: 'Email Required',
+        description: 'User email not found. Please contact support.',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    // Show confirmation dialog
+    setShowSshKeyConfirm(true)
+  }
+
+  const handleConfirmSshKeyRequest = async () => {
+    const email = subscription?.user?.email
     if (!email) return
 
-    setIsLoading(true)
+    setIsRequestingSshKey(true)
     try {
-      await requestNewSshKey(subscriptionId, email)
+      const result = await requestNewSshKey(subscriptionId, email)
+      
+      // Close dialog
+      setShowSshKeyConfirm(false)
+      
+      // Show success with detailed info
       toast({
-        title: 'Success',
-        description: 'New SSH key has been generated and sent to your email',
-        variant: 'default'
+        title: 'SSH Key Created Successfully',
+        description: (
+          <div className="space-y-1 text-sm">
+            <p>{result.message}</p>
+            {result.keysInfo && (
+              <p className="text-xs text-gray-600 mt-2">
+                Total active keys: {result.keysInfo.totalKeys}/3
+                {result.keysInfo.removedOldest && ' (oldest key removed)'}
+              </p>
+            )}
+          </div>
+        ),
+        variant: 'default',
+        duration: 10000,
       })
     } catch (error: any) {
       console.error('Error requesting new SSH key:', error)
+      
+      setShowSshKeyConfirm(false)
+      
       toast({
         title: 'Request Failed',
-        description: error.response?.data?.message || 'Failed to generate new SSH key',
-        variant: 'destructive'
+        description: error.response?.data?.message || 'Failed to generate new SSH key. Please try again.',
+        variant: 'destructive',
+        duration: 8000,
       })
     } finally {
-      setIsLoading(false)
+      setIsRequestingSshKey(false)
     }
   }
 
@@ -963,10 +1002,10 @@ export default function PackageDetailPage() {
                     className="w-full justify-start"
                     variant="outline"
                     onClick={handleRequestNewKey}
-                    disabled={isLoading}
+                    disabled={isLoading || isRequestingSshKey}
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    Request New SSH Key
+                    {isRequestingSshKey ? 'Generating...' : 'Request New SSH Key'}
                   </Button>
 
                   <Button 
@@ -1044,6 +1083,16 @@ export default function PackageDetailPage() {
           onClose={() => setIsTerminalOpen(false)}
         />
       )}
+
+      {/* SSH Key Request Confirmation Dialog */}
+      <ConfirmSshKeyRequestDialog
+        isOpen={showSshKeyConfirm}
+        onClose={() => !isRequestingSshKey && setShowSshKeyConfirm(false)}
+        onConfirm={handleConfirmSshKeyRequest}
+        email={subscription?.user?.email || ''}
+        vmName={vmDetails?.vm?.instanceName}
+        isLoading={isRequestingSshKey}
+      />
     </div>
   )
 }

@@ -116,8 +116,30 @@ export const performVmAction = async (
 export const requestNewSshKey = async (
   subscriptionId: string,
   email: string
-): Promise<{ success: boolean; message: string }> => {
-  const result = await fetchJsonWithAuth<{ success: boolean; message: string }>(
+): Promise<{ 
+  success: boolean
+  message: string
+  sshKey?: {
+    publicKey: string
+    fingerprint: string
+  }
+  keysInfo?: {
+    totalKeys: number
+    removedOldest: boolean
+  }
+}> => {
+  const result = await fetchJsonWithAuth<{ 
+    success: boolean
+    message: string
+    sshKey?: {
+      publicKey: string
+      fingerprint: string
+    }
+    keysInfo?: {
+      totalKeys: number
+      removedOldest: boolean
+    }
+  }>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/request-key`,
     {
       method: 'POST',
