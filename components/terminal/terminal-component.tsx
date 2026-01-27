@@ -8,7 +8,7 @@ import { io, Socket } from "socket.io-client";
 import "xterm/css/xterm.css";
 import { X, Maximize2, Minimize2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Cookies from "js-cookie";
+import useAuthStore from "@/hooks/use-auth-store";
 
 interface TerminalComponentProps {
   vmId: number | string;
@@ -26,6 +26,9 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
   const [isConnecting, setIsConnecting] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  // Lấy token từ auth store thay vì cookies
+  const { token } = useAuthStore();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -57,11 +60,12 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
     xtermRef.current = term;
     fitAddonRef.current = fitAddon;
 
-    // Get JWT token
-    const token = Cookies.get("access_token");
+    // Kiểm tra token từ auth store
     if (!token) {
       setError("Authentication required. Please login again.");
       setIsConnecting(false);
+      term.writeln("\r\n\x1b[1;31m✗ Error: No authentication token found\x1b[0m");
+      term.writeln("\x1b[90mPlease refresh the page and login again.\x1b[0m");
       return;
     }
 
@@ -150,10 +154,19 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
       }
       term.dispose();
     };
-  }, [vmId, isOpen]);
+  }, [vmId, isOpen, token]); // Thêm token vào dependencies
 
   const handleReconnect = () => {
     setError(null);
+    setIsConnecting(true);
+    
+    // Kiểm tra token trước khi reconnect
+    if (!token) {
+      setError("Authentication required. Please login again.");
+      setIsConnecting(false);
+      return;
+    }
+    
     setIsConnecting(true);
     if (socketRef.current) {
       socketRef.current.connect();
