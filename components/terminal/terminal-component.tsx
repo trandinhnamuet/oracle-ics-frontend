@@ -70,7 +70,7 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
     }
 
     // Connect to WebSocket
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3003";
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3003";
     const socket = io(`${backendUrl}/terminal`, {
       auth: { token },
       transports: ["websocket"],
