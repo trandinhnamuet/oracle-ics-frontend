@@ -69,8 +69,11 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
       return;
     }
 
-    // Connect to WebSocket
+    // Connect to WebSocket - use NEXT_PUBLIC_API_URL for backend connection
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3003";
+    
+    console.log("🔌 Connecting to WebSocket:", `${backendUrl}/terminal`);
+    
     const socket = io(`${backendUrl}/terminal`, {
       auth: { token },
       transports: ["websocket"],
