@@ -74,9 +74,9 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
     // Remove /api from URL to get base domain for socket.io connection
     const baseUrl = apiUrl.replace(/\/api$/, '');
     
-    console.log("🔌 Connecting to WebSocket:", `${baseUrl}/terminal with path /api/socket.io/`);
+    console.log("🔌 Connecting to WebSocket:", `${baseUrl} with path /api/socket.io/`);
     
-    const socket = io(`${baseUrl}/terminal`, {
+    const socket = io(baseUrl, {
       path: '/api/socket.io/',
       auth: { token },
       transports: ["websocket"],
