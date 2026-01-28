@@ -3,12 +3,23 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
+import dynamic from 'next/dynamic'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp } from 'lucide-react'
-import { TerminalComponent } from '@/components/terminal/terminal-component'
 import { ConfirmSshKeyRequestDialog } from '@/components/dialogs/confirm-ssh-key-request-dialog'
+
+// Dynamic import TerminalComponent to avoid SSR issues with xterm and socket.io-client
+const TerminalComponent = dynamic(
+  () => import('@/components/terminal/terminal-component').then(mod => ({ default: mod.TerminalComponent })),
+  { 
+    ssr: false,
+    loading: () => <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="text-white">Loading terminal...</div>
+    </div>
+  }
+)
 import {
   LineChart,
   Line,
