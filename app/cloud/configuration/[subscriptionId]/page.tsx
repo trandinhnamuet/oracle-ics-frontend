@@ -230,9 +230,12 @@ export default function CloudConfigurationBySubscriptionPage() {
         notificationEmail: notificationEmail
       })
 
+      // Use message from backend response, or fallback to default
+      const successMessage = response.message || 'Máy ảo đã tạo thành công! Thông tin truy cập đã được gửi đến email của bạn.'
+
       toast({
         title: 'Thành công',
-        description: 'Máy ảo đã tạo thành công! SSH keys đã được gửi đến email của bạn.',
+        description: successMessage,
         variant: 'default'
       })
 
@@ -338,14 +341,14 @@ export default function CloudConfigurationBySubscriptionPage() {
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.6s' }}></div>
-                  <span className="text-gray-700">Generating SSH keys</span>
+                  <span className="text-gray-700">Preparing access credentials</span>
                 </div>
               </div>
               
               {/* Estimated Time */}
               <div className="flex items-center justify-center text-sm text-gray-500">
                 <AlertCircle className="w-4 h-4 mr-2" />
-                <span>This may take 1-3 minutes</span>
+                <span>This may take 2-5 minutes</span>
               </div>
               
               {/* Warning */}
