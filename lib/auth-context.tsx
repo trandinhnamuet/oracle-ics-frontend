@@ -139,11 +139,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.logout()
     } finally {
       setUser(null)
+      // Clear all auth state from Zustand store
       useAuthStore.setState({
         user: null,
         isAuthenticated: false,
-        isLoading: false
+        isLoading: false,
+        token: null
       })
+      // Clear localStorage completely
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth-storage')
+      }
       router.push("/")
     }
   }, [router])
@@ -153,11 +159,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.logoutAll()
     } finally {
       setUser(null)
+      // Clear all auth state from Zustand store
       useAuthStore.setState({
         user: null,
         isAuthenticated: false,
-        isLoading: false
+        isLoading: false,
+        token: null
       })
+      // Clear localStorage completely
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth-storage')
+      }
       router.push("/")
     }
   }, [router])

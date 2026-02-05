@@ -1,5 +1,6 @@
 import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper';
 import { getClientIp } from '@/lib/ip-service';
+import { clearAllAuthCookies, deleteCookie } from '@/lib/cookie-utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
 
@@ -103,6 +104,8 @@ class AuthService {
       this.accessToken = null;
       if (typeof window !== 'undefined') {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
+        // Force clear all auth cookies from client-side as backup
+        clearAllAuthCookies();
       }
     }
   }
@@ -119,6 +122,8 @@ class AuthService {
       this.accessToken = null;
       if (typeof window !== 'undefined') {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
+        // Force clear all auth cookies from client-side as backup
+        clearAllAuthCookies();
       }
     }
   }
