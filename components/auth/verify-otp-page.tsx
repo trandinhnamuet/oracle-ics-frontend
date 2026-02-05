@@ -12,13 +12,14 @@ import { getClientIp } from '@/lib/ip-service';
 
 interface VerifyOtpPageProps {
   email: string;
+  customMessage?: string;
   onBack?: () => void;
   onSuccess?: (user: any) => void;
 }
 
 type OtpStatus = 'idle' | 'sending' | 'sent' | 'verifying' | 'success' | 'error';
 
-export function VerifyOtpPage({ email, onBack, onSuccess }: VerifyOtpPageProps) {
+export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: VerifyOtpPageProps) {
   const router = useRouter();
   const [otpCode, setOtpCode] = useState('');
   const [status, setStatus] = useState<OtpStatus>('idle');
@@ -134,9 +135,26 @@ export function VerifyOtpPage({ email, onBack, onSuccess }: VerifyOtpPageProps) 
               </div>
             </div>
             <CardDescription className="text-center">
-              Enter the 6-digit verification code sent to
-              <br />
-              <span className="font-medium text-gray-900">{email}</span>
+              {customMessage ? (
+                <>
+                  <span className="text-orange-600 font-medium block mb-2">
+                    ⚠️ Tài khoản chưa xác thực
+                  </span>
+                  <span className="text-sm text-gray-700 block mb-2">
+                    OTP đã được gửi về email của bạn
+                  </span>
+                  <span className="font-medium text-gray-900">{email}</span>
+                  <span className="text-sm text-gray-600 block mt-2">
+                    Vui lòng nhập OTP để xác thực tài khoản
+                  </span>
+                </>
+              ) : (
+                <>
+                  Enter the 6-digit verification code sent to
+                  <br />
+                  <span className="font-medium text-gray-900">{email}</span>
+                </>
+              )}
             </CardDescription>
           </CardHeader>
 

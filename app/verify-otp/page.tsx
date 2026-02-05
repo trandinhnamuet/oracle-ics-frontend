@@ -11,6 +11,7 @@ export default function VerifyOtpPageRoute() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState<string>('');
+  const [customMessage, setCustomMessage] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const { login } = useAuth();
 
@@ -18,6 +19,7 @@ export default function VerifyOtpPageRoute() {
     // Get email from URL params or localStorage
     const emailParam = searchParams.get('email');
     const storedEmail = localStorage.getItem('pendingVerificationEmail');
+    const storedMessage = localStorage.getItem('pendingVerificationMessage');
 
     if (emailParam) {
       setEmail(emailParam);
@@ -25,6 +27,10 @@ export default function VerifyOtpPageRoute() {
       localStorage.setItem('pendingVerificationEmail', emailParam);
     } else if (storedEmail) {
       setEmail(storedEmail);
+    }
+    
+    if (storedMessage) {
+      setCustomMessage(storedMessage);
     }
 
     setLoading(false);
@@ -37,8 +43,9 @@ export default function VerifyOtpPageRoute() {
   };
 
   const handleSuccess = (data: any) => {
-    // Clear stored email
+    // Clear stored email and message
     localStorage.removeItem('pendingVerificationEmail');
+    localStorage.removeItem('pendingVerificationMessage');
     
     // After OTP verification, redirect to login page
     // Backend only activates user, doesn't return token
@@ -82,6 +89,7 @@ export default function VerifyOtpPageRoute() {
   return (
     <VerifyOtpPage
       email={email}
+      customMessage={customMessage}
       onBack={handleBack}
       onSuccess={handleSuccess}
     />

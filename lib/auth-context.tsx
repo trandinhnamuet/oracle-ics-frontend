@@ -118,17 +118,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     try {
       const response = await authService.login(email, password)
-      setUser(response.user)
-      // Sync to Zustand store
-      useAuthStore.setState({
-        user: response.user,
-        isAuthenticated: true,
-        isLoading: false,
-        token: 'from-httponly-cookie'
-      })
-      console.log('✅ Login synced to store:', response.user)
-      // Redirect to homepage after successful login
-      router.push("/")
+      
+      // Check if email verification is required
+      if (response.requiresVerification) {
+        // Store email for OTP verification page
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('pendingVerificationEmail', response.email || email)
+          localStorage.setItem('pendingVerificationMessage', response.message || '')
+        }
+        // Redirect to OTP verification page
+        router.push(`/verify-otp?email=${encodeURIComponent(response.email || email)}`)
+        return
+      }
+      
+      // Normal login flow
+      if (response.user) {
+        setUser(response.user)
+        // Sync to Zustand store
+        useAuthStore.setState({
+          user: response.user,
+          isAuthenticated: true,
+          isLoading: false,
+          token: 'from-httponly-cookie'
+        })
+        console.log('✅ Login synced to store:', response.user)
+        // Redirect to homepage after successful login
+        router.push("/")
+      }
     } catch (error) {
       throw error
     }

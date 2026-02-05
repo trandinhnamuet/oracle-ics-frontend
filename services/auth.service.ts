@@ -20,8 +20,11 @@ export interface User {
 }
 
 export interface LoginResponse {
-  accessToken: string;
-  user: User;
+  accessToken?: string;
+  user?: User;
+  requiresVerification?: boolean;
+  email?: string;
+  message?: string;
 }
 
 const ACCESS_TOKEN_KEY = 'oracle_access_token';
@@ -57,10 +60,20 @@ class AuthService {
     }
 
     const data: LoginResponse = await response.json();
-    this.accessToken = data.accessToken;
-    // Save to localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
+    
+    // Check if verification is required
+    if (data.requiresVerification) {
+      // Don't set access token, return response as-is for frontend to handle
+      return data;
+    }
+    
+    // Normal login flow
+    if (data.accessToken) {
+      this.accessToken = data.accessToken;
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
+      }
     }
     return data;
   }
