@@ -87,6 +87,12 @@ export default function LoginPage() {
       console.log('✅ Login successful')
       reset()
     } catch (error: any) {
+      // Don't show error if it's a verification redirect
+      if (error.message === 'VERIFICATION_REQUIRED') {
+        console.log('🔄 Redirecting to OTP verification...')
+        // Don't reset form, don't show error - just let redirect happen
+        return
+      }
       setError(error.message)
     }
   }

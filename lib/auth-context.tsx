@@ -121,14 +121,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Check if email verification is required
       if (response.requiresVerification) {
+        console.log('⚠️ Login requires verification, redirecting to OTP page...')
         // Store email for OTP verification page
         if (typeof window !== 'undefined') {
           localStorage.setItem('pendingVerificationEmail', response.email || email)
           localStorage.setItem('pendingVerificationMessage', response.message || '')
         }
-        // Redirect to OTP verification page
+        // Redirect to OTP verification page immediately
         router.push(`/verify-otp?email=${encodeURIComponent(response.email || email)}`)
-        return
+        // Throw a special error to let login page know about redirect
+        throw new Error('VERIFICATION_REQUIRED')
       }
       
       // Normal login flow
@@ -144,6 +146,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('✅ Login synced to store:', response.user)
         // Redirect to homepage after successful login
         router.push("/")
+      } else {
+        // Should not happen, but handle gracefully
+        throw new Error('Login failed - no user data returned')
       }
     } catch (error) {
       throw error
