@@ -100,7 +100,9 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     try {
       setError(null)
-      setError(t('login.googleLoginComingSoon'))
+      // Redirect to backend Google OAuth endpoint
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+      window.location.href = `${backendUrl}/auth/google`
     } catch (error: any) {
       setError(error.message)
     }
