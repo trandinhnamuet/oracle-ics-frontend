@@ -193,10 +193,8 @@ export default function PackageManagementPage() {
     );
     
     if (confirmation) {
+      setLoading(true);
       try {
-        // Show loading state
-        const loadingToast = alert('Đang xóa subscription và VM. Vui lòng đợi...');
-        
         // Call DELETE API to completely remove subscription and VM
         await deleteSubscription(id);
         
@@ -211,6 +209,8 @@ export default function PackageManagementPage() {
           'Có lỗi xảy ra khi xóa subscription:\n' +
           (error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.')
         );
+      } finally {
+        setLoading(false);
       }
     }
   }

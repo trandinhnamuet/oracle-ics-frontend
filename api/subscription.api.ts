@@ -237,9 +237,18 @@ export const reactivateSubscription = async (subscriptionId: string): Promise<Su
 // Delete subscription
 export const deleteSubscription = async (subscriptionId: string): Promise<void> => {
   try {
-    await fetchJsonWithAuth<void>(`${API_URL}/subscriptions/${subscriptionId}`, {
+    const response = await fetchWithAuth(`${API_URL}/subscriptions/${subscriptionId}`, {
       method: 'DELETE'
     })
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        message: `HTTP ${response.status}: ${response.statusText}`,
+      }))
+      throw new Error(error.message || `Failed to delete subscription: ${response.status}`)
+    }
+    
+    // Success - no need to parse JSON as DELETE returns void
   } catch (error) {
     console.error('Error deleting subscription:', error)
     throw error
