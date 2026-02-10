@@ -30,7 +30,7 @@ import {
   AreaChart,
   Area
 } from 'recharts'
-import { getSubscriptionById, Subscription } from '@/api/subscription.api'
+import { getSubscriptionById, deleteSubscription, Subscription } from '@/api/subscription.api'
 import { getSubscriptionVm, performVmAction, requestNewSshKey, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
@@ -332,12 +332,52 @@ export default function PackageDetailPage() {
   }
 
   const handleAction = async (action: string) => {
-    setIsLoading(true)
-    // Simulate API call
-    setTimeout(() => {
-      console.log(`Executing action: ${action}`)
-      setIsLoading(false)
-    }, 2000)
+    if (action === 'delete') {
+      // Handle delete subscription
+      const confirmation = confirm(
+        'BẠN CHẮC CHẮN MUỐN XÓA SUBSCRIPTION NÀY?\n\n' +
+        '⚠️ CẢNH BÁO: Hành động này sẽ:\n' +
+        '• XÓA HOÀN TOÀN subscription\n' +
+        '• XÓA máy ảo (VM) trên Oracle Cloud\n' +
+        '• XÓA TẤT CẢ dữ liệu liên quan\n' +
+        '• KHÔNG THỂ KHÔI PHỤC sau khi xóa\n\n' +
+        'Vui lòng backup dữ liệu quan trọng trước khi xóa!'
+      );
+      
+      if (!confirmation) return;
+
+      setIsLoading(true);
+      try {
+        await deleteSubscription(subscriptionId);
+        
+        toast({
+          title: 'Xóa thành công',
+          description: 'Subscription và VM đã được xóa hoàn toàn',
+          variant: 'default'
+        });
+        
+        // Redirect to package management page after 1 second
+        setTimeout(() => {
+          router.push('/package-management');
+        }, 1000);
+      } catch (error: any) {
+        console.error('Error deleting subscription:', error);
+        toast({
+          title: 'Lỗi xóa subscription',
+          description: error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
+          variant: 'destructive'
+        });
+        setIsLoading(false);
+      }
+    } else {
+      // Other actions
+      setIsLoading(true);
+      // Simulate API call
+      setTimeout(() => {
+        console.log(`Executing action: ${action}`);
+        setIsLoading(false);
+      }, 2000);
+    }
   }
 
   const getStatusColor = (status: string) => {

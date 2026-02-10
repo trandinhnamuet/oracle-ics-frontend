@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useAuth } from '@/lib/auth-context'
-import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, cancelSubscription, suspendSubscription, reactivateSubscription, Subscription } from '@/api/subscription.api'
+import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, deleteSubscription, suspendSubscription, reactivateSubscription, Subscription } from '@/api/subscription.api'
+import { performVmAction, getSubscriptionVm } from '@/api/vm-subscription.api'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
@@ -139,35 +140,77 @@ export default function PackageManagementPage() {
     }).format(price)
   }
 
-  // Handle subscription actions
-  const toggleSubscriptionStatus = async (id: string) => {
+  // Handle VM start/stop actions
+  const toggleVmStatus = async (id: string) => {
     try {
       const subscription = subscriptions.find(s => s.id === id)
       if (!subscription) return
 
-      let updatedSubscription
-      if (subscription.status === 'active') {
-        updatedSubscription = await suspendSubscription(id)
-      } else {
-        updatedSubscription = await reactivateSubscription(id)
+      // Check if subscription has VM configured
+      if (!subscription.vm_instance_id) {
+        alert('Subscription này chưa được cấu hình VM')
+        return
       }
+
+      // Determine action based on VM lifecycle state
+      const vmState = subscription.vmInstance?.lifecycle_state
+      const action = vmState === 'RUNNING' ? 'STOP' : 'START'
+      const actionText = action === 'STOP' ? 'dừng' : 'khởi động'
+
+      // Confirm action
+      if (!confirm(`Bạn có chắc chắn muốn ${actionText} VM này?`)) {
+        return
+      }
+
+      // Perform VM action
+      setLoading(true)
+      await performVmAction(id, action)
       
-      setSubscriptions(prev => prev.map(s => 
-        s.id === id ? updatedSubscription : s
-      ))
-    } catch (error) {
-      console.error('Error toggling subscription status:', error)
-      alert('Có lỗi xảy ra khi cập nhật trạng thái subscription')
+      alert(`Đã gửi lệnh ${actionText} VM thành công. Vui lòng đợi một chút để VM thay đổi trạng thái.`)
+      
+      // Refresh subscriptions to get updated VM state
+      await fetchUserSubscriptions()
+    } catch (error: any) {
+      console.error('Error toggling VM status:', error)
+      alert(
+        `Có lỗi xảy ra khi ${error.response?.data?.action === 'STOP' ? 'dừng' : 'khởi động'} VM:\n` +
+        (error?.response?.data?.message || error?.message || 'Vui lòng thử lại sau')
+      )
+    } finally {
+      setLoading(false)
     }
   }
 
   const cancelUserSubscription = async (id: string) => {
-    if (confirm('Bạn có chắc chắn muốn hủy subscription này?')) {
+    const confirmation = confirm(
+      'BẠN CHẮC CHẮN MUỐN XÓA SUBSCRIPTION NÀY?\n\n' +
+      '⚠️ CẢNH BÁO: Hành động này sẽ:\n' +
+      '• XÓA HOÀN TOÀN subscription\n' +
+      '• XÓA máy ảo (VM) trên Oracle Cloud\n' +
+      '• XÓA TẤT CẢ dữ liệu liên quan\n' +
+      '• KHÔNG THỂ KHÔI PHỤC sau khi xóa\n\n' +
+      'Vui lòng backup dữ liệu quan trọng trước khi xóa!'
+    );
+    
+    if (confirmation) {
       try {
-        await cancelSubscription(id)
-        setSubscriptions(prev => prev.filter(sub => sub.id !== id))
-      } catch (error) {
-        console.error('Error canceling subscription:', error)
+        // Show loading state
+        const loadingToast = alert('Đang xóa subscription và VM. Vui lòng đợi...');
+        
+        // Call DELETE API to completely remove subscription and VM
+        await deleteSubscription(id);
+        
+        // Remove from local state
+        setSubscriptions(prev => prev.filter(sub => sub.id !== id));
+        
+        // Show success message
+        alert('✅ Đã xóa subscription và VM thành công!');
+      } catch (error: any) {
+        console.error('Error deleting subscription:', error);
+        alert(
+          'Có lỗi xảy ra khi xóa subscription:\n' +
+          (error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.')
+        );
       }
     }
   }
@@ -412,14 +455,22 @@ export default function PackageManagementPage() {
                                 </Button>
                               </div>
                             )}
-                            {(sub.status === 'active' || sub.status === 'suspended') && (
-                              <div title={sub.status === 'active' ? t('packageManagement.table.pauseTitle') : t('packageManagement.table.activateTitle')}>
+                            {/* Stop/Start VM button - only show if VM is configured */}
+                            {sub.vm_instance_id && sub.vmInstance && (
+                              <div title={
+                                sub.vmInstance.lifecycle_state === 'RUNNING' 
+                                  ? 'Dừng VM (Stop)' 
+                                  : sub.vmInstance.lifecycle_state === 'STOPPED'
+                                  ? 'Khởi động VM (Start)'
+                                  : 'VM đang trong trạng thái chuyển đổi'
+                              }>
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => toggleSubscriptionStatus(sub.id)}
+                                  onClick={() => toggleVmStatus(sub.id)}
+                                  disabled={loading || !['RUNNING', 'STOPPED'].includes(sub.vmInstance.lifecycle_state)}
                                 >
-                                  {sub.status === 'active' ? (
+                                  {sub.vmInstance.lifecycle_state === 'RUNNING' ? (
                                     <Pause className="h-4 w-4" />
                                   ) : (
                                     <Play className="h-4 w-4" />
