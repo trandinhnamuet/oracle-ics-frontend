@@ -7,7 +7,7 @@ import {
   Subscription,
   GetSubscriptionsParams 
 } from '@/api/subscription.api'
-import { stopVm, deleteVmOnly } from '@/api/vm-subscription.api'
+import { stopVm, startVm, deleteVmOnly } from '@/api/vm-subscription.api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,7 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { 
   ArrowLeft, Search, Filter, Eye, Edit, Trash2, Trash, 
   Server, Globe, PowerOff, ArrowUpDown, ArrowUp, ArrowDown,
-  ChevronLeft, ChevronRight 
+  ChevronLeft, ChevronRight, ArrowRight, Play 
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/hooks/use-toast'
@@ -27,7 +27,8 @@ export default function AdminSubscriptionsPage() {
   const router = useRouter()
   const { t } = useTranslation()
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
   
   // Pagination
   const [page, setPage] = useState(1)
@@ -42,13 +43,12 @@ export default function AdminSubscriptionsPage() {
   // Filters
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [userFilter, setUserFilter] = useState('')
   const [startDateFilter, setStartDateFilter] = useState('')
   const [endDateFilter, setEndDateFilter] = useState('')
 
   useEffect(() => {
     fetchAllSubscriptions()
-  }, [page, limit, sortBy, sortOrder, statusFilter, startDateFilter, endDateFilter, userFilter])
+  }, [page, limit, sortBy, sortOrder, statusFilter, startDateFilter, endDateFilter])
 
   // Debounce search term
   useEffect(() => {
@@ -75,7 +75,6 @@ export default function AdminSubscriptionsPage() {
         searchTerm: searchTerm || undefined,
         startDate: startDateFilter || undefined,
         endDate: endDateFilter || undefined,
-        userId: userFilter ? parseInt(userFilter) : undefined,
       }
       
       const response = await getAdminSubscriptions(params)
@@ -91,6 +90,9 @@ export default function AdminSubscriptionsPage() {
       })
     } finally {
       setLoading(false)
+      if (isInitialLoading) {
+        setIsInitialLoading(false)
+      }
     }
   }
 
@@ -183,6 +185,28 @@ export default function AdminSubscriptionsPage() {
     }
   }
 
+  const handleStartVm = async (subscriptionId: string) => {
+    if (!confirm('Are you sure you want to start this VM?')) {
+      return
+    }
+
+    try {
+      await startVm(subscriptionId)
+      toast({
+        title: t('admin.subscriptions.toast.success'),
+        description: 'VM started successfully',
+      })
+      fetchAllSubscriptions()
+    } catch (error: any) {
+      console.error('Error starting VM:', error)
+      toast({
+        title: t('admin.subscriptions.toast.error'),
+        description: 'Failed to start VM',
+        variant: "destructive"
+      })
+    }
+  }
+
   const handleViewSubscription = (subscriptionId: string) => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
     window.open(`${baseUrl}/package-management/${subscriptionId}`, '_blank')
@@ -267,7 +291,7 @@ export default function AdminSubscriptionsPage() {
     }).format(amount)
   }
 
-  if (loading) {
+  if (isInitialLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-lg">{t('common.loading')}</div>
@@ -291,7 +315,7 @@ export default function AdminSubscriptionsPage() {
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {/* Search Input */}
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -320,29 +344,22 @@ export default function AdminSubscriptionsPage() {
             </SelectContent>
           </Select>
           
-          {/* User Filter */}
-          <Input
-            placeholder="Filter by User ID..."
-            value={userFilter}
-            onChange={(e) => setUserFilter(e.target.value)}
-            type="number"
-          />
-          
-          {/* Date Range */}
-          <div className="flex gap-2">
+          {/* Date Range Filter */}
+          <div className="flex items-center gap-2">
             <Input
               type="date"
-              placeholder="Start Date"
               value={startDateFilter}
               onChange={(e) => setStartDateFilter(e.target.value)}
-              title="Start Date"
+              placeholder="From date"
+              className="text-sm flex-1"
             />
+            <ArrowRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
             <Input
               type="date"
-              placeholder="End Date"
               value={endDateFilter}
               onChange={(e) => setEndDateFilter(e.target.value)}
-              title="End Date"
+              placeholder="To date"
+              className="text-sm flex-1"
             />
           </div>
         </div>
@@ -409,11 +426,18 @@ export default function AdminSubscriptionsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <div className="text-center py-8 text-gray-500">
-              Loading...
-            </div>
-          ) : subscriptions.length === 0 ? (
+          <div className="relative">
+            {loading && (
+              <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10 rounded">
+                <div className="text-center">
+                  <div className="inline-block">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-600">Loading...</p>
+                </div>
+              </div>
+            )}
+            {!loading && subscriptions.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               {t('admin.subscriptions.table.noData')}
             </div>
@@ -581,6 +605,20 @@ export default function AdminSubscriptionsPage() {
                             </Button>
                           )}
                           
+                          {/* Start VM Button - Only show if VM exists and is STOPPED */}
+                          {subscription.vmInstance && 
+                           subscription.vmInstance.lifecycle_state === 'STOPPED' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleStartVm(subscription.id)}
+                              className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                              title="Start VM"
+                            >
+                              <Play className="h-4 w-4" />
+                            </Button>
+                          )}
+                          
                           {/* Delete VM Only - Only show if VM exists */}
                           {subscription.vmInstance && (
                             <Button
@@ -612,6 +650,7 @@ export default function AdminSubscriptionsPage() {
               </Table>
             </div>
           )}
+          </div>
           
           {/* Pagination */}
           {totalPages > 1 && (

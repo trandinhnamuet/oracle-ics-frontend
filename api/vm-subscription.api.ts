@@ -150,6 +150,15 @@ export const requestNewSshKey = async (
 }
 
 /**
+ * Start VM
+ */
+export const startVm = async (
+  subscriptionId: string
+): Promise<{ success: boolean; message: string }> => {
+  return performVmAction(subscriptionId, 'START')
+}
+
+/**
  * Stop VM
  */
 export const stopVm = async (
