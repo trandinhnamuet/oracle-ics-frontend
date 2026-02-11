@@ -39,6 +39,38 @@ export interface Subscription {
     updated_by?: any
     is_active?: boolean
   }
+  vmInstance?: {
+    id: number
+    instance_name: string
+    instance_id: string
+    public_ip?: string
+    private_ip?: string
+    lifecycle_state: string
+    region?: string
+    shape?: string
+    operating_system?: string
+    created_at: string
+  } | null
+}
+
+export interface GetSubscriptionsParams {
+  page?: number
+  limit?: number
+  sortBy?: string
+  sortOrder?: 'ASC' | 'DESC'
+  status?: string
+  userId?: number
+  startDate?: string
+  endDate?: string
+  searchTerm?: string
+}
+
+export interface GetSubscriptionsResponse {
+  data: Subscription[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
 }
 
 export interface CreateSubscriptionRequest {
@@ -90,25 +122,39 @@ export const subscribeWithPayment = async (data: CreateSubscriptionWithPaymentRe
   }
 }
 
-// Get all subscriptions (admin only)
-export const getAllSubscriptions = async (): Promise<Subscription[]> => {
+// Get all subscriptions (admin only) - with pagination
+export const getAdminSubscriptions = async (params?: GetSubscriptionsParams): Promise<GetSubscriptionsResponse> => {
   try {
-    const result = await fetchJsonWithAuth<Subscription[]>(`${API_URL}/subscriptions`, {
+    const queryParams = new URLSearchParams()
+    
+    if (params?.page) queryParams.append('page', params.page.toString())
+    if (params?.limit) queryParams.append('limit', params.limit.toString())
+    if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
+    if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder)
+    if (params?.status) queryParams.append('status', params.status)
+    if (params?.userId) queryParams.append('userId', params.userId.toString())
+    if (params?.startDate) queryParams.append('startDate', params.startDate)
+    if (params?.endDate) queryParams.append('endDate', params.endDate)
+    if (params?.searchTerm) queryParams.append('searchTerm', params.searchTerm)
+    
+    const url = `${API_URL}/subscriptions${queryParams.toString() ? '?' + queryParams.toString() : ''}`
+    const result = await fetchJsonWithAuth<GetSubscriptionsResponse>(url, {
       method: 'GET'
     })
-    return result || []
+    return result
   } catch (error: any) {
     console.error('Error fetching all subscriptions:', error)
-    
-    // Log more detailed error information
-    if (error.response) {
-      console.error('Response error:', error.response.status, error.response.data)
-    } else if (error.request) {
-      console.error('Request error:', error.request)
-    } else {
-      console.error('Error:', error.message)
-    }
-    
+    throw error
+  }
+}
+
+// Get all subscriptions (admin only) - legacy method, returns array
+export const getAllSubscriptions = async (): Promise<Subscription[]> => {
+  try {
+    const result = await getAdminSubscriptions({ page: 1, limit: 1000 })
+    return result.data || []
+  } catch (error: any) {
+    console.error('Error fetching all subscriptions:', error)
     throw error
   }
 }
@@ -234,7 +280,7 @@ export const reactivateSubscription = async (subscriptionId: string): Promise<Su
   }
 }
 
-// Delete subscription
+// Delete subscription (and its VM if exists)
 export const deleteSubscription = async (subscriptionId: string): Promise<void> => {
   try {
     const response = await fetchWithAuth(`${API_URL}/subscriptions/${subscriptionId}`, {
@@ -253,4 +299,9 @@ export const deleteSubscription = async (subscriptionId: string): Promise<void> 
     console.error('Error deleting subscription:', error)
     throw error
   }
+}
+
+// Delete subscription with all VM data (alias for clarity)
+export const deleteSubscriptionWithVm = async (subscriptionId: string): Promise<void> => {
+  return deleteSubscription(subscriptionId)
 }

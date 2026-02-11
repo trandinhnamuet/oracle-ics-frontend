@@ -148,3 +148,28 @@ export const requestNewSshKey = async (
   )
   return result
 }
+
+/**
+ * Stop VM
+ */
+export const stopVm = async (
+  subscriptionId: string
+): Promise<{ success: boolean; message: string }> => {
+  return performVmAction(subscriptionId, 'STOP')
+}
+
+/**
+ * Delete VM only (keep subscription active)
+ */
+export const deleteVmOnly = async (
+  subscriptionId: string
+): Promise<{ success: boolean; message: string }> => {
+  const result = await fetchJsonWithAuth<{ success: boolean; message: string }>(
+    `${API_BASE_URL}/vm-subscription/${subscriptionId}/vm-only`,
+    {
+      method: 'DELETE'
+    }
+  )
+  return result
+}
+
