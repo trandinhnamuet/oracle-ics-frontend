@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ElementType } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -49,7 +49,7 @@ interface Payment {
   }
 }
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
   success: {
     label: 'Thành công',
     color: 'bg-green-50 text-green-700 border-green-200',
@@ -70,7 +70,14 @@ const STATUS_CONFIG = {
   }
 }
 
-const TYPE_CONFIG = {
+const DEFAULT_STATUS_CONFIG = {
+  label: 'Không xác định',
+  color: 'bg-gray-50 text-gray-700 border-gray-200',
+  icon: Clock,
+  iconColor: 'text-gray-500'
+}
+
+const TYPE_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
   deposit: {
     label: 'Nạp tiền',
     color: 'bg-blue-50 text-blue-700 border-blue-200',
@@ -83,6 +90,13 @@ const TYPE_CONFIG = {
     icon: CreditCard,
     iconColor: 'text-purple-500'
   }
+}
+
+const DEFAULT_TYPE_CONFIG = {
+  label: 'Giao dịch',
+  color: 'bg-gray-50 text-gray-700 border-gray-200',
+  icon: CreditCard,
+  iconColor: 'text-gray-500'
 }
 
 export default function PaymentHistoryPage() {
@@ -344,8 +358,8 @@ export default function PaymentHistoryPage() {
                 </div>
               ) : (
                 filteredPayments.map((payment) => {
-                  const statusConfig = STATUS_CONFIG[payment.status as keyof typeof STATUS_CONFIG]
-                  const typeConfig = TYPE_CONFIG[payment.payment_type as keyof typeof TYPE_CONFIG]
+                  const statusConfig = STATUS_CONFIG[payment.status] ?? DEFAULT_STATUS_CONFIG
+                  const typeConfig = TYPE_CONFIG[payment.payment_type] ?? DEFAULT_TYPE_CONFIG
                   const StatusIcon = statusConfig.icon
                   const TypeIcon = typeConfig.icon
 
