@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
@@ -45,9 +45,14 @@ interface PackageSubscription {
   vmInstance?: {
     id: number
     instance_name: string
-    public_ip: string | null
-    private_ip: string | null
+    instance_id?: string
+    public_ip?: string | null
+    private_ip?: string | null
     lifecycle_state: string
+    region?: string
+    shape?: string
+    operating_system?: string
+    created_at?: string
   } | null
 }
 
@@ -61,9 +66,13 @@ export default function PackageManagementPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [isVisible, setIsVisible] = useState(false)
+  const pollingRef = useRef<NodeJS.Timeout | null>(null)
+  const pollingAttemptsRef = useRef(0)
+  const MAX_POLL_ATTEMPTS = 20 // ~2 phút với interval 6 giây
+  const STABLE_STATES = ['RUNNING', 'STOPPED', 'TERMINATED']
 
   // Fetch user subscriptions
-  const fetchUserSubscriptions = async () => {
+  const fetchUserSubscriptions = useCallback(async () => {
     if (!user?.id) {
       setLoading(false)
       return
@@ -86,10 +95,38 @@ export default function PackageManagementPage() {
     } finally {
       setLoading(false)
     }
+  }, [user?.id])
+
+  const stopPolling = () => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current)
+      pollingRef.current = null
+      pollingAttemptsRef.current = 0
+    }
+  }
+
+  const startPollingUntilStable = () => {
+    stopPolling()
+    pollingAttemptsRef.current = 0
+    pollingRef.current = setInterval(async () => {
+      pollingAttemptsRef.current += 1
+      await fetchUserSubscriptions()
+      // Kiểm tra xem tất cả VM đã về trạng thái ổn định chưa
+      setSubscriptions(prev => {
+        const allStable = prev.every(s =>
+          !s.vmInstance || STABLE_STATES.includes(s.vmInstance.lifecycle_state)
+        )
+        if (allStable || pollingAttemptsRef.current >= MAX_POLL_ATTEMPTS) {
+          stopPolling()
+        }
+        return prev
+      })
+    }, 6000)
   }
 
   useEffect(() => {
     fetchUserSubscriptions()
+    return () => stopPolling()
   }, [user?.id])
 
   // Animation effect
@@ -166,10 +203,11 @@ export default function PackageManagementPage() {
       setLoading(true)
       await performVmAction(id, action)
       
-      alert(`Đã gửi lệnh ${actionText} VM thành công. Vui lòng đợi một chút để VM thay đổi trạng thái.`)
+      alert(`Đã gửi lệnh ${actionText} VM thành công. Trạng thái sẽ tự động cập nhật.`)
       
-      // Refresh subscriptions to get updated VM state
+      // Refresh ngay lập tức rồi bắt đầu polling
       await fetchUserSubscriptions()
+      startPollingUntilStable()
     } catch (error: any) {
       console.error('Error toggling VM status:', error)
       alert(
@@ -423,11 +461,24 @@ export default function PackageManagementPage() {
                                 Not Configured
                               </Badge>
                             )}
-                            {sub.vm_instance_id && (
-                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-300">
-                                VM Active
-                              </Badge>
-                            )}
+                            {sub.vm_instance_id && sub.vmInstance && (() => {
+                              const state = sub.vmInstance.lifecycle_state
+                              const isRunning = state === 'RUNNING'
+                              const isStopped = state === 'STOPPED'
+                              const isTerminated = ['TERMINATED', 'TERMINATING'].includes(state)
+                              const className = isRunning
+                                ? 'bg-green-50 text-green-700 border-green-300'
+                                : isStopped
+                                ? 'bg-gray-100 text-gray-600 border-gray-300'
+                                : isTerminated
+                                ? 'bg-red-50 text-red-700 border-red-300'
+                                : 'bg-yellow-50 text-yellow-700 border-yellow-300'
+                              return (
+                                <Badge variant="outline" className={className}>
+                                  {state}
+                                </Badge>
+                              )
+                            })()}
                           </div>
                         </TableCell>
                         <TableCell>
