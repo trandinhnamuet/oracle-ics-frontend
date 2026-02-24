@@ -13,7 +13,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye } from 'lucide-react'
+import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye, Loader2 } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
 import BalanceDisplay from '@/components/wallet/balance-display'
 import WalletSidebar from '@/components/wallet/wallet-sidebar'
 
@@ -66,6 +67,8 @@ export default function PackageManagementPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [isVisible, setIsVisible] = useState(false)
+  const [togglingVmIds, setTogglingVmIds] = useState<Set<string>>(new Set())
+  const { toast } = useToast()
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
   const pollingAttemptsRef = useRef(0)
   const MAX_POLL_ATTEMPTS = 20 // ~2 phút với interval 6 giây
@@ -179,43 +182,50 @@ export default function PackageManagementPage() {
 
   // Handle VM start/stop actions
   const toggleVmStatus = async (id: string) => {
+    const subscription = subscriptions.find(s => s.id === id)
+    if (!subscription) return
+
+    if (!subscription.vm_instance_id) {
+      toast({ title: 'VM chưa được cấu hình', variant: 'destructive' })
+      return
+    }
+
+    const vmState = subscription.vmInstance?.lifecycle_state
+    const action = vmState === 'RUNNING' ? 'STOP' : 'START'
+    const actionText = action === 'STOP' ? 'dừng' : 'khởi động'
+    const optimisticState = action === 'STOP' ? 'STOPPING' : 'STARTING'
+
+    if (!confirm(`Bạn có chắc chắn muốn ${actionText} VM này?`)) return
+
+    // Optimistic update: show transitioning state immediately
+    setSubscriptions(prev => prev.map(s => {
+      if (s.id !== id || !s.vmInstance) return s
+      return { ...s, vmInstance: { ...s.vmInstance, lifecycle_state: optimisticState } }
+    }))
+    setTogglingVmIds(prev => new Set(prev).add(id))
+
     try {
-      const subscription = subscriptions.find(s => s.id === id)
-      if (!subscription) return
-
-      // Check if subscription has VM configured
-      if (!subscription.vm_instance_id) {
-        alert('Subscription này chưa được cấu hình VM')
-        return
-      }
-
-      // Determine action based on VM lifecycle state
-      const vmState = subscription.vmInstance?.lifecycle_state
-      const action = vmState === 'RUNNING' ? 'STOP' : 'START'
-      const actionText = action === 'STOP' ? 'dừng' : 'khởi động'
-
-      // Confirm action
-      if (!confirm(`Bạn có chắc chắn muốn ${actionText} VM này?`)) {
-        return
-      }
-
-      // Perform VM action
-      setLoading(true)
       await performVmAction(id, action)
-      
-      alert(`Đã gửi lệnh ${actionText} VM thành công. Trạng thái sẽ tự động cập nhật.`)
-      
-      // Refresh ngay lập tức rồi bắt đầu polling
-      await fetchUserSubscriptions()
+      toast({
+        title: `Đã gửi lệnh ${actionText} VM`,
+        description: 'Trạng thái sẽ tự động cập nhật khi hoàn thành.',
+      })
       startPollingUntilStable()
     } catch (error: any) {
       console.error('Error toggling VM status:', error)
-      alert(
-        `Có lỗi xảy ra khi ${error.response?.data?.action === 'STOP' ? 'dừng' : 'khởi động'} VM:\n` +
-        (error?.response?.data?.message || error?.message || 'Vui lòng thử lại sau')
-      )
+      // Revert optimistic update on error
+      await fetchUserSubscriptions()
+      toast({
+        title: `Lỗi khi ${actionText} VM`,
+        description: error?.response?.data?.message || error?.message || 'Vui lòng thử lại sau',
+        variant: 'destructive',
+      })
     } finally {
-      setLoading(false)
+      setTogglingVmIds(prev => {
+        const next = new Set(prev)
+        next.delete(id)
+        return next
+      })
     }
   }
 
@@ -507,28 +517,39 @@ export default function PackageManagementPage() {
                               </div>
                             )}
                             {/* Stop/Start VM button - only show if VM is configured */}
-                            {sub.vm_instance_id && sub.vmInstance && (
-                              <div title={
-                                sub.vmInstance.lifecycle_state === 'RUNNING' 
-                                  ? 'Dừng VM (Stop)' 
-                                  : sub.vmInstance.lifecycle_state === 'STOPPED'
-                                  ? 'Khởi động VM (Start)'
-                                  : 'VM đang trong trạng thái chuyển đổi'
-                              }>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => toggleVmStatus(sub.id)}
-                                  disabled={loading || !['RUNNING', 'STOPPED'].includes(sub.vmInstance.lifecycle_state)}
-                                >
-                                  {sub.vmInstance.lifecycle_state === 'RUNNING' ? (
-                                    <Pause className="h-4 w-4" />
-                                  ) : (
-                                    <Play className="h-4 w-4" />
-                                  )}
-                                </Button>
-                              </div>
-                            )}
+                            {sub.vm_instance_id && sub.vmInstance && (() => {
+                              const state = sub.vmInstance.lifecycle_state
+                              const isRunning = state === 'RUNNING'
+                              const isStopped = state === 'STOPPED'
+                              const isStable = isRunning || isStopped
+                              const isToggling = togglingVmIds.has(sub.id)
+                              // Show Stop button for RUNNING or STARTING; show Start button for STOPPED or STOPPING
+                              const showStopBtn = isRunning || state === 'STARTING'
+                              const isDisabled = isToggling || !isStable
+                              const title = isRunning ? 'Dừng VM (Stop)'
+                                : isStopped ? 'Khởi động VM (Start)'
+                                : state === 'STOPPING' ? 'VM đang dừng...'
+                                : state === 'STARTING' ? 'VM đang khởi động...'
+                                : 'VM đang trong trạng thái chuyển đổi'
+                              return (
+                                <div title={title}>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => toggleVmStatus(sub.id)}
+                                    disabled={isDisabled}
+                                  >
+                                    {!isStable ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : showStopBtn ? (
+                                      <Pause className="h-4 w-4" />
+                                    ) : (
+                                      <Play className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              )
+                            })()}
                             <div title={t('packageManagement.table.deleteTitle')}>
                               <Button
                                 variant="outline"
