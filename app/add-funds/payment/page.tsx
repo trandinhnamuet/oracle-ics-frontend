@@ -36,8 +36,8 @@ function AddFundsPaymentContent() {
   const createQRUrl = (amount: string, transactionCode: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
     const params = new URLSearchParams({
-      acc: '66010901964',
-      bank: 'TPBank',
+      acc: process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964',
+      bank: process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank',
       amount: amount,
       des: transactionCode
     })
@@ -115,8 +115,8 @@ function AddFundsPaymentContent() {
     if (!paymentData) return
     
     const transferInfo = `
-Ngân hàng: TPBank
-Số tài khoản: 66010901964
+Ngân hàng: ${process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}
+Số tài khoản: ${process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}
 Số tiền: ${formatPrice(parseInt(amount))} VND
 Nội dung: ${paymentData.transaction_code}
     `.trim()
@@ -286,15 +286,15 @@ Nội dung: ${paymentData.transaction_code}
                 <div className="bg-card border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Ngân hàng:</span>
-                    <span className="text-sm font-medium">TPBank</span>
+                    <span className="text-sm font-medium">{process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Số tài khoản:</span>
-                    <span className="text-sm font-medium font-mono">66010901964</span>
+                    <span className="text-sm font-medium font-mono">{process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Chủ tài khoản:</span>
-                    <span className="text-sm font-medium">ICS COMPANY</span>
+                    <span className="text-sm font-medium">{process.env.NEXT_PUBLIC_BANK_ACCOUNT_HOLDER || 'ICS COMPANY'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Số tiền:</span>

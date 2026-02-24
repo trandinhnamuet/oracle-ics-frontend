@@ -53,8 +53,8 @@ function CheckoutContent() {
   const createQRUrl = (amount: string, transactionCode: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
     const params = new URLSearchParams({
-      acc: '66010901964',
-      bank: 'TPBank',
+      acc: process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964',
+      bank: process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank',
       amount: amount,
       des: transactionCode
     })
@@ -300,11 +300,11 @@ Nội dung: ${transactionCode}
                 <div className="bg-card border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.bankName')}:</span>
-                    <span className="text-sm font-medium">TPBank</span>
+                    <span className="text-sm font-medium">{process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.accountNumber')}:</span>
-                    <span className="text-sm font-medium font-mono">66010901964</span>
+                    <span className="text-sm font-medium font-mono">{process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.amount')}:</span>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { 
   getAdminSubscriptions, 
+  deleteSubscription,
   deleteSubscriptionWithVm, 
   Subscription,
   GetSubscriptionsParams 
