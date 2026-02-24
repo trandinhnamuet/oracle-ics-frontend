@@ -31,7 +31,7 @@ import {
   Area
 } from 'recharts'
 import { getSubscriptionById, deleteSubscription, Subscription } from '@/api/subscription.api'
-import { getSubscriptionVm, performVmAction, requestNewSshKey, VmDetails } from '@/api/vm-subscription.api'
+import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
 
@@ -328,6 +328,38 @@ export default function PackageDetailPage() {
       })
     } finally {
       setIsRequestingSshKey(false)
+    }
+  }
+
+  const handleDeleteVmOnly = async () => {
+    const confirmed = confirm(
+      'Xóa VM của subscription này?\n\n' +
+      '⚠️ Lưu ý: Subscription vẫn còn hiệu lực nhưng máy ảo sẽ bị xóa.\n' +
+      'Bạn cần cấu hình lại VM mới để tiếp tục sử dụng dịch vụ.'
+    )
+    if (!confirmed) return
+
+    setIsLoading(true)
+    try {
+      await deleteVmOnly(subscriptionId)
+      toast({
+        title: 'Xóa VM thành công',
+        description: 'VM đã được xóa. Subscription vẫn còn hiệu lực.',
+        variant: 'default'
+      })
+      // Refresh VM details
+      setVmDetails(null)
+      const data = await getSubscriptionById(subscriptionId)
+      setSubscription(data)
+    } catch (error: any) {
+      console.error('Error deleting VM:', error)
+      toast({
+        title: 'Xóa VM thất bại',
+        description: error?.response?.data?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -1081,7 +1113,18 @@ export default function PackageDetailPage() {
               </Button>
               
               
-              <div className="pt-2 border-t">
+              <div className="pt-2 border-t space-y-2">
+                {subscription?.vm_instance_id && (
+                  <Button 
+                    className="w-full justify-start"
+                    variant="outline"
+                    onClick={handleDeleteVmOnly}
+                    disabled={isLoading}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2 text-orange-500" />
+                    <span className="text-orange-600">Xóa VM (giữ nguyên subscription)</span>
+                  </Button>
+                )}
                 <Button 
                   className="w-full justify-start"
                   variant="destructive"
