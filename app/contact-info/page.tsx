@@ -55,7 +55,8 @@ export default function ContactInfoPage() {
           <div className="grid xl:grid-cols-3 grid-cols-1 gap-8">
             {/* Company Info */}
             <AnimatedSection delay={0.1}>
-              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm">
+              <a href="https://icss.com.vn/" target="_blank" rel="noopener noreferrer" className="block">
+              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
                 <CardHeader className="pb-4">
                   <div className="flex items-center space-x-3">
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-xl">
@@ -77,13 +78,30 @@ export default function ContactInfoPage() {
                     </div>
                   </div>
                 </div>
+                <motion.a
+                  href="https://icss.com.vn/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  whileHover={{ scale: 1.04, y: -3 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  className="relative flex items-center justify-center gap-2 w-full py-3 px-5 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-400 to-blue-600 shadow-md hover:shadow-[0_8px_30px_rgba(96,165,250,0.6)] overflow-hidden group"
+                >
+                  {/* Shimmer overlay */}
+                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none" />
+                  <Globe className="h-4 w-4 group-hover:rotate-[360deg] transition-transform duration-500" />
+                  Tìm hiểu thêm về chúng tôi →
+                  <span className="ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-blue-200">→</span>
+                </motion.a>
               </CardContent>
             </Card>
+              </a>
             </AnimatedSection>
 
             {/* Contact Info */}
             <AnimatedSection delay={0.2}>
-              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm">
+              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="pb-4">
                 <div className="flex items-center space-x-3">
                   <div className="bg-gradient-to-r from-green-600 to-green-700 p-3 rounded-xl">
@@ -126,7 +144,7 @@ export default function ContactInfoPage() {
 
             {/* Google Map */}
             <AnimatedSection delay={0.3}>
-              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm">
+              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="pb-4">
                 <div className="flex items-center space-x-3">
                   <div className="bg-gradient-to-r from-red-600 to-red-700 p-3 rounded-xl">
