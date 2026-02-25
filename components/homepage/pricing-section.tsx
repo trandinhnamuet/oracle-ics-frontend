@@ -36,6 +36,7 @@ export function PricingSection() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
   const [monthsCount, setMonthsCount] = useState(1)
   const [userBalance, setUserBalance] = useState<number>(0)
+  const [isConfirming, setIsConfirming] = useState(false)
   
   // Refs for scrolling
   const mainCardsRef = useRef<HTMLDivElement>(null)
@@ -97,6 +98,8 @@ export function PricingSection() {
   }
 
   const handleConfirmPaymentMethod = async () => {
+    if (isConfirming) return
+
     if (!selectedPaymentMethod) {
       toast({
         title: 'Lỗi',
@@ -106,6 +109,8 @@ export function PricingSection() {
       return
     }
 
+    setIsConfirming(true)
+    try {
     if (selectedPaymentMethod === 'account_balance') {
       // Phương thức 1: Trừ tiền tài khoản
       try {
@@ -185,6 +190,9 @@ export function PricingSection() {
           variant: 'destructive'
         })
       }
+    }
+    } finally {
+      setIsConfirming(false)
     }
   }
 
@@ -712,9 +720,9 @@ export function PricingSection() {
             <Button 
               className="bg-[#E60000] hover:bg-red-700"
               onClick={handleConfirmPaymentMethod}
-              disabled={!selectedPaymentMethod}
+              disabled={!selectedPaymentMethod || isConfirming}
             >
-              Xác nhận
+              {isConfirming ? 'Đang xử lý...' : 'Xác nhận'}
             </Button>
           </div>
         </DialogContent>
