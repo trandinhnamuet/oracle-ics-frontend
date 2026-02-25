@@ -100,22 +100,21 @@ export function PricingSection() {
 
   const handleConfirmPaymentMethod = async () => {
     if (isConfirmingRef.current) return
-
-    if (!selectedPaymentMethod) {
-      toast({
-        title: 'Lỗi',
-        description: 'Vui lòng chọn phương thức thanh toán',
-        variant: 'destructive'
-      })
-      return
-    }
-
     isConfirmingRef.current = true
     setIsConfirming(true)
+
     try {
-    if (selectedPaymentMethod === 'account_balance') {
-      // Phương thức 1: Trừ tiền tài khoản
-      try {
+      if (!selectedPaymentMethod) {
+        toast({
+          title: 'Lỗi',
+          description: 'Vui lòng chọn phương thức thanh toán',
+          variant: 'destructive'
+        })
+        return
+      }
+
+      if (selectedPaymentMethod === 'account_balance') {
+        // Phương thức 1: Trừ tiền tài khoản
         const currentBalance = userBalance // Current balance in VND
         const planPriceVND = parseFloat(selectedPlan.price) * getExchangeRate()
         
@@ -144,18 +143,9 @@ export function PricingSection() {
         // Refresh balance
         const response = await getUserBalance()
         setUserBalance(response.balance)
-        
-      } catch (error: any) {
-        console.error('Error subscribing with balance:', error)
-        toast({
-          title: 'Lỗi đăng ký',
-          description: error.response?.data?.message || 'Có lỗi xảy ra khi đăng ký gói.',
-          variant: 'destructive'
-        })
-      }
-    } else if (selectedPaymentMethod === 'direct_payment') {
-      // Phương thức 2: Thanh toán trực tiếp
-      try {
+
+      } else if (selectedPaymentMethod === 'direct_payment') {
+        // Phương thức 2: Thanh toán trực tiếp
         if (monthsCount < 1) {
           toast({
             title: 'Lỗi',
@@ -184,15 +174,14 @@ export function PricingSection() {
         })
         
         router.push(`/checkout/subscription?${params.toString()}`)
-      } catch (error: any) {
-        console.error('Error creating subscription payment:', error)
-        toast({
-          title: 'Lỗi tạo thanh toán',
-          description: error.response?.data?.message || 'Có lỗi xảy ra khi tạo thanh toán.',
-          variant: 'destructive'
-        })
       }
-    }
+    } catch (error: any) {
+      console.error('Payment error:', error)
+      toast({
+        title: 'Lỗi',
+        description: error.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại.',
+        variant: 'destructive'
+      })
     } finally {
       isConfirmingRef.current = false
       setIsConfirming(false)
