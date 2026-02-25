@@ -37,6 +37,7 @@ export function PricingSection() {
   const [monthsCount, setMonthsCount] = useState(1)
   const [userBalance, setUserBalance] = useState<number>(0)
   const [isConfirming, setIsConfirming] = useState(false)
+  const isConfirmingRef = useRef(false)
   
   // Refs for scrolling
   const mainCardsRef = useRef<HTMLDivElement>(null)
@@ -98,7 +99,7 @@ export function PricingSection() {
   }
 
   const handleConfirmPaymentMethod = async () => {
-    if (isConfirming) return
+    if (isConfirmingRef.current) return
 
     if (!selectedPaymentMethod) {
       toast({
@@ -109,6 +110,7 @@ export function PricingSection() {
       return
     }
 
+    isConfirmingRef.current = true
     setIsConfirming(true)
     try {
     if (selectedPaymentMethod === 'account_balance') {
@@ -192,6 +194,7 @@ export function PricingSection() {
       }
     }
     } finally {
+      isConfirmingRef.current = false
       setIsConfirming(false)
     }
   }
