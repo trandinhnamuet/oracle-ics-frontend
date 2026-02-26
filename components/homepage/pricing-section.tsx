@@ -98,7 +98,12 @@ export function PricingSection() {
     setShowCustomForm(true)
   }
 
-  const handleConfirmPaymentMethod = async () => {
+  const handleConfirmPaymentMethod = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Disable button via DOM immediately - bypasses React render cycle entirely
+    const btn = e.currentTarget
+    btn.disabled = true
+    btn.textContent = 'Đang xử lý...'
+
     if (isConfirmingRef.current) return
     isConfirmingRef.current = true
     setIsConfirming(true)
@@ -185,6 +190,11 @@ export function PricingSection() {
     } finally {
       isConfirmingRef.current = false
       setIsConfirming(false)
+      // Re-enable button in case dialog is still open (e.g. validation error)
+      if (btn) {
+        btn.disabled = false
+        btn.textContent = 'Xác nhận'
+      }
     }
   }
 
