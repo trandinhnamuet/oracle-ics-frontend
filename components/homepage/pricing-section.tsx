@@ -99,14 +99,26 @@ export function PricingSection() {
   }
 
   const handleConfirmPaymentMethod = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    // Disable button via DOM immediately - bypasses React render cycle entirely
+    const clickTime = new Date().toISOString()
     const btn = e.currentTarget
+
+    console.log(`[PAY-DEBUG] === CLICK EVENT at ${clickTime} ===`)
+    console.log(`[PAY-DEBUG] btn.disabled (DOM, before set):`, btn.disabled)
+    console.log(`[PAY-DEBUG] isConfirmingRef.current (before check):`, isConfirmingRef.current)
+    console.log(`[PAY-DEBUG] isConfirming state:`, isConfirming)
+
+    // Disable button via DOM immediately - bypasses React render cycle entirely
     btn.disabled = true
     btn.textContent = 'Đang xử lý...'
+    console.log(`[PAY-DEBUG] btn.disabled (DOM, after set):`, btn.disabled)
 
-    if (isConfirmingRef.current) return
+    if (isConfirmingRef.current) {
+      console.log(`[PAY-DEBUG] BLOCKED by isConfirmingRef — returning early`)
+      return
+    }
     isConfirmingRef.current = true
     setIsConfirming(true)
+    console.log(`[PAY-DEBUG] LOCK ACQUIRED — proceeding with payment`)
 
     try {
       if (!selectedPaymentMethod) {
@@ -132,11 +144,13 @@ export function PricingSection() {
           return
         }
 
+        console.log(`[PAY-DEBUG] Calling subscribeWithBalance API...`)
         // Call API to subscribe with balance
         await subscribeWithBalance({
           cloudPackageId: selectedPlan.id,
           autoRenew: false
         })
+        console.log(`[PAY-DEBUG] subscribeWithBalance API call SUCCESS`)
         
         setShowPaymentMethodPopup(false)
         toast({
@@ -160,12 +174,14 @@ export function PricingSection() {
           return
         }
 
+        console.log(`[PAY-DEBUG] Calling subscribeWithPayment API...`)
         // Call API to create subscription with payment
         const result = await subscribeWithPayment({
           cloudPackageId: selectedPlan.id,
           monthsCount: monthsCount,
           autoRenew: false
         })
+        console.log(`[PAY-DEBUG] subscribeWithPayment API call SUCCESS`)
 
         setShowPaymentMethodPopup(false)
         
@@ -181,13 +197,14 @@ export function PricingSection() {
         router.push(`/checkout/subscription?${params.toString()}`)
       }
     } catch (error: any) {
-      console.error('Payment error:', error)
+      console.error('[PAY-DEBUG] Payment error:', error)
       toast({
         title: 'Lỗi',
         description: error.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại.',
         variant: 'destructive'
       })
     } finally {
+      console.log(`[PAY-DEBUG] FINALLY block — releasing lock`)
       isConfirmingRef.current = false
       setIsConfirming(false)
       // Re-enable button in case dialog is still open (e.g. validation error)
