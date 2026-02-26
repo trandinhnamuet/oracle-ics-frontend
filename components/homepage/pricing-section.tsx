@@ -83,6 +83,9 @@ export function PricingSection() {
     setSelectedCategory(category)
     setSelectedPaymentMethod('')
     setMonthsCount(1)
+    // Reset lock for fresh payment attempt
+    isConfirmingRef.current = false
+    setIsConfirming(false)
     setShowPaymentMethodPopup(true)
   }
 
@@ -120,6 +123,8 @@ export function PricingSection() {
     setIsConfirming(true)
     console.log(`[PAY-DEBUG] LOCK ACQUIRED — proceeding with payment`)
 
+    let succeeded = false
+
     try {
       if (!selectedPaymentMethod) {
         toast({
@@ -151,7 +156,8 @@ export function PricingSection() {
           autoRenew: false
         })
         console.log(`[PAY-DEBUG] subscribeWithBalance API call SUCCESS`)
-        
+        succeeded = true
+
         setShowPaymentMethodPopup(false)
         toast({
           title: 'Đăng ký thành công!',
@@ -182,6 +188,7 @@ export function PricingSection() {
           autoRenew: false
         })
         console.log(`[PAY-DEBUG] subscribeWithPayment API call SUCCESS`)
+        succeeded = true
 
         setShowPaymentMethodPopup(false)
         
@@ -204,11 +211,12 @@ export function PricingSection() {
         variant: 'destructive'
       })
     } finally {
-      console.log(`[PAY-DEBUG] FINALLY block — releasing lock`)
-      isConfirmingRef.current = false
-      setIsConfirming(false)
-      // Re-enable button in case dialog is still open (e.g. validation error)
-      if (btn) {
+      console.log(`[PAY-DEBUG] FINALLY block — succeeded=${succeeded}`)
+      // Only release lock on failure — on success the dialog is closing,
+      // so re-enabling the button would allow a second click before the dialog unmounts
+      if (!succeeded) {
+        isConfirmingRef.current = false
+        setIsConfirming(false)
         btn.disabled = false
         btn.textContent = 'Xác nhận'
       }
