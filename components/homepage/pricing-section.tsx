@@ -535,7 +535,6 @@ export function PricingSection() {
                                 const exchangeRate = getExchangeRate();
                                 const vndPrice = Math.floor(usdPrice * exchangeRate);
                                 const roundedVnd = roundMoney(vndPrice);
-                                console.log(`Plan ${plan.name}: USD=${usdPrice}, Rate=${exchangeRate}, VND gốc=${vndPrice}, VND làm tròn=${roundedVnd}`);
                                 return formatPrice(roundedVnd);
                               })()}
                             </div>
