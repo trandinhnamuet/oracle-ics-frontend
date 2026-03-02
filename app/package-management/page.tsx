@@ -34,8 +34,8 @@ interface PackageSubscription {
     id: number
     name: string
     type: string
-    cost: number
-    cost_vnd: number
+    cost: string
+    cost_vnd: string
     cpu: string
     ram: string
     memory: string
@@ -270,7 +270,7 @@ export default function PackageManagementPage() {
     inactive: subscriptions.filter(s => ['pending', 'suspended', 'cancelled', 'expired'].includes(s.status)).length,
     totalRevenue: subscriptions
       .filter(s => s.status === 'active')
-      .reduce((sum, s) => sum + (s.cloudPackage?.cost_vnd || 0), 0)
+      .reduce((sum, s) => sum + parseFloat(s.cloudPackage?.cost_vnd || '0'), 0)
   }
 
   return (
