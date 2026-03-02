@@ -30,7 +30,7 @@ type ProfileFormData = {
 
 function ProfilePage() {
   const { t } = useTranslation()
-  const { user, isLoading } = useAuth()
+  const { user, isLoading, updateUser } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
   const [updateSuccess, setUpdateSuccess] = useState(false)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
@@ -142,7 +142,7 @@ function ProfilePage() {
       const updatedUser = await updateUserAvatar(user.id, uploadedImage.url)
       
       // Update local user state
-      setUser({ ...user, avatarUrl: uploadedImage.url })
+      updateUser({ avatarUrl: uploadedImage.url })
       
       toast({
         title: 'Thành công',

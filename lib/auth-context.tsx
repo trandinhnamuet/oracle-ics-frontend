@@ -13,6 +13,7 @@ interface AuthContextType {
   logout: () => Promise<void>
   logoutAll: () => Promise<void>
   refreshToken: () => Promise<void>
+  updateUser: (updatedFields: Partial<User>) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -216,6 +217,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         logoutAll,
         refreshToken,
+        updateUser: (updatedFields) => setUser(prev => prev ? { ...prev, ...updatedFields } : prev),
       }}
     >
       {children}
