@@ -1,123 +1,120 @@
 ﻿'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
+import {
+  Plus,
+  Edit,
+  Trash2,
   Search,
   Filter,
-  Star,
   Zap,
   Shield,
   Crown,
-  BrainCircuit
+  BrainCircuit,
+  CheckCircle,
+  XCircle,
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { useTranslation } from 'react-i18next'
-import { PricingPlan } from '@/types/pricing-types'
-import { starterPlans } from '@/types/plan-starter'
-import { professionalPlans } from '@/types/plan-professional'
-import { enterprisePlans } from '@/types/plan-enterprise'
-import { aiPlans } from '@/types/plan-ai'
+import useAuthStore from '@/hooks/use-auth-store'
+import {
+  CloudPackage,
+  getAllCloudPackages,
+  createCloudPackage,
+  updateCloudPackage,
+  deleteCloudPackage,
+} from '@/api/cloud-package.api'
 import CreateNewPackagePopup from './components/create-new-package-popup'
 
-// Combine all plans
-const allPlans = [
-  ...starterPlans,
-  ...professionalPlans,
-  ...enterprisePlans,
-  ...aiPlans
-]
+const CATEGORY_INFO: Record<string, { name: string; icon: React.ElementType; color: string }> = {
+  starter:      { name: 'Starter',       icon: Zap,          color: 'bg-blue-500' },
+  professional: { name: 'Professional',  icon: Shield,        color: 'bg-green-500' },
+  enterprise:   { name: 'Enterprise',    icon: Crown,         color: 'bg-purple-500' },
+  ai:           { name: 'AI',            icon: BrainCircuit,  color: 'bg-orange-500' },
+}
 
 export default function PackagesManagementPage() {
   const { toast } = useToast()
   const { t } = useTranslation()
-  const [packages, setPackages] = useState<PricingPlan[]>(allPlans)
+  const token = useAuthStore((s) => s.token)
+
+  const [packages, setPackages] = useState<CloudPackage[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [editingPackage, setEditingPackage] = useState<PricingPlan | null>(null)
+  const [editingPackage, setEditingPackage] = useState<CloudPackage | null>(null)
 
-  const categoryInfo = {
-    starter: { name: t('admin.packages.management.categories.starter'), icon: Zap, color: 'bg-blue-500' },
-    professional: { name: t('admin.packages.management.categories.professional'), icon: Shield, color: 'bg-green-500' },
-    enterprise: { name: t('admin.packages.management.categories.enterprise'), icon: Crown, color: 'bg-purple-500' },
-    ai: { name: t('admin.packages.management.categories.ai'), icon: BrainCircuit, color: 'bg-orange-500' },
-    custom: { name: t('admin.packages.management.categories.custom'), icon: Star, color: 'bg-gray-500' }
+  const fetchPackages = async () => {
+    if (!token) return
+    setIsLoading(true)
+    try {
+      const data = await getAllCloudPackages(token)
+      setPackages(data)
+    } catch {
+      toast({ title: 'Failed to load packages', variant: 'destructive' })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  // Filter packages
-  const filteredPackages = packages.filter(pkg => {
-    const matchesSearch = pkg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         pkg.description.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || pkg.category === selectedCategory
+  useEffect(() => {
+    fetchPackages()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
+
+  // Filter
+  const filteredPackages = packages.filter((pkg) => {
+    const term = searchTerm.toLowerCase()
+    const matchesSearch =
+      pkg.name.toLowerCase().includes(term) ||
+      (pkg.type ?? '').toLowerCase().includes(term)
+    const matchesCategory =
+      selectedCategory === 'all' || pkg.type === selectedCategory
     return matchesSearch && matchesCategory
   })
 
-  const handleCreatePackage = (packageData: any) => {
-    const newPackage: PricingPlan = {
-      id: Math.max(...packages.map(p => p.id)) + 1,
-      name: packageData.name,
-      description: packageData.description,
-      price: packageData.price,
-      period: packageData.period,
-      icon: categoryInfo[packageData.category as keyof typeof categoryInfo].icon,
-      popular: packageData.popular,
-      category: packageData.category,
-      features: packageData.features,
-      limitations: [],
-      subPlanNumber: packages.filter(p => p.category === packageData.category).length + 1
+  const handleCreatePackage = async (data: Partial<CloudPackage>) => {
+    if (!token) return
+    try {
+      await createCloudPackage(token, data)
+      toast({ title: t('admin.packages.management.toast.createSuccess') })
+      await fetchPackages()
+    } catch {
+      toast({ title: 'Failed to create package', variant: 'destructive' })
     }
-
-    setPackages([...packages, newPackage])
-    toast({
-      title: t('admin.packages.management.toast.createSuccess'),
-      description: t('admin.packages.management.toast.createSuccessDesc'),
-      variant: 'default'
-    })
   }
 
-  const handleEditPackage = (pkg: PricingPlan) => {
+  const handleUpdatePackage = async (data: Partial<CloudPackage>) => {
+    if (!token || !editingPackage) return
+    try {
+      await updateCloudPackage(token, editingPackage.id, data)
+      toast({ title: t('admin.packages.management.toast.updateSuccess') })
+      await fetchPackages()
+    } catch {
+      toast({ title: 'Failed to update package', variant: 'destructive' })
+    }
+  }
+
+  const handleDeletePackage = async (id: number) => {
+    if (!token) return
+    if (!confirm('Delete this package?')) return
+    try {
+      await deleteCloudPackage(token, id)
+      toast({ title: t('admin.packages.management.toast.deleteSuccess') })
+      setPackages((prev) => prev.filter((p) => p.id !== id))
+    } catch {
+      toast({ title: 'Failed to delete package', variant: 'destructive' })
+    }
+  }
+
+  const handleEditPackage = (pkg: CloudPackage) => {
     setEditingPackage(pkg)
     setIsCreateModalOpen(true)
-  }
-
-  const handleUpdatePackage = (packageData: any) => {
-    if (!editingPackage) return
-
-    const updatedPackage: PricingPlan = {
-      ...editingPackage,
-      name: packageData.name,
-      description: packageData.description,
-      price: packageData.price,
-      period: packageData.period,
-      category: packageData.category,
-      features: packageData.features,
-      popular: packageData.popular,
-      icon: categoryInfo[packageData.category as keyof typeof categoryInfo].icon
-    }
-
-    setPackages(packages.map(p => p.id === editingPackage.id ? updatedPackage : p))
-    toast({
-      title: t('admin.packages.management.toast.updateSuccess'),
-      description: t('admin.packages.management.toast.updateSuccessDesc'),
-      variant: 'default'
-    })
-  }
-
-  const handleDeletePackage = (id: number) => {
-    setPackages(packages.filter(p => p.id !== id))
-    toast({
-      title: t('admin.packages.management.toast.deleteSuccess'),
-      description: t('admin.packages.management.toast.deleteSuccessDesc'),
-      variant: 'default'
-    })
   }
 
   const handleCloseModal = () => {
@@ -131,10 +128,12 @@ export default function PackagesManagementPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{t('admin.packages.management.title')}</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              {t('admin.packages.management.title')}
+            </h1>
             <p className="text-gray-600">{t('admin.packages.management.subtitle')}</p>
           </div>
-          <Button 
+          <Button
             onClick={() => setIsCreateModalOpen(true)}
             className="bg-[#E60000] hover:bg-red-700"
           >
@@ -170,17 +169,16 @@ export default function PackagesManagementPage() {
                   <option value="professional">{t('admin.packages.management.filter.professional')}</option>
                   <option value="enterprise">{t('admin.packages.management.filter.enterprise')}</option>
                   <option value="ai">{t('admin.packages.management.filter.ai')}</option>
-                  <option value="custom">{t('admin.packages.management.filter.custom')}</option>
                 </select>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Package Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          {Object.entries(categoryInfo).map(([key, info]) => {
-            const count = packages.filter(p => p.category === key).length
+        {/* Category Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          {Object.entries(CATEGORY_INFO).map(([key, info]) => {
+            const count = packages.filter((p) => p.type === key).length
             const Icon = info.icon
             return (
               <Card key={key}>
@@ -202,124 +200,144 @@ export default function PackagesManagementPage() {
 
         {/* Package Table */}
         <Card>
+          <CardHeader>
+            <CardTitle>
+              {filteredPackages.length} package{filteredPackages.length !== 1 ? 's' : ''}
+            </CardTitle>
+          </CardHeader>
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('admin.packages.management.table.servicePackage')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('admin.packages.management.table.category')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('admin.packages.management.table.price')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('admin.packages.management.table.description')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('admin.packages.management.table.features')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('admin.packages.management.table.status')}
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('admin.packages.management.table.actions')}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredPackages.map((pkg) => {
-                    const categoryData = categoryInfo[pkg.category as keyof typeof categoryInfo]
-                    const Icon = categoryData.icon
-                    return (
-                      <tr key={pkg.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className={`p-2 rounded-lg ${categoryData.color} mr-3`}>
-                              <Icon className="h-4 w-4 text-white" />
-                            </div>
-                            <div>
-                              <div className="text-sm font-medium text-gray-900">{pkg.name}</div>
-                              <div className="text-xs text-gray-500">ID: {pkg.id}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="outline">
-                            {categoryData.name}
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-bold text-gray-900">${pkg.price}</div>
-                          <div className="text-xs text-gray-500">/{pkg.period}</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs truncate" title={pkg.description}>
-                            {pkg.description}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-xs text-gray-600">
-                            {pkg.features.slice(0, 2).map((feature, index) => (
-                              <div key={index} className="flex items-center mb-1">
-                                <div className="w-1 h-1 bg-green-500 rounded-full mr-2"></div>
-                                <span className="truncate max-w-[150px]" title={feature}>{feature}</span>
+            {isLoading ? (
+              <div className="flex justify-center py-16">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#E60000]" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Package
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Type
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Price
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Specs
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Features
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredPackages.map((pkg) => {
+                      const catKey = pkg.type ?? 'starter'
+                      const catInfo = CATEGORY_INFO[catKey] ?? CATEGORY_INFO.starter
+                      const Icon = catInfo.icon
+                      return (
+                        <tr key={pkg.id} className="hover:bg-gray-50">
+                          {/* Name */}
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className={`p-2 rounded-lg ${catInfo.color} mr-3`}>
+                                <Icon className="h-4 w-4 text-white" />
                               </div>
-                            ))}
-                            {pkg.features.length > 2 && (
-                              <div className="text-gray-400">
-                                +{pkg.features.length - 2} {t('admin.packages.management.table.moreFeatures')}
+                              <div>
+                                <div className="text-sm font-medium text-gray-900">{pkg.name}</div>
+                                <div className="text-xs text-gray-500">ID: {pkg.id}</div>
                               </div>
+                            </div>
+                          </td>
+                          {/* Type */}
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Badge variant="outline">{catInfo.name}</Badge>
+                          </td>
+                          {/* Price */}
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-bold text-gray-900">
+                              ${pkg.cost.toFixed(2)}/mo
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {pkg.cost_vnd.toLocaleString('vi-VN')} ₫
+                            </div>
+                          </td>
+                          {/* Specs */}
+                          <td className="px-6 py-4">
+                            <div className="text-xs text-gray-600 space-y-0.5">
+                              {pkg.cpu && <div>CPU: {pkg.cpu}</div>}
+                              {pkg.ram && <div>RAM: {pkg.ram}</div>}
+                              {pkg.memory && <div>SSD: {pkg.memory}</div>}
+                              {pkg.bandwidth && <div>BW: {pkg.bandwidth}</div>}
+                            </div>
+                          </td>
+                          {/* Feature text */}
+                          <td className="px-6 py-4">
+                            <div
+                              className="text-xs text-gray-600 max-w-[180px] truncate"
+                              title={pkg.feature ?? ''}
+                            >
+                              {pkg.feature || '—'}
+                            </div>
+                          </td>
+                          {/* Status */}
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {pkg.is_active ? (
+                              <Badge className="bg-green-100 text-green-700 border-0 gap-1">
+                                <CheckCircle className="h-3 w-3" /> Active
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-gray-100 text-gray-500 border-0 gap-1">
+                                <XCircle className="h-3 w-3" /> Inactive
+                              </Badge>
                             )}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {pkg.popular && (
-                            <Badge className="bg-[#E60000] text-white">
-                              <Star className="h-3 w-3 mr-1" />
-                              {t('admin.packages.management.table.popular')}
-                            </Badge>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex justify-end space-x-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEditPackage(pkg)}
-                              className="text-blue-600 hover:text-blue-700"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeletePackage(pkg.id)}
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-              
-              {filteredPackages.length === 0 && (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">{t('admin.packages.management.table.noPackagesFound')}</p>
-                </div>
-              )}
-            </div>
+                          </td>
+                          {/* Actions */}
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div className="flex justify-end space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleEditPackage(pkg)}
+                                className="text-blue-600 hover:text-blue-700"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeletePackage(pkg.id)}
+                                className="text-red-600 hover:text-red-700"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+
+                {filteredPackages.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500">{t('admin.packages.management.table.noPackagesFound')}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Create/Edit Package Popup */}
+        {/* Create/Edit Popup */}
         <CreateNewPackagePopup
           isOpen={isCreateModalOpen}
           onClose={handleCloseModal}

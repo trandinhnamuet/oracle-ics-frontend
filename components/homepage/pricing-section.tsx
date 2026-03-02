@@ -5,12 +5,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Check, Star, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Info, Wallet, CreditCard } from "lucide-react"
+import { Check, Star, Zap, Shield, Crown, BrainCircuit, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Info, Wallet, CreditCard } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
-import { pricingCategories, customPlan } from "@/types/pricing-plans"
-import { PricingCategory } from "@/types/pricing-types"
+import { customPlan } from "@/types/pricing-plans"
+import { PricingCategory, PricingPlan } from "@/types/pricing-types"
+import { CloudPackage, buildFeatures, getActiveCloudPackages } from "@/api/cloud-package.api"
 import { formatPrice, roundMoney } from "@/lib/utils"
 import CustomRegistrationForm from "./customRegistrationForm"
 import { useAuth } from "@/lib/auth-context"
@@ -39,6 +40,63 @@ export function PricingSection() {
   const [isConfirming, setIsConfirming] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const isConfirmingRef = useRef(false)
+
+  // ── Cloud packages from backend ──────────────────────────────────────────
+  const [cloudPackages, setCloudPackages] = useState<CloudPackage[]>([])
+  const [isLoadingPackages, setIsLoadingPackages] = useState(true)
+
+  useEffect(() => {
+    getActiveCloudPackages()
+      .then(setCloudPackages)
+      .catch(() => { /* backend may be down – show empty list */ })
+      .finally(() => setIsLoadingPackages(false))
+  }, [])
+
+  // Map type → icon & i18n description key
+  const CATEGORY_CONFIG: Record<string, { icon: React.ElementType; description: string }> = {
+    starter:      { icon: Zap,          description: 'pricing.categories.starter.description' },
+    professional: { icon: Shield,        description: 'pricing.categories.professional.description' },
+    enterprise:   { icon: Crown,         description: 'pricing.categories.enterprise.description' },
+    ai:           { icon: BrainCircuit,  description: 'pricing.categories.ai.description' },
+  }
+  const CATEGORY_ORDER = ['starter', 'professional', 'enterprise', 'ai']
+
+  /** Dynamic pricingCategories built from the DB records */
+  const pricingCategories = useMemo((): PricingCategory[] => {
+    const grouped: Record<string, CloudPackage[]> = {}
+    for (const pkg of cloudPackages) {
+      const type = (pkg.type || 'starter').toLowerCase()
+      if (!grouped[type]) grouped[type] = []
+      grouped[type].push(pkg)
+    }
+    return CATEGORY_ORDER
+      .filter(cat => grouped[cat]?.length > 0)
+      .map(cat => {
+        const config = CATEGORY_CONFIG[cat] ?? { icon: Star, description: '' }
+        const plans: PricingPlan[] = grouped[cat].map((pkg, i) => ({
+          id: pkg.id,
+          name: pkg.name,
+          description: '',
+          price: String(pkg.cost),
+          period: 'tháng',
+          icon: config.icon as any,
+          popular: i === 0,
+          category: cat as PricingPlan['category'],
+          subPlanNumber: i + 1,
+          features: buildFeatures(pkg),
+          limitations: [],
+        }))
+        return {
+          name: cat,
+          basePrice: plans[0]?.price ?? '0',
+          icon: config.icon as any,
+          popular: cat === 'professional',
+          description: config.description,
+          plans,
+        }
+      })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cloudPackages])
   
   // Refs for scrolling
   const mainCardsRef = useRef<HTMLDivElement>(null)
@@ -339,6 +397,11 @@ export function PricingSection() {
         </div>
 
         {/* Main pricing cards */}
+        {isLoadingPackages ? (
+          <div className="flex justify-center py-16">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
+          </div>
+        ) : (
         <div ref={mainCardsRef} className="grid lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
           {pricingCategories.map((category: PricingCategory, index: number) => {
             const IconComponent = category.icon
@@ -409,6 +472,7 @@ export function PricingSection() {
             </CardFooter>
           </Card>
         </div>
+        )}
 
         {/* Expanded Plans Section */}
         <div 
