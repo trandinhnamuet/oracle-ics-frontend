@@ -21,7 +21,8 @@ export async function fetchWithAuth(
     : `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`
 
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    // Don't set Content-Type for FormData — browser must set it with the multipart boundary
+    ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
     ...(options.headers as Record<string, string> || {}),
   };
 
@@ -56,7 +57,8 @@ export async function fetchWithAuth(
       const newAccessToken = authService.getAccessToken();
       if (newAccessToken) {
         const retryHeaders: Record<string, string> = {
-          'Content-Type': 'application/json',
+          // Don't set Content-Type for FormData — browser must set it with the multipart boundary
+          ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
           ...(options.headers as Record<string, string> || {}),
           'Authorization': `Bearer ${newAccessToken}`,
         };
