@@ -30,7 +30,7 @@ interface PackageSubscription {
   updated_at: string
   vm_instance_id?: number | null // Foreign key to VM instance
   // Thông tin từ bảng cloud_packages
-  cloud_package?: {
+  cloudPackage?: {
     id: number
     name: string
     type: string
@@ -143,8 +143,8 @@ export default function PackageManagementPage() {
 
   // Filter subscriptions
   const filteredSubscriptions = subscriptions.filter(sub => {
-    const packageName = sub.cloud_package?.name || 'N/A'
-    const packageType = sub.cloud_package?.type || 'N/A'
+    const packageName = sub.cloudPackage?.name || 'N/A'
+    const packageType = sub.cloudPackage?.type || 'N/A'
     
     const matchesSearch = 
       packageName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -270,7 +270,7 @@ export default function PackageManagementPage() {
     inactive: subscriptions.filter(s => ['pending', 'suspended', 'cancelled', 'expired'].includes(s.status)).length,
     totalRevenue: subscriptions
       .filter(s => s.status === 'active')
-      .reduce((sum, s) => sum + (s.cloud_package?.cost_vnd || 0), 0)
+      .reduce((sum, s) => sum + (s.cloudPackage?.cost_vnd || 0), 0)
   }
 
   return (
@@ -420,8 +420,8 @@ export default function PackageManagementPage() {
                   </TableRow>
                 ) : (
                   filteredSubscriptions.map(sub => {
-                    const packageName = sub.cloud_package?.name || t('packageManagement.table.customPackage')
-                    const packageType = sub.cloud_package?.type || 'custom'
+                    const packageName = sub.cloudPackage?.name || t('packageManagement.table.customPackage')
+                    const packageType = sub.cloudPackage?.type || 'custom'
                     const vmName = sub.vmInstance?.instance_name || ''
                     const vmIpv4 = sub.vmInstance?.public_ip || ''
                     
