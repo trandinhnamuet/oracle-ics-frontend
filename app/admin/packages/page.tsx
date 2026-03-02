@@ -264,10 +264,10 @@ export default function PackagesManagementPage() {
                           {/* Price */}
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm font-bold text-gray-900">
-                              ${pkg.cost.toFixed(2)}/mo
+                              ${Number(pkg.cost).toFixed(2)}/mo
                             </div>
                             <div className="text-xs text-gray-500">
-                              {pkg.cost_vnd.toLocaleString('vi-VN')} ₫
+                              {Number(pkg.cost_vnd).toLocaleString('vi-VN')} ₫
                             </div>
                           </td>
                           {/* Specs */}
