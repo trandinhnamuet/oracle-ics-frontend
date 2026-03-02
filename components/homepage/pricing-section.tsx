@@ -37,6 +37,7 @@ export function PricingSection() {
   const [monthsCount, setMonthsCount] = useState(1)
   const [userBalance, setUserBalance] = useState<number>(0)
   const [isConfirming, setIsConfirming] = useState(false)
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
   const isConfirmingRef = useRef(false)
   
   // Refs for scrolling
@@ -82,6 +83,7 @@ export function PricingSection() {
     setSelectedPlan(plan)
     setSelectedCategory(category)
     setSelectedPaymentMethod('')
+    setAgreedToTerms(false)
     setMonthsCount(1)
     // Reset lock for fresh payment attempt
     isConfirmingRef.current = false
@@ -735,6 +737,30 @@ export function PricingSection() {
             </Card>
           </div>
 
+          {/* Terms agreement checkbox */}
+          <div className="flex items-start gap-2 my-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <input
+              id="terms-checkbox"
+              type="checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+              className="mt-0.5 h-4 w-4 cursor-pointer accent-[#E60000] shrink-0"
+            />
+            <label htmlFor="terms-checkbox" className="text-sm text-gray-700 cursor-pointer leading-relaxed select-none">
+              Tôi đã đọc và đồng ý với{' '}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#E60000] font-medium underline underline-offset-2 hover:text-red-700"
+                onClick={(e) => e.stopPropagation()}
+              >
+                điều khoản sử dụng
+              </a>{' '}
+              của OracleCloud Vietnam.
+            </label>
+          </div>
+
           {/* Action Buttons */}
           <div className="flex gap-3 justify-end">
             <Button 
@@ -746,7 +772,7 @@ export function PricingSection() {
             <Button 
               className="bg-[#E60000] hover:bg-red-700"
               onClick={handleConfirmPaymentMethod}
-              disabled={!selectedPaymentMethod || isConfirming}
+              disabled={!selectedPaymentMethod || !agreedToTerms || isConfirming}
             >
               {isConfirming ? 'Đang xử lý...' : 'Xác nhận'}
             </Button>
