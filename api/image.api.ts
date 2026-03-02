@@ -46,8 +46,12 @@ export const imageApi = {
   },
 
   getImageUrl(url: string): string {
-    if (url.startsWith('http')) {
-      return url
+    if (!url) return ''
+    if (url.startsWith('http')) return url
+    // For old /uploads/ paths, rewrite to the serve endpoint
+    if (url.startsWith('/uploads/')) {
+      const filename = url.replace('/uploads/', '')
+      return `${API_URL}/images/serve/${filename}`
     }
     return `${API_URL}${url}`
   },
