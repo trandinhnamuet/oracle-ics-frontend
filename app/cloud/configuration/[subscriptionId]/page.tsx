@@ -722,7 +722,13 @@ export default function CloudConfigurationBySubscriptionPage() {
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-3 mt-6 pt-4 border-t">
                   <Button
-                    onClick={() => setShowConfirmDialog(true)}
+                    onClick={() => {
+                      if (subscription?.vm_instance_id) {
+                        setShowConfirmDialog(true)
+                      } else {
+                        handleConfigureVM()
+                      }
+                    }}
                     disabled={!isFormValid() || isProcessing}
                     className="bg-blue-600 hover:bg-blue-700 w-full"
                   >
