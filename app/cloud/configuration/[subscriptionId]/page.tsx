@@ -24,6 +24,16 @@ import {
   Mail,
   AlertCircle
 } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/lib/auth-context'
 import { getSubscriptionById } from '@/api/subscription.api'
@@ -104,6 +114,7 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [subscription, setSubscription] = useState<any>(null)
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
 
   // Auto-fill notification email from user data
   useEffect(() => {
@@ -711,7 +722,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-3 mt-6 pt-4 border-t">
                   <Button
-                    onClick={handleConfigureVM}
+                    onClick={() => setShowConfirmDialog(true)}
                     disabled={!isFormValid() || isProcessing}
                     className="bg-blue-600 hover:bg-blue-700 w-full"
                   >
@@ -741,6 +752,31 @@ export default function CloudConfigurationBySubscriptionPage() {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận cài lại OS</AlertDialogTitle>
+            <AlertDialogDescription>
+              VM cũ cùng toàn bộ data và phần mềm đã cài sẽ mất. Bạn có chắc chắn?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isProcessing}>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowConfirmDialog(false)
+                handleConfigureVM()
+              }}
+              disabled={isProcessing}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Xác nhận
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

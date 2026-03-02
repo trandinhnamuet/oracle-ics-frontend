@@ -1105,7 +1105,7 @@ export default function PackageDetailPage() {
               <Button 
                 className="w-full justify-start"
                 variant="outline"
-                onClick={() => handleAction('backup')}
+                onClick={() => router.push(`/cloud/configuration/${subscriptionId}`)}
                 disabled={isLoading}
               >
                 <MonitorUp className="h-4 w-4 mr-2" />
