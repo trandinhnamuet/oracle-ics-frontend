@@ -1,0 +1,630 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { useTranslation } from 'react-i18next'
+
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Camera,
+  Upload,
+  User,
+  Mail,
+  Phone,
+  Building2,
+  MapPin,
+  CreditCard,
+  MailPlus,
+  UserCircle,
+  Shield,
+  CheckCircle2,
+  XCircle,
+  Hash,
+  CalendarDays,
+  Pencil,
+  Lock,
+} from 'lucide-react'
+
+import { useAuth } from '@/lib/auth-context'
+import { imageApi } from '@/api/image.api'
+import { updateUserAvatar, updateUserProfile } from '@/api/user.api'
+import { useToast } from '@/hooks/use-toast'
+
+type ProfileFormData = {
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  company: string
+  gender: string
+  idCard: string
+  backupEmail: string
+  address: string
+}
+
+function InfoRow({
+  icon: Icon,
+  label,
+  value,
+  mono = false,
+}: {
+  icon: React.ElementType
+  label: string
+  value?: string | null
+  mono?: boolean
+}) {
+  const { t } = useTranslation()
+  return (
+    <div className="flex items-start gap-3 py-3">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <Icon className="h-4 w-4" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+        <p className={`mt-0.5 text-sm font-medium break-words ${mono ? 'font-mono' : ''} ${!value ? 'text-muted-foreground italic' : 'text-foreground'}`}>
+          {value || t('profile.notProvided')}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function ProfilePage() {
+  const { t } = useTranslation()
+  const { user, updateUser } = useAuth()
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { toast } = useToast()
+
+  const profileSchema = z.object({
+    firstName: z
+      .string()
+      .min(1, t('profile.validation.firstNameRequired'))
+      .max(50, t('profile.validation.firstNameMax')),
+    lastName: z
+      .string()
+      .min(1, t('profile.validation.lastNameRequired'))
+      .max(50, t('profile.validation.lastNameMax')),
+    phoneNumber: z.string().max(20).optional().or(z.literal('')),
+    company: z.string().max(255).optional().or(z.literal('')),
+    gender: z.string().optional().or(z.literal('')),
+    idCard: z.string().max(20).optional().or(z.literal('')),
+    backupEmail: z
+      .string()
+      .email(t('profile.validation.backupEmailInvalid'))
+      .optional()
+      .or(z.literal('')),
+    address: z.string().max(500).optional().or(z.literal('')),
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<ProfileFormData>({
+    resolver: zodResolver(profileSchema),
+  })
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        phoneNumber: user.phoneNumber || '',
+        company: user.company || '',
+        gender: user.gender || '',
+        idCard: user.idCard || '',
+        backupEmail: user.backupEmail || '',
+        address: user.address || '',
+      })
+    }
+  }, [user, reset])
+
+  const onSubmit = async (data: ProfileFormData) => {
+    try {
+      setIsSaving(true)
+      const updatedUser = await updateUserProfile({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber || undefined,
+        company: data.company || undefined,
+        gender: data.gender || undefined,
+        idCard: data.idCard || undefined,
+        backupEmail: data.backupEmail || undefined,
+        address: data.address || undefined,
+      })
+      updateUser(updatedUser)
+      setIsEditOpen(false)
+      toast({ title: t('profile.updateSuccess'), variant: 'default' })
+    } catch (error: any) {
+      toast({ title: t('profile.updateFailed'), description: error.message, variant: 'destructive' })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file || !user) return
+    if (!file.type.startsWith('image/')) {
+      toast({ title: t('profile.avatarTypeError'), variant: 'destructive' })
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: t('profile.avatarSizeError'), variant: 'destructive' })
+      return
+    }
+    try {
+      setIsUploadingAvatar(true)
+      const uploadedImage = await imageApi.uploadImage(file)
+      await updateUserAvatar(user.id, uploadedImage.url)
+      updateUser({ avatarUrl: uploadedImage.url })
+      toast({ title: t('profile.avatarUploadSuccess'), variant: 'default' })
+    } catch {
+      toast({ title: t('profile.avatarUploadError'), variant: 'destructive' })
+    } finally {
+      setIsUploadingAvatar(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const getInitials = (firstName?: string, lastName?: string, email?: string) => {
+    if (firstName && lastName) return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
+    if (firstName) return firstName.charAt(0).toUpperCase()
+    if (email) return email.charAt(0).toUpperCase()
+    return 'U'
+  }
+
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+
+  const genderLabel = (g?: string) => {
+    if (!g) return undefined
+    if (g === 'male') return t('profile.genderMale')
+    if (g === 'female') return t('profile.genderFemale')
+    return t('profile.genderOther')
+  }
+
+  if (!user) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+          <UserCircle className="h-12 w-12 animate-pulse opacity-40" />
+          <p>{t('profile.loadingUser')}</p>
+        </div>
+      </div>
+    )
+  }
+
+  const fullName =
+    user.firstName && user.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : user.firstName || user.lastName || user.email
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
+      {/* Hero Banner */}
+      <div className="relative h-40 overflow-hidden bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600">
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 25% 25%, white 2px, transparent 2px), radial-gradient(circle at 75% 75%, white 2px, transparent 2px)',
+            backgroundSize: '40px 40px',
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+      </div>
+
+      <div className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
+        {/* Profile Header */}
+        <div className="-mt-16 mb-8 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex items-end gap-4">
+            {/* Avatar */}
+            <div className="relative">
+              <div className="overflow-hidden rounded-2xl shadow-xl ring-4 ring-white dark:ring-slate-900">
+                <Avatar className="h-28 w-28">
+                  <AvatarImage
+                    src={user.avatarUrl ? imageApi.getImageUrl(user.avatarUrl) : undefined}
+                    alt={fullName}
+                  />
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-2xl font-bold text-white">
+                    {getInitials(user.firstName, user.lastName, user.email)}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploadingAvatar}
+                className="absolute -bottom-1.5 -right-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md ring-2 ring-white transition-colors hover:bg-primary/90 disabled:opacity-70 dark:ring-slate-900"
+              >
+                {isUploadingAvatar ? (
+                  <Upload className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Camera className="h-3.5 w-3.5" />
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarUpload}
+              />
+            </div>
+
+            {/* Name and badges */}
+            <div className="mb-2">
+              <h1 className="text-xl font-bold text-foreground sm:text-2xl">{fullName}</h1>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <p className="text-sm text-muted-foreground">{user.email}</p>
+                <Badge
+                  className={`text-xs ${user.isActive ? 'border-0 bg-emerald-500 text-white hover:bg-emerald-600' : ''}`}
+                  variant={user.isActive ? 'default' : 'secondary'}
+                >
+                  {user.isActive ? (
+                    <CheckCircle2 className="mr-1 h-3 w-3" />
+                  ) : (
+                    <XCircle className="mr-1 h-3 w-3" />
+                  )}
+                  {user.isActive ? t('profile.accountActive') : t('profile.accountInactive')}
+                </Badge>
+                <Badge variant="outline" className="text-xs">
+                  {user.role === 'admin' ? t('profile.adminBadge') : t('profile.userBadge')}
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+          {/* Edit Dialog trigger */}
+          <div className="mb-2">
+            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2 shadow-sm">
+                  <Pencil className="h-4 w-4" />
+                  {t('profile.edit')}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>{t('profile.editDialogTitle')}</DialogTitle>
+                  <DialogDescription>{t('profile.editDialogDesc')}</DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-6">
+                  {/* Basic info */}
+                  <div>
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t('profile.sections.basicInfo')}
+                    </p>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="e-firstName">{t('profile.firstName')}</Label>
+                        <Input
+                          id="e-firstName"
+                          {...register('firstName')}
+                          placeholder={t('profile.firstName')}
+                          className={errors.firstName ? 'border-destructive' : ''}
+                        />
+                        {errors.firstName && (
+                          <p className="text-xs text-destructive">{errors.firstName.message}</p>
+                        )}
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="e-lastName">{t('profile.lastName')}</Label>
+                        <Input
+                          id="e-lastName"
+                          {...register('lastName')}
+                          placeholder={t('profile.lastName')}
+                          className={errors.lastName ? 'border-destructive' : ''}
+                        />
+                        {errors.lastName && (
+                          <p className="text-xs text-destructive">{errors.lastName.message}</p>
+                        )}
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="e-gender">{t('profile.gender')}</Label>
+                        <Select
+                          defaultValue={user.gender || ''}
+                          onValueChange={(val) => setValue('gender', val)}
+                        >
+                          <SelectTrigger id="e-gender">
+                            <SelectValue placeholder={t('profile.notProvided')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">{t('profile.genderMale')}</SelectItem>
+                            <SelectItem value="female">{t('profile.genderFemale')}</SelectItem>
+                            <SelectItem value="other">{t('profile.genderOther')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="e-idCard">{t('profile.idCard')}</Label>
+                        <Input
+                          id="e-idCard"
+                          {...register('idCard')}
+                          placeholder="012345678901"
+                          className={errors.idCard ? 'border-destructive' : ''}
+                        />
+                        {errors.idCard && (
+                          <p className="text-xs text-destructive">{errors.idCard.message}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Contact info */}
+                  <div>
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t('profile.sections.contactInfo')}
+                    </p>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="e-phone">{t('profile.phoneNumber')}</Label>
+                        <Input
+                          id="e-phone"
+                          type="tel"
+                          {...register('phoneNumber')}
+                          placeholder="0987 654 321"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="e-backupEmail">{t('profile.backupEmail')}</Label>
+                        <Input
+                          id="e-backupEmail"
+                          type="email"
+                          {...register('backupEmail')}
+                          placeholder="backup@example.com"
+                          className={errors.backupEmail ? 'border-destructive' : ''}
+                        />
+                        {errors.backupEmail && (
+                          <p className="text-xs text-destructive">{errors.backupEmail.message}</p>
+                        )}
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="e-company">{t('profile.company')}</Label>
+                        <Input
+                          id="e-company"
+                          {...register('company')}
+                          placeholder="Company ABC"
+                        />
+                      </div>
+                      <div className="space-y-1.5 sm:col-span-2">
+                        <Label htmlFor="e-address">{t('profile.address')}</Label>
+                        <Input
+                          id="e-address"
+                          {...register('address')}
+                          placeholder="123 Street, District 1, Ho Chi Minh City"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsEditOpen(false)}
+                      disabled={isSaving}
+                    >
+                      {t('profile.cancel')}
+                    </Button>
+                    <Button type="submit" disabled={isSaving} className="min-w-[130px] gap-2">
+                      {isSaving ? (
+                        <>
+                          <Upload className="h-4 w-4 animate-spin" />
+                          {t('profile.saving')}
+                        </>
+                      ) : (
+                        t('profile.saveChanges')
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="mb-6 w-full sm:w-auto">
+            <TabsTrigger value="profile" className="gap-2">
+              <UserCircle className="h-4 w-4" />
+              {t('profile.tabs.profile')}
+            </TabsTrigger>
+            <TabsTrigger value="security" className="gap-2">
+              <Shield className="h-4 w-4" />
+              {t('profile.tabs.security')}
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Profile Tab */}
+          <TabsContent value="profile" className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {/* Left: account meta */}
+              <div>
+                <Card className="overflow-hidden">
+                  <div className="h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500" />
+                  <CardHeader className="pb-2 pt-4">
+                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t('profile.accountStatus')}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="divide-y divide-border/60 px-4 pb-2">
+                    <InfoRow icon={Hash} label={t('profile.id')} value={String(user.id)} mono />
+                    <InfoRow
+                      icon={CalendarDays}
+                      label={t('profile.createdAt')}
+                      value={formatDate(user.createdAt)}
+                    />
+                    <InfoRow
+                      icon={CalendarDays}
+                      label={t('profile.updatedAt')}
+                      value={formatDate(user.updatedAt)}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right: profile info */}
+              <div className="space-y-6 lg:col-span-2">
+                {/* Basic Info */}
+                <Card className="overflow-hidden">
+                  <div className="h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500" />
+                  <CardHeader className="pb-2 pt-4">
+                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t('profile.sections.basicInfo')}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="divide-y divide-border/60 px-4 pb-2">
+                    <div className="grid grid-cols-1 divide-y divide-border/60 sm:grid-cols-2 sm:divide-y-0">
+                      <InfoRow icon={User} label={t('profile.firstName')} value={user.firstName} />
+                      <InfoRow icon={User} label={t('profile.lastName')} value={user.lastName} />
+                    </div>
+                    <div className="grid grid-cols-1 divide-y divide-border/60 sm:grid-cols-2 sm:divide-y-0">
+                      <InfoRow
+                        icon={UserCircle}
+                        label={t('profile.gender')}
+                        value={genderLabel(user.gender)}
+                      />
+                      <InfoRow
+                        icon={CreditCard}
+                        label={t('profile.idCard')}
+                        value={user.idCard}
+                        mono
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Contact Info */}
+                <Card className="overflow-hidden">
+                  <div className="h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500" />
+                  <CardHeader className="pb-2 pt-4">
+                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t('profile.sections.contactInfo')}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="divide-y divide-border/60 px-4 pb-2">
+                    <InfoRow icon={Mail} label={t('profile.email')} value={user.email} />
+                    <div className="grid grid-cols-1 divide-y divide-border/60 sm:grid-cols-2 sm:divide-y-0">
+                      <InfoRow
+                        icon={Phone}
+                        label={t('profile.phoneNumber')}
+                        value={user.phoneNumber}
+                      />
+                      <InfoRow
+                        icon={MailPlus}
+                        label={t('profile.backupEmail')}
+                        value={user.backupEmail}
+                      />
+                    </div>
+                    <InfoRow icon={Building2} label={t('profile.company')} value={user.company} />
+                    <InfoRow icon={MapPin} label={t('profile.address')} value={user.address} />
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Security Tab */}
+          <TabsContent value="security">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <Card className="overflow-hidden">
+                <div className="h-1.5 bg-gradient-to-r from-orange-500 to-red-500" />
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Lock className="h-4 w-4" />
+                    {t('profile.changePassword')}
+                  </CardTitle>
+                  <CardDescription>{t('profile.changePasswordDescription')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="outline" disabled className="gap-2">
+                    <Lock className="h-4 w-4" />
+                    {t('profile.changePasswordButton')}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="overflow-hidden">
+                <div className="h-1.5 bg-gradient-to-r from-violet-500 to-purple-500" />
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Shield className="h-4 w-4" />
+                    {t('profile.accountStatus')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between rounded-lg border border-border/60 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`h-2.5 w-2.5 rounded-full ${user.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`}
+                      />
+                      <span className="text-sm font-medium">
+                        {user.isActive ? t('profile.accountActive') : t('profile.accountInactive')}
+                      </span>
+                    </div>
+                    <Badge
+                      className={`text-xs ${user.isActive ? 'border-0 bg-emerald-500 text-white hover:bg-emerald-600' : ''}`}
+                      variant={user.isActive ? 'default' : 'secondary'}
+                    >
+                      {user.isActive ? (
+                        <CheckCircle2 className="mr-1 h-3 w-3" />
+                      ) : (
+                        <XCircle className="mr-1 h-3 w-3" />
+                      )}
+                      {user.isActive ? t('profile.accountActive') : t('profile.accountInactive')}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border border-border/60 px-4 py-3">
+                    <span className="text-sm font-medium">Role</span>
+                    <Badge variant="outline" className="text-xs capitalize">
+                      {user.role === 'admin' ? t('profile.adminBadge') : t('profile.userBadge')}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  )
+}
+
+export default ProfilePage

@@ -46,6 +46,46 @@ export const getAllUsers = async () => {
   }
 }
 
+// Update own profile (authenticated)
+export const updateUserProfile = async (data: {
+  firstName?: string
+  lastName?: string
+  phoneNumber?: string
+  company?: string
+  gender?: string
+  idCard?: string
+  backupEmail?: string
+  address?: string
+}) => {
+  try {
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/users/me/profile`, {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    })
+    return result
+  } catch (error) {
+    console.error('Error updating user profile:', error)
+    throw error
+  }
+}
+
+// Change own password (authenticated)
+export const changePassword = async (data: {
+  currentPassword: string
+  newPassword: string
+}) => {
+  try {
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/users/me/change-password`, {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    })
+    return result
+  } catch (error) {
+    console.error('Error changing password:', error)
+    throw error
+  }
+}
+
 // Update user avatar
 export const updateUserAvatar = async (userId: number, avatarUrl: string) => {
   try {

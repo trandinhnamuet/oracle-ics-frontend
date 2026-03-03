@@ -48,6 +48,8 @@ export default function RecoverEmailPage() {
       
       const response = await authApi.forgotPassword(data.email)
       
+      // Mark that a genuine OTP was sent — guards downstream pages
+      localStorage.setItem('pendingForgotPasswordEmail', data.email)
       // Navigate to OTP confirmation page
       router.push(`/login/forgot-password/otp-confirm?email=${encodeURIComponent(data.email)}`)
     } catch (error: any) {

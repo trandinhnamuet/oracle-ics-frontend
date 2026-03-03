@@ -725,14 +725,26 @@
     "edit": "編集",
     "changePassword": "パスワード変更",
     "changePasswordDescription": "アカウントのセキュリティのためにパスワードを更新してください",
-    "changePasswordButton": "パスワード変更（近日公開）",
+    "changePasswordButton": "パスワード変更",
+    "changePasswordDialogTitle": "パスワード変更",
+    "changePasswordDialogDesc": "現在のパスワードと新しいパスワードを入力してください。2つのパスワードは6文字以上必要です。",
+    "currentPassword": "現在のパスワード",
+    "newPassword": "新しいパスワード",
+    "confirmNewPassword": "新しいパスワードの確認",
+    "changePasswordSuccess": "パスワードを変更しました！",
+    "changePasswordFailed": "パスワードの変更に失敗しました",
+    "passwordsNotMatch": "パスワードが一致しません",
+    "changingPassword": "変更中...",
     "validation": {
       "firstNameRequired": "名前の入力が必要です",
       "firstNameMax": "名前は50文字以内で入力してください",
       "lastNameRequired": "姓の入力が必要です",
       "lastNameMax": "姓は50文字以内で入力してください",
       "emailRequired": "メールアドレスの入力が必要です",
-      "emailInvalid": "無効なメールアドレスです"
+      "emailInvalid": "無効なメールアドレスです",
+      "currentPasswordRequired": "現在のパスワードを入力してください",
+      "newPasswordMin": "新しいパスワードは6文字以上入力してください",
+      "confirmPasswordRequired": "新しいパスワードを確認してください"
     }
   },
   "packageDetail": {

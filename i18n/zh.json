@@ -726,14 +726,26 @@
     "edit": "编辑",
     "changePassword": "修改密码",
     "changePasswordDescription": "更新您的密码以保护账户安全",
-    "changePasswordButton": "修改密码（即将推出）",
+    "changePasswordButton": "修改密码",
+    "changePasswordDialogTitle": "修改密码",
+    "changePasswordDialogDesc": "请输入当前密码和新密码。密码必须至少6个字符。",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmNewPassword": "确认新密码",
+    "changePasswordSuccess": "密码修改成功！",
+    "changePasswordFailed": "密码修改失败",
+    "passwordsNotMatch": "两次密码输入不一致",
+    "changingPassword": "修改中...",
     "validation": {
       "firstNameRequired": "名字不能为空",
       "firstNameMax": "名字不能超过50个字符",
       "lastNameRequired": "姓氏不能为空",
       "lastNameMax": "姓氏不能超过50个字符",
       "emailRequired": "电子邮箱不能为空",
-      "emailInvalid": "电子邮箱格式不正确"
+      "emailInvalid": "电子邮箱格式不正确",
+      "currentPasswordRequired": "请输入当前密码",
+      "newPasswordMin": "新密码必须至少6个字符",
+      "confirmPasswordRequired": "请确认新密码"
     }
   },
   "packageDetail": {

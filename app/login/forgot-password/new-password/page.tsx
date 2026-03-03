@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,10 +21,20 @@ export default function NewPasswordPage() {
   const email = searchParams.get('email') || ''
   const otp = searchParams.get('otp') || ''
   
+  const [pageLoading, setPageLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  useEffect(() => {
+    const verified = localStorage.getItem('pendingForgotOtpVerified')
+    if (!verified || !email || !otp) {
+      router.replace('/login')
+      return
+    }
+    setPageLoading(false)
+  }, [router, email, otp])
 
   const passwordSchema = z.object({
     newPassword: z
@@ -60,6 +70,10 @@ export default function NewPasswordPage() {
       
       await authApi.resetPassword(email, otp, data.newPassword)
       
+      // Clear OTP guard flags
+      localStorage.removeItem('pendingForgotOtpVerified')
+      localStorage.removeItem('pendingForgotPasswordEmail')
+
       // Navigate to login with success message
       router.push('/login?passwordReset=true')
     } catch (error: any) {
@@ -67,6 +81,14 @@ export default function NewPasswordPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (pageLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
   }
 
   return (

@@ -11,6 +11,10 @@ export interface User {
   lastName?: string;
   phoneNumber?: string;
   company?: string;
+  gender?: string;
+  idCard?: string;
+  backupEmail?: string;
+  address?: string;
   avatar?: string;
   avatarUrl?: string;
   createdAt: string;

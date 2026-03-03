@@ -80,6 +80,7 @@ export default function RegisterPage() {
       reset()
       
       // Redirect to OTP verification page with email
+      localStorage.setItem('pendingVerificationEmail', data.email)
       router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`)
       
     } catch (error: any) {

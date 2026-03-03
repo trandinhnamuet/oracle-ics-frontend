@@ -1,8 +1,8 @@
-
+﻿
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
@@ -13,16 +13,27 @@ import { authApi } from '@/api/auth.api'
 
 export default function OtpConfirmPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const email = searchParams.get('email') || ''
-  
+
+  const [email, setEmail] = useState('')
+  const [pageLoading, setPageLoading] = useState(true)
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [countdown, setCountdown] = useState(60)
   const [canResend, setCanResend] = useState(false)
-  
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+
+  // Guard: only allow if a genuine forgot-password request was made from this session
+  useEffect(() => {
+    const stored = localStorage.getItem('pendingForgotPasswordEmail')
+    if (!stored) {
+      router.replace('/login/forgot-password/recover-email')
+      return
+    }
+    setEmail(stored)
+    setPageLoading(false)
+  }, [router])
 
   // Countdown timer for resend
   useEffect(() => {
@@ -35,21 +46,14 @@ export default function OtpConfirmPage() {
   }, [countdown])
 
   const handleChange = (index: number, value: string) => {
-    // Only allow digits
     if (value && !/^\d$/.test(value)) return
-
     const newOtp = [...otp]
     newOtp[index] = value
     setOtp(newOtp)
-
-    // Auto-focus next input
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus()
-    }
+    if (value && index < 5) inputRefs.current[index + 1]?.focus()
   }
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Handle backspace
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus()
     }
@@ -58,36 +62,29 @@ export default function OtpConfirmPage() {
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault()
     const pastedData = e.clipboardData.getData('text').slice(0, 6)
-    
     if (!/^\d+$/.test(pastedData)) return
-
     const newOtp = [...otp]
     pastedData.split('').forEach((char, index) => {
       if (index < 6) newOtp[index] = char
     })
     setOtp(newOtp)
-
-    // Focus last filled input
-    const lastIndex = Math.min(pastedData.length, 5)
-    inputRefs.current[lastIndex]?.focus()
+    inputRefs.current[Math.min(pastedData.length, 5)]?.focus()
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
     const otpString = otp.join('')
     if (otpString.length !== 6) {
       setError('Vui lòng nhập đầy đủ 6 số OTP')
       return
     }
-
     try {
       setIsLoading(true)
       setError(null)
-      
       await authApi.verifyResetOtp(email, otpString)
-      
-      // Navigate to new password page
+      // Mark OTP as verified and clear the pending email key
+      localStorage.setItem('pendingForgotOtpVerified', '1')
+      localStorage.removeItem('pendingForgotPasswordEmail')
       router.push(`/login/forgot-password/new-password?email=${encodeURIComponent(email)}&otp=${otpString}`)
     } catch (error: any) {
       setError(error.message)
@@ -100,10 +97,7 @@ export default function OtpConfirmPage() {
     try {
       setIsLoading(true)
       setError(null)
-      
       await authApi.forgotPassword(email)
-      
-      // Reset countdown
       setCountdown(60)
       setCanResend(false)
       setOtp(['', '', '', '', '', ''])
@@ -116,6 +110,14 @@ export default function OtpConfirmPage() {
   }
 
   const isOtpComplete = otp.every(digit => digit !== '')
+
+  if (pageLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -156,29 +158,17 @@ export default function OtpConfirmPage() {
               ))}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || !isOtpComplete}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading || !isOtpComplete}>
               {isLoading ? 'Đang xác thực...' : 'Xác nhận OTP'}
             </Button>
 
             <div className="text-center">
               {canResend ? (
-                <Button
-                  type="button"
-                  variant="link"
-                  onClick={handleResend}
-                  disabled={isLoading}
-                  className="text-primary"
-                >
+                <Button type="button" variant="link" onClick={handleResend} disabled={isLoading} className="text-primary">
                   Gửi lại mã OTP
                 </Button>
               ) : (
-                <p className="text-sm text-gray-500">
-                  Gửi lại mã sau {countdown}s
-                </p>
+                <p className="text-sm text-gray-500">Gửi lại mã sau {countdown}s</p>
               )}
             </div>
           </form>
@@ -186,10 +176,7 @@ export default function OtpConfirmPage() {
 
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center">
-            <Link
-              href="/login"
-              className="text-primary hover:underline font-medium"
-            >
+            <Link href="/login" className="text-primary hover:underline font-medium">
               ← Quay lại đăng nhập
             </Link>
           </div>
