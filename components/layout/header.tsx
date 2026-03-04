@@ -18,6 +18,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
 import { useI18nReady } from "@/hooks/use-i18n-ready"
+import { NotificationBell } from "@/components/layout/notification-bell"
 
 
 export function Header() {
@@ -186,6 +187,7 @@ export function Header() {
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated && user ? (
               <div className="flex items-center space-x-2">
+                <NotificationBell />
                 <SimpleDropdown 
                   user={user}
                   onProfileClick={handleProfileClick}
@@ -263,6 +265,7 @@ export function Header() {
                       <span>{t('header.hello')}, {user.firstName || user.email}</span>
                     </div>
                     <div className="flex items-center space-x-2">
+                      <NotificationBell />
                       <LanguageSelector />
                       <ThemeToggle />
                     </div>
