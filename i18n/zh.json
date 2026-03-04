@@ -596,7 +596,8 @@
     "logoSubtitle": "官方合作伙伴",
     "languageLabel": "语言",
     "admin": "管理员",
-    "packageManagement": "我的云"
+    "packageManagement": "我的云",
+    "supportRequest": "支持请求"
     
   },
   "footer": {
@@ -841,5 +842,66 @@
       "error": "错误",
       "loadError": "无法加载订阅信息"
     }
+  },
+  "support": {
+    "title": "支持请求",
+    "subtitle": "提交技术支持请求并快速获得回复",
+    "submit": "提交支持请求",
+    "submitting": "提交中...",
+    "submitSuccess": "请求提交成功！",
+    "submitSuccessDesc": "我们将尽快回复",
+    "submitError": "请求提交失败",
+    "fields": {
+      "title": "主题",
+      "titlePlaceholder": "简要描述您的问题",
+      "name": "客户名称",
+      "namePlaceholder": "姓名",
+      "email": "邮箱",
+      "emailPlaceholder": "联系邮箱",
+      "phone": "电话号码",
+      "phonePlaceholder": "联系电话",
+      "address": "地址",
+      "addressPlaceholder": "您的地址",
+      "service": "服务",
+      "servicePlaceholder": "选择服务",
+      "content": "内容",
+      "contentPlaceholder": "详细描述您遇到的问题...",
+      "attachment": "附件 (URL)"
+    },
+    "services": {
+      "cloud": "云服务器",
+      "storage": "对象存储",
+      "network": "网络 / VPN",
+      "billing": "账单",
+      "account": "账户",
+      "other": "其他"
+    },
+    "myTickets": "我的工单",
+    "noTickets": "暂无支持请求",
+    "status": {
+      "open": "开放",
+      "in_progress": "处理中",
+      "resolved": "已解决",
+      "closed": "已关闭"
+    },
+    "priority": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "紧急"
+    }
+  },
+  "adminSupport": {
+    "title": "支持工单管理",
+    "subtitle": "跟踪和处理用户的支持请求",
+    "totalTickets": "总工单",
+    "openTickets": "开放",
+    "inProgressTickets": "处理中",
+    "resolvedTickets": "已解决",
+    "updateSuccess": "更新成功",
+    "updateError": "更新失败",
+    "deleteConfirm": "确定要删除此工单吗？",
+    "adminNote": "管理员备注",
+    "adminNotePlaceholder": "输入处理备注..."
   }
 }

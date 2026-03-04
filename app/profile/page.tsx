@@ -82,7 +82,7 @@ function InfoRow({
   const { t } = useTranslation()
   return (
     <div className="group flex items-start gap-3 py-3.5 transition-all duration-200">
-      <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-sm transition-all duration-200 group-hover:shadow-md group-hover:scale-105">
+      <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-500/10 to-red-500/5 text-red-600 shadow-sm transition-all duration-200 group-hover:shadow-md group-hover:scale-105">
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0 flex-1 space-y-1">
@@ -297,7 +297,7 @@ function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-50 via-white to-red-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
         <div className="flex flex-col items-center gap-4 text-muted-foreground">
           <UserCircle className="h-16 w-16 animate-pulse opacity-30" />
           <p className="text-sm font-medium">{t('profile.loadingUser')}</p>
@@ -313,10 +313,10 @@ function ProfilePage() {
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+      className={`min-h-screen bg-gradient-to-br from-red-50 via-white to-rose-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}
     >
       {/* Hero Banner with animated gradient */}
-      <div className="relative h-48 overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600">
+      <div className="relative h-48 overflow-hidden bg-gradient-to-r from-red-500 via-red-600 to-rose-600">
         <div
           className="absolute inset-0 opacity-20"
           style={{
@@ -326,7 +326,7 @@ function ProfilePage() {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-transparent to-violet-600/20 animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 via-transparent to-rose-500/20 animate-pulse" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 pb-20 sm:px-6 lg:px-8">
@@ -339,14 +339,14 @@ function ProfilePage() {
                 <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
                   {/* Avatar with advanced styling */}
                   <div className="group relative">
-                    <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 opacity-75 blur transition duration-300 group-hover:opacity-100" />
+                    <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-red-500 via-rose-500 to-red-600 opacity-75 blur transition duration-300 group-hover:opacity-100" />
                     <div className="relative overflow-hidden rounded-full ring-4 ring-white dark:ring-slate-900">
                       <Avatar className="h-32 w-32 transition-transform duration-300 group-hover:scale-105">
                         <AvatarImage
                           src={user.avatarUrl ? imageApi.getImageUrl(user.avatarUrl) : undefined}
                           alt={fullName}
                         />
-                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl font-bold text-white">
+                        <AvatarFallback className="bg-gradient-to-br from-red-500 to-rose-600 text-3xl font-bold text-white">
                           {getInitials(user.firstName, user.lastName, user.email)}
                         </AvatarFallback>
                       </Avatar>
@@ -354,7 +354,7 @@ function ProfilePage() {
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploadingAvatar}
-                      className="absolute -bottom-1 -right-1 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg ring-4 ring-white transition-all duration-200 hover:scale-110 hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed dark:ring-slate-900"
+                      className="absolute -bottom-1 -right-1 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg ring-4 ring-white transition-all duration-200 hover:scale-110 hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed dark:ring-slate-900"
                     >
                       {isUploadingAvatar ? (
                         <Upload className="h-4 w-4 animate-spin" />
@@ -398,7 +398,7 @@ function ProfilePage() {
                       </Badge>
                       <Badge
                         variant="outline"
-                        className="gap-1.5 border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary transition-all duration-200 hover:scale-105 hover:bg-primary/10"
+                        className="gap-1.5 border-red-500/20 bg-red-500/5 px-3 py-1 text-xs font-medium text-red-600 transition-all duration-200 hover:scale-105 hover:bg-red-500/10"
                       >
                         <Shield className="h-3 w-3" />
                         {user.role === 'admin' ? t('profile.adminBadge') : t('profile.userBadge')}
@@ -412,7 +412,7 @@ function ProfilePage() {
                   <DialogTrigger asChild>
                     <Button
                       size="lg"
-                      className="gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 px-6 shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                      className="gap-2 bg-gradient-to-r from-red-500 to-rose-600 px-6 shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg"
                     >
                       <Pencil className="h-4 w-4" />
                       {t('profile.edit')}
@@ -421,7 +421,7 @@ function ProfilePage() {
                   <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2 text-xl">
-                        <Sparkles className="h-5 w-5 text-blue-600" />
+                        <Sparkles className="h-5 w-5 text-red-600" />
                         {t('profile.editDialogTitle')}
                       </DialogTitle>
                       <DialogDescription className="text-muted-foreground">
@@ -433,7 +433,7 @@ function ProfilePage() {
                       {/* Basic Info Section */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                          <div className="h-1 w-1 rounded-full bg-blue-600" />
+                          <div className="h-1 w-1 rounded-full bg-red-600" />
                           <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                             {t('profile.sections.basicInfo')}
                           </h3>
@@ -447,7 +447,7 @@ function ProfilePage() {
                               id="e-firstName"
                               {...register('firstName')}
                               placeholder={t('profile.firstName')}
-                              className={`transition-all duration-200 ${errors.firstName ? 'border-destructive ring-destructive/20' : 'focus:ring-primary/20'}`}
+                              className={`transition-all duration-200 ${errors.firstName ? 'border-destructive ring-destructive/20' : 'focus:ring-red-500/20'}`}
                             />
                             {errors.firstName && (
                               <p className="text-xs text-destructive">{errors.firstName.message}</p>
@@ -461,7 +461,7 @@ function ProfilePage() {
                               id="e-lastName"
                               {...register('lastName')}
                               placeholder={t('profile.lastName')}
-                              className={`transition-all duration-200 ${errors.lastName ? 'border-destructive ring-destructive/20' : 'focus:ring-primary/20'}`}
+                              className={`transition-all duration-200 ${errors.lastName ? 'border-destructive ring-destructive/20' : 'focus:ring-red-500/20'}`}
                             />
                             {errors.lastName && (
                               <p className="text-xs text-destructive">{errors.lastName.message}</p>
@@ -531,7 +531,7 @@ function ProfilePage() {
                               type="email"
                               {...register('backupEmail')}
                               placeholder="backup@example.com"
-                              className={`transition-all duration-200 ${errors.backupEmail ? 'border-destructive ring-destructive/20' : 'focus:ring-primary/20'}`}
+                              className={`transition-all duration-200 ${errors.backupEmail ? 'border-destructive ring-destructive/20' : 'focus:ring-red-500/20'}`}
                             />
                             {errors.backupEmail && (
                               <p className="text-xs text-destructive">{errors.backupEmail.message}</p>
@@ -575,7 +575,7 @@ function ProfilePage() {
                         <Button
                           type="submit"
                           disabled={isSaving}
-                          className="min-w-[140px] gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-200 hover:scale-105"
+                          className="min-w-[140px] gap-2 bg-gradient-to-r from-red-500 to-rose-600 transition-all duration-200 hover:scale-105"
                         >
                           {isSaving ? (
                             <>
@@ -600,7 +600,7 @@ function ProfilePage() {
           <TabsList className="mb-6 grid w-full grid-cols-2 bg-white/50 p-1 backdrop-blur-sm dark:bg-slate-900/50 lg:w-auto lg:grid-cols-2">
             <TabsTrigger
               value="profile"
-              className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-md"
+              className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-rose-600 data-[state=active]:text-white data-[state=active]:shadow-md"
             >
               <UserCircle className="h-4 w-4" />
               <span className="hidden sm:inline">{t('profile.tabs.profile')}</span>
@@ -620,7 +620,7 @@ function ProfilePage() {
               {/* Left Sidebar - Account Meta */}
               <div className="space-y-6">
                 <Card className="overflow-hidden border-none bg-white/80 shadow-lg backdrop-blur-xl transition-all duration-300 hover:shadow-xl dark:bg-slate-900/80">
-                  <div className="h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500" />
+                  <div className="h-1.5 bg-gradient-to-r from-red-500 via-rose-500 to-pink-500" />
                   <CardHeader className="pb-3 pt-5">
                     <CardTitle className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                       <Hash className="h-4 w-4" />
@@ -647,7 +647,7 @@ function ProfilePage() {
               <div className="space-y-6 lg:col-span-2">
                 {/* Basic Information Card */}
                 <Card className="overflow-hidden border-none bg-white/80 shadow-lg backdrop-blur-xl transition-all duration-300 hover:shadow-xl dark:bg-slate-900/80">
-                  <div className="h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500" />
+                  <div className="h-1.5 bg-gradient-to-r from-red-500 via-rose-500 to-pink-500" />
                   <CardHeader className="pb-3 pt-5">
                     <CardTitle className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                       <User className="h-4 w-4" />
@@ -871,10 +871,10 @@ function ProfilePage() {
 
               {/* Account Status Card */}
               <Card className="overflow-hidden border-none bg-white/80 shadow-lg backdrop-blur-xl transition-all duration-300 hover:shadow-xl dark:bg-slate-900/80">
-                <div className="h-1.5 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500" />
+                <div className="h-1.5 bg-gradient-to-r from-red-500 via-rose-500 to-pink-500" />
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-base">
-                    <Shield className="h-5 w-5 text-violet-600" />
+                    <Shield className="h-5 w-5 text-red-600" />
                     {t('profile.accountStatus')}
                   </CardTitle>
                 </CardHeader>

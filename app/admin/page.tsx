@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Users, FileText, Package, HardDrive, DollarSign, LogIn, BarChart3, Activity } from 'lucide-react'
+import { Users, FileText, Package, HardDrive, DollarSign, LogIn, BarChart3, Activity, HeadphonesIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const adminLinks = (t: any) => [
@@ -79,6 +79,14 @@ const adminLinks = (t: any) => [
 		icon: Activity,
 		color: 'bg-pink-500',
 		stats: 'Bandwidth Monitor',
+	},
+	{
+		title: 'Yêu cầu Hỗ trợ',
+		description: 'Theo dõi và xử lý các yêu cầu hỗ trợ từ người dùng',
+		href: '/admin/support-tickets',
+		icon: HeadphonesIcon,
+		color: 'bg-teal-500',
+		stats: 'Support Tickets',
 	},
 ]
 

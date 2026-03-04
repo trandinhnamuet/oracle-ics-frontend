@@ -596,7 +596,8 @@
     "logoSubtitle": "公式パートナー",
     "languageLabel": "言語",
     "admin": "管理者",
-    "packageManagement": "マイクラウド"
+    "packageManagement": "マイクラウド",
+    "supportRequest": "サポートリクエスト"
   },
   "footer": {
     "companyName": "Oracleクラウドベトナム",
@@ -840,5 +841,66 @@
       "error": "エラー",
       "loadError": "サブスクリプション情報を読み込めません"
     }
+  },
+  "support": {
+    "title": "サポートリクエスト",
+    "subtitle": "技術的なサポートリクエストを送信して、迅速な回答を受け取る",
+    "submit": "サポートリクエストを送信",
+    "submitting": "送信中...",
+    "submitSuccess": "リクエストが正常に送信されました！",
+    "submitSuccessDesc": "できるだけ早く返答します",
+    "submitError": "リクエストの送信に失敗しました",
+    "fields": {
+      "title": "件名",
+      "titlePlaceholder": "問題を簡単に説明してください",
+      "name": "お客様名",
+      "namePlaceholder": "氏名",
+      "email": "メール",
+      "emailPlaceholder": "連絡先メール",
+      "phone": "電話番号",
+      "phonePlaceholder": "連絡先電話番号",
+      "address": "住所",
+      "addressPlaceholder": "住所",
+      "service": "サービス",
+      "servicePlaceholder": "サービスを選択",
+      "content": "内容",
+      "contentPlaceholder": "発生している問題を詳しく説明してください...",
+      "attachment": "添付ファイル (URL)"
+    },
+    "services": {
+      "cloud": "クラウドサーバー",
+      "storage": "オブジェクトストレージ",
+      "network": "ネットワーク / VPN",
+      "billing": "請求",
+      "account": "アカウント",
+      "other": "その他"
+    },
+    "myTickets": "マイチケット",
+    "noTickets": "サポートリクエストはまだありません",
+    "status": {
+      "open": "オープン",
+      "in_progress": "処理中",
+      "resolved": "解決済み",
+      "closed": "クローズ"
+    },
+    "priority": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "緊急"
+    }
+  },
+  "adminSupport": {
+    "title": "サポートチケット管理",
+    "subtitle": "ユーザーからのサポートリクエストを追跡・処理",
+    "totalTickets": "合計チケット",
+    "openTickets": "オープン",
+    "inProgressTickets": "処理中",
+    "resolvedTickets": "解決済み",
+    "updateSuccess": "更新しました",
+    "updateError": "更新失敗",
+    "deleteConfirm": "このチケットを削除してもよろしいですか？",
+    "adminNote": "管理者メモ",
+    "adminNotePlaceholder": "処理メモを入力..."
   }
 }

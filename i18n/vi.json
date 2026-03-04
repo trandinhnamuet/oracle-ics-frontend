@@ -596,7 +596,8 @@
     "logoSubtitle": "Đối tác chính thức",
     "languageLabel": "Ngôn ngữ",
     "admin": "Quản trị",
-    "packageManagement": "Cloud của tôi"
+    "packageManagement": "Cloud của tôi",
+    "supportRequest": "Yêu cầu hỗ trợ"
   },
   "footer": {
     "companyName": "Oracle Cloud Vietnam",
@@ -874,5 +875,66 @@
       "error": "Lỗi",
       "loadError": "Không thể tải thông tin subscription"
     }
+  },
+  "support": {
+    "title": "Yêu cầu hỗ trợ",
+    "subtitle": "Gửi yêu cầu hỗ trợ kỹ thuật và nhận phản hồi nhanh chóng",
+    "submit": "Gửi yêu cầu hỗ trợ",
+    "submitting": "Đang gửi...",
+    "submitSuccess": "Yêu cầu đã được gửi thành công!",
+    "submitSuccessDesc": "Chúng tôi sẽ phản hồi trong thời gian sớm nhất",
+    "submitError": "Gửi yêu cầu thất bại",
+    "fields": {
+      "title": "Tiêu đề",
+      "titlePlaceholder": "Mô tả ngắn gọn vấn đề của bạn",
+      "name": "Tên khách hàng",
+      "namePlaceholder": "Họ và tên",
+      "email": "Email",
+      "emailPlaceholder": "Email liên hệ",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "Số điện thoại liên hệ",
+      "address": "Địa chỉ",
+      "addressPlaceholder": "Địa chỉ của bạn",
+      "service": "Dịch vụ",
+      "servicePlaceholder": "Chọn dịch vụ",
+      "content": "Nội dung",
+      "contentPlaceholder": "Mô tả chi tiết vấn đề bạn đang gặp phải...",
+      "attachment": "File đính kèm (URL)"
+    },
+    "services": {
+      "cloud": "Cloud Server",
+      "storage": "Object Storage",
+      "network": "Network / VPN",
+      "billing": "Thanh toán",
+      "account": "Tài khoản",
+      "other": "Khác"
+    },
+    "myTickets": "Yêu cầu của tôi",
+    "noTickets": "Chưa có yêu cầu hỗ trợ nào",
+    "status": {
+      "open": "Đang mở",
+      "in_progress": "Đang xử lý",
+      "resolved": "Đã giải quyết",
+      "closed": "Đã đóng"
+    },
+    "priority": {
+      "low": "Thấp",
+      "medium": "Trung bình",
+      "high": "Cao",
+      "urgent": "Khẩn cấp"
+    }
+  },
+  "adminSupport": {
+    "title": "Quản lý Yêu cầu Hỗ trợ",
+    "subtitle": "Theo dõi và xử lý các yêu cầu hỗ trợ từ người dùng",
+    "totalTickets": "Tổng yêu cầu",
+    "openTickets": "Đang mở",
+    "inProgressTickets": "Đang xử lý",
+    "resolvedTickets": "Đã giải quyết",
+    "updateSuccess": "Cập nhật thành công",
+    "updateError": "Cập nhật thất bại",
+    "deleteConfirm": "Bạn chắc chắn muốn xóa yêu cầu này?",
+    "adminNote": "Ghi chú của admin",
+    "adminNotePlaceholder": "Nhập ghi chú xử lý..."
   }
 }

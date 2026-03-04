@@ -385,8 +385,8 @@ export function PricingSection() {
   }
 
   return (
-    <section id="pricing" className="py-10 lg:py-16 bg-card/30">
-      <div className="container mx-auto px-4">
+    <section id="pricing" className="py-8 lg:py-16 bg-card/30 w-full overflow-x-hidden">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl lg:text-5xl font-bold text-balance text-foreground">
             {t('homepage.pricing.subtitle')}
@@ -402,7 +402,8 @@ export function PricingSection() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
           </div>
         ) : (
-        <div ref={mainCardsRef} className="grid lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
+        <div ref={mainCardsRef} className="w-full px-2 sm:px-0">
+          <div className="grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 lg:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 w-full lg:max-w-7xl lg:mx-auto">
           {pricingCategories.map((category: PricingCategory, index: number) => {
             const IconComponent = category.icon
             return (
@@ -419,8 +420,8 @@ export function PricingSection() {
                   <div className="mx-auto mb-3 p-3 bg-primary/10 rounded-2xl w-fit">
                     <IconComponent className="h-8 w-8 text-primary" />
                   </div>
-                  <CardTitle className="text-2xl font-bold text-foreground">{t(`homepage.pricing.plans.${category.name}`)}</CardTitle>
-                  <CardDescription className="text-base mt-2">{t(category.description)}</CardDescription>
+                  <CardTitle className="text-xl sm:text-2xl font-bold text-foreground break-words">{t(`homepage.pricing.plans.${category.name}`)}</CardTitle>
+                  <CardDescription className="text-sm sm:text-base mt-2 break-words">{t(category.description)}</CardDescription>
                 </CardHeader>
 
                 <CardFooter className="pt-4">
@@ -456,8 +457,8 @@ export function PricingSection() {
               <div className="mx-auto mb-3 p-3 bg-primary/10 rounded-2xl w-fit">
                 <customPlan.icon className="h-8 w-8 text-primary" />
               </div>
-              <CardTitle className="text-2xl font-bold text-foreground">{t(`homepage.pricing.plans.${customPlan.name}`)}</CardTitle>
-              <CardDescription className="text-base mt-2">{t(customPlan.description)}</CardDescription>
+              <CardTitle className="text-xl sm:text-2xl font-bold text-foreground break-words">{t(`homepage.pricing.plans.${customPlan.name}`)}</CardTitle>
+              <CardDescription className="text-sm sm:text-base mt-2 break-words">{t(customPlan.description)}</CardDescription>
             </CardHeader>
 
             <CardFooter className="pt-4">
@@ -471,6 +472,7 @@ export function PricingSection() {
               </Button>
             </CardFooter>
           </Card>
+          </div>
         </div>
         )}
 
@@ -560,7 +562,7 @@ export function PricingSection() {
               
               <div className="relative">
                 <button
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card border rounded-full p-2 shadow hover:bg-primary/10"
+                  className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card border rounded-full p-2 shadow hover:bg-primary/10"
                   onClick={() => {
                     if (carouselRef.current) {
                       carouselRef.current.scrollBy({ left: -carouselRef.current.offsetWidth, behavior: 'smooth' })
@@ -572,17 +574,15 @@ export function PricingSection() {
                 </button>
                 <div
                   ref={carouselRef}
-                  className={`flex overflow-x-auto gap-4 pb-2 pt-2 hide-scrollbar${
-                    (pricingCategories.find(cat => cat.name === (expandedCategory || closingCategory))?.plans.length ?? 0) <= 6 ? ' justify-center' : ''
-                  }`}
-                  style={{ scrollSnapType: 'x mandatory' }}
+                  className="flex overflow-x-auto gap-2 sm:gap-3 md:gap-4 pb-2 pt-2 px-4 sm:px-8 hide-scrollbar justify-start"
+                  style={{ scrollSnapType: 'x mandatory', scrollPaddingLeft: '2rem', scrollPaddingRight: '2rem' }}
                 >
                   {pricingCategories
                     .find(cat => cat.name === (expandedCategory || closingCategory))
                     ?.plans.map((plan, planIndex) => (
                       <Card
                         key={plan.id}
-                        className={`min-w-[220px] max-w-[220px] flex-shrink-0 scroll-snap-align-start transition-all duration-500 hover:shadow-lg hover:-translate-y-1 hover:border-primary/50 mt-2 ${
+                        className={`min-w-[160px] sm:min-w-[200px] md:min-w-[220px] max-w-[160px] sm:max-w-[200px] md:max-w-[220px] flex-shrink-0 scroll-snap-align-start transition-all duration-500 hover:shadow-lg hover:-translate-y-1 hover:border-primary/50 mt-2 ${
                           isClosing 
                             ? 'animate-out fade-out-0 slide-out-to-bottom-4 duration-700'
                             : 'animate-in fade-in-0 slide-in-from-bottom-4 duration-700'
@@ -645,7 +645,7 @@ export function PricingSection() {
                   }
                 </div>
                 <button
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card border rounded-full p-2 shadow hover:bg-primary/10"
+                  className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card border rounded-full p-2 shadow hover:bg-primary/10"
                   onClick={() => {
                     if (carouselRef.current) {
                       carouselRef.current.scrollBy({ left: carouselRef.current.offsetWidth, behavior: 'smooth' })

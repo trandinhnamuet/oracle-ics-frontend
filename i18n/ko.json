@@ -596,7 +596,8 @@
     "logoSubtitle": "공식 파트너",
     "languageLabel": "언어",
     "admin": "관리자",
-    "packageManagement": "내 클라우드"
+    "packageManagement": "내 클라우드",
+    "supportRequest": "지원 요청"
   },
   "footer": {
     "companyName": "Oracle 클라우드 베트남",
@@ -840,5 +841,66 @@
       "error": "오류",
       "loadError": "구독 정보를 로드할 수 없습니다"
     }
+  },
+  "support": {
+    "title": "지원 요청",
+    "subtitle": "기술 지원 요청을 제출하고 빠른 응답을 받으세요",
+    "submit": "지원 요청 제출",
+    "submitting": "제출 중...",
+    "submitSuccess": "요청이 성공적으로 제출되었습니다!",
+    "submitSuccessDesc": "가능한 빨리 답변 드리겠습니다",
+    "submitError": "요청 제출 실패",
+    "fields": {
+      "title": "제목",
+      "titlePlaceholder": "문제를 간략히 설명해주세요",
+      "name": "고객명",
+      "namePlaceholder": "성명",
+      "email": "이메일",
+      "emailPlaceholder": "연락처 이메일",
+      "phone": "전화번호",
+      "phonePlaceholder": "연락처 전화번호",
+      "address": "주소",
+      "addressPlaceholder": "주소",
+      "service": "서비스",
+      "servicePlaceholder": "서비스 선택",
+      "content": "내용",
+      "contentPlaceholder": "겪고 있는 문제를 자세히 설명해주세요...",
+      "attachment": "첨부파일 (URL)"
+    },
+    "services": {
+      "cloud": "클라우드 서버",
+      "storage": "오브젝트 스토리지",
+      "network": "네트워크 / VPN",
+      "billing": "청구",
+      "account": "계정",
+      "other": "기타"
+    },
+    "myTickets": "내 티켓",
+    "noTickets": "아직 지원 요청이 없습니다",
+    "status": {
+      "open": "열림",
+      "in_progress": "처리 중",
+      "resolved": "해결됨",
+      "closed": "닫힘"
+    },
+    "priority": {
+      "low": "낮음",
+      "medium": "보통",
+      "high": "높음",
+      "urgent": "긴급"
+    }
+  },
+  "adminSupport": {
+    "title": "지원 티켓 관리",
+    "subtitle": "사용자의 지원 요청 추적 및 처리",
+    "totalTickets": "전체 티켓",
+    "openTickets": "열림",
+    "inProgressTickets": "처리 중",
+    "resolvedTickets": "해결됨",
+    "updateSuccess": "업데이트 성공",
+    "updateError": "업데이트 실패",
+    "deleteConfirm": "이 티켓을 삭제하시겠습니까?",
+    "adminNote": "관리자 메모",
+    "adminNotePlaceholder": "처리 메모 입력..."
   }
 }
