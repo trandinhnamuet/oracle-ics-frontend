@@ -197,6 +197,172 @@ export default function PaymentHistoryPage() {
     return payment.description || 'Thanh toán'
   }
 
+  const exportToExcel = async () => {
+    try {
+      const ExcelJS = (await import('exceljs')).default
+      const workbook = new ExcelJS.Workbook()
+      workbook.creator = 'Oracle Cloud Management'
+      workbook.created = new Date()
+
+      const worksheet = workbook.addWorksheet('Lịch sử giao dịch', {
+        views: [{ state: 'frozen', ySplit: 1 }],
+      })
+
+      // Define columns
+      worksheet.columns = [
+        { header: 'STT', key: 'stt', width: 6 },
+        { header: 'Mã giao dịch', key: 'transaction_code', width: 28 },
+        { header: 'Mô tả', key: 'description', width: 42 },
+        { header: 'Loại giao dịch', key: 'type', width: 20 },
+        { header: 'Trạng thái', key: 'status', width: 16 },
+        { header: 'Số tiền (VNĐ)', key: 'amount', width: 18 },
+        { header: 'Phương thức', key: 'method', width: 20 },
+        { header: 'Gói dịch vụ', key: 'package', width: 22 },
+        { header: 'Thời gian', key: 'created_at', width: 22 },
+      ]
+
+      // Style header row
+      const headerRow = worksheet.getRow(1)
+      headerRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF1E3A5F' },
+        }
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 }
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FF1E3A5F' } },
+          left: { style: 'thin', color: { argb: 'FF1E3A5F' } },
+          bottom: { style: 'thin', color: { argb: 'FF1E3A5F' } },
+          right: { style: 'thin', color: { argb: 'FF1E3A5F' } },
+        }
+      })
+      headerRow.height = 28
+
+      const statusLabelMap: Record<string, string> = {
+        success: 'Thành công',
+        pending: 'Đang xử lý',
+        failed: 'Thất bại',
+      }
+      const statusColorMap: Record<string, string> = {
+        success: 'FFD4EDDA',
+        pending: 'FFFFF3CD',
+        failed: 'FFF8D7DA',
+      }
+      const typeLabelMap: Record<string, string> = {
+        deposit: 'Nạp tiền',
+        subscription: 'Thanh toán gói',
+      }
+
+      // Add data rows
+      filteredPayments.forEach((payment, index) => {
+        const row = worksheet.addRow({
+          stt: index + 1,
+          transaction_code: payment.transaction_code || payment.id,
+          description: getPaymentDescription(payment),
+          type: typeLabelMap[payment.payment_type] || payment.payment_type,
+          status: statusLabelMap[payment.status] || payment.status,
+          amount: Number(payment.amount),
+          method: payment.payment_method === 'sepay_qr' ? 'QR Code' : 'Chuyển khoản',
+          package: payment.subscription?.cloudPackage?.name || '',
+          created_at: new Date(payment.created_at),
+        })
+
+        // Row background: alternating
+        const rowFill = index % 2 === 0 ? 'FFFFFFFF' : 'FFF8F9FA'
+        const statusFill = statusColorMap[payment.status] || rowFill
+
+        row.eachCell((cell, colNumber) => {
+          cell.alignment = { vertical: 'middle', wrapText: false }
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            right: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+          }
+          // STT: center
+          if (colNumber === 1) cell.alignment = { ...cell.alignment, horizontal: 'center' }
+          // Amount: right-aligned, number format
+          if (colNumber === 6) {
+            cell.alignment = { ...cell.alignment, horizontal: 'right' }
+            cell.numFmt = '#,##0'
+          }
+          // Status cell: colored background
+          if (colNumber === 5) {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: statusFill } }
+            cell.alignment = { ...cell.alignment, horizontal: 'center' }
+          } else {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowFill } }
+          }
+          // Date: format
+          if (colNumber === 9) {
+            cell.numFmt = 'DD/MM/YYYY HH:MM:SS'
+            cell.alignment = { ...cell.alignment, horizontal: 'center' }
+          }
+        })
+        row.height = 22
+      })
+
+      // Add summary row
+      const totalSuccess = filteredPayments
+        .filter((p) => p.status === 'success')
+        .reduce((sum, p) => sum + Number(p.amount), 0)
+
+      worksheet.addRow({})
+      const summaryRow = worksheet.addRow({
+        stt: '',
+        transaction_code: '',
+        description: `Tổng cộng: ${filteredPayments.length} giao dịch`,
+        type: '',
+        status: '',
+        amount: totalSuccess,
+        method: '',
+        package: '',
+        created_at: '',
+      })
+      summaryRow.eachCell((cell, colNumber) => {
+        cell.font = { bold: true }
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEBF5EB' } }
+        if (colNumber === 3) cell.alignment = { horizontal: 'right' }
+        if (colNumber === 6) {
+          cell.numFmt = '#,##0'
+          cell.alignment = { horizontal: 'right' }
+          cell.font = { bold: true, color: { argb: 'FF28A745' } }
+        }
+      })
+      summaryRow.height = 24
+
+      // Export file
+      const buffer = await workbook.xlsx.writeBuffer()
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      const dateStr = new Date().toISOString().slice(0, 10)
+      a.href = url
+      a.download = `lich-su-thanh-toan-${dateStr}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      toast({
+        title: 'Xuất Excel thành công',
+        description: `Đã xuất ${filteredPayments.length} giao dịch`,
+        variant: 'default',
+      })
+    } catch (error) {
+      console.error('Error exporting to Excel:', error)
+      toast({
+        title: 'Lỗi xuất Excel',
+        description: 'Không thể xuất file Excel, vui lòng thử lại',
+        variant: 'destructive',
+      })
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
@@ -295,7 +461,7 @@ export default function PaymentHistoryPage() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Bộ lọc và tìm kiếm</span>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={exportToExcel}>
                 <Download className="h-4 w-4 mr-2" />
                 Xuất Excel
               </Button>
