@@ -36,6 +36,7 @@ export interface NotificationPage {
   page: number;
   limit: number;
   totalPages: number;
+  server_time?: string; // Server timestamp for timezone detection
 }
 
 export async function getMyNotifications(page = 1, limit = 20): Promise<NotificationPage> {

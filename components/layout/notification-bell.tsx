@@ -1,9 +1,8 @@
 "use client"
 
 import React, { useState, useEffect, useRef, useCallback } from "react"
-import { Bell, X, Check, CheckCheck, Trash2, Loader2 } from "lucide-react"
+import { Bell, X, Check, CheckCheck, Trash2, Loader2, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Notification,
@@ -21,15 +20,48 @@ import { cn } from "@/lib/utils"
 // ---------- helpers ----------
 
 function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const minutes = Math.floor(diff / 60_000)
-  if (minutes < 1) return "vừa xong"
-  if (minutes < 60) return `${minutes} phút trước`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours} giờ trước`
-  const days = Math.floor(hours / 24)
-  if (days < 7) return `${days} ngày trước`
-  return new Date(dateStr).toLocaleDateString("vi-VN")
+  try {
+    // Normalise: if the string has no timezone indicator, treat it as UTC.
+    // @CreateDateColumn() can return "2026-03-05T03:00:00.000" (no Z),
+    // which browsers in UTC+7 would misread as local time — 7 h off.
+    let normalised = dateStr.trim().replace(' ', 'T')
+    if (!/Z$/i.test(normalised) && !/[+-]\d{2}:?\d{2}$/.test(normalised)) {
+      normalised += 'Z'
+    }
+    const date = new Date(normalised)
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "thời gian không rõ"
+    }
+
+    const diff = Date.now() - date.getTime()
+    
+    // If difference is negative, the notification is from the future (clock skew)
+    if (diff < 0) {
+      return "vừa xong"
+    }
+    
+    const minutes = Math.floor(diff / 60_000)
+    if (minutes < 1) return "vừa xong"
+    if (minutes < 60) return `${minutes} phút trước`
+    
+    const hours = Math.floor(minutes / 60)
+    if (hours < 24) return `${hours} giờ trước`
+    
+    const days = Math.floor(hours / 24)
+    if (days < 7) return `${days} ngày trước`
+    
+    // For older dates, show the actual date
+    return date.toLocaleDateString("vi-VN", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+  } catch (e) {
+    return "thời gian không rõ"
+  }
 }
 
 const TYPE_ICON: Record<NotificationType, string> = {
@@ -83,6 +115,7 @@ export function NotificationBell() {
   const [data, setData] = useState<NotificationPage | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
   const [readingId, setReadingId] = useState<number | null>(null)
+  const [, setNow] = useState(Date.now()) // Force re-render for time updates
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -121,6 +154,15 @@ export function NotificationBell() {
     setLoading(true)
     fetchPage(1).finally(() => setLoading(false))
   }, [open, isAuthenticated, fetchPage])
+
+  // Update time display every 30 seconds
+  useEffect(() => {
+    if (!open) return
+    const interval = setInterval(() => {
+      setNow(Date.now())
+    }, 30_000) // Update every 30 seconds
+    return () => clearInterval(interval)
+  }, [open])
 
   // Close on outside click
   useEffect(() => {
@@ -184,6 +226,16 @@ export function NotificationBell() {
     setLoadingMore(false)
   }
 
+  const handleRefresh = async () => {
+    setLoading(true)
+    try {
+      await fetchUnread()
+      await fetchPage(1)
+    } catch { /* silent */ } finally {
+      setLoading(false)
+    }
+  }
+
   // ---------- render ----------
 
   if (!isAuthenticated) return null
@@ -219,9 +271,10 @@ export function NotificationBell() {
         <div
           ref={panelRef}
           className={cn(
-            "absolute right-0 top-11 z-[200] w-[380px] max-w-[calc(100vw-1rem)]",
+            "absolute right-0 top-11 z-[200] w-[400px] max-w-[calc(100vw-1rem)]",
             "rounded-2xl border border-border bg-background shadow-2xl",
-            "flex flex-col overflow-hidden",
+            "flex flex-col",
+            "max-h-[min(560px,80vh)]",
             "animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-150"
           )}
         >
@@ -249,6 +302,16 @@ export function NotificationBell() {
                   Đọc tất cả
                 </Button>
               )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+                onClick={handleRefresh}
+                disabled={loading}
+                title="Làm mới thông báo"
+              >
+                <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+              </Button>
               {hasReadItems && (
                 <Button
                   variant="ghost"
@@ -271,8 +334,8 @@ export function NotificationBell() {
             </div>
           </div>
 
-          {/* Body */}
-          <ScrollArea className="flex-1 max-h-[480px]">
+          {/* Body – native scroll so the scrollbar is always visible */}
+          <div className="flex-1 overflow-y-scroll min-h-0 [scrollbar-width:thin] [scrollbar-color:hsl(var(--border))_transparent]">
             {loading ? (
               <div className="p-3 space-y-3">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -295,86 +358,86 @@ export function NotificationBell() {
                 <p className="text-xs text-muted-foreground mt-1">Các thông báo về tài khoản sẽ hiện ở đây</p>
               </div>
             ) : (
-              <div className="py-1">
+              <div>
                 {notifications.map((n) => (
                   <button
                     key={n.id}
                     onClick={() => handleMarkOne(n)}
                     className={cn(
-                      "w-full text-left px-4 py-3 flex gap-3 items-start transition-colors group",
+                      "w-full text-left px-4 py-2.5 flex gap-3 items-start transition-colors group border-b border-border/50 last:border-b-0",
                       "hover:bg-muted/70 focus:outline-none",
                       !n.is_read && "bg-primary/5 hover:bg-primary/10"
                     )}
                   >
                     {/* Icon */}
                     <div className={cn(
-                      "flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg",
+                      "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm mt-0.5",
                       TYPE_COLOR[n.type as NotificationType] ?? "bg-muted text-muted-foreground"
                     )}>
                       {TYPE_ICON[n.type as NotificationType] ?? "📣"}
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 py-0.5">
                       <p className={cn(
-                        "text-sm leading-snug line-clamp-1",
+                        "text-xs leading-tight line-clamp-1",
                         n.is_read ? "font-normal text-foreground" : "font-semibold text-foreground"
                       )}>
                         {n.title}
                       </p>
-                      <p className="text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2">
+                      <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">
                         {n.message}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className={cn(
-                          "text-[11px] font-medium",
+                          "text-[10px] font-medium whitespace-nowrap",
                           n.is_read ? "text-muted-foreground" : "text-primary"
                         )}>
                           {timeAgo(n.created_at)}
                         </span>
                         {!n.is_read && (
-                          <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                         )}
                       </div>
                     </div>
 
                     {/* Mark-read spinner */}
                     {readingId === n.id && (
-                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground flex-shrink-0 mt-1" />
+                      <Loader2 className="h-3 w-3 animate-spin text-muted-foreground flex-shrink-0 mt-1" />
                     )}
                     {readingId !== n.id && n.is_read && (
-                      <Check className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <Check className="h-3 w-3 text-muted-foreground/50 flex-shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                     )}
                   </button>
                 ))}
 
                 {/* Load more */}
                 {hasMore && (
-                  <div className="px-4 py-2 border-t border-border">
+                  <div className="border-t border-border">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full text-xs text-primary hover:text-primary hover:bg-primary/10"
+                      className="w-full text-xs text-primary hover:text-primary hover:bg-primary/10 h-8"
                       onClick={handleLoadMore}
                       disabled={loadingMore}
                     >
                       {loadingMore ? (
                         <><Loader2 className="h-3 w-3 animate-spin mr-1" /> Đang tải...</>
                       ) : (
-                        "Xem thêm thông báo"
+                        "Tải thêm"
                       )}
                     </Button>
                   </div>
                 )}
               </div>
             )}
-          </ScrollArea>
+          </div>
 
           {/* Footer */}
           {notifications.length > 0 && (
-            <div className="px-4 py-2 border-t border-border bg-muted/30 text-center">
+            <div className="px-4 py-1.5 border-t border-border bg-muted/30 text-center">
               <p className="text-xs text-muted-foreground">
-                Hiển thị {notifications.length} / {data?.total ?? notifications.length} thông báo
+                {notifications.length} / {data?.total ?? notifications.length} thông báo
               </p>
             </div>
           )}
