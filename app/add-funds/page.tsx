@@ -171,7 +171,7 @@ export default function AddFundsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-background py-8">
         <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="flex items-center mb-8">
@@ -184,7 +184,7 @@ export default function AddFundsPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Nạp tiền vào tài khoản</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -203,8 +203,8 @@ export default function AddFundsPage() {
                     className={`
                       relative p-4 border rounded-lg cursor-pointer transition-all
                       ${isSelected 
-                        ? 'border-[#E60000] bg-red-50' 
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#E60000] bg-red-50 dark:bg-red-950/30' 
+                        : 'border-gray-200 hover:border-gray-300 dark:border-border dark:hover:border-border/80'
                       }
                       ${!method.enabled ? 'opacity-50 cursor-not-allowed' : ''}
                     `}
@@ -217,20 +217,20 @@ export default function AddFundsPage() {
                     <div className="flex items-center space-x-3">
                       <div className={`
                         p-2 rounded-lg
-                        ${isSelected ? 'bg-[#E60000] text-white' : 'bg-gray-100 text-gray-600'}
+                        ${isSelected ? 'bg-[#E60000] text-white' : 'bg-gray-100 text-gray-600 dark:bg-muted dark:text-muted-foreground'}
                       `}>
                         <Icon className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center space-x-2">
-                          <h3 className="font-medium text-gray-900">{method.name}</h3>
+                          <h3 className="font-medium text-gray-900 dark:text-foreground">{method.name}</h3>
                           {method.comingSoon && (
                             <Badge variant="outline" className="text-xs">
                               Sắp có
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600">{method.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-muted-foreground">{method.description}</p>
                       </div>
                       {isSelected && method.enabled && (
                         <div className="w-4 h-4 bg-[#E60000] rounded-full flex items-center justify-center">
@@ -251,7 +251,7 @@ export default function AddFundsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-gray-700 dark:text-muted-foreground">
                   Số tiền (VND)
                 </label>
                 <div className="relative">
@@ -262,12 +262,12 @@ export default function AddFundsPage() {
                     placeholder="Nhập số tiền..."
                     className="text-lg font-semibold pr-12"
                   />
-                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-muted-foreground">
                     VND
                   </span>
                 </div>
                 {amount && (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">
                     Số tiền: <span className="font-semibold text-[#E60000]">
                       {formatAmountDisplay(amount)} VND
                     </span>
@@ -276,7 +276,7 @@ export default function AddFundsPage() {
               </div>
               {/* Các mức nạp nhanh */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-gray-700 dark:text-muted-foreground">
                   Hoặc chọn mức nạp nhanh
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">

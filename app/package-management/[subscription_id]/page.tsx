@@ -438,7 +438,7 @@ export default function PackageDetailPage() {
 
   if (isDataLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
           <div className="text-lg">{t('packageDetail.loading.subscription')}</div>
@@ -449,7 +449,7 @@ export default function PackageDetailPage() {
 
   if (!subscription || !packageDetail) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="text-lg text-red-600">{t('packageDetail.error.notFound')}</div>
           <Button 
@@ -466,7 +466,7 @@ export default function PackageDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -481,10 +481,10 @@ export default function PackageDetailPage() {
               {t('packageDetail.buttons.back')}
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">
                 {t('packageDetail.title')}
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-gray-600 dark:text-muted-foreground mt-1">
                 {t('packageDetail.subtitle')}
               </p>
             </div>
@@ -503,15 +503,15 @@ export default function PackageDetailPage() {
             <CardContent>
               <div className="space-y-4">
                 {!subscription?.vm_instance_id ? (
-                  <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <p className="text-sm text-yellow-700">
+                  <div className="p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-900">
+                    <p className="text-sm text-yellow-700 dark:text-yellow-400">
                       VM not configured yet. Configure your VM to see server details.
                     </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.status')}</p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.serverDetails.status')}</p>
                       <div className="flex items-center gap-2">
                         <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                           vmDetails?.vm?.lifecycleState === 'RUNNING' 
@@ -527,15 +527,15 @@ export default function PackageDetailPage() {
                       </div>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.hostname')}</p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.serverDetails.hostname')}</p>
                       <p className="font-semibold">{vmDetails?.vm?.instanceName || 'N/A'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.username')}</p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.serverDetails.username')}</p>
                       <p className="font-semibold">root</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">{t('packageDetail.serverDetails.ip')}</p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.serverDetails.ip')}</p>
                       {vmDetails?.vm?.publicIp ? (
                         <a href={`http://${vmDetails.vm.publicIp}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 underline">
                           {vmDetails.vm.publicIp}
@@ -545,21 +545,21 @@ export default function PackageDetailPage() {
                       )}
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Instance ID <span className="text-xs text-gray-400">(will be hide in production)</span></p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">Instance ID <span className="text-xs text-gray-400 dark:text-muted-foreground">(will be hide in production)</span></p>
                       <p className="font-semibold text-xs break-all">{vmDetails?.vm?.instanceId || 'N/A'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Compartment ID <span className="text-xs text-gray-400">(will be hide in production)</span></p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">Compartment ID <span className="text-xs text-gray-400 dark:text-muted-foreground">(will be hide in production)</span></p>
                       <p className="font-semibold text-xs break-all">{vmDetails?.vm?.compartmentId || 'N/A'}</p>
                     </div>
                     {vmDetails?.vm?.startedAt && (
                       <>
                         <div>
-                          <p className="text-sm text-gray-600">Thời điểm bắt đầu chạy</p>
+                          <p className="text-sm text-gray-600 dark:text-muted-foreground">Thời điểm bắt đầu chạy</p>
                           <p className="font-semibold">{new Date(vmDetails.vm.startedAt).toLocaleString('vi-VN')}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600">Uptime</p>
+                          <p className="text-sm text-gray-600 dark:text-muted-foreground">Uptime</p>
                           <p className="font-semibold">
                             {(() => {
                               const startTime = new Date(vmDetails.vm.startedAt).getTime()
@@ -587,28 +587,28 @@ export default function PackageDetailPage() {
               {subscription?.vm_instance_id ? (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-2">
                       {t('packageDetail.controls.vmName')}
                     </label>
-                    <div className="px-3 py-2 border rounded bg-gray-50">
+                    <div className="px-3 py-2 border rounded bg-gray-50 dark:bg-muted dark:border-border">
                       <p className="text-sm font-semibold">{vmDetails?.vm?.instanceName || 'N/A'}</p>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-2">
                       Shape
                     </label>
-                    <div className="px-3 py-2 border rounded bg-gray-50">
+                    <div className="px-3 py-2 border rounded bg-gray-50 dark:bg-muted dark:border-border">
                       <p className="text-sm font-semibold">{vmDetails?.vm?.shape || 'N/A'}</p>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-2">
                       Region
                     </label>
-                    <div className="px-3 py-2 border rounded bg-gray-50">
+                    <div className="px-3 py-2 border rounded bg-gray-50 dark:bg-muted dark:border-border">
                       <p className="text-sm font-semibold">{vmDetails?.vm?.region || vmDetails?.vm?.availabilityDomain?.split(':')[0] || 'N/A'}</p>
                     </div>
                   </div>
@@ -629,7 +629,7 @@ export default function PackageDetailPage() {
                 </>
               ) : (
                 <div className="col-span-4">
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4">
                     No VM configured. Please configure your VM first.
                   </p>
                 </div>
@@ -725,7 +725,7 @@ export default function PackageDetailPage() {
                         </AreaChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400">
+                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground">
                         <p>No data available</p>
                       </div>
                     )}
@@ -773,7 +773,7 @@ export default function PackageDetailPage() {
                         </AreaChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400">
+                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground">
                         <p>No data available</p>
                       </div>
                     )}
@@ -831,7 +831,7 @@ export default function PackageDetailPage() {
                         </AreaChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400">
+                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground">
                         <p>No data available</p>
                       </div>
                     )}
@@ -889,7 +889,7 @@ export default function PackageDetailPage() {
                         </AreaChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400">
+                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground">
                         <p>No data available</p>
                       </div>
                     )}
@@ -901,7 +901,7 @@ export default function PackageDetailPage() {
         ) : (
           <Card>
             <CardContent className="p-6">
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-500 dark:text-muted-foreground">
                 <p>
                   {subscription?.vm_instance_id 
                     ? 'Charts available when VM is running' 
@@ -923,39 +923,39 @@ export default function PackageDetailPage() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.packageName')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.packageName')}</p>
                   <p className="font-semibold">{packageDetail.packageName || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.vmName')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.vmName')}</p>
                   <p className="font-semibold">{vmDetails?.vm?.instanceName || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.cpu')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.cpu')}</p>
                   <p className="font-semibold">{packageDetail.cpu || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.memory')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.memory')}</p>
                   <p className="font-semibold">{packageDetail.memory || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.storage')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.storage')}</p>
                   <p className="font-semibold">{packageDetail.storage || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.bandwidth')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.bandwidth')}</p>
                   <p className="font-semibold">{packageDetail.bandwidth || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.feature')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.feature')}</p>
                   <p className="font-semibold">{packageDetail.feature || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.ipAddress')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.ipAddress')}</p>
                   <p className="font-semibold">{vmDetails?.vm?.publicIp || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.subscriber')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.subscriber')}</p>
                   <p className="font-semibold">
                     {packageDetail.user ? 
                       `${packageDetail.user.firstName} ${packageDetail.user.lastName}` : 
@@ -964,19 +964,19 @@ export default function PackageDetailPage() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.email')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.email')}</p>
                   <p className="font-semibold">{packageDetail.user?.email || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.startDate')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.startDate')}</p>
                   <p className="font-semibold">{packageDetail.startDate || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.endDate')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.endDate')}</p>
                   <p className="font-semibold">{packageDetail.endDate || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.autoRenew')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.autoRenew')}</p>
                   <p className="font-semibold">
                     <Badge variant={packageDetail.autoRenew ? 'default' : 'outline'}>
                       {packageDetail.autoRenew ? t('packageDetail.packageInfo.yes') : t('packageDetail.packageInfo.no')}
@@ -984,7 +984,7 @@ export default function PackageDetailPage() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t('packageDetail.packageInfo.monthlyCost')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.monthlyCost')}</p>
                   <p className="font-semibold">
                     {new Intl.NumberFormat('vi-VN', {
                       style: 'currency',
@@ -995,19 +995,19 @@ export default function PackageDetailPage() {
                 {vmDetails && vmDetails.vm && (
                   <>
                     <div>
-                      <p className="text-sm text-gray-600">VM Shape</p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">VM Shape</p>
                       <p className="font-semibold">{vmDetails.vm.shape || '-'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Region</p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">Region</p>
                       <p className="font-semibold">{vmDetails.vm.region || vmDetails.vm.availabilityDomain?.split(':')[0] || '-'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">VM Status</p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">VM Status</p>
                       <p className="font-semibold">{vmDetails.vm.lifecycleState || '-'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Created Date</p>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">Created Date</p>
                       <p className="font-semibold">
                         {vmDetails.vm.createdAt ? new Date(vmDetails.vm.createdAt).toLocaleDateString('vi-VN') : '-'}
                       </p>
@@ -1026,7 +1026,7 @@ export default function PackageDetailPage() {
             <CardContent className="space-y-3">
               {!subscription?.vm_instance_id ? (
                 <div className="space-y-3">
-                  <p className="text-sm text-yellow-600 mb-3">VM not configured yet</p>
+                  <p className="text-sm text-yellow-600 dark:text-yellow-400 mb-3">VM not configured yet</p>
                   <Button 
                     className="w-full bg-blue-600 hover:bg-blue-700"
                     onClick={() => router.push(`/cloud/configuration/${subscriptionId}`)}
@@ -1039,11 +1039,11 @@ export default function PackageDetailPage() {
                   <div className="space-y-2 mb-3">
                     {vmDetails && vmDetails.vm && (
                       <>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-muted-foreground">
                           <strong>VM State:</strong> {vmDetails.vm.lifecycleState}
                         </p>
                         {vmDetails.vm.publicIp && (
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-muted-foreground">
                             <strong>Public IP:</strong> {vmDetails.vm.publicIp}
                           </p>
                         )}
@@ -1113,7 +1113,7 @@ export default function PackageDetailPage() {
               </Button>
               
               
-              <div className="pt-2 border-t space-y-2">
+              <div className="pt-2 border-t dark:border-border space-y-2">
                 {subscription?.vm_instance_id && (
                   <Button 
                     className="w-full justify-start"
@@ -1146,16 +1146,16 @@ export default function PackageDetailPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <p className="text-sm text-gray-600">{t('packageDetail.billing.createdDate')}</p>
+              <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.billing.createdDate')}</p>
                 <p className="text-xl font-bold text-blue-600">{packageDetail.createdAt}</p>
               </div>
-              <div className="text-center p-4 bg-green-50 rounded-lg">
-                <p className="text-sm text-gray-600">{t('packageDetail.billing.nextBilling')}</p>
+              <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.billing.nextBilling')}</p>
                 <p className="text-xl font-bold text-green-600">{packageDetail.nextBilling}</p>
               </div>
-              <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <p className="text-sm text-gray-600">{t('packageDetail.billing.monthlyCost')}</p>
+              <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.billing.monthlyCost')}</p>
                 <p className="text-xl font-bold text-purple-600">
                   {new Intl.NumberFormat('vi-VN', {
                     style: 'currency',

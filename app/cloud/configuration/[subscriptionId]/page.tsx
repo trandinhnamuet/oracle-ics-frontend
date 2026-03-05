@@ -287,7 +287,7 @@ export default function CloudConfigurationBySubscriptionPage() {
 
   if (isLoadingSubscription) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-background dark:via-background dark:to-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto" />
           <p className="mt-4 text-muted-foreground">Loading subscription details...</p>
@@ -298,7 +298,7 @@ export default function CloudConfigurationBySubscriptionPage() {
 
   if (!subscription) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-background dark:via-background dark:to-background flex items-center justify-center">
         <Card className="max-w-md">
           <CardContent className="pt-6 text-center">
             <p className="text-red-600">Subscription not found</p>
@@ -312,11 +312,11 @@ export default function CloudConfigurationBySubscriptionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-background dark:via-background dark:to-background py-12 px-4">
       {/* VM Provisioning Overlay */}
       {isProcessing && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+          <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
             <div className="text-center">
               {/* Animated Spinner */}
               <div className="relative w-24 h-24 mx-auto mb-6">
@@ -327,37 +327,37 @@ export default function CloudConfigurationBySubscriptionPage() {
               </div>
               
               {/* Main Message */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-3">
                 Creating Your VM Instance
               </h3>
               
               {/* Submessage */}
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-muted-foreground mb-4">
                 Your virtual machine is being provisioned...
               </p>
               
               {/* Progress Steps */}
-              <div className="space-y-3 text-left bg-blue-50 rounded-lg p-4 mb-4">
+              <div className="space-y-3 text-left bg-blue-50 dark:bg-blue-950/30 rounded-lg p-4 mb-4">
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse"></div>
-                  <span className="text-gray-700">Provisioning compartment and network</span>
+                  <span className="text-gray-700 dark:text-foreground">Provisioning compartment and network</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                  <span className="text-gray-700">Launching compute instance</span>
+                  <span className="text-gray-700 dark:text-foreground">Launching compute instance</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                  <span className="text-gray-700">Configuring networking and security</span>
+                  <span className="text-gray-700 dark:text-foreground">Configuring networking and security</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.6s' }}></div>
-                  <span className="text-gray-700">Preparing access credentials</span>
+                  <span className="text-gray-700 dark:text-foreground">Preparing access credentials</span>
                 </div>
               </div>
               
               {/* Estimated Time */}
-              <div className="flex items-center justify-center text-sm text-gray-500">
+              <div className="flex items-center justify-center text-sm text-gray-500 dark:text-muted-foreground">
                 <AlertCircle className="w-4 h-4 mr-2" />
                 <span>This may take 2-5 minutes</span>
               </div>
@@ -385,8 +385,8 @@ export default function CloudConfigurationBySubscriptionPage() {
           
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Configure VM Instance</h1>
-              <p className="text-gray-600 mt-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Configure VM Instance</h1>
+              <p className="text-gray-600 dark:text-muted-foreground mt-2">
                 Subscription: {subscription.id}
               </p>
             </div>
@@ -411,8 +411,8 @@ export default function CloudConfigurationBySubscriptionPage() {
               <CardContent className="space-y-4">
                 <div>
                   <Label>VM Instance Name</Label>
-                  <p className="text-sm text-gray-600 mt-2 p-3 bg-blue-50 rounded-md border border-blue-200">
-                    ℹ️ VM name will be auto-generated based on your email address in format: <code className="font-mono text-xs bg-white px-1 py-0.5 rounded">email-vm-{'{id}'}</code>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground mt-2 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-md border border-blue-200 dark:border-blue-900">
+                    ℹ️ VM name will be auto-generated based on your email address in format: <code className="font-mono text-xs bg-white dark:bg-muted px-1 py-0.5 rounded">email-vm-{'{id}'}</code>
                   </p>
                 </div>
               </CardContent>
@@ -437,9 +437,9 @@ export default function CloudConfigurationBySubscriptionPage() {
                     value={notificationEmail}
                     onChange={(e) => setNotificationEmail(e.target.value)}
                     placeholder="your-email@example.com"
-                    className="mt-2 bg-white"
+                    className="mt-2 bg-white dark:bg-background"
                   />
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-sm text-gray-500 dark:text-muted-foreground mt-2">
                     Your SSH private key will be sent to this email address. Please keep it secure.
                   </p>
                 </div>
@@ -457,7 +457,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                   <Shield className="h-5 w-5 mr-2" />
                   VM Shape *
                 </CardTitle>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-muted-foreground mt-1">
                   Select VM shape first - OS options will be filtered by compatibility
                 </p>
               </CardHeader>
@@ -469,8 +469,8 @@ export default function CloudConfigurationBySubscriptionPage() {
                       onClick={() => setSelectedShape(shape.id)}
                       className={`w-full p-3 border-2 rounded-lg text-left transition-all ${
                         selectedShape === shape.id
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                          : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
                       }`}
                     >
                       <div className="flex items-start justify-between">
@@ -481,8 +481,8 @@ export default function CloudConfigurationBySubscriptionPage() {
                               <Badge variant="default" className="text-xs">Recommended</Badge>
                             )}
                           </div>
-                          <p className="text-xs text-gray-600 mt-1">{shape.description}</p>
-                          <div className="flex gap-3 mt-2 text-xs text-gray-500">
+                          <p className="text-xs text-gray-600 dark:text-muted-foreground mt-1">{shape.description}</p>
+                          <div className="flex gap-3 mt-2 text-xs text-gray-500 dark:text-muted-foreground">
                             <span>CPU: {shape.cpu.default} OCPU</span>
                             <span>RAM: {shape.memory.default} GB</span>
                           </div>
@@ -499,17 +499,17 @@ export default function CloudConfigurationBySubscriptionPage() {
 
             {/* ARM Capacity Warning */}
             {selectedShape === 'VM.Standard.A1.Flex' && (
-              <div className="rounded-lg bg-amber-50 border border-amber-200 p-4">
+              <div className="rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 p-4">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
-                    <h4 className="text-sm font-semibold text-amber-900 mb-1">
+                    <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-300 mb-1">
                       ⚠️ ARM Capacity Limited
                     </h4>
-                    <p className="text-xs text-amber-800 leading-relaxed">
+                    <p className="text-xs text-amber-800 dark:text-amber-400 leading-relaxed">
                       A1.Flex (ARM) instances often have limited capacity in Singapore region. If provisioning fails due to capacity, please try again later or switch to x86 shapes (E2.1.Micro, E3.Flex) which have better availability.
                     </p>
-                    <p className="text-xs text-amber-700 mt-2 font-medium">
+                    <p className="text-xs text-amber-700 dark:text-amber-400 mt-2 font-medium">
                       Note: ARM images (🔷) only work with A1.Flex. x86 images (🔵) work with E2, E3, E4, Standard shapes.
                     </p>
                   </div>
@@ -525,7 +525,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                   Operating System
                 </CardTitle>
                 {selectedShape && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 dark:text-muted-foreground mt-1">
                     Showing compatible images for {selectedShape}
                   </p>
                 )}
@@ -533,7 +533,7 @@ export default function CloudConfigurationBySubscriptionPage() {
               <CardContent className="space-y-4">{isLoadingImages ? (
                   <div className="flex items-center justify-center py-8">
                     <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-                    <span className="ml-2 text-sm text-gray-600">Loading OS images...</span>
+                    <span className="ml-2 text-sm text-gray-600 dark:text-muted-foreground">Loading OS images...</span>
                   </div>
                 ) : (
                   <>
@@ -562,8 +562,8 @@ export default function CloudConfigurationBySubscriptionPage() {
                                 }}
                                 className={`px-4 py-2 border-2 rounded-lg transition-all ${
                                   isSelected
-                                    ? 'border-blue-500 bg-blue-50'
-                                    : 'border-gray-200 hover:border-gray-300'
+                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                                    : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
                                 }`}
                               >
                                 <div className="flex items-center justify-between gap-3">
@@ -579,7 +579,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                                     <div className="font-medium text-sm text-left">{os}</div>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-gray-500 dark:text-muted-foreground">
                                       {groupedImages[os].length} version(s)
                                     </div>
                                     {isSelected && (
@@ -591,7 +591,7 @@ export default function CloudConfigurationBySubscriptionPage() {
 
                               {/* Dropdown for versions */}
                               {isSelected && (
-                                <div className="mt-2 p-3 border-2 border-blue-200 rounded-lg bg-white">
+                                <div className="mt-2 p-3 border-2 border-blue-200 dark:border-blue-900 rounded-lg bg-white dark:bg-card">
                                   {/* Search box */}
                                   <Input
                                     placeholder="Search version..."
@@ -603,11 +603,11 @@ export default function CloudConfigurationBySubscriptionPage() {
                                   {/* Version list */}
                                   <div className="max-h-60 overflow-y-auto space-y-2">
                                     {availableImages.length === 0 ? (
-                                      <p className="text-xs text-gray-500 text-center py-2">No images found</p>
+                                      <p className="text-xs text-gray-500 dark:text-muted-foreground text-center py-2">No images found</p>
                                     ) : (
                                       availableImages.map(image => {
                                         const isArm = image.architecture?.toUpperCase() === 'AARCH64'
-                                        const archBadgeColor = isArm ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                                        const archBadgeColor = isArm ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                                         const archBadgeText = isArm ? '🔷 ARM' : '🔵 x86'
                                         
                                         return (
@@ -616,8 +616,8 @@ export default function CloudConfigurationBySubscriptionPage() {
                                             onClick={() => setSelectedImageId(image.id)}
                                             className={`w-full p-2 border rounded text-left transition-all text-xs ${
                                               selectedImageId === image.id
-                                                ? 'border-blue-500 bg-blue-50'
-                                                : 'border-gray-200 hover:border-gray-300'
+                                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                                                : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
                                             }`}
                                           >
                                             <div className="flex items-center justify-between gap-2">
@@ -654,12 +654,12 @@ export default function CloudConfigurationBySubscriptionPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* OS */}
-                <div className="border-b pb-3">
-                  <p className="text-xs text-gray-600 uppercase tracking-wide">Operating System</p>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">
+                <div className="border-b dark:border-border pb-3">
+                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Operating System</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">
                     {selectedOS || 'Not selected'}
                     {selectedImageId && availableImages.find(img => img.id === selectedImageId) && (
-                      <span className="block text-xs text-gray-600 mt-1">
+                    <span className="block text-xs text-gray-600 dark:text-muted-foreground mt-1">
                         {availableImages.find(img => img.id === selectedImageId)?.displayName}
                       </span>
                     )}
@@ -667,36 +667,36 @@ export default function CloudConfigurationBySubscriptionPage() {
                 </div>
 
                 {/* VM Shape */}
-                <div className="border-b pb-3">
-                  <p className="text-xs text-gray-600 uppercase tracking-wide">VM Shape</p>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">{selectedShape}</p>
+                <div className="border-b dark:border-border pb-3">
+                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">VM Shape</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{selectedShape}</p>
                 </div>
 
                 {/* Resources */}
                 {selectedShapeConfig?.id.includes('Flex') && (
                   <>
-                    <div className="border-b pb-3">
-                      <p className="text-xs text-gray-600 uppercase tracking-wide">OCPUs</p>
-                      <p className="text-sm font-semibold text-gray-900 mt-1">{ocpus}</p>
+                    <div className="border-b dark:border-border pb-3">
+                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">OCPUs</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{ocpus}</p>
                     </div>
 
-                    <div className="border-b pb-3">
-                      <p className="text-xs text-gray-600 uppercase tracking-wide">Memory</p>
-                      <p className="text-sm font-semibold text-gray-900 mt-1">{memoryInGBs} GB</p>
+                    <div className="border-b dark:border-border pb-3">
+                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Memory</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{memoryInGBs} GB</p>
                     </div>
                   </>
                 )}
 
                 {/* Boot Volume */}
-                <div className="border-b pb-3">
-                  <p className="text-xs text-gray-600 uppercase tracking-wide">Boot Volume</p>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">{bootVolumeSize} GB</p>
+                <div className="border-b dark:border-border pb-3">
+                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Boot Volume</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{bootVolumeSize} GB</p>
                 </div>
 
                 {/* Email */}
-                <div className="border-b pb-3">
-                  <p className="text-xs text-gray-600 uppercase tracking-wide">Notification Email</p>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">{notificationEmail || 'Not specified'}</p>
+                <div className="border-b dark:border-border pb-3">
+                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Notification Email</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{notificationEmail || 'Not specified'}</p>
                 </div>
 
                 {/* Validation Status */}
@@ -720,7 +720,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-col gap-3 mt-6 pt-4 border-t">
+                <div className="flex flex-col gap-3 mt-6 pt-4 border-t dark:border-border">
                   <Button
                     onClick={() => {
                       if (subscription?.vm_instance_id) {

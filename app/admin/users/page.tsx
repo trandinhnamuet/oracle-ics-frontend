@@ -184,7 +184,7 @@ export default function UserManagementPage() {
         {/* Search */}
         <div className="flex items-center space-x-4">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-muted-foreground h-4 w-4" />
             <Input
               placeholder={t('admin.user.searchPlaceholder')}
               value={searchTerm}
@@ -277,14 +277,14 @@ export default function UserManagementPage() {
                         {user.phoneNumber ? (
                           <span>{user.phoneNumber}</span>
                         ) : (
-                          <span className="text-gray-400 italic">{t('admin.user.table.noData')}</span>
+                          <span className="text-gray-400 dark:text-muted-foreground italic">{t('admin.user.table.noData')}</span>
                         )}
                       </TableCell>
                       <TableCell>
                         {user.company ? (
                           <span>{user.company}</span>
                         ) : (
-                          <span className="text-gray-400 italic">{t('admin.user.table.noData')}</span>
+                          <span className="text-gray-400 dark:text-muted-foreground italic">{t('admin.user.table.noData')}</span>
                         )}
                       </TableCell>
                       <TableCell>

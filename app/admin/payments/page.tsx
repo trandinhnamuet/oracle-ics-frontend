@@ -146,7 +146,7 @@ export default function PaymentManagementPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Quản lý thanh toán</h1>
-          <p className="text-gray-500 mt-1">Danh sách tất cả giao dịch thanh toán</p>
+          <p className="text-gray-500 dark:text-muted-foreground mt-1">Danh sách tất cả giao dịch thanh toán</p>
         </div>
         <Button onClick={fetchPayments} disabled={loading}>
           <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
@@ -163,7 +163,7 @@ export default function PaymentManagementPage() {
             </CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-muted-foreground w-4 h-4" />
                 <Input
                   type="text"
                   placeholder="Tìm kiếm theo mã GD, email, tên..."
@@ -178,12 +178,12 @@ export default function PaymentManagementPage() {
         <CardContent>
           {loading ? (
             <div className="text-center py-8">
-              <RefreshCw className="w-8 h-8 animate-spin mx-auto text-gray-400" />
-              <p className="text-gray-500 mt-2">Đang tải dữ liệu...</p>
+              <RefreshCw className="w-8 h-8 animate-spin mx-auto text-gray-400 dark:text-muted-foreground" />
+              <p className="text-gray-500 dark:text-muted-foreground mt-2">Đang tải dữ liệu...</p>
             </div>
           ) : filteredPayments.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500">Không tìm thấy thanh toán nào</p>
+              <p className="text-gray-500 dark:text-muted-foreground">Không tìm thấy thanh toán nào</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -211,7 +211,7 @@ export default function PaymentManagementPage() {
                           <div className="font-medium">
                             {payment.user?.firstName} {payment.user?.lastName}
                           </div>
-                          <div className="text-xs text-gray-500">{payment.user?.email}</div>
+                          <div className="text-xs text-gray-500 dark:text-muted-foreground">{payment.user?.email}</div>
                         </div>
                       </TableCell>
                       <TableCell className="font-semibold">{formatCurrency(payment.amount)}</TableCell>
@@ -263,10 +263,10 @@ export default function PaymentManagementPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Tổng thanh toán</p>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Tổng thanh toán</p>
                 <p className="text-2xl font-bold">{payments.length}</p>
               </div>
-              <DollarSign className="w-8 h-8 text-gray-400" />
+              <DollarSign className="w-8 h-8 text-gray-400 dark:text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -275,7 +275,7 @@ export default function PaymentManagementPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Đang chờ</p>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Đang chờ</p>
                 <p className="text-2xl font-bold text-yellow-500">
                   {payments.filter((p) => p.status === 'pending').length}
                 </p>
@@ -289,7 +289,7 @@ export default function PaymentManagementPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Thành công</p>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Thành công</p>
                 <p className="text-2xl font-bold text-green-500">
                   {payments.filter((p) => p.status === 'success').length}
                 </p>

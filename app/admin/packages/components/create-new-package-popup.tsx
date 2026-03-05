@@ -148,7 +148,7 @@ export default function CreateNewPackagePopup({
                 id="type"
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-border rounded-md bg-white dark:bg-background dark:text-foreground"
               >
                 <option value="starter">{t('admin.packages.createPackage.form.categoryOptions.starter')}</option>
                 <option value="professional">{t('admin.packages.createPackage.form.categoryOptions.professional')}</option>
@@ -205,7 +205,7 @@ export default function CreateNewPackagePopup({
               onChange={(e) => setFormData({ ...formData, feature: e.target.value })}
               placeholder="Additional features or notes..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none text-sm"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-border rounded-md resize-none text-sm bg-white dark:bg-background dark:text-foreground"
             />
           </div>
 

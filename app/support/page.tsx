@@ -31,7 +31,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.
   open:        { label: 'Đang mở',      color: 'bg-red-50 text-red-700 border border-red-200',   icon: AlertCircle },
   in_progress: { label: 'Đang xử lý',  color: 'bg-orange-50 text-orange-700 border border-orange-200', icon: RefreshCw },
   resolved:    { label: 'Đã giải quyết', color: 'bg-green-50 text-green-700 border border-green-200', icon: CheckCircle2 },
-  closed:      { label: 'Đã đóng',      color: 'bg-gray-50 text-gray-600 border border-gray-200',   icon: XCircle },
+  closed:      { label: 'Đã đóng',      color: 'bg-gray-50 text-gray-600 border border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',   icon: XCircle },
 }
 
 const SERVICES = [
@@ -132,7 +132,7 @@ export default function SupportPage() {
     new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 dark:from-background dark:via-background dark:to-background">
       <div className="max-w-4xl mx-auto px-4 py-12">
 
         {/* Hero Section */}
@@ -143,14 +143,14 @@ export default function SupportPage() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent mb-2">
             {t('support.title') || 'Trung Tâm Hỗ Trợ'}
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-muted-foreground max-w-2xl mx-auto">
             {t('support.subtitle') || 'Chúng tôi sẵn sàng giúp bạn. Vui lòng gửi yêu cầu của bạn dưới đây'}
           </p>
         </div>
 
         {/* Form Section */}
         <div className="mb-12">
-          <Card className="border-0 shadow-xl bg-white">
+          <Card className="border-0 shadow-xl bg-white dark:bg-card">
             <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg p-8">
               <CardTitle className="text-2xl flex items-center gap-3">
                 <Send className="h-6 w-6" />
@@ -164,14 +164,14 @@ export default function SupportPage() {
 
                 {/* Title Field */}
                 <div className="space-y-2">
-                  <Label htmlFor="title" className="font-semibold text-gray-700">
+                  <Label htmlFor="title" className="font-semibold text-gray-700 dark:text-muted-foreground">
                     Tiêu đề yêu cầu <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="title"
                     placeholder="Ví dụ: Vấn đề về kết nối máy chủ"
                     {...register('title')}
-                    className={`h-11 border-gray-200 rounded-lg focus:border-red-500 focus:ring-red-500 ${errors.title ? 'border-red-500' : ''}`}
+                    className={`h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500 ${errors.title ? 'border-red-500' : ''}`}
                   />
                   {errors.title && <p className="text-xs text-red-500 flex items-center gap-1"><AlertTriangle className="h-3 w-3" />{errors.title.message}</p>}
                 </div>
@@ -179,19 +179,19 @@ export default function SupportPage() {
                 {/* Name + Email Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="customer_name" className="font-semibold text-gray-700">
+                    <Label htmlFor="customer_name" className="font-semibold text-gray-700 dark:text-muted-foreground">
                       Tên của bạn <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="customer_name"
                       placeholder="Nhập tên đầy đủ"
                       {...register('customer_name')}
-                      className={`h-11 border-gray-200 rounded-lg focus:border-red-500 focus:ring-red-500 ${errors.customer_name ? 'border-red-500' : ''}`}
+                      className={`h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500 ${errors.customer_name ? 'border-red-500' : ''}`}
                     />
                     {errors.customer_name && <p className="text-xs text-red-500 flex items-center gap-1"><AlertTriangle className="h-3 w-3" />{errors.customer_name.message}</p>}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="font-semibold text-gray-700">
+                    <Label htmlFor="email" className="font-semibold text-gray-700 dark:text-muted-foreground">
                       Email <span className="text-red-500">*</span>
                     </Label>
                     <Input
@@ -199,7 +199,7 @@ export default function SupportPage() {
                       type="email"
                       placeholder="your@email.com"
                       {...register('email')}
-                      className={`h-11 border-gray-200 rounded-lg focus:border-red-500 focus:ring-red-500 ${errors.email ? 'border-red-500' : ''}`}
+                      className={`h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500 ${errors.email ? 'border-red-500' : ''}`}
                     />
                     {errors.email && <p className="text-xs text-red-500 flex items-center gap-1"><AlertTriangle className="h-3 w-3" />{errors.email.message}</p>}
                   </div>
@@ -208,20 +208,20 @@ export default function SupportPage() {
                 {/* Phone + Service Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="phone" className="font-semibold text-gray-700">
+                    <Label htmlFor="phone" className="font-semibold text-gray-700 dark:text-muted-foreground">
                       Điện thoại
                     </Label>
                     <Input
                       id="phone"
                       placeholder="(+84) 123 456 789"
                       {...register('phone')}
-                      className="h-11 border-gray-200 rounded-lg focus:border-red-500 focus:ring-red-500"
+                      className="h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="font-semibold text-gray-700">Dịch vụ liên quan</Label>
+                    <Label className="font-semibold text-gray-700 dark:text-muted-foreground">Dịch vụ liên quan</Label>
                     <Select value={selectedService} onValueChange={setSelectedService}>
-                      <SelectTrigger className="h-11 border-gray-200 rounded-lg focus:border-red-500 focus:ring-red-500">
+                      <SelectTrigger className="h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500">
                         <SelectValue placeholder="Chọn dịch vụ" />
                       </SelectTrigger>
                       <SelectContent>
@@ -235,20 +235,20 @@ export default function SupportPage() {
 
                 {/* Address Field */}
                 <div className="space-y-2">
-                  <Label htmlFor="address" className="font-semibold text-gray-700">
+                  <Label htmlFor="address" className="font-semibold text-gray-700 dark:text-muted-foreground">
                     Địa chỉ
                   </Label>
                   <Input
                     id="address"
                     placeholder="Địa chỉ công ty hoặc nơi làm việc"
                     {...register('address')}
-                    className="h-11 border-gray-200 rounded-lg focus:border-red-500 focus:ring-red-500"
+                    className="h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500"
                   />
                 </div>
 
                 {/* Content Field */}
                 <div className="space-y-2">
-                  <Label htmlFor="content" className="font-semibold text-gray-700">
+                  <Label htmlFor="content" className="font-semibold text-gray-700 dark:text-muted-foreground">
                     Chi tiết vấn đề <span className="text-red-500">*</span>
                   </Label>
                   <Textarea
@@ -256,7 +256,7 @@ export default function SupportPage() {
                     placeholder="Mô tả chi tiết vấn đề bạn gặp phải... (tối thiểu 10 ký tự)"
                     rows={5}
                     {...register('content')}
-                    className={`border-gray-200 rounded-lg focus:border-red-500 focus:ring-red-500 resize-none ${errors.content ? 'border-red-500' : ''}`}
+                    className={`border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500 resize-none ${errors.content ? 'border-red-500' : ''}`}
                   />
                   {errors.content && <p className="text-xs text-red-500 flex items-center gap-1"><AlertTriangle className="h-3 w-3" />{errors.content.message}</p>}
                 </div>
@@ -286,8 +286,8 @@ export default function SupportPage() {
                 <Clock className="h-6 w-6 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900">Yêu Cầu Của Tôi</h2>
-                <p className="text-sm text-gray-500">Theo dõi trạng thái các yêu cầu đã gửi</p>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">Yêu Cầu Của Tôi</h2>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Theo dõi trạng thái các yêu cầu đã gửi</p>
               </div>
               <Button
                 variant="outline"
@@ -305,16 +305,16 @@ export default function SupportPage() {
                 <CardContent className="flex justify-center py-12">
                   <div className="text-center space-y-3">
                     <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-200 border-t-red-500 mx-auto" />
-                    <p className="text-sm text-gray-500">Đang tải yêu cầu của bạn...</p>
+                    <p className="text-sm text-gray-500 dark:text-muted-foreground">Đang tải yêu cầu của bạn...</p>
                   </div>
                 </CardContent>
               </Card>
             ) : ticketError ? (
-              <Card className="border-red-200 bg-red-50 shadow-lg">
+              <Card className="border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/20 shadow-lg">
                 <CardContent className="pt-6 text-center space-y-4">
                   <AlertTriangle className="h-8 w-8 text-red-500 mx-auto" />
                   <div>
-                    <p className="font-medium text-gray-900">Không thể tải dữ liệu</p>
+                    <p className="font-medium text-gray-900 dark:text-foreground">Không thể tải dữ liệu</p>
                     <p className="text-sm text-red-600 mt-1">{ticketError}</p>
                   </div>
                   <Button
@@ -329,10 +329,10 @@ export default function SupportPage() {
             ) : myTickets.length === 0 ? (
               <Card className="border-0 shadow-lg">
                 <CardContent className="pt-12 pb-12 text-center space-y-4">
-                  <MessageSquare className="h-12 w-12 text-gray-300 mx-auto" />
+                  <MessageSquare className="h-12 w-12 text-gray-300 dark:text-muted-foreground mx-auto" />
                   <div>
-                    <p className="font-medium text-gray-700">Chưa có yêu cầu nào</p>
-                    <p className="text-sm text-gray-500 mt-1">Các yêu cầu của bạn sẽ hiển thị tại đây</p>
+                    <p className="font-medium text-gray-700 dark:text-foreground">Chưa có yêu cầu nào</p>
+                    <p className="text-sm text-gray-500 dark:text-muted-foreground">Các yêu cầu của bạn sẽ hiển thị tại đây</p>
                   </div>
                 </CardContent>
               </Card>
@@ -349,27 +349,27 @@ export default function SupportPage() {
                       key={ticket.id}
                       className={`border-0 shadow-lg overflow-hidden cursor-pointer transition-all hover:shadow-xl ${
                         isExpanded ? 'ring-2 ring-red-500' : ''
-                      } ${hasAdminReply ? 'bg-gradient-to-r from-red-50/50' : ''}`}
+                      } ${hasAdminReply ? 'bg-gradient-to-r from-red-50/50 dark:from-red-950/20' : ''}`}
                     >
                       {/* Ticket Header */}
                       <button
-                        className="w-full px-6 py-4 text-left hover:bg-gray-50/50 transition-colors"
+                        className="w-full px-6 py-4 text-left hover:bg-gray-50/50 dark:hover:bg-muted/50 transition-colors"
                         onClick={() => setExpandedTicket(isExpanded ? null : ticket.id)}
                       >
                         <div className="flex items-center gap-4">
-                          <div className="p-2 rounded-lg bg-gray-100">
-                            <StatusIcon className="h-5 w-5 text-gray-700" />
+                          <div className="p-2 rounded-lg bg-gray-100 dark:bg-muted">
+                              <StatusIcon className="h-5 w-5 text-gray-700 dark:text-muted-foreground" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold text-gray-900 truncate">{ticket.title}</h3>
+                              <h3 className="font-semibold text-gray-900 dark:text-foreground truncate">{ticket.title}</h3>
                               {hasAdminReply && (
                                 <Badge className="bg-red-500 text-white text-[10px] shrink-0">
                                   Có phản hồi
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-muted-foreground">
                               #{ticket.id} • Gửi {formatDate(ticket.created_at)}
                             </p>
                           </div>
@@ -377,33 +377,33 @@ export default function SupportPage() {
                             {cfg.label}
                           </Badge>
                           {isExpanded ? (
-                            <ChevronUp className="h-5 w-5 text-gray-400" />
+                            <ChevronUp className="h-5 w-5 text-gray-400 dark:text-muted-foreground" />
                           ) : (
-                            <ChevronDown className="h-5 w-5 text-gray-400" />
+                            <ChevronDown className="h-5 w-5 text-gray-400 dark:text-muted-foreground" />
                           )}
                         </div>
                       </button>
 
                       {/* Expanded Content */}
                       {isExpanded && (
-                        <div className="border-t border-gray-200 bg-gray-50/50">
+                        <div className="border-t border-gray-200 dark:border-border bg-gray-50/50 dark:bg-muted/30">
                           {/* Status Timeline */}
-                          <div className="px-6 py-4 bg-white border-b border-gray-200">
+                          <div className="px-6 py-4 bg-white dark:bg-card border-b border-gray-200 dark:border-border">
                             <div className="flex flex-wrap items-center gap-4">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs font-medium text-gray-600">Trạng thái:</span>
+                                <span className="text-xs font-medium text-gray-600 dark:text-muted-foreground">Trạng thái:</span>
                                 <Badge className={`${cfg.color} flex items-center gap-1 text-xs`}>
                                   <StatusIcon className="h-3 w-3" />
                                   {cfg.label}
                                 </Badge>
                               </div>
                               {ticket.resolved_at && (
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-gray-500 dark:text-muted-foreground">
                                   Giải quyết: {formatDate(ticket.resolved_at)}
                                 </span>
                               )}
                               {ticket.service && (
-                                <span className="text-xs text-gray-500 ml-auto">
+                                <span className="text-xs text-gray-500 dark:text-muted-foreground ml-auto">
                                   Dịch vụ: <span className="font-medium">{SERVICES.find(s => s.value === ticket.service)?.label}</span>
                                 </span>
                               )}
@@ -411,25 +411,25 @@ export default function SupportPage() {
                           </div>
 
                           {/* Content Section */}
-                          <div className="px-6 py-4 border-b border-gray-200">
-                            <p className="text-xs font-semibold text-gray-600 mb-2">Nội dung yêu cầu:</p>
-                            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{ticket.content}</p>
+                          <div className="px-6 py-4 border-b border-gray-200 dark:border-border">
+                            <p className="text-xs font-semibold text-gray-600 dark:text-muted-foreground mb-2">Nội dung yêu cầu:</p>
+                            <p className="text-sm text-gray-700 dark:text-foreground leading-relaxed whitespace-pre-wrap">{ticket.content}</p>
                           </div>
 
                           {/* Admin Reply or Pending */}
-                          <div className="px-6 py-4 bg-gradient-to-r from-red-50 to-white">
+                          <div className="px-6 py-4 bg-gradient-to-r from-red-50 to-white dark:from-card dark:to-card">
                             {ticket.admin_note ? (
                               <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                   <CheckCircle2 className="h-4 w-4 text-red-500" />
                                   <p className="text-xs font-semibold text-red-600">Phản hồi từ bộ phận hỗ trợ:</p>
                                 </div>
-                                <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap ml-6 bg-white rounded p-3 border border-red-200">
+                                <p className="text-sm text-gray-800 dark:text-foreground leading-relaxed whitespace-pre-wrap ml-6 bg-white dark:bg-card rounded p-3 border border-red-200">
                                   {ticket.admin_note}
                                 </p>
                               </div>
                             ) : (
-                              <div className="flex items-start gap-3 text-sm text-gray-600">
+                              <div className="flex items-start gap-3 text-sm text-gray-600 dark:text-muted-foreground">
                                 <Clock className="h-4 w-4 mt-0.5 text-orange-500 flex-shrink-0" />
                                 <p>Chúng tôi đang xử lý yêu cầu của bạn. Vui lòng chờ phản hồi từ bộ phận hỗ trợ.</p>
                               </div>

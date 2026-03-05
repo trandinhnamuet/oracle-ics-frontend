@@ -34,7 +34,7 @@ export default function CheckoutSuccessPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 dark:from-background dark:to-background flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
         {/* Animated Success Icon */}
         <div className="relative mb-8 flex items-center justify-center">
@@ -89,10 +89,10 @@ export default function CheckoutSuccessPage() {
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-4 opacity-0'
         }`}>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground mb-4">
             {t('checkout.success.title')}
           </h1>
-          <p className="text-gray-600 mb-8 leading-relaxed">
+          <p className="text-gray-600 dark:text-muted-foreground mb-8 leading-relaxed">
             {t('checkout.success.desc')}
           </p>
         </div>
@@ -116,12 +116,12 @@ export default function CheckoutSuccessPage() {
         </div>
 
         {/* Additional Info */}
-        <div className={`mt-8 p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-green-200 transition-all duration-1000 ease-out delay-500 ${
+        <div className={`mt-8 p-4 bg-white/70 dark:bg-card/70 backdrop-blur-sm rounded-lg border border-green-200 dark:border-border transition-all duration-1000 ease-out delay-500 ${
           showContent 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-4 opacity-0'
         }`}>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-muted-foreground">
             <strong>{t('checkout.success.note').split(':')[0]}:</strong> {t('checkout.success.note').split(':').slice(1).join(':').trim()}
           </p>
         </div>

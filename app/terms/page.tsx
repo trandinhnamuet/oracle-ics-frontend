@@ -348,7 +348,7 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       {/* Header */}
       <div className="bg-[#E60000] text-white py-12">
         <div className="max-w-4xl mx-auto px-6 text-center">
@@ -374,20 +374,20 @@ export default function TermsPage() {
         {sections.map((section) => (
           <div key={section.title} className="mb-10">
             {/* Section heading */}
-            <div className="bg-gray-800 text-white rounded-lg px-5 py-3 mb-6">
+            <div className="bg-gray-800 dark:bg-muted text-white rounded-lg px-5 py-3 mb-6">
               <h2 className="text-base font-semibold tracking-wide">{section.title}</h2>
             </div>
 
             {/* Articles */}
             <div className="space-y-6">
               {section.articles.map((article) => (
-                <div key={article.number} className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-                  <h3 className="text-base font-bold text-gray-900 mb-3">
+                <div key={article.number} className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-border shadow-sm p-6">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-foreground mb-3">
                     Điều {article.number}. {article.heading}
                   </h3>
                   <div className="space-y-2">
                     {article.paragraphs.map((p, idx) => (
-                      <p key={idx} className="text-sm text-gray-700 leading-relaxed">
+                      <p key={idx} className="text-sm text-gray-700 dark:text-muted-foreground leading-relaxed">
                         {p}
                       </p>
                     ))}
@@ -399,8 +399,8 @@ export default function TermsPage() {
         ))}
 
         {/* Footer */}
-        <div className="bg-gray-100 rounded-lg p-6 text-center text-sm text-gray-500 mt-8">
-          <p className="font-medium text-gray-700 mb-1">OracleCloud Vietnam</p>
+        <div className="bg-gray-100 dark:bg-muted rounded-lg p-6 text-center text-sm text-gray-500 dark:text-muted-foreground mt-8">
+          <p className="font-medium text-gray-700 dark:text-foreground mb-1">OracleCloud Vietnam</p>
           <p>Website: <a href="https://oraclecloud.vn" className="text-[#E60000] hover:underline">https://oraclecloud.vn</a></p>
           <p className="mt-2">Tài liệu này có hiệu lực kể từ ngày được công bố và có thể được cập nhật theo thời gian.</p>
         </div>

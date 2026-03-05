@@ -123,15 +123,15 @@ export default function PackagesManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-background py-8">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">
               {t('admin.packages.management.title')}
             </h1>
-            <p className="text-gray-600">{t('admin.packages.management.subtitle')}</p>
+            <p className="text-gray-600 dark:text-muted-foreground">{t('admin.packages.management.subtitle')}</p>
           </div>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
@@ -148,7 +148,7 @@ export default function PackagesManagementPage() {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-muted-foreground h-4 w-4" />
                   <Input
                     placeholder={t('admin.packages.management.searchPlaceholder')}
                     value={searchTerm}
@@ -158,11 +158,11 @@ export default function PackagesManagementPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-gray-400" />
+                <Filter className="h-4 w-4 text-gray-400 dark:text-muted-foreground" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+                  className="px-3 py-2 border border-gray-300 dark:border-border rounded-md bg-white dark:bg-background dark:text-foreground"
                 >
                   <option value="all">{t('admin.packages.management.filter.allCategories')}</option>
                   <option value="starter">{t('admin.packages.management.filter.starter')}</option>
@@ -188,8 +188,8 @@ export default function PackagesManagementPage() {
                       <Icon className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-600">{info.name}</p>
-                      <p className="text-2xl font-bold text-gray-900">{count}</p>
+                      <p className="text-sm font-medium text-gray-600 dark:text-muted-foreground">{info.name}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">{count}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -213,38 +213,38 @@ export default function PackagesManagementPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 border-b">
+                  <thead className="bg-gray-50 dark:bg-muted border-b dark:border-border">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
                         Package
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
                         Type
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
                         Price
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
                         Specs
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
                         Features
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white dark:bg-card divide-y divide-gray-200 dark:divide-border">
                     {filteredPackages.map((pkg) => {
                       const catKey = pkg.type ?? 'starter'
                       const catInfo = CATEGORY_INFO[catKey] ?? CATEGORY_INFO.starter
                       const Icon = catInfo.icon
                       return (
-                        <tr key={pkg.id} className="hover:bg-gray-50">
+                        <tr key={pkg.id} className="hover:bg-gray-50 dark:hover:bg-muted/50">
                           {/* Name */}
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
@@ -252,8 +252,8 @@ export default function PackagesManagementPage() {
                                 <Icon className="h-4 w-4 text-white" />
                               </div>
                               <div>
-                                <div className="text-sm font-medium text-gray-900">{pkg.name}</div>
-                                <div className="text-xs text-gray-500">ID: {pkg.id}</div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-foreground">{pkg.name}</div>
+                                <div className="text-xs text-gray-500 dark:text-muted-foreground">ID: {pkg.id}</div>
                               </div>
                             </div>
                           </td>
@@ -263,16 +263,16 @@ export default function PackagesManagementPage() {
                           </td>
                           {/* Price */}
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-bold text-gray-900">
+                            <div className="text-sm font-bold text-gray-900 dark:text-foreground">
                               ${Number(pkg.cost).toFixed(2)}/mo
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-500 dark:text-muted-foreground">
                               {Number(pkg.cost_vnd).toLocaleString('vi-VN')} ₫
                             </div>
                           </td>
                           {/* Specs */}
                           <td className="px-6 py-4">
-                            <div className="text-xs text-gray-600 space-y-0.5">
+                            <div className="text-xs text-gray-600 dark:text-muted-foreground space-y-0.5">
                               {pkg.cpu && <div>CPU: {pkg.cpu}</div>}
                               {pkg.ram && <div>RAM: {pkg.ram}</div>}
                               {pkg.memory && <div>SSD: {pkg.memory}</div>}
@@ -282,7 +282,7 @@ export default function PackagesManagementPage() {
                           {/* Feature text */}
                           <td className="px-6 py-4">
                             <div
-                              className="text-xs text-gray-600 max-w-[180px] truncate"
+                              className="text-xs text-gray-600 dark:text-muted-foreground max-w-[180px] truncate"
                               title={pkg.feature ?? ''}
                             >
                               {pkg.feature || '—'}
@@ -291,11 +291,11 @@ export default function PackagesManagementPage() {
                           {/* Status */}
                           <td className="px-6 py-4 whitespace-nowrap">
                             {pkg.is_active ? (
-                              <Badge className="bg-green-100 text-green-700 border-0 gap-1">
+                              <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-0 gap-1">
                                 <CheckCircle className="h-3 w-3" /> Active
                               </Badge>
                             ) : (
-                              <Badge className="bg-gray-100 text-gray-500 border-0 gap-1">
+                              <Badge className="bg-gray-100 dark:bg-muted text-gray-500 dark:text-muted-foreground border-0 gap-1">
                                 <XCircle className="h-3 w-3" /> Inactive
                               </Badge>
                             )}
@@ -329,7 +329,7 @@ export default function PackagesManagementPage() {
 
                 {filteredPackages.length === 0 && (
                   <div className="text-center py-12">
-                    <p className="text-gray-500">{t('admin.packages.management.table.noPackagesFound')}</p>
+                    <p className="text-gray-500 dark:text-muted-foreground">{t('admin.packages.management.table.noPackagesFound')}</p>
                   </div>
                 )}
               </div>

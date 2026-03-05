@@ -243,13 +243,13 @@ Nội dung: ${paymentData.transaction_code}
             <CardContent className="space-y-6">
               <div className="text-center">
                 {isLoading && !paymentData ? (
-                  <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
+                  <div className="bg-white dark:bg-card p-4 rounded-lg inline-block shadow-sm border">
                     <div className="w-[200px] h-[200px] flex items-center justify-center">
                       <Loader className="h-8 w-8 animate-spin text-primary" />
                     </div>
                   </div>
                 ) : paymentData ? (
-                  <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
+                  <div className="bg-white dark:bg-white p-4 rounded-lg inline-block shadow-sm border">
                     <Image
                       src={createQRUrl(amount, paymentData.transaction_code)}
                       alt="QR Code nạp tiền"
@@ -259,8 +259,8 @@ Nội dung: ${paymentData.transaction_code}
                     />
                   </div>
                 ) : (
-                  <div className="bg-white p-4 rounded-lg inline-block shadow-sm border">
-                    <div className="w-[200px] h-[200px] flex items-center justify-center text-gray-400">
+                  <div className="bg-white dark:bg-card p-4 rounded-lg inline-block shadow-sm border">
+                    <div className="w-[200px] h-[200px] flex items-center justify-center text-gray-400 dark:text-muted-foreground">
                       Đang tải thông tin thanh toán...
                     </div>
                   </div>

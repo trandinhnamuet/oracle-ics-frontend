@@ -274,7 +274,7 @@ export default function PackageManagementPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-background">
       {/* Sidebar */}
       <WalletSidebar />
 
@@ -282,7 +282,7 @@ export default function PackageManagementPage() {
       <div className="flex-1 overflow-auto pt-16 md:pt-0">
         <div className="container mx-auto py-8 px-4 space-y-8 max-w-6xl">
           {/* Balance Bar */}
-          <div className="w-full flex items-center justify-between bg-white rounded-lg shadow p-4 mb-4 border border-gray-100">
+          <div className="w-full flex items-center justify-between bg-white dark:bg-card rounded-lg shadow p-4 mb-4 border border-gray-100 dark:border-border">
             <BalanceDisplay showAddFunds={true} className="flex items-center gap-2" />
           </div>
           {/* Header Section */}
@@ -299,7 +299,7 @@ export default function PackageManagementPage() {
           isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
         }`} style={{ transitionDelay: '200ms' }}>
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-muted-foreground h-4 w-4" />
             <Input
               placeholder={t('packageManagement.searchPlaceholder')}
               value={searchTerm}
@@ -467,7 +467,7 @@ export default function PackageManagementPage() {
                             </Badge>
                             {/* VM Configuration Status */}
                             {sub.status === 'active' && !sub.vm_instance_id && (
-                              <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-300">
+                              <Badge variant="outline" className="bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900">
                                 Not Configured
                               </Badge>
                             )}
@@ -477,12 +477,12 @@ export default function PackageManagementPage() {
                               const isStopped = state === 'STOPPED'
                               const isTerminated = ['TERMINATED', 'TERMINATING'].includes(state)
                               const className = isRunning
-                                ? 'bg-green-50 text-green-700 border-green-300'
+                                ? 'bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-green-300 dark:border-green-900'
                                 : isStopped
-                                ? 'bg-gray-100 text-gray-600 border-gray-300'
+                                ? 'bg-gray-100 text-gray-600 border-gray-300 dark:bg-muted dark:text-muted-foreground dark:border-border'
                                 : isTerminated
-                                ? 'bg-red-50 text-red-700 border-red-300'
-                                : 'bg-yellow-50 text-yellow-700 border-yellow-300'
+                                ? 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-300 dark:border-red-900'
+                                : 'bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900'
                               return (
                                 <Badge variant="outline" className={className}>
                                   {state}

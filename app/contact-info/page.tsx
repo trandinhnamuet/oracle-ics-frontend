@@ -26,7 +26,7 @@ function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode, d
 export default function ContactInfoPage() {
   const { t } = useTranslation()
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-background dark:via-background dark:to-background">
       {/* Hero Section */}
       <AnimatedSection>
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
@@ -56,15 +56,15 @@ export default function ContactInfoPage() {
             {/* Company Info */}
             <AnimatedSection delay={0.1}>
               <a href="https://icss.com.vn/" target="_blank" rel="noopener noreferrer" className="block">
-              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+              <Card className="border-0 shadow-xl bg-white/70 dark:bg-card/90 backdrop-blur-sm cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
                 <CardHeader className="pb-4">
                   <div className="flex items-center space-x-3">
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-xl">
                       <Building2 className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl text-gray-900">{t('contactInfo.companyInfo')}</CardTitle>
-                      <p className="text-sm text-gray-600">{t('contactInfo.companyName')}</p>
+                      <CardTitle className="text-xl text-gray-900 dark:text-foreground">{t('contactInfo.companyInfo')}</CardTitle>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('contactInfo.companyName')}</p>
                     </div>
                   </div>
                 </CardHeader>
@@ -73,8 +73,8 @@ export default function ContactInfoPage() {
                   <div className="flex items-start space-x-3">
                     <MapPin className="h-5 w-5 mt-1 text-green-600" />
                     <div>
-                      <p className="font-semibold text-gray-900 mb-1">{t('contactInfo.officeHanoi')}</p>
-                      <p className="text-gray-700">{t('contactInfo.officeAddress')}</p>
+                      <p className="font-semibold text-gray-900 dark:text-foreground mb-1">{t('contactInfo.officeHanoi')}</p>
+                      <p className="text-gray-700 dark:text-muted-foreground">{t('contactInfo.officeAddress')}</p>
                     </div>
                   </div>
                 </div>
@@ -101,13 +101,13 @@ export default function ContactInfoPage() {
 
             {/* Contact Info */}
             <AnimatedSection delay={0.2}>
-              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+              <Card className="border-0 shadow-xl bg-white/70 dark:bg-card/90 backdrop-blur-sm hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="pb-4">
                 <div className="flex items-center space-x-3">
                   <div className="bg-gradient-to-r from-green-600 to-green-700 p-3 rounded-xl">
                     <Phone className="h-6 w-6 text-white" />
                   </div>
-                  <CardTitle className="text-xl text-gray-900">{t('contactInfo.contactInfo')}</CardTitle>
+                  <CardTitle className="text-xl text-gray-900 dark:text-foreground">{t('contactInfo.contactInfo')}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -115,8 +115,8 @@ export default function ContactInfoPage() {
                   <div className="flex items-center space-x-3">
                     <Phone className="h-5 w-5 text-orange-600" />
                     <div>
-                      <p className="font-semibold text-gray-900 mb-1">{t('contactInfo.phoneHotline')}</p>
-                      <p className="text-gray-700">0707.806.860</p>
+                      <p className="font-semibold text-gray-900 dark:text-foreground mb-1">{t('contactInfo.phoneHotline')}</p>
+                      <p className="text-gray-700 dark:text-muted-foreground">0707.806.860</p>
                     </div>
                   </div>
                 </div>
@@ -124,8 +124,8 @@ export default function ContactInfoPage() {
                   <div className="flex items-center space-x-3">
                     <Mail className="h-5 w-5 text-purple-600" />
                     <div>
-                      <p className="font-semibold text-gray-900 mb-1">{t('contactInfo.email')}</p>
-                      <p className="text-gray-700">info@icss.com.vn</p>
+                      <p className="font-semibold text-gray-900 dark:text-foreground mb-1">{t('contactInfo.email')}</p>
+                      <p className="text-gray-700 dark:text-muted-foreground">info@icss.com.vn</p>
                     </div>
                   </div>
                 </div>
@@ -133,8 +133,8 @@ export default function ContactInfoPage() {
                   <div className="flex items-center space-x-3">
                     <Globe className="h-5 w-5 text-indigo-600" />
                     <div>
-                      <p className="font-semibold text-gray-900 mb-1">{t('contactInfo.website')}</p>
-                      <p className="text-gray-700">www.icss.com.vn</p>
+                      <p className="font-semibold text-gray-900 dark:text-foreground mb-1">{t('contactInfo.website')}</p>
+                      <p className="text-gray-700 dark:text-muted-foreground">www.icss.com.vn</p>
                     </div>
                   </div>
                 </div>
@@ -144,15 +144,15 @@ export default function ContactInfoPage() {
 
             {/* Google Map */}
             <AnimatedSection delay={0.3}>
-              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+              <Card className="border-0 shadow-xl bg-white/70 dark:bg-card/90 backdrop-blur-sm hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="pb-4">
                 <div className="flex items-center space-x-3">
                   <div className="bg-gradient-to-r from-red-600 to-red-700 p-3 rounded-xl">
                     <MapPin className="h-6 w-6 text-white" />
                   </div>
-                  <CardTitle className="text-xl text-gray-900">{t('contactInfo.mapTitle')}</CardTitle>
+                  <CardTitle className="text-xl text-gray-900 dark:text-foreground">{t('contactInfo.mapTitle')}</CardTitle>
                 </div>
-                <p className="text-sm text-gray-600">{t('contactInfo.mapDesc')}</p>
+                <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('contactInfo.mapDesc')}</p>
               </CardHeader>
               <CardContent>
                 <div className="rounded-2xl overflow-hidden shadow-lg">

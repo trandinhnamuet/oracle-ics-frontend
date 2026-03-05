@@ -72,9 +72,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: Elemen
 
 const DEFAULT_STATUS_CONFIG = {
   label: 'Không xác định',
-  color: 'bg-gray-50 text-gray-700 border-gray-200',
+  color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
   icon: Clock,
-  iconColor: 'text-gray-500'
+  iconColor: 'text-gray-500 dark:text-muted-foreground'
 }
 
 const TYPE_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
@@ -94,9 +94,9 @@ const TYPE_CONFIG: Record<string, { label: string; color: string; icon: ElementT
 
 const DEFAULT_TYPE_CONFIG = {
   label: 'Giao dịch',
-  color: 'bg-gray-50 text-gray-700 border-gray-200',
+  color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
   icon: CreditCard,
-  iconColor: 'text-gray-500'
+  iconColor: 'text-gray-500 dark:text-muted-foreground'
 }
 
 export default function PaymentHistoryPage() {
@@ -371,11 +371,11 @@ export default function PaymentHistoryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-background py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center py-8">
-            <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-spin" />
-            <p className="text-gray-500">Đang tải lịch sử thanh toán...</p>
+            <Clock className="h-12 w-12 text-gray-400 dark:text-muted-foreground mx-auto mb-4 animate-spin" />
+            <p className="text-gray-500 dark:text-muted-foreground">Đang tải lịch sử thanh toán...</p>
           </div>
         </div>
       </div>
@@ -383,7 +383,7 @@ export default function PaymentHistoryPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-background">
       {/* Sidebar */}
       <WalletSidebar />
 
@@ -392,7 +392,7 @@ export default function PaymentHistoryPage() {
         <div className="container mx-auto px-4 max-w-6xl py-8">
           {/* Header */}
           <div className="flex items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Lịch sử thanh toán</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Lịch sử thanh toán</h1>
           </div>
 
           {/* Summary Cards */}
@@ -404,7 +404,7 @@ export default function PaymentHistoryPage() {
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Tổng đã thanh toán</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Tổng đã thanh toán</p>
                   <p className="text-lg font-bold text-green-600">
                     {formatPrice(getTotalAmount())}₫
                   </p>
@@ -420,7 +420,7 @@ export default function PaymentHistoryPage() {
                   <Banknote className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Số lần nạp tiền</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần nạp tiền</p>
                   <p className="text-lg font-bold text-blue-600">
                     {payments.filter(p => p.payment_type === 'deposit' && p.status === 'success').length}
                   </p>
@@ -436,7 +436,7 @@ export default function PaymentHistoryPage() {
                   <CreditCard className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Gói đã mua</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Gói đã mua</p>
                   <p className="text-lg font-bold text-purple-600">
                     {payments.filter(p => p.payment_type === 'subscription' && p.status === 'success').length}
                   </p>
@@ -452,7 +452,7 @@ export default function PaymentHistoryPage() {
                   <Clock className="h-5 w-5 text-yellow-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Đang xử lý</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Đang xử lý</p>
                   <p className="text-lg font-bold text-yellow-600">
                     {payments.filter(p => p.status === 'pending').length}
                   </p>
@@ -476,7 +476,7 @@ export default function PaymentHistoryPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-muted-foreground" />
                 <Input
                   placeholder="Tìm kiếm theo ID hoặc mã giao dịch..."
                   value={searchTerm}
@@ -488,7 +488,7 @@ export default function PaymentHistoryPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+                className="px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-background dark:border-border dark:text-foreground"
               >
                 <option value="all">Tất cả trạng thái</option>
                 <option value="success">Thành công</option>
@@ -499,7 +499,7 @@ export default function PaymentHistoryPage() {
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+                className="px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-background dark:border-border dark:text-foreground"
               >
                 <option value="all">Tất cả loại giao dịch</option>
                 <option value="deposit">Nạp tiền</option>
@@ -525,8 +525,8 @@ export default function PaymentHistoryPage() {
             <div className="space-y-4">
               {filteredPayments.length === 0 ? (
                 <div className="text-center py-8">
-                  <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">Không tìm thấy giao dịch nào</p>
+                  <Calendar className="h-12 w-12 text-gray-400 dark:text-muted-foreground mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-muted-foreground">Không tìm thấy giao dịch nào</p>
                 </div>
               ) : (
                 filteredPayments.map((payment) => {
@@ -538,7 +538,7 @@ export default function PaymentHistoryPage() {
                   return (
                     <div
                       key={payment.id}
-                      className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                      className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
@@ -548,7 +548,7 @@ export default function PaymentHistoryPage() {
                           
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-1">
-                              <h3 className="font-medium text-gray-900">{getPaymentDescription(payment)}</h3>
+                              <h3 className="font-medium text-gray-900 dark:text-foreground">{getPaymentDescription(payment)}</h3>
                               <Badge variant="outline" className={typeConfig.color}>
                                 {typeConfig.label}
                               </Badge>
@@ -558,7 +558,7 @@ export default function PaymentHistoryPage() {
                               </Badge>
                             </div>
                             
-                            <div className="flex items-center space-x-4 text-sm text-gray-600">
+                            <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-muted-foreground">
                               <span>ID: {payment.id.substring(0, 8)}...</span>
                               <span>•</span>
                               <span>{formatDate(payment.created_at)}</span>
@@ -579,10 +579,10 @@ export default function PaymentHistoryPage() {
 
                         <div className="flex items-center space-x-4">
                           <div className="text-right">
-                            <p className="text-lg font-bold text-gray-900">
+                            <p className="text-lg font-bold text-gray-900 dark:text-foreground">
                               {formatPrice(Number(payment.amount))}₫
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-gray-500 dark:text-muted-foreground">
                               {payment.transaction_code}
                             </p>
                           </div>
@@ -607,7 +607,7 @@ export default function PaymentHistoryPage() {
             {/* Pagination */}
             {filteredPayments.length > 0 && (
               <div className="flex items-center justify-between mt-6 pt-4 border-t">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-muted-foreground">
                   Hiển thị {filteredPayments.length} trong tổng số {payments.length} giao dịch
                 </p>
                 <div className="flex space-x-2">
