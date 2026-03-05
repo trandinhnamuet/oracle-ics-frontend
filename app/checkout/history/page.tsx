@@ -197,6 +197,12 @@ export default function PaymentHistoryPage() {
     return payment.description || 'Thanh toán'
   }
 
+  const getPaymentMethodLabel = (method: string) => {
+    if (method === 'sepay_qr') return 'QR Code'
+    if (method === 'account_balance') return 'Số dư tài khoản'
+    return 'Chuyển khoản'
+  }
+
   const exportToExcel = async () => {
     try {
       const ExcelJS = (await import('exceljs')).default
@@ -264,7 +270,7 @@ export default function PaymentHistoryPage() {
           type: typeLabelMap[payment.payment_type] || payment.payment_type,
           status: statusLabelMap[payment.status] || payment.status,
           amount: Number(payment.amount),
-          method: payment.payment_method === 'sepay_qr' ? 'QR Code' : 'Chuyển khoản',
+          method: getPaymentMethodLabel(payment.payment_method),
           package: payment.subscription?.cloudPackage?.name || '',
           created_at: new Date(payment.created_at),
         })
@@ -557,7 +563,7 @@ export default function PaymentHistoryPage() {
                               <span>•</span>
                               <span>{formatDate(payment.created_at)}</span>
                               <span>•</span>
-                              <span>{payment.payment_method === 'sepay_qr' ? 'QR Code' : 'Chuyển khoản'}</span>
+                              <span>{getPaymentMethodLabel(payment.payment_method)}</span>
                               {payment.subscription?.cloudPackage && (
                                 <>
                                   <span>•</span>
