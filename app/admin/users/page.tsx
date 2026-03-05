@@ -12,6 +12,8 @@ import { Switch } from '@/components/ui/switch'
 import { Search, Download, Users, Calendar, Building, Edit, Trash2, Crown } from 'lucide-react'
 import { toggleUserAdminRole } from '@/api/user.api'
 import { useTranslation } from 'react-i18next'
+import { useToast } from '@/hooks/use-toast'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
 interface User {
   id: number
@@ -33,6 +35,8 @@ export default function UserManagementPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [isVisible, setIsVisible] = useState(false)
+  const [pendingDeleteUserId, setPendingDeleteUserId] = useState<number | null>(null)
+  const { toast } = useToast()
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
   const fetchUsers = async () => {
@@ -90,14 +94,21 @@ export default function UserManagementPage() {
   }
 
   // Delete user
-  const deleteUser = async (userId: number) => {
-    if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
-      try {
-        await axios.delete(`${API_URL}/users/${userId}`)
-        setUsers(prev => prev.filter(user => user.id !== userId))
-      } catch (error) {
-        console.error('Error deleting user:', error)
-      }
+  const deleteUser = (userId: number) => {
+    setPendingDeleteUserId(userId)
+  }
+
+  const executeDeleteUser = async () => {
+    if (pendingDeleteUserId === null) return
+    const userId = pendingDeleteUserId
+    setPendingDeleteUserId(null)
+    try {
+      await axios.delete(`${API_URL}/users/${userId}`)
+      setUsers(prev => prev.filter(user => user.id !== userId))
+      toast({ title: 'Đã xóa người dùng thành công' })
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      toast({ title: 'Lỗi', description: 'Không thể xóa người dùng', variant: 'destructive' })
     }
   }
 
@@ -352,6 +363,19 @@ export default function UserManagementPage() {
           </div>
         </CardContent>
       </Card>
+
+      <AlertDialog open={pendingDeleteUserId !== null} onOpenChange={(open) => !open && setPendingDeleteUserId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận xóa người dùng</AlertDialogTitle>
+            <AlertDialogDescription>Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={executeDeleteUser} className="bg-destructive hover:bg-destructive/90">Xóa</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

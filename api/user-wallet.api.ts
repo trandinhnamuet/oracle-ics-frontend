@@ -12,6 +12,13 @@ export interface UserWallet {
   balance: number
   created_at: string
   updated_at: string
+  user?: {
+    id: number
+    email: string
+    firstName?: string
+    lastName?: string
+    username?: string
+  }
 }
 
 export interface WalletTransaction {
@@ -22,6 +29,17 @@ export interface WalletTransaction {
   balance_after: number
   type: string
   created_at: string
+  wallet?: {
+    id: number
+    user_id: number
+    user?: {
+      id: number
+      email: string
+      firstName?: string
+      lastName?: string
+      username?: string
+    }
+  }
 }
 
 // Get user wallet by user ID
@@ -74,6 +92,30 @@ export const getWalletTransactions = async (userId?: number): Promise<WalletTran
     })
   } catch (error) {
     console.error('Error fetching wallet transactions:', error)
+    throw error
+  }
+}
+
+// Admin: Get ALL wallets (all users)
+export const getAllWallets = async (): Promise<UserWallet[]> => {
+  try {
+    return await fetchJsonWithAuth<UserWallet[]>(`${API_URL}/user-wallets`, {
+      method: 'GET',
+    })
+  } catch (error) {
+    console.error('Error fetching all wallets:', error)
+    throw error
+  }
+}
+
+// Admin: Get ALL wallet transactions (all users)
+export const getAllWalletTransactions = async (): Promise<WalletTransaction[]> => {
+  try {
+    return await fetchJsonWithAuth<WalletTransaction[]>(`${API_URL}/wallet-transactions`, {
+      method: 'GET',
+    })
+  } catch (error) {
+    console.error('Error fetching all wallet transactions:', error)
     throw error
   }
 }

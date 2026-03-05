@@ -33,8 +33,7 @@ export function roundMoney(amount: number): number {
   if (upTenThousands > curTenThousands) {
     return roundedDown;
   }
-  // return roundedUp;  
-  return amount; 
+  return roundedUp;
 
 }
 

@@ -73,7 +73,6 @@ export default function CompartmentManagementPage() {
       })
     } finally {
       setDeleting(false)
-      setDeleteDialogOpen(false)
       setSelectedCompartment(null)
     }
   }

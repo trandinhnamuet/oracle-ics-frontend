@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useToast } from '@/hooks/use-toast'
 import { getAllTickets, updateTicket, deleteTicket, SupportTicket } from '@/api/support-ticket.api'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
 const STATUS_CONFIG: Record<string, { label: string; className: string; icon: React.ElementType }> = {
   open:        { label: 'Đang mở',      className: 'bg-blue-100 text-blue-700 border-blue-200',   icon: AlertCircle },
@@ -48,6 +49,7 @@ export default function AdminSupportTicketsPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [editNote, setEditNote] = useState<Record<number, string>>({})
   const [saving, setSaving] = useState<Record<number, boolean>>({})
+  const [pendingDeleteTicketId, setPendingDeleteTicketId] = useState<number | null>(null)
 
   const load = async () => {
     setLoading(true)
@@ -97,8 +99,14 @@ export default function AdminSupportTicketsPage() {
     }
   }
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Bạn chắc chắn muốn xóa yêu cầu này?')) return
+  const handleDelete = (id: number) => {
+    setPendingDeleteTicketId(id)
+  }
+
+  const executeDeleteTicket = async () => {
+    if (pendingDeleteTicketId === null) return
+    const id = pendingDeleteTicketId
+    setPendingDeleteTicketId(null)
     try {
       await deleteTicket(id)
       setTickets(prev => prev.filter(t => t.id !== id))
@@ -380,6 +388,19 @@ export default function AdminSupportTicketsPage() {
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={pendingDeleteTicketId !== null} onOpenChange={(open) => !open && setPendingDeleteTicketId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận xóa yêu cầu hỗ trợ</AlertDialogTitle>
+            <AlertDialogDescription>Bạn chắc chắn muốn xóa yêu cầu hỗ trợ này? Hành động này không thể hoàn tác.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={executeDeleteTicket} className="bg-destructive hover:bg-destructive/90">Xóa</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

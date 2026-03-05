@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Users, FileText, Package, HardDrive, DollarSign, LogIn, BarChart3, Activity, HeadphonesIcon } from 'lucide-react'
+import { Users, FileText, Package, HardDrive, DollarSign, LogIn, BarChart3, Activity, HeadphonesIcon, TrendingDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const adminLinks = (t: any) => [
@@ -87,6 +87,14 @@ const adminLinks = (t: any) => [
 		icon: HeadphonesIcon,
 		color: 'bg-teal-500',
 		stats: 'Support Tickets',
+	},
+	{
+		title: 'Chi phí & Credit',
+		description: 'Tổng số dư, tiền đã nạp và đã dùng theo từng người dùng, tháng, năm',
+		href: '/admin/costs',
+		icon: TrendingDown,
+		color: 'bg-yellow-500',
+		stats: 'Cost & Credit Overview',
 	},
 ]
 

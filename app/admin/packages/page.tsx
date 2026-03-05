@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -48,6 +49,7 @@ export default function PackagesManagementPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [editingPackage, setEditingPackage] = useState<CloudPackage | null>(null)
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null)
 
   const fetchPackages = async () => {
     if (!token) return
@@ -100,9 +102,15 @@ export default function PackagesManagementPage() {
     }
   }
 
-  const handleDeletePackage = async (id: number) => {
+  const handleDeletePackage = (id: number) => {
     if (!token) return
-    if (!confirm('Delete this package?')) return
+    setPendingDeleteId(id)
+  }
+
+  const executeDeletePackage = async () => {
+    if (!token || pendingDeleteId === null) return
+    const id = pendingDeleteId
+    setPendingDeleteId(null)
     try {
       await deleteCloudPackage(token, id)
       toast({ title: t('admin.packages.management.toast.deleteSuccess') })
@@ -345,6 +353,18 @@ export default function PackagesManagementPage() {
           editingPackage={editingPackage}
           onUpdatePackage={handleUpdatePackage}
         />
+        <AlertDialog open={pendingDeleteId !== null} onOpenChange={(open) => !open && setPendingDeleteId(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Xác nhận xóa gói dịch vụ</AlertDialogTitle>
+              <AlertDialogDescription>Bạn có chắc chắn muốn xóa gói này không? Hành động này không thể hoàn tác.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Hủy</AlertDialogCancel>
+              <AlertDialogAction onClick={executeDeletePackage} className="bg-destructive hover:bg-destructive/90">Xóa</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   )

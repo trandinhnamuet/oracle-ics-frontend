@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye, Loader2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import BalanceDisplay from '@/components/wallet/balance-display'
 import WalletSidebar from '@/components/wallet/wallet-sidebar'
 
@@ -69,6 +70,12 @@ export default function PackageManagementPage() {
   const [isVisible, setIsVisible] = useState(false)
   const [togglingVmIds, setTogglingVmIds] = useState<Set<string>>(new Set())
   const { toast } = useToast()
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean
+    title: string
+    description: string
+    onConfirm: () => Promise<void>
+  }>({ open: false, title: '', description: '', onConfirm: async () => {} })
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
   const pollingAttemptsRef = useRef(0)
   const MAX_POLL_ATTEMPTS = 20 // ~2 phút với interval 6 giây
@@ -94,7 +101,7 @@ export default function PackageManagementPage() {
         ? 'Lỗi hệ thống khi tải danh sách subscription. Vui lòng thử lại sau.'
         : 'Không thể tải danh sách subscription. Vui lòng kiểm tra kết nối mạng.'
       
-      alert(errorMessage)
+      toast({ title: 'Lỗi', description: errorMessage, variant: 'destructive' })
     } finally {
       setLoading(false)
     }
@@ -195,72 +202,70 @@ export default function PackageManagementPage() {
     const actionText = action === 'STOP' ? 'dừng' : 'khởi động'
     const optimisticState = action === 'STOP' ? 'STOPPING' : 'STARTING'
 
-    if (!confirm(`Bạn có chắc chắn muốn ${actionText} VM này?`)) return
+    setConfirmDialog({
+      open: true,
+      title: `Xác nhận ${actionText} VM`,
+      description: `Bạn có chắc chắn muốn ${actionText} VM này?`,
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        // Optimistic update: show transitioning state immediately
+        setSubscriptions(prev => prev.map(s => {
+          if (s.id !== id || !s.vmInstance) return s
+          return { ...s, vmInstance: { ...s.vmInstance, lifecycle_state: optimisticState } }
+        }))
+        setTogglingVmIds(prev => new Set(prev).add(id))
 
-    // Optimistic update: show transitioning state immediately
-    setSubscriptions(prev => prev.map(s => {
-      if (s.id !== id || !s.vmInstance) return s
-      return { ...s, vmInstance: { ...s.vmInstance, lifecycle_state: optimisticState } }
-    }))
-    setTogglingVmIds(prev => new Set(prev).add(id))
-
-    try {
-      await performVmAction(id, action)
-      toast({
-        title: `Đã gửi lệnh ${actionText} VM`,
-        description: 'Trạng thái sẽ tự động cập nhật khi hoàn thành.',
-      })
-      startPollingUntilStable()
-    } catch (error: any) {
-      console.error('Error toggling VM status:', error)
-      // Revert optimistic update on error
-      await fetchUserSubscriptions()
-      toast({
-        title: `Lỗi khi ${actionText} VM`,
-        description: error?.response?.data?.message || error?.message || 'Vui lòng thử lại sau',
-        variant: 'destructive',
-      })
-    } finally {
-      setTogglingVmIds(prev => {
-        const next = new Set(prev)
-        next.delete(id)
-        return next
-      })
-    }
+        try {
+          await performVmAction(id, action)
+          toast({
+            title: `Đã gửi lệnh ${actionText} VM`,
+            description: 'Trạng thái sẽ tự động cập nhật khi hoàn thành.',
+          })
+          startPollingUntilStable()
+        } catch (error: any) {
+          console.error('Error toggling VM status:', error)
+          // Revert optimistic update on error
+          await fetchUserSubscriptions()
+          toast({
+            title: `Lỗi khi ${actionText} VM`,
+            description: error?.response?.data?.message || error?.message || 'Vui lòng thử lại sau',
+            variant: 'destructive',
+          })
+        } finally {
+          setTogglingVmIds(prev => {
+            const next = new Set(prev)
+            next.delete(id)
+            return next
+          })
+        }
+      },
+    })
   }
 
-  const cancelUserSubscription = async (id: string) => {
-    const confirmation = confirm(
-      'BẠN CHẮC CHẮN MUỐN XÓA SUBSCRIPTION NÀY?\n\n' +
-      '⚠️ CẢNH BÁO: Hành động này sẽ:\n' +
-      '• XÓA HOÀN TOÀN subscription\n' +
-      '• XÓA máy ảo (VM) trên Oracle Cloud\n' +
-      '• XÓA TẤT CẢ dữ liệu liên quan\n' +
-      '• KHÔNG THỂ KHÔI PHỤC sau khi xóa\n\n' +
-      'Vui lòng backup dữ liệu quan trọng trước khi xóa!'
-    );
-    
-    if (confirmation) {
-      setLoading(true);
-      try {
-        // Call DELETE API to completely remove subscription and VM
-        await deleteSubscription(id);
-        
-        // Remove from local state
-        setSubscriptions(prev => prev.filter(sub => sub.id !== id));
-        
-        // Show success message
-        alert('✅ Đã xóa subscription và VM thành công!');
-      } catch (error: any) {
-        console.error('Error deleting subscription:', error);
-        alert(
-          'Có lỗi xảy ra khi xóa subscription:\n' +
-          (error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.')
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
+  const cancelUserSubscription = (id: string) => {
+    setConfirmDialog({
+      open: true,
+      title: 'Xác nhận xóa subscription',
+      description: 'Hành động này sẽ XÓA HOÀN TOÀN subscription và máy ảo (VM) trên Oracle Cloud. Tất cả dữ liệu liên quan sẽ bị xóa và KHÔNG THỂ KHÔI PHỤC. Vui lòng backup dữ liệu quan trọng trước khi xóa.',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        setLoading(true)
+        try {
+          await deleteSubscription(id)
+          setSubscriptions(prev => prev.filter(sub => sub.id !== id))
+          toast({ title: 'Đã xóa subscription và VM thành công!' })
+        } catch (error: any) {
+          console.error('Error deleting subscription:', error)
+          toast({
+            title: 'Có lỗi xảy ra khi xóa subscription',
+            description: error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
+            variant: 'destructive',
+          })
+        } finally {
+          setLoading(false)
+        }
+      },
+    })
   }
 
   // Statistics
@@ -573,6 +578,19 @@ export default function PackageManagementPage() {
       </Card>
         </div>
       </div>
+
+      <AlertDialog open={confirmDialog.open} onOpenChange={(open) => !open && setConfirmDialog(prev => ({ ...prev, open: false }))}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmDialog.title}</AlertDialogTitle>
+            <AlertDialogDescription>{confirmDialog.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">Xác nhận</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

@@ -20,6 +20,7 @@ import {
   Server, Globe, PowerOff, ArrowUpDown, ArrowUp, ArrowDown,
   ChevronLeft, ChevronRight, ArrowRight, Play 
 } from 'lucide-react'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/hooks/use-toast'
 import { useTranslation } from 'react-i18next'
@@ -46,6 +47,12 @@ export default function AdminSubscriptionsPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [startDateFilter, setStartDateFilter] = useState('')
   const [endDateFilter, setEndDateFilter] = useState('')
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean
+    title: string
+    description: string
+    onConfirm: () => Promise<void>
+  }>({ open: false, title: '', description: '', onConfirm: async () => {} })
 
   useEffect(() => {
     fetchAllSubscriptions()
@@ -97,115 +104,99 @@ export default function AdminSubscriptionsPage() {
     }
   }
 
-  const handleDeleteSubscription = async (subscriptionId: string) => {
-    if (!confirm(t('admin.subscriptions.confirmDelete'))) {
-      return
-    }
-
-    try {
-      await deleteSubscription(subscriptionId)
-      toast({
-        title: t('admin.subscriptions.toast.success'),
-        description: t('admin.subscriptions.toast.deleteSuccess'),
-      })
-      // Refresh data
-      fetchAllSubscriptions()
-    } catch (error: any) {
-      console.error('Error deleting subscription:', error)
-      toast({
-        title: t('admin.subscriptions.toast.error'),
-        description: t('admin.subscriptions.toast.deleteError'),
-        variant: "destructive"
-      })
-    }
+  const handleDeleteSubscription = (subscriptionId: string) => {
+    setConfirmDialog({
+      open: true,
+      title: 'Xác nhận xóa subscription',
+      description: 'Bạn có chắc chắn muốn xóa subscription này? Hành động này không thể hoàn tác.',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        try {
+          await deleteSubscription(subscriptionId)
+          toast({ title: t('admin.subscriptions.toast.success'), description: t('admin.subscriptions.toast.deleteSuccess') })
+          fetchAllSubscriptions()
+        } catch (error: any) {
+          console.error('Error deleting subscription:', error)
+          toast({ title: t('admin.subscriptions.toast.error'), description: t('admin.subscriptions.toast.deleteError'), variant: 'destructive' })
+        }
+      },
+    })
   }
 
-  const handleDeleteSubscriptionWithVm = async (subscriptionId: string) => {
-    if (!confirm('Delete entire subscription and its VM? This action cannot be undone!')) {
-      return
-    }
-
-    try {
-      await deleteSubscriptionWithVm(subscriptionId)
-      toast({
-        title: t('admin.subscriptions.toast.success'),
-        description: 'Subscription and VM deleted successfully',
-      })
-      fetchAllSubscriptions()
-    } catch (error: any) {
-      console.error('Error deleting subscription:', error)
-      toast({
-        title: t('admin.subscriptions.toast.error'),
-        description: t('admin.subscriptions.toast.deleteError'),
-        variant: "destructive"
-      })
-    }
+  const handleDeleteSubscriptionWithVm = (subscriptionId: string) => {
+    setConfirmDialog({
+      open: true,
+      title: 'Xác nhận xóa subscription và VM',
+      description: 'Xóa toàn bộ subscription và máy ảo (VM)? Hành động này không thể hoàn tác.',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        try {
+          await deleteSubscriptionWithVm(subscriptionId)
+          toast({ title: t('admin.subscriptions.toast.success'), description: 'Subscription và VM đã được xóa thành công.' })
+          fetchAllSubscriptions()
+        } catch (error: any) {
+          console.error('Error deleting subscription:', error)
+          toast({ title: t('admin.subscriptions.toast.error'), description: t('admin.subscriptions.toast.deleteError'), variant: 'destructive' })
+        }
+      },
+    })
   }
 
-  const handleDeleteVmOnly = async (subscriptionId: string) => {
-    if (!confirm('Delete VM only? The subscription will remain active but you will need to reconfigure a new VM.')) {
-      return
-    }
-
-    try {
-      await deleteVmOnly(subscriptionId)
-      toast({
-        title: t('admin.subscriptions.toast.success'),
-        description: 'VM deleted successfully. Subscription is still active.',
-      })
-      fetchAllSubscriptions()
-    } catch (error: any) {
-      console.error('Error deleting VM:', error)
-      toast({
-        title: t('admin.subscriptions.toast.error'),
-        description: 'Failed to delete VM',
-        variant: "destructive"
-      })
-    }
+  const handleDeleteVmOnly = (subscriptionId: string) => {
+    setConfirmDialog({
+      open: true,
+      title: 'Xác nhận xóa VM',
+      description: 'Chỉ xóa máy ảo (VM)? Subscription vẫn còn hiệu lực nhưng bạn cần cấu hình lại VM mới.',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        try {
+          await deleteVmOnly(subscriptionId)
+          toast({ title: t('admin.subscriptions.toast.success'), description: 'VM đã được xóa. Subscription vẫn còn hiệu lực.' })
+          fetchAllSubscriptions()
+        } catch (error: any) {
+          console.error('Error deleting VM:', error)
+          toast({ title: t('admin.subscriptions.toast.error'), description: 'Không thể xóa VM', variant: 'destructive' })
+        }
+      },
+    })
   }
 
-  const handleStopVm = async (subscriptionId: string) => {
-    if (!confirm('Are you sure you want to stop this VM?')) {
-      return
-    }
-
-    try {
-      await stopVm(subscriptionId)
-      toast({
-        title: t('admin.subscriptions.toast.success'),
-        description: 'VM stopped successfully',
-      })
-      fetchAllSubscriptions()
-    } catch (error: any) {
-      console.error('Error stopping VM:', error)
-      toast({
-        title: t('admin.subscriptions.toast.error'),
-        description: 'Failed to stop VM',
-        variant: "destructive"
-      })
-    }
+  const handleStopVm = (subscriptionId: string) => {
+    setConfirmDialog({
+      open: true,
+      title: 'Xác nhận dừng VM',
+      description: 'Bạn có chắc chắn muốn dừng VM này không?',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        try {
+          await stopVm(subscriptionId)
+          toast({ title: t('admin.subscriptions.toast.success'), description: 'VM đã được dừng thành công.' })
+          fetchAllSubscriptions()
+        } catch (error: any) {
+          console.error('Error stopping VM:', error)
+          toast({ title: t('admin.subscriptions.toast.error'), description: 'Không thể dừng VM', variant: 'destructive' })
+        }
+      },
+    })
   }
 
-  const handleStartVm = async (subscriptionId: string) => {
-    if (!confirm('Are you sure you want to start this VM?')) {
-      return
-    }
-
-    try {
-      await startVm(subscriptionId)
-      toast({
-        title: t('admin.subscriptions.toast.success'),
-        description: 'VM started successfully',
-      })
-      fetchAllSubscriptions()
-    } catch (error: any) {
-      console.error('Error starting VM:', error)
-      toast({
-        title: t('admin.subscriptions.toast.error'),
-        description: 'Failed to start VM',
-        variant: "destructive"
-      })
-    }
+  const handleStartVm = (subscriptionId: string) => {
+    setConfirmDialog({
+      open: true,
+      title: 'Xác nhận khởi động VM',
+      description: 'Bạn có chắc chắn muốn khởi động VM này không?',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        try {
+          await startVm(subscriptionId)
+          toast({ title: t('admin.subscriptions.toast.success'), description: 'VM đã được khởi động thành công.' })
+          fetchAllSubscriptions()
+        } catch (error: any) {
+          console.error('Error starting VM:', error)
+          toast({ title: t('admin.subscriptions.toast.error'), description: 'Không thể khởi động VM', variant: 'destructive' })
+        }
+      },
+    })
   }
 
   const handleViewSubscription = (subscriptionId: string) => {
@@ -724,6 +715,19 @@ export default function AdminSubscriptionsPage() {
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={confirmDialog.open} onOpenChange={(open) => !open && setConfirmDialog(prev => ({ ...prev, open: false }))}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmDialog.title}</AlertDialogTitle>
+            <AlertDialogDescription>{confirmDialog.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">Xác nhận</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

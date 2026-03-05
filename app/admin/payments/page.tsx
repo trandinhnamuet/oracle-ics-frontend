@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Search, RefreshCw, CheckCircle, Clock, XCircle, DollarSign } from 'lucide-react'
 import { paymentApi } from '@/api/payment.api'
 import { useTranslation } from 'react-i18next'
+import { useToast } from '@/hooks/use-toast'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
 interface Payment {
   id: string
@@ -36,6 +38,8 @@ export default function PaymentManagementPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [processingId, setProcessingId] = useState<string | null>(null)
+  const [confirmPaymentId, setConfirmPaymentId] = useState<string | null>(null)
+  const { toast } = useToast()
 
   const fetchPayments = async () => {
     try {
@@ -73,19 +77,22 @@ export default function PaymentManagementPage() {
     }
   }, [searchTerm, payments])
 
-  const handleAcceptPayment = async (paymentId: string) => {
-    if (!confirm('Bạn có chắc chắn muốn chấp nhận thanh toán này?')) {
-      return
-    }
+  const handleAcceptPayment = (paymentId: string) => {
+    setConfirmPaymentId(paymentId)
+  }
 
+  const executeAcceptPayment = async () => {
+    if (!confirmPaymentId) return
+    const paymentId = confirmPaymentId
+    setConfirmPaymentId(null)
     try {
       setProcessingId(paymentId)
       await paymentApi.acceptPayment(paymentId)
-      alert('Đã chấp nhận thanh toán thành công!')
+      toast({ title: 'Đã chấp nhận thanh toán thành công!' })
       await fetchPayments()
     } catch (error: any) {
       console.error('Error accepting payment:', error)
-      alert(error.response?.data?.message || 'Có lỗi xảy ra khi chấp nhận thanh toán')
+      toast({ title: 'Lỗi thanh toán', description: error.response?.data?.message || 'Có lỗi xảy ra khi chấp nhận thanh toán', variant: 'destructive' })
     } finally {
       setProcessingId(null)
     }
@@ -299,6 +306,19 @@ export default function PaymentManagementPage() {
           </CardContent>
         </Card>
       </div>
+
+      <AlertDialog open={!!confirmPaymentId} onOpenChange={(open) => !open && setConfirmPaymentId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận chấp nhận thanh toán</AlertDialogTitle>
+            <AlertDialogDescription>Bạn có chắc chắn muốn chấp nhận thanh toán này? Hành động này sẽ kích hoạt subscription hoặc nạp tiền cho người dùng.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={executeAcceptPayment}>Xác nhận</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

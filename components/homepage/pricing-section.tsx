@@ -784,11 +784,10 @@ export function PricingSection() {
                       <div className="text-sm text-muted-foreground">Tổng thanh toán</div>
                       <div className="text-lg font-bold text-[#E60000]">
                         {(() => {
-                          const usdPrice = parseFloat(selectedPlan.price) * monthsCount
                           const exchangeRate = getExchangeRate()
-                          const vndPrice = Math.floor(usdPrice * exchangeRate)
-                          const roundedVnd = roundMoney(vndPrice)
-                          return formatPrice(roundedVnd)
+                          const perMonthVnd = roundMoney(parseFloat(selectedPlan.price) * exchangeRate)
+                          const totalVnd = perMonthVnd * monthsCount
+                          return formatPrice(totalVnd)
                         })()} VND
                       </div>
                       <div className="text-xs text-muted-foreground">

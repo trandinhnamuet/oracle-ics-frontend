@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp } from 'lucide-react'
 import { ConfirmSshKeyRequestDialog } from '@/components/dialogs/confirm-ssh-key-request-dialog'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
 // Dynamic import TerminalComponent to avoid SSR issues with xterm and socket.io-client
 const TerminalComponent = dynamic(
@@ -96,6 +97,12 @@ export default function PackageDetailPage() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
   const [showSshKeyConfirm, setShowSshKeyConfirm] = useState(false)
   const [isRequestingSshKey, setIsRequestingSshKey] = useState(false)
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean
+    title: string
+    description: string
+    onConfirm: () => Promise<void>
+  }>({ open: false, title: '', description: '', onConfirm: async () => {} })
 
   // Fetch subscription data
   useEffect(() => {
@@ -331,85 +338,79 @@ export default function PackageDetailPage() {
     }
   }
 
-  const handleDeleteVmOnly = async () => {
-    const confirmed = confirm(
-      'Xóa VM của subscription này?\n\n' +
-      '⚠️ Lưu ý: Subscription vẫn còn hiệu lực nhưng máy ảo sẽ bị xóa.\n' +
-      'Bạn cần cấu hình lại VM mới để tiếp tục sử dụng dịch vụ.'
-    )
-    if (!confirmed) return
-
-    setIsLoading(true)
-    try {
-      await deleteVmOnly(subscriptionId)
-      toast({
-        title: 'Xóa VM thành công',
-        description: 'VM đã được xóa. Subscription vẫn còn hiệu lực.',
-        variant: 'default'
-      })
-      // Refresh VM details
-      setVmDetails(null)
-      const data = await getSubscriptionById(subscriptionId)
-      setSubscription(data)
-    } catch (error: any) {
-      console.error('Error deleting VM:', error)
-      toast({
-        title: 'Xóa VM thất bại',
-        description: error?.response?.data?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
-        variant: 'destructive'
-      })
-    } finally {
-      setIsLoading(false)
-    }
+  const handleDeleteVmOnly = () => {
+    setConfirmDialog({
+      open: true,
+      title: 'Xóa VM của subscription',
+      description: 'Subscription vẫn còn hiệu lực nhưng máy ảo sẽ bị xóa. Bạn cần cấu hình lại VM mới để tiếp tục sử dụng dịch vụ.',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        setIsLoading(true)
+        try {
+          await deleteVmOnly(subscriptionId)
+          toast({
+            title: 'Xóa VM thành công',
+            description: 'VM đã được xóa. Subscription vẫn còn hiệu lực.',
+            variant: 'default'
+          })
+          setVmDetails(null)
+          const data = await getSubscriptionById(subscriptionId)
+          setSubscription(data)
+        } catch (error: any) {
+          console.error('Error deleting VM:', error)
+          toast({
+            title: 'Xóa VM thất bại',
+            description: error?.response?.data?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
+            variant: 'destructive'
+          })
+        } finally {
+          setIsLoading(false)
+        }
+      },
+    })
   }
 
   const handleAction = async (action: string) => {
     if (action === 'delete') {
       // Handle delete subscription
-      const confirmation = confirm(
-        'BẠN CHẮC CHẮN MUỐN XÓA SUBSCRIPTION NÀY?\n\n' +
-        '⚠️ CẢNH BÁO: Hành động này sẽ:\n' +
-        '• XÓA HOÀN TOÀN subscription\n' +
-        '• XÓA máy ảo (VM) trên Oracle Cloud\n' +
-        '• XÓA TẤT CẢ dữ liệu liên quan\n' +
-        '• KHÔNG THỂ KHÔI PHỤC sau khi xóa\n\n' +
-        'Vui lòng backup dữ liệu quan trọng trước khi xóa!'
-      );
-      
-      if (!confirmation) return;
-
-      setIsLoading(true);
-      try {
-        await deleteSubscription(subscriptionId);
-        
-        toast({
-          title: 'Xóa thành công',
-          description: 'Subscription và VM đã được xóa hoàn toàn',
-          variant: 'default'
-        });
-        
-        // Redirect to package management page after 1 second
-        setTimeout(() => {
-          router.push('/package-management');
-        }, 1000);
-      } catch (error: any) {
-        console.error('Error deleting subscription:', error);
-        toast({
-          title: 'Lỗi xóa subscription',
-          description: error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
-          variant: 'destructive'
-        });
-        setIsLoading(false);
-      }
-    } else {
-      // Other actions
-      setIsLoading(true);
-      // Simulate API call
-      setTimeout(() => {
-        console.log(`Executing action: ${action}`);
-        setIsLoading(false);
-      }, 2000);
+      setConfirmDialog({
+        open: true,
+        title: 'Xác nhận xóa subscription',
+        description: 'Hành động này sẽ XÓA HOÀN TOÀN subscription và máy ảo (VM) trên Oracle Cloud. Tất cả dữ liệu liên quan sẽ bị xóa và KHÔNG THỂ KHÔI PHỤC. Vui lòng backup dữ liệu quan trọng trước khi xóa.',
+        onConfirm: async () => {
+          setConfirmDialog(prev => ({ ...prev, open: false }))
+          setIsLoading(true)
+          try {
+            await deleteSubscription(subscriptionId)
+            toast({
+              title: 'Xóa thành công',
+              description: 'Subscription và VM đã được xóa hoàn toàn',
+              variant: 'default'
+            })
+            setTimeout(() => {
+              router.push('/package-management')
+            }, 1000)
+          } catch (error: any) {
+            console.error('Error deleting subscription:', error)
+            toast({
+              title: 'Lỗi xóa subscription',
+              description: error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
+              variant: 'destructive'
+            })
+            setIsLoading(false)
+          }
+        },
+      })
+      return
     }
+
+    // Other actions
+    setIsLoading(true)
+    // Simulate API call
+    setTimeout(() => {
+      console.log(`Executing action: ${action}`)
+      setIsLoading(false)
+    }, 2000)
   }
 
   const getStatusColor = (status: string) => {
@@ -1187,6 +1188,19 @@ export default function PackageDetailPage() {
         vmName={vmDetails?.vm?.instanceName}
         isLoading={isRequestingSshKey}
       />
+
+      <AlertDialog open={confirmDialog.open} onOpenChange={(open) => !open && setConfirmDialog(prev => ({ ...prev, open: false }))}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmDialog.title}</AlertDialogTitle>
+            <AlertDialogDescription>{confirmDialog.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">Xác nhận</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
