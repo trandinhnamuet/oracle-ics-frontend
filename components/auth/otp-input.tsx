@@ -132,8 +132,12 @@ export function OtpInput({
         break;
 
       default:
-        // Allow digits
-        if (!/^\d$/.test(e.key) && !['Tab', 'Enter'].includes(e.key)) {
+        // Allow digits, Tab, Enter, and clipboard shortcuts (Ctrl/Cmd + A/C/V/X)
+        if (
+          !/^\d$/.test(e.key) &&
+          !['Tab', 'Enter'].includes(e.key) &&
+          !(e.ctrlKey || e.metaKey)
+        ) {
           e.preventDefault();
         }
         break;
