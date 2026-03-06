@@ -7,7 +7,8 @@ import { authService } from '@/services/auth.service';
 export async function fetchWithAuth(
   url: string,
   options: RequestInit = {},
-  skipAuthRefresh: boolean = false
+  skipAuthRefresh: boolean = false,
+  skipRedirectOnError: boolean = false
 ): Promise<Response> {
   // Resolve API_BASE_URL dynamically (so it picks up env changes)
   const API_BASE_URL = (typeof window === 'undefined' 
@@ -79,7 +80,7 @@ export async function fetchWithAuth(
       // Refresh failed, clear auth and redirect to login
       console.error('Refresh failed:', refreshError);
       authService.clearAccessToken();
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && !skipRedirectOnError) {
         window.location.href = '/login';
       }
       throw new Error('Session expired. Please login again.');
@@ -88,7 +89,7 @@ export async function fetchWithAuth(
     // If we explicitly skip auth refresh and get 401, redirect to login
     console.warn('Got 401 with skipAuthRefresh=true, redirecting to login');
     authService.clearAccessToken();
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !skipRedirectOnError) {
       window.location.href = '/login';
     }
     throw new Error('Unauthorized');

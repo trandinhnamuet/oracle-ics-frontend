@@ -113,7 +113,7 @@ class AuthService {
     try {
       await fetchWithAuth(`${API_URL}/auth/logout`, {
         method: 'POST',
-      });
+      }, false, true); // skipRedirectOnError=true: let the logout flow handle navigation
     } catch (error) {
       // Even if logout fails on server, clear local state
       console.error('Logout request failed:', error);
@@ -131,7 +131,7 @@ class AuthService {
     try {
       await fetchWithAuth(`${API_URL}/auth/logout-all`, {
         method: 'POST',
-      });
+      }, false, true); // skipRedirectOnError=true: let the logout flow handle navigation
     } catch (error) {
       // Even if logout fails on server, clear local state
       console.error('Logout-all request failed:', error);
