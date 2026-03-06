@@ -10,10 +10,10 @@ const protectedRoutes = [
 ]
 
 // Danh sách các routes chỉ dành cho guest (chưa đăng nhập)
-const guestOnlyRoutes = [
-  '/login',
-  '/register'
-]
+// NOTE: /login và /register được bỏ khỏi đây vì login page đã tự xử lý redirect
+// client-side. Middleware chặn bằng refreshToken HttpOnly cookie gây bug khi cookie
+// chưa được xóa kịp sau logout (cookie HttpOnly chỉ server mới thấy được).
+const guestOnlyRoutes: string[] = []
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

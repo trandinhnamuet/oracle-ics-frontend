@@ -25,14 +25,12 @@ export default function LoginPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  // Check if user is already logged in
+  // Check if user is already logged in — redirect to home client-side
+  // (middleware no longer handles this to avoid HttpOnly cookie race condition after logout)
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      setSuccessMessage('Bạn đã đăng nhập rồi! Đang chuyển hướng về trang chủ...')
-      const timer = setTimeout(() => {
-        router.push('/')
-      }, 0)
-      return () => clearTimeout(timer)
+      console.log('[LOGIN PAGE] User already authenticated, redirecting to home')
+      router.replace('/')
     }
   }, [isAuthenticated, isLoading, router])
 
