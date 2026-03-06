@@ -115,6 +115,8 @@ export function NotificationBell() {
   const [data, setData] = useState<NotificationPage | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
   const [readingId, setReadingId] = useState<number | null>(null)
+  const [clearingRead, setClearingRead] = useState(false)
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [, setNow] = useState(Date.now()) // Force re-render for time updates
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -210,13 +212,21 @@ export function NotificationBell() {
     }
   }
 
-  const handleClearRead = async () => {
+  const handleClearRead = () => {
+    setShowClearConfirm(true)
+  }
+
+  const handleConfirmClearRead = async () => {
+    setShowClearConfirm(false)
+    setClearingRead(true)
     try {
       await clearReadNotifications()
       setData(prev =>
         prev ? { ...prev, items: prev.items.filter(n => !n.is_read), total: prev.items.filter(n => !n.is_read).length } : prev
       )
-    } catch { /* silent */ }
+    } catch { /* silent */ } finally {
+      setClearingRead(false)
+    }
   }
 
   const handleLoadMore = async () => {
@@ -299,7 +309,7 @@ export function NotificationBell() {
                   disabled={markingAll}
                 >
                   {markingAll ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCheck className="h-3.5 w-3.5 mr-1" />}
-                  Đọc tất cả
+                  Đã đọc tất cả
                 </Button>
               )}
               <Button
@@ -318,9 +328,10 @@ export function NotificationBell() {
                   size="sm"
                   className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                   onClick={handleClearRead}
+                  disabled={clearingRead}
                   title="Xoá thông báo đã đọc"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  {clearingRead ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
                 </Button>
               )}
               <Button
@@ -441,6 +452,46 @@ export function NotificationBell() {
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Confirm clear-read dialog */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setShowClearConfirm(false)}
+          />
+          {/* Dialog */}
+          <div className="relative z-10 bg-background border border-border rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                <Trash2 className="h-5 w-5 text-destructive" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground text-sm">Xoá thông báo đã đọc</h4>
+                <p className="text-xs text-muted-foreground mt-0.5">Bạn có chắc muốn xoá tất cả thông báo đã đọc không? Hành động này không thể hoàn tác.</p>
+              </div>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowClearConfirm(false)}
+              >
+                Huỷ
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleConfirmClearRead}
+              >
+                <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                Xoá
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

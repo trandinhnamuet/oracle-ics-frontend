@@ -152,20 +152,33 @@ export function OtpInput({
     const pastedData = e.clipboardData?.getData('text')?.replace(/[^0-9]/g, '') || '';
     
     if (pastedData && pastedData.length > 0) {
-      // Slice to max length and pad with empty strings
-      const newValue = pastedData.slice(0, length).padEnd(length, '');
+      const sliced = pastedData.slice(0, length);
+      // Build complete new value starting from index 0
+      const newValue = sliced.padEnd(length, '');
       onChange(newValue);
       
       // Focus the last filled input or the last input
-      const nextIndex = Math.min(pastedData.length, length - 1);
+      const nextIndex = Math.min(sliced.length, length - 1);
       setTimeout(() => {
         focusInput(nextIndex);
       }, 0);
     }
   };
 
+  // Also handle paste on the wrapper div to catch paste when focused anywhere
+  const handleWrapperPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData?.getData('text')?.replace(/[^0-9]/g, '') || '';
+    if (pastedData && pastedData.length > 0) {
+      const sliced = pastedData.slice(0, length);
+      onChange(sliced.padEnd(length, ''));
+      const nextIndex = Math.min(sliced.length, length - 1);
+      setTimeout(() => focusInput(nextIndex), 0);
+    }
+  };
+
   return (
-    <div className={cn('flex gap-2 justify-center', className)}>
+    <div className={cn('flex gap-2 justify-center', className)} onPaste={handleWrapperPaste}>
       {Array.from({ length }, (_, index) => (
         <input
           key={index}
@@ -173,7 +186,7 @@ export function OtpInput({
             inputsRef.current[index] = el;
           }}
           type="text"
-          inputMode="decimal"
+          inputMode="numeric"
           pattern="[0-9]*"
           maxLength={1}
           value={value[index] || ''}
