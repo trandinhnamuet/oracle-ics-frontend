@@ -78,6 +78,7 @@ export function PricingSection() {
           name: pkg.name,
           description: '',
           price: String(pkg.cost),
+          priceVnd: pkg.cost_vnd,
           period: 'tháng',
           icon: config.icon as any,
           popular: i === 0,
@@ -198,7 +199,7 @@ export function PricingSection() {
       if (selectedPaymentMethod === 'account_balance') {
         // Phương thức 1: Trừ tiền tài khoản
         const currentBalance = userBalance // Current balance in VND
-        const planPriceVND = parseFloat(selectedPlan.price) * getExchangeRate()
+        const planPriceVND = selectedPlan.priceVnd
         
         if (planPriceVND > currentBalance) {
           toast({
@@ -604,13 +605,7 @@ export function PricingSection() {
                           <div className="text-center">
                             <div className="text-2xl font-bold text-primary">
                               {/* Hiển thị giá VND, debug giá gốc và tỉ giá */}
-                              {(() => {
-                                const usdPrice = parseFloat(plan.price);
-                                const exchangeRate = getExchangeRate();
-                                const vndPrice = Math.floor(usdPrice * exchangeRate);
-                                const roundedVnd = roundMoney(vndPrice);
-                                return formatPrice(roundedVnd);
-                              })()}
+                              {formatPrice(plan.priceVnd)}
                             </div>
                             <div className="text-xs text-muted-foreground">₫/{plan.period}</div>
                           </div>
@@ -783,15 +778,10 @@ export function PricingSection() {
                     <div className="text-center">
                       <div className="text-sm text-muted-foreground">Tổng thanh toán</div>
                       <div className="text-lg font-bold text-[#E60000]">
-                        {(() => {
-                          const exchangeRate = getExchangeRate()
-                          const perMonthVnd = roundMoney(parseFloat(selectedPlan.price) * exchangeRate)
-                          const totalVnd = perMonthVnd * monthsCount
-                          return formatPrice(totalVnd)
-                        })()} VND
+                        {formatPrice(selectedPlan.priceVnd * monthsCount)} VND
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {formatPrice(roundMoney(parseFloat(selectedPlan.price) * getExchangeRate()))} × {monthsCount} tháng
+                        {formatPrice(selectedPlan.priceVnd)} × {monthsCount} tháng
                       </div>
                     </div>
                   )}

@@ -5,6 +5,7 @@ export interface PricingPlan {
   name: string
   description: string
   price: string
+  priceVnd: number
   period: string
   icon: LucideIcon
   popular: boolean
