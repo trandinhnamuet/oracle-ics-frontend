@@ -62,23 +62,48 @@ export function Header() {
   }
 
   const handleLogout = async () => {
+    console.log('[AUTH DEBUG] ===== LOGOUT STARTED =====')
+    console.log('[AUTH DEBUG] isAuthenticated before logout:', isAuthenticated)
+    console.log('[AUTH DEBUG] user before logout:', user?.email)
+    console.log('[AUTH DEBUG] cookies before logout:', document.cookie)
     try {
       await logout()
+      console.log('[AUTH DEBUG] logout() resolved successfully')
+      console.log('[AUTH DEBUG] cookies after logout:', document.cookie)
+      console.log('[AUTH DEBUG] localStorage auth-storage after logout:', localStorage.getItem('auth-storage'))
       toast({
         title: t('common.logoutSuccess'),
         variant: 'success'
       })
     } catch (error: any) {
+      console.error('[AUTH DEBUG] logout() threw error:', error)
       toast({
         title: t('common.error'),
         description: error.message,
         variant: 'destructive'
       })
     }
+    console.log('[AUTH DEBUG] ===== LOGOUT HANDLER DONE =====')
   }
 
   const handleProfileClick = () => {
     router.push('/profile')
+  }
+
+  const handleLoginClick = () => {
+    console.log('[AUTH DEBUG] ===== LOGIN BUTTON CLICKED =====')
+    console.log('[AUTH DEBUG] isAuthenticated:', isAuthenticated)
+    console.log('[AUTH DEBUG] user:', user?.email ?? null)
+    console.log('[AUTH DEBUG] cookies at login click:', document.cookie)
+    console.log('[AUTH DEBUG] localStorage auth-storage:', localStorage.getItem('auth-storage'))
+    const hasRefreshTokenCookie = document.cookie.includes('refreshToken')
+    console.log('[AUTH DEBUG] refreshToken cookie present:', hasRefreshTokenCookie)
+    if (hasRefreshTokenCookie) {
+      console.warn('[AUTH DEBUG] ⚠️ refreshToken cookie still present! Middleware will redirect /login → / if this is not cleared.')
+    }
+    console.log('[AUTH DEBUG] Navigating to /login...')
+    router.push('/login')
+    console.log('[AUTH DEBUG] ===== LOGIN NAVIGATE CALLED =====')
   }
 
   // Scroll mượt đến section
@@ -198,8 +223,8 @@ export function Header() {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button variant="outline" asChild>
-                  <Link href="/login">{t('header.login')}</Link>
+                <Button variant="outline" onClick={handleLoginClick}>
+                  {t('header.login')}
                 </Button>
                 <Button asChild>
                   <Link href="/register">{t('header.register')}</Link>
@@ -288,8 +313,8 @@ export function Header() {
                       <ThemeToggle />
                     </div>
                   </div>
-                  <Button variant="outline" asChild className="w-full bg-transparent">
-                    <Link href="/login">{t('header.login')}</Link>
+                  <Button variant="outline" onClick={handleLoginClick} className="w-full bg-transparent">
+                    {t('header.login')}
                   </Button>
                   <Button asChild className="w-full">
                     <Link href="/register">{t('header.register')}</Link>
