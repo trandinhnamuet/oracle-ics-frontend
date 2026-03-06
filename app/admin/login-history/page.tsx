@@ -32,13 +32,13 @@ export default function AdminLoginHistoryPage() {
 
   // Pagination
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(20)
+  const [limit, setLimit] = useState(10)
   const [total, setTotal] = useState(0)
 
   // Filters
   const [filters, setFilters] = useState<AdminLoginHistoryQuery>({
     page: 1,
-    limit: 20,
+    limit: 10,
     status: undefined,
     startDate: undefined,
     endDate: undefined,
@@ -387,38 +387,38 @@ export default function AdminLoginHistoryPage() {
 
         {/* Login History Table */}
         <div className="bg-white dark:bg-card rounded-lg shadow overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+          <div>
+            <table className="w-full divide-y divide-gray-200">
               <thead className="bg-gray-100 dark:bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                    Tài khoản
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     Login Time
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     IP Address
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    IPv6
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     Location
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     Browser
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     OS
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     Device
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     Duration
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
                     New Device
                   </th>
                 </tr>
@@ -439,11 +439,19 @@ export default function AdminLoginHistoryPage() {
                 ) : (
                   loginHistory.map((record) => (
                     <tr key={record.id} className="hover:bg-gray-50 dark:hover:bg-muted/50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="px-4 py-4 text-sm">
+                        <div className="font-medium text-gray-900 dark:text-foreground">
+                          {record.admin ? `${record.admin.firstName} ${record.admin.lastName}` : record.username}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-muted-foreground">
+                          {record.admin?.email || record.username}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-sm">
                         <div className="text-gray-900 dark:text-foreground">{format(new Date(record.loginTime), 'PPp', { locale: vi })}</div>
                         <div className="text-gray-500 dark:text-muted-foreground text-xs">{formatDistanceToNow(new Date(record.loginTime), { locale: vi, addSuffix: true })}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           record.loginStatus === 'success'
                             ? 'bg-green-100 text-green-800'
@@ -454,36 +462,27 @@ export default function AdminLoginHistoryPage() {
                           {record.loginStatus.charAt(0).toUpperCase() + record.loginStatus.slice(1)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                         {record.ipV4 || record.ipV6 || 'N/A'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
-                        {record.ipV6 ? (
-                          <span className="font-mono text-xs text-blue-600" title={record.ipV6}>
-                            {record.ipV6.length > 20 ? record.ipV6.substring(0, 20) + '...' : record.ipV6}
-                          </span>
-                        ) : (
-                          'N/A'
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                         {record.country && record.city ? `${record.city}, ${record.country}` : record.country || 'N/A'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                         {record.browser}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                         {record.os}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm">
                         <span className="px-2 py-1 bg-gray-100 dark:bg-muted text-gray-800 dark:text-foreground rounded text-xs">
                           {record.deviceType}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
                         {record.sessionDurationMinutes ? `${record.sessionDurationMinutes}m` : 'Active'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm">
                         {record.isNewDevice ? (
                           <span className="text-orange-600 font-semibold">⚠️ New</span>
                         ) : (

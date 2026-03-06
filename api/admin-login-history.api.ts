@@ -20,6 +20,12 @@ export interface AdminLoginHistoryRecord {
   role: string
   loginTime: string
   loginStatus: 'success' | 'failed' | 'locked'
+  admin?: {
+    id: number
+    firstName: string
+    lastName: string
+    email: string
+  }
   ipV4: string | null
   ipV6: string | null
   country: string | null
