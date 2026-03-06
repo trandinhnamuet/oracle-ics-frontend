@@ -209,7 +209,7 @@ export default function CustomRegistrationAdminPage() {
             <select
               value={filterProcessed}
               onChange={(e) => setFilterProcessed(e.target.value as any)}
-              className="border rounded-md px-3 py-2 text-sm"
+              className="border rounded-md px-3 py-2 text-sm bg-background text-foreground border-border focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="all">{t('admin.customRegistration.filter.all')}</option>
               <option value="processed">{t('admin.customRegistration.filter.processed')}</option>

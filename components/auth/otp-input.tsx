@@ -200,13 +200,13 @@ export function OtpInput({
             'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
             'transition-all duration-200',
             activeIndex === index && !disabled
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-gray-300',
+              ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40'
+              : 'border-gray-300 dark:border-gray-600',
             disabled
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-white hover:border-gray-400',
+              ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
+              : 'bg-white dark:bg-background hover:border-gray-400 dark:hover:border-gray-400 text-foreground',
             value[index]
-              ? 'border-green-500 bg-green-50'
+              ? 'border-green-500 bg-green-50 dark:bg-green-950/40'
               : '',
             'sm:w-14 sm:h-14 sm:text-xl'
           )}

@@ -115,7 +115,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
   const isLoading = status === 'verifying' || status === 'sending';
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <Card className="shadow-lg">
           <CardHeader className="space-y-1 text-center">
@@ -140,11 +140,11 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
                   <span className="text-orange-600 font-medium block mb-2">
                     ⚠️ Tài khoản chưa xác thực
                   </span>
-                  <span className="text-sm text-gray-700 block mb-2">
+                  <span className="text-sm text-muted-foreground block mb-2">
                     OTP đã được gửi về email của bạn
                   </span>
-                  <span className="font-medium text-gray-900">{email}</span>
-                  <span className="text-sm text-gray-600 block mt-2">
+                  <span className="font-medium text-foreground">{email}</span>
+                  <span className="text-sm text-muted-foreground block mt-2">
                     Vui lòng nhập OTP để xác thực tài khoản
                   </span>
                 </>
@@ -152,7 +152,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
                 <>
                   Enter the 6-digit verification code sent to
                   <br />
-                  <span className="font-medium text-gray-900">{email}</span>
+                  <span className="font-medium text-foreground">{email}</span>
                 </>
               )}
             </CardDescription>
@@ -170,7 +170,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
                 />
                 
                 {/* Instructions */}
-                <p className="text-sm text-gray-600 text-center">
+                <p className="text-sm text-muted-foreground text-center">
                   Enter the 6-digit code from your email
                 </p>
               </div>
@@ -201,7 +201,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
                 </Button>
 
                 <div className="text-center">
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground">
                     Didn't receive the code?{' '}
                   </span>
                   <Button
@@ -222,8 +222,8 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
             </form>
 
             {/* Security Note */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-xs text-blue-800 text-center">
+            <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+              <p className="text-xs text-blue-800 dark:text-blue-300 text-center">
                 🔒 This code expires in 10 minutes. Don't share it with anyone.
               </p>
             </div>

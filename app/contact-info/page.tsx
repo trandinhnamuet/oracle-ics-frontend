@@ -69,7 +69,7 @@ export default function ContactInfoPage() {
                   </div>
                 </CardHeader>
               <CardContent className="space-y-6">
-                <div className="p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+                <div className="p-4 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-950/40 dark:to-green-900/30 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <MapPin className="h-5 w-5 mt-1 text-green-600" />
                     <div>
@@ -111,7 +111,7 @@ export default function ContactInfoPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg">
+                <div className="p-4 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-950/40 dark:to-orange-900/30 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <Phone className="h-5 w-5 text-orange-600" />
                     <div>
@@ -120,7 +120,7 @@ export default function ContactInfoPage() {
                     </div>
                   </div>
                 </div>
-                <div className="p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
+                <div className="p-4 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-950/40 dark:to-purple-900/30 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <Mail className="h-5 w-5 text-purple-600" />
                     <div>
@@ -129,7 +129,7 @@ export default function ContactInfoPage() {
                     </div>
                   </div>
                 </div>
-                <div className="p-4 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg">
+                <div className="p-4 bg-gradient-to-r from-indigo-50 to-indigo-100 dark:from-indigo-950/40 dark:to-indigo-900/30 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <Globe className="h-5 w-5 text-indigo-600" />
                     <div>

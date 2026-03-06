@@ -695,8 +695,8 @@ export function PricingSection() {
             <Card 
               className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
                 selectedPaymentMethod === 'account_balance' 
-                  ? 'border-[#E60000] border-2 bg-red-50' 
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-[#E60000] border-2 bg-red-50 dark:bg-red-950/30' 
+                  : 'border-border hover:border-muted-foreground/50'
               }`}
               onClick={() => setSelectedPaymentMethod('account_balance')}
             >
@@ -704,7 +704,7 @@ export function PricingSection() {
                 <div className={`mx-auto mb-3 p-3 rounded-2xl w-fit ${
                   selectedPaymentMethod === 'account_balance' 
                     ? 'bg-[#E60000] text-white' 
-                    : 'bg-gray-100 text-gray-600'
+                    : 'bg-muted text-muted-foreground'
                 }`}>
                   <Wallet className="h-8 w-8" />
                 </div>
@@ -740,8 +740,8 @@ export function PricingSection() {
             <Card 
               className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
                 selectedPaymentMethod === 'direct_payment' 
-                  ? 'border-[#E60000] border-2 bg-red-50' 
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-[#E60000] border-2 bg-red-50 dark:bg-red-950/30' 
+                  : 'border-border hover:border-muted-foreground/50'
               }`}
               onClick={() => setSelectedPaymentMethod('direct_payment')}
             >
@@ -749,7 +749,7 @@ export function PricingSection() {
                 <div className={`mx-auto mb-3 p-3 rounded-2xl w-fit ${
                   selectedPaymentMethod === 'direct_payment' 
                     ? 'bg-[#E60000] text-white' 
-                    : 'bg-gray-100 text-gray-600'
+                    : 'bg-muted text-muted-foreground'
                 }`}>
                   <CreditCard className="h-8 w-8" />
                 </div>
@@ -761,7 +761,7 @@ export function PricingSection() {
               <CardContent className="pt-0">
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">
+                    <label className="text-sm font-medium text-foreground mb-1 block">
                       Số tháng đăng ký
                     </label>
                     <Input
@@ -791,7 +791,7 @@ export function PricingSection() {
           </div>
 
           {/* Terms agreement checkbox */}
-          <div className="flex items-start gap-2 my-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="flex items-start gap-2 my-4 p-3 bg-muted/50 rounded-lg border border-border">
             <input
               id="terms-checkbox"
               type="checkbox"
@@ -799,7 +799,7 @@ export function PricingSection() {
               onChange={(e) => setAgreedToTerms(e.target.checked)}
               className="mt-0.5 h-4 w-4 cursor-pointer accent-[#E60000] shrink-0"
             />
-            <label htmlFor="terms-checkbox" className="text-sm text-gray-700 cursor-pointer leading-relaxed select-none">
+            <label htmlFor="terms-checkbox" className="text-sm text-foreground cursor-pointer leading-relaxed select-none">
               Tôi đã đọc và đồng ý với{' '}
               <a
                 href="/terms"
