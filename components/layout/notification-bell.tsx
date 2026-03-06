@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef, useCallback } from "react"
+import { createPortal } from "react-dom"
 import { Bell, X, Check, CheckCheck, Trash2, Loader2, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -455,9 +456,9 @@ export function NotificationBell() {
         </div>
       )}
 
-      {/* Confirm clear-read dialog */}
-      {showClearConfirm && (
-        <div className="fixed inset-0 z-[300] flex items-center justify-center">
+      {/* Confirm clear-read dialog — rendered via portal to escape header stacking context */}
+      {showClearConfirm && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
@@ -492,7 +493,8 @@ export function NotificationBell() {
               </Button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
