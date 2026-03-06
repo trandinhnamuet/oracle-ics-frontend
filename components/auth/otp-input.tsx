@@ -83,8 +83,6 @@ export function OtpInput({
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
 
-    console.log('[OTP] keyDown:', { key: e.key, ctrlKey: e.ctrlKey, metaKey: e.metaKey, index });
-
     switch (e.key) {
       case 'Backspace':
         e.preventDefault();
@@ -154,38 +152,32 @@ export function OtpInput({
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     
-    const rawData = e.clipboardData?.getData('text') || '';
-    const pastedData = rawData.replace(/[^0-9]/g, '');
-    console.log('[OTP] handlePaste (input):', { raw: rawData, numeric: pastedData, clipboardData: !!e.clipboardData });
+    // Try to get paste data from clipboard
+    const pastedData = e.clipboardData?.getData('text')?.replace(/[^0-9]/g, '') || '';
     
     if (pastedData && pastedData.length > 0) {
       const sliced = pastedData.slice(0, length);
-      onChange(sliced);
-      console.log('[OTP] handlePaste onChange called with:', sliced);
+      // Build complete new value starting from index 0
+      const newValue = sliced.padEnd(length, '');
+      onChange(newValue);
       
+      // Focus the last filled input or the last input
       const nextIndex = Math.min(sliced.length, length - 1);
       setTimeout(() => {
         focusInput(nextIndex);
       }, 0);
-    } else {
-      console.warn('[OTP] handlePaste: no numeric data found in clipboard');
     }
   };
 
   // Also handle paste on the wrapper div to catch paste when focused anywhere
   const handleWrapperPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const rawData = e.clipboardData?.getData('text') || '';
-    const pastedData = rawData.replace(/[^0-9]/g, '');
-    console.log('[OTP] handleWrapperPaste (div):', { raw: rawData, numeric: pastedData });
+    const pastedData = e.clipboardData?.getData('text')?.replace(/[^0-9]/g, '') || '';
     if (pastedData && pastedData.length > 0) {
       const sliced = pastedData.slice(0, length);
-      onChange(sliced);
-      console.log('[OTP] handleWrapperPaste onChange called with:', sliced);
+      onChange(sliced.padEnd(length, ''));
       const nextIndex = Math.min(sliced.length, length - 1);
       setTimeout(() => focusInput(nextIndex), 0);
-    } else {
-      console.warn('[OTP] handleWrapperPaste: no numeric data found in clipboard');
     }
   };
 
