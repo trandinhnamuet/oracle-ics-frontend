@@ -161,6 +161,48 @@ export default function PaymentManagementPage() {
         </Button>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Tổng thanh toán</p>
+                <p className="text-2xl font-bold">{payments.length}</p>
+              </div>
+              <DollarSign className="w-8 h-8 text-gray-400 dark:text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Đang chờ</p>
+                <p className="text-2xl font-bold text-yellow-500">
+                  {payments.filter((p) => p.status === 'pending').length}
+                </p>
+              </div>
+              <Clock className="w-8 h-8 text-yellow-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Thành công</p>
+                <p className="text-2xl font-bold text-green-500">
+                  {payments.filter((p) => p.status === 'success').length}
+                </p>
+              </div>
+              <CheckCircle className="w-8 h-8 text-green-400" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -264,48 +306,6 @@ export default function PaymentManagementPage() {
           )}
         </CardContent>
       </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 dark:text-muted-foreground">Tổng thanh toán</p>
-                <p className="text-2xl font-bold">{payments.length}</p>
-              </div>
-              <DollarSign className="w-8 h-8 text-gray-400 dark:text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 dark:text-muted-foreground">Đang chờ</p>
-                <p className="text-2xl font-bold text-yellow-500">
-                  {payments.filter((p) => p.status === 'pending').length}
-                </p>
-              </div>
-              <Clock className="w-8 h-8 text-yellow-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 dark:text-muted-foreground">Thành công</p>
-                <p className="text-2xl font-bold text-green-500">
-                  {payments.filter((p) => p.status === 'success').length}
-                </p>
-              </div>
-              <CheckCircle className="w-8 h-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       <AlertDialog open={!!confirmPaymentId} onOpenChange={(open) => !open && setConfirmPaymentId(null)}>
         <AlertDialogContent>

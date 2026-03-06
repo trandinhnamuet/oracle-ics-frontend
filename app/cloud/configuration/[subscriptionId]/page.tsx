@@ -110,18 +110,10 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [ocpus, setOcpus] = useState(1)
   const [memoryInGBs, setMemoryInGBs] = useState(4)
   const [bootVolumeSize, setBootVolumeSize] = useState(50)
-  const [notificationEmail, setNotificationEmail] = useState(user?.email || '')
   const [isProcessing, setIsProcessing] = useState(false)
   const [subscription, setSubscription] = useState<any>(null)
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
-
-  // Auto-fill notification email from user data
-  useEffect(() => {
-    if (user?.email && !notificationEmail) {
-      setNotificationEmail(user.email)
-    }
-  }, [user?.email])
 
   // Load compute images
   useEffect(() => {
@@ -183,8 +175,7 @@ export default function CloudConfigurationBySubscriptionPage() {
       selectedOS &&
       selectedImageId &&
       selectedShape &&
-      notificationEmail.trim() &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail)
+      !!user?.email
     )
   }
 
@@ -238,7 +229,7 @@ export default function CloudConfigurationBySubscriptionPage() {
         ocpus: ocpus,
         memoryInGBs: memoryInGBs,
         bootVolumeSizeInGBs: bootVolumeSize,
-        notificationEmail: notificationEmail
+        notificationEmail: user?.email || ''
       })
 
       // Use message from backend response, or fallback to default
@@ -434,10 +425,10 @@ export default function CloudConfigurationBySubscriptionPage() {
                   <Input
                     id="email"
                     type="email"
-                    value={notificationEmail}
-                    onChange={(e) => setNotificationEmail(e.target.value)}
-                    placeholder="your-email@example.com"
-                    className="mt-2 bg-white dark:bg-background"
+                    value={user?.email || ''}
+                    readOnly
+                    disabled
+                    className="mt-2 bg-gray-100 dark:bg-muted cursor-not-allowed"
                   />
                   <p className="text-sm text-gray-500 dark:text-muted-foreground mt-2">
                     Your SSH private key will be sent to this email address. Please keep it secure.
@@ -696,7 +687,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                 {/* Email */}
                 <div className="border-b dark:border-border pb-3">
                   <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Notification Email</p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{notificationEmail || 'Not specified'}</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{user?.email || 'Not specified'}</p>
                 </div>
 
                 {/* Validation Status */}
@@ -712,8 +703,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                       <ul className="text-xs mt-2 space-y-1">
                         {!selectedOS && <li>• Select Operating System</li>}
                         {!selectedImageId && <li>• Select OS Version</li>}
-                        {!notificationEmail.trim() && <li>• Enter Email Address</li>}
-                        {notificationEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail) && <li>• Enter valid Email Address</li>}
+                        {!user?.email && <li>• Email address not found on account</li>}
                       </ul>
                     </div>
                   )}
