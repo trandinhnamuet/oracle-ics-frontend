@@ -244,10 +244,10 @@ export default function AdminSupportTicketsPage() {
                           <TableCell className="font-mono text-xs text-muted-foreground">#{ticket.id}</TableCell>
                           <TableCell>
                             <div className="font-medium line-clamp-1">{ticket.title}</div>
-                            <div className="text-xs text-muted-foreground">{ticket.customer_name} Â· {ticket.email}</div>
+                            <div className="text-xs text-muted-foreground">{ticket.customer_name} · {ticket.email}</div>
                           </TableCell>
                           <TableCell>
-                            <span className="text-sm">{ticket.service ? t(`admin.supportTickets.services.${ticket.service}`) : 'â€”'}</span>
+                            <span className="text-sm">{ticket.service ? t(`admin.supportTickets.services.${ticket.service}`) : '—'}</span>
                           </TableCell>
                           <TableCell>
                             <Badge className={`${statusCfg.className} flex items-center gap-1 w-fit`}>
