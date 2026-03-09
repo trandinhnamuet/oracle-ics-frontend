@@ -355,16 +355,16 @@ export default function UserManagementPage() {
                   users.map(user => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.id}</TableCell>
-                      <TableCell className="break-all">{user.email}</TableCell>
-                      <TableCell className="break-words">{user.firstName} {user.lastName}</TableCell>
-                      <TableCell className="break-all">
+                      <TableCell className="break-all overflow-hidden">{user.email}</TableCell>
+                      <TableCell className="break-words overflow-hidden">{user.firstName} {user.lastName}</TableCell>
+                      <TableCell className="break-all overflow-hidden">
                         {user.phoneNumber ? (
                           <span>{user.phoneNumber}</span>
                         ) : (
                           <span className="text-gray-400 dark:text-muted-foreground italic">{t('admin.user.table.noData')}</span>
                         )}
                       </TableCell>
-                      <TableCell className="break-words">
+                      <TableCell className="break-words overflow-hidden">
                         {user.company ? (
                           <span>{user.company}</span>
                         ) : (
