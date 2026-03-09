@@ -754,7 +754,6 @@
     "title": "个人资料",
     "subtitle": "管理您的账户信息",
     "loadingUser": "正在加载用户信息...",
-    "userBadge": "用户",
     "id": "ID",
     "createdAt": "创建日期",
     "updatedAt": "最后更新",
