@@ -17,7 +17,7 @@ interface Payment {
   user_id: number
   subscription_id?: string
   amount: number
-  status: 'pending' | 'success' | 'failed' | 'expired'
+  status: 'pending' | 'success' | 'failed' | 'expired' | 'deleted'
   payment_type: 'subscription' | 'deposit'
   payment_method: string
   transaction_code: string
@@ -126,6 +126,13 @@ export default function PaymentManagementPage() {
           <Badge className="bg-gray-500 hover:bg-gray-600">
             <AlertTriangle className="w-3 h-3 mr-1" />
             Quá hạn
+          </Badge>
+        )
+      case 'deleted':
+        return (
+          <Badge variant="outline" className="text-gray-400 border-gray-400">
+            <XCircle className="w-3 h-3 mr-1" />
+            Đã xóa
           </Badge>
         )
       default:
@@ -320,6 +327,9 @@ export default function PaymentManagementPage() {
                         )}
                         {payment.status === 'expired' && (
                           <span className="text-xs text-gray-500">Đã quá hạn</span>
+                        )}
+                        {payment.status === 'deleted' && (
+                          <span className="text-xs text-gray-400">Đã xóa</span>
                         )}
                       </TableCell>
                     </TableRow>
