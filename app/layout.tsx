@@ -10,6 +10,7 @@ import { Footer } from '@/components/layout/footer'
 import { AnalyticsProvider } from '@/components/providers/analytics-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { cookies } from 'next/headers'
+import { DomPatchProvider } from '@/components/providers/dom-patch-provider'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -61,6 +62,7 @@ export default function RootLayout({
   return (
     <html lang={language} suppressHydrationWarning>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+        <DomPatchProvider />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
