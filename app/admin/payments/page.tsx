@@ -39,6 +39,13 @@ type SortOrder = 'ASC' | 'DESC'
 
 const PAGE_SIZE = 20
 
+function SortIcon({ col, sortBy, sortOrder }: { col: SortKey; sortBy: SortKey; sortOrder: SortOrder }) {
+  if (sortBy !== col) return <ChevronsUpDown className="inline h-3 w-3 ml-1 text-muted-foreground" />
+  return sortOrder === 'ASC'
+    ? <ChevronUp className="inline h-3 w-3 ml-1" />
+    : <ChevronDown className="inline h-3 w-3 ml-1" />
+}
+
 export default function PaymentManagementPage() {
   const { t } = useTranslation()
   const [payments, setPayments] = useState<Payment[]>([])
@@ -76,13 +83,6 @@ export default function PaymentManagementPage() {
       setSortBy(col)
       setSortOrder('ASC')
     }
-  }
-
-  const SortIcon = ({ col }: { col: SortKey }) => {
-    if (sortBy !== col) return <ChevronsUpDown className="inline h-3 w-3 ml-1 text-muted-foreground" />
-    return sortOrder === 'ASC'
-      ? <ChevronUp className="inline h-3 w-3 ml-1" />
-      : <ChevronDown className="inline h-3 w-3 ml-1" />
   }
 
   const getSortValue = (p: Payment, key: SortKey): string | number => {
@@ -271,28 +271,28 @@ export default function PaymentManagementPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className={thClass} onClick={() => handleSort('subscription_id')}>
-                        Subscription ID<SortIcon col="subscription_id" />
+                        Subscription ID<SortIcon col="subscription_id" sortBy={sortBy} sortOrder={sortOrder} />
                       </TableHead>
                       <TableHead className={thClass} onClick={() => handleSort('transaction_code')}>
-                        Mã giao dịch<SortIcon col="transaction_code" />
+                        Mã giao dịch<SortIcon col="transaction_code" sortBy={sortBy} sortOrder={sortOrder} />
                       </TableHead>
                       <TableHead className={thClass} onClick={() => handleSort('user')}>
-                        Người dùng<SortIcon col="user" />
+                        Người dùng<SortIcon col="user" sortBy={sortBy} sortOrder={sortOrder} />
                       </TableHead>
                       <TableHead className={thClass} onClick={() => handleSort('amount')}>
-                        Số tiền<SortIcon col="amount" />
+                        Số tiền<SortIcon col="amount" sortBy={sortBy} sortOrder={sortOrder} />
                       </TableHead>
                       <TableHead className={thClass} onClick={() => handleSort('payment_type')}>
-                        Loại<SortIcon col="payment_type" />
+                        Loại<SortIcon col="payment_type" sortBy={sortBy} sortOrder={sortOrder} />
                       </TableHead>
                       <TableHead className={thClass} onClick={() => handleSort('payment_method')}>
-                        Phương thức<SortIcon col="payment_method" />
+                        Phương thức<SortIcon col="payment_method" sortBy={sortBy} sortOrder={sortOrder} />
                       </TableHead>
                       <TableHead className={thClass} onClick={() => handleSort('status')}>
-                        Trạng thái<SortIcon col="status" />
+                        Trạng thái<SortIcon col="status" sortBy={sortBy} sortOrder={sortOrder} />
                       </TableHead>
                       <TableHead className={thClass} onClick={() => handleSort('created_at')}>
-                        Ngày tạo<SortIcon col="created_at" />
+                        Ngày tạo<SortIcon col="created_at" sortBy={sortBy} sortOrder={sortOrder} />
                       </TableHead>
                       <TableHead className="text-right">Hành động</TableHead>
                     </TableRow>
