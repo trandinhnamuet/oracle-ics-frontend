@@ -16,42 +16,43 @@ import { Separator } from '@/components/ui/separator'
 
 import { authApi, RegisterRequest } from '@/api/auth.api'
 import { useAuth } from '@/lib/auth-context'
-
-// Schema validation cho form đăng ký
-const registerSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, 'Họ không được để trống')
-    .max(50, 'Họ không được quá 50 ký tự'),
-  lastName: z
-    .string()
-    .min(1, 'Tên không được để trống')
-    .max(50, 'Tên không được quá 50 ký tự'),
-  email: z
-    .string()
-    .min(1, 'Email không được để trống')
-    .email('Email không hợp lệ'),
-  password: z
-    .string()
-    .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
-    .max(100, 'Mật khẩu không được quá 100 ký tự'),
-  confirmPassword: z
-    .string()
-    .min(1, 'Vui lòng xác nhận mật khẩu'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Mật khẩu xác nhận không khớp",
-  path: ["confirmPassword"],
-})
-
-type RegisterFormData = z.infer<typeof registerSchema>
+import { useTranslation } from 'react-i18next'
 
 export default function RegisterPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  const registerSchema = z.object({
+    firstName: z
+      .string()
+      .min(1, t('register.validation.firstNameRequired'))
+      .max(50, t('register.validation.firstNameMaxLength')),
+    lastName: z
+      .string()
+      .min(1, t('register.validation.lastNameRequired'))
+      .max(50, t('register.validation.lastNameMaxLength')),
+    email: z
+      .string()
+      .min(1, t('register.validation.emailRequired'))
+      .email(t('register.validation.emailInvalid')),
+    password: z
+      .string()
+      .min(6, t('register.validation.passwordMinLength'))
+      .max(100, t('register.validation.passwordMaxLength')),
+    confirmPassword: z
+      .string()
+      .min(1, t('register.validation.confirmPasswordRequired')),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('register.validation.passwordsMismatch'),
+    path: ["confirmPassword"],
+  })
+
+  type RegisterFormData = z.infer<typeof registerSchema>
 
   const {
     register,
@@ -97,7 +98,7 @@ export default function RegisterPage() {
       
       // TODO: Implement Google OAuth
       // Hiện tại chỉ hiển thị thông báo
-      setError('Tính năng đăng ký bằng Google sẽ được cập nhật sớm')
+      setError(t('register.googleComingSoon'))
       
     } catch (error: any) {
       setError(error.message)
@@ -111,10 +112,10 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Đăng ký tài khoản
+            {t('register.title')}
           </CardTitle>
           <CardDescription className="text-center">
-            Tạo tài khoản mới để bắt đầu sử dụng dịch vụ
+            {t('register.subtitle')}
           </CardDescription>
         </CardHeader>
 
@@ -128,11 +129,11 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstName">Họ</Label>
+                <Label htmlFor="firstName">{t('register.firstName')}</Label>
                 <Input
                   id="firstName"
                   type="text"
-                  placeholder="Nguyễn"
+                  placeholder={t('register.firstNamePlaceholder')}
                   {...register('firstName')}
                   className={errors.firstName ? 'border-red-500' : ''}
                 />
@@ -142,11 +143,11 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lastName">Tên</Label>
+                <Label htmlFor="lastName">{t('register.lastName')}</Label>
                 <Input
                   id="lastName"
                   type="text"
-                  placeholder="Văn A"
+                  placeholder={t('register.lastNamePlaceholder')}
                   {...register('lastName')}
                   className={errors.lastName ? 'border-red-500' : ''}
                 />
@@ -157,7 +158,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('register.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -171,7 +172,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
+              <Label htmlFor="password">{t('register.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -196,7 +197,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
+              <Label htmlFor="confirmPassword">{t('register.confirmPassword')}</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -225,7 +226,7 @@ export default function RegisterPage() {
               className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'Đang đăng ký...' : 'Đăng ký'}
+              {isLoading ? t('register.registering') : t('register.registerButton')}
             </Button>
           </form>
 
@@ -235,7 +236,7 @@ export default function RegisterPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Hoặc
+                {t('register.or')}
               </span>
             </div>
           </div>
@@ -262,18 +263,18 @@ export default function RegisterPage() {
                 d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h240z"
               ></path>
             </svg>
-            Đăng ký bằng Google
+            {t('register.registerWithGoogle')}
           </Button>
         </CardContent>
 
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center">
-            Đã có tài khoản?{' '}
+          {t('register.haveAccount')}{' '}
             <Link
               href="/login"
               className="text-primary hover:underline font-medium"
             >
-              Đăng nhập ngay
+              {t('register.loginNow')}
             </Link>
           </div>
         </CardFooter>

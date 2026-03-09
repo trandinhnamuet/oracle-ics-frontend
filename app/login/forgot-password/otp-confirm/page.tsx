@@ -10,8 +10,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 import { authApi } from '@/api/auth.api'
+import { useTranslation } from 'react-i18next'
 
 export default function OtpConfirmPage() {
+  const { t } = useTranslation()
   const router = useRouter()
 
   const [email, setEmail] = useState('')
@@ -75,7 +77,7 @@ export default function OtpConfirmPage() {
     e.preventDefault()
     const otpString = otp.join('')
     if (otpString.length !== 6) {
-      setError('Vui lòng nhập đầy đủ 6 số OTP')
+      setError(t('forgotPassword.otpConfirm.validation.otpRequired'))
       return
     }
     try {
@@ -124,10 +126,10 @@ export default function OtpConfirmPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Xác thực OTP
+            {t('forgotPassword.otpConfirm.title')}
           </CardTitle>
           <CardDescription className="text-center">
-            Nhập mã OTP 6 số đã được gửi đến email:<br />
+            {t('forgotPassword.otpConfirm.subtitle')}<br />
             <span className="font-semibold text-primary">{email}</span>
           </CardDescription>
         </CardHeader>
@@ -159,16 +161,16 @@ export default function OtpConfirmPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading || !isOtpComplete}>
-              {isLoading ? 'Đang xác thực...' : 'Xác nhận OTP'}
+              {isLoading ? t('forgotPassword.otpConfirm.verifying') : t('forgotPassword.otpConfirm.submitButton')}
             </Button>
 
             <div className="text-center">
               {canResend ? (
                 <Button type="button" variant="link" onClick={handleResend} disabled={isLoading} className="text-primary">
-                  Gửi lại mã OTP
+                  {t('forgotPassword.otpConfirm.resend')}
                 </Button>
               ) : (
-                <p className="text-sm text-gray-500">Gửi lại mã sau {countdown}s</p>
+                <p className="text-sm text-gray-500">{t('forgotPassword.otpConfirm.resendCountdown', { countdown })}</p>
               )}
             </div>
           </form>
@@ -177,7 +179,7 @@ export default function OtpConfirmPage() {
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center">
             <Link href="/login" className="text-primary hover:underline font-medium">
-              ← Quay lại đăng nhập
+              {t('forgotPassword.otpConfirm.backToLogin')}
             </Link>
           </div>
         </CardFooter>

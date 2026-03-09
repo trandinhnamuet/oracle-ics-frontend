@@ -14,8 +14,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 import { authApi } from '@/api/auth.api'
+import { useTranslation } from 'react-i18next'
 
 export default function RecoverEmailPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -23,8 +25,8 @@ export default function RecoverEmailPage() {
   const emailSchema = z.object({
     email: z
       .string()
-      .min(1, 'Email là bắt buộc')
-      .email('Email không hợp lệ'),
+      .min(1, t('forgotPassword.recoverEmail.validation.emailRequired'))
+      .email(t('forgotPassword.recoverEmail.validation.emailInvalid')),
   })
 
   type EmailFormData = z.infer<typeof emailSchema>
@@ -64,10 +66,10 @@ export default function RecoverEmailPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Quên mật khẩu
+            {t('forgotPassword.recoverEmail.title')}
           </CardTitle>
           <CardDescription className="text-center">
-            Nhập email của bạn để nhận mã OTP đặt lại mật khẩu
+            {t('forgotPassword.recoverEmail.subtitle')}
           </CardDescription>
         </CardHeader>
 
@@ -80,11 +82,11 @@ export default function RecoverEmailPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('forgotPassword.recoverEmail.emailLabel')}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="example@email.com"
+                placeholder={t('forgotPassword.recoverEmail.emailPlaceholder')}
                 autoComplete="email"
                 {...register('email')}
                 className={errors.email ? 'border-red-500' : ''}
@@ -99,19 +101,19 @@ export default function RecoverEmailPage() {
               className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'Đang gửi...' : 'Gửi mã OTP'}
+              {isLoading ? t('forgotPassword.recoverEmail.sending') : t('forgotPassword.recoverEmail.submitButton')}
             </Button>
           </form>
         </CardContent>
 
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center">
-            Nhớ mật khẩu?{' '}
+          {t('forgotPassword.recoverEmail.rememberPassword')}{' '}
             <Link
               href="/login"
               className="text-primary hover:underline font-medium"
             >
-              Đăng nhập
+              {t('forgotPassword.recoverEmail.loginLink')}
             </Link>
           </div>
         </CardFooter>

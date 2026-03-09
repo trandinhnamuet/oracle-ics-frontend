@@ -313,12 +313,14 @@
       },
       "table": {
         "title": "サブスクリプション一覧",
-        "showing": "{{current}} / {{total}} サブスクリプションを表示",
+        "showing": "{{from}} - {{to}} / {{total}} 件を表示",
         "noData": "サブスクリプションが見つかりません",
         "id": "ID",
         "user": "ユーザー",
         "package": "パッケージ",
         "vmInfo": "VM 情報",
+        "noPublicIp": "パブリックIPなし",
+        "notConfigured": "未設定",
         "startDate": "開始日",
         "endDate": "終了日",
         "status": "ステータス",
@@ -327,7 +329,10 @@
         "createdAt": "作成日",
         "actions": "操作",
         "yes": "はい",
-        "no": "いいえ"
+        "no": "いいえ",
+        "recordsPerPage": "1ページあたりの件数:",
+        "goTo": "ページへ移動:",
+        "pageOf": "{{current}} / {{total}} ページ"
       },
       "actions": {
         "viewDetail": "詳細を表示",
@@ -1764,5 +1769,66 @@
     "successTitle": "登録成功！",
     "successDesc": "{{planName}} プランの登録が完了しました。アカウントから料金が引き落とされました。",
     "errorGeneral": "エラーが発生しました。再試行してください。"
+  },
+  "register": {
+    "title": "アカウント登録",
+    "subtitle": "新しいアカウントを作成してサービスの利用を始めてください",
+    "firstName": "姓",
+    "firstNamePlaceholder": "山田",
+    "lastName": "名",
+    "lastNamePlaceholder": "太郎",
+    "email": "メールアドレス",
+    "emailPlaceholder": "your@email.com",
+    "password": "パスワード",
+    "passwordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "confirmPassword": "パスワード確認",
+    "confirmPasswordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "registerButton": "登録",
+    "registering": "登録中...",
+    "or": "または",
+    "registerWithGoogle": "Googleで登録",
+    "googleComingSoon": "Google登録機能は近日公開予定です",
+    "haveAccount": "すでにアカウントをお持ちですか？",
+    "loginNow": "今すぐログイン",
+    "validation": {
+      "firstNameRequired": "姓を入力してください",
+      "firstNameMaxLength": "姓は50文字以下で入力してください",
+      "lastNameRequired": "名を入力してください",
+      "lastNameMaxLength": "名は50文字以下で入力してください",
+      "emailRequired": "メールアドレスを入力してください",
+      "emailInvalid": "無効なメールアドレスです",
+      "passwordMinLength": "パスワードは6文字以上で入力してください",
+      "passwordMaxLength": "パスワードは100文字以下で入力してください",
+      "confirmPasswordRequired": "パスワードを確認してください",
+      "passwordsMismatch": "パスワードが一致しません"
+    }
+  },
+  "forgotPassword": {
+    "recoverEmail": {
+      "title": "パスワードをお忘れですか",
+      "subtitle": "パスワードリセット用のOTPを受け取るためにメールアドレスを入力してください",
+      "emailLabel": "メールアドレス",
+      "emailPlaceholder": "example@email.com",
+      "submitButton": "OTPを送信",
+      "sending": "送信中...",
+      "rememberPassword": "パスワードを思い出しましたか？",
+      "loginLink": "ログイン",
+      "validation": {
+        "emailRequired": "メールアドレスを入力してください",
+        "emailInvalid": "無効なメールアドレスです"
+      }
+    },
+    "otpConfirm": {
+      "title": "OTP認証",
+      "subtitle": "メールアドレスに送信された6桁のOTPを入力してください：",
+      "submitButton": "OTPを確認",
+      "verifying": "認証中...",
+      "resend": "OTPを再送信",
+      "resendCountdown": "{{countdown}}秒後に再送信",
+      "backToLogin": "\u2190 ログインに戻る",
+      "validation": {
+        "otpRequired": "6桁のOTPをすべて入力してください"
+      }
+    }
   }
 }

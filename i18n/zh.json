@@ -313,12 +313,14 @@
       },
       "table": {
         "title": "订阅列表",
-        "showing": "显示 {{current}} / {{total}} 个订阅",
+        "showing": "显示 {{from}} - {{to}} / {{total}} 个订阅",
         "noData": "未找到订阅",
         "id": "ID",
         "user": "用户",
         "package": "套餐",
         "vmInfo": "虚拟机信息",
+        "noPublicIp": "无公网IP",
+        "notConfigured": "未配置",
         "startDate": "开始日期",
         "endDate": "结束日期",
         "status": "状态",
@@ -327,7 +329,10 @@
         "createdAt": "创建日期",
         "actions": "操作",
         "yes": "是",
-        "no": "否"
+        "no": "否",
+        "recordsPerPage": "每页记录数:",
+        "goTo": "跳转到页:",
+        "pageOf": "第 {{current}} / {{total}} 页"
       },
       "actions": {
         "viewDetail": "查看详情",
@@ -1765,5 +1770,66 @@
     "successTitle": "注册成功！",
     "successDesc": "已成功注册 {{planName}} 套餐。费用已从账户中扣除。",
     "errorGeneral": "发生错误，请重试。"
+  },
+  "register": {
+    "title": "创建账户",
+    "subtitle": "创建新账户以开始使用我们的服务",
+    "firstName": "姓",
+    "firstNamePlaceholder": "张",
+    "lastName": "名",
+    "lastNamePlaceholder": "三",
+    "email": "电子邮件",
+    "emailPlaceholder": "your@email.com",
+    "password": "密码",
+    "passwordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "confirmPassword": "确认密码",
+    "confirmPasswordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "registerButton": "注册",
+    "registering": "注册中...",
+    "or": "或",
+    "registerWithGoogle": "使用 Google 注册",
+    "googleComingSoon": "Google 注册功能即将推出",
+    "haveAccount": "已有账户？",
+    "loginNow": "立即登录",
+    "validation": {
+      "firstNameRequired": "姓不能为空",
+      "firstNameMaxLength": "姓不能超过50个字符",
+      "lastNameRequired": "名不能为空",
+      "lastNameMaxLength": "名不能超过50个字符",
+      "emailRequired": "电子邮件不能为空",
+      "emailInvalid": "电子邮件格式无效",
+      "passwordMinLength": "密码至少6个字符",
+      "passwordMaxLength": "密码不能超过100个字符",
+      "confirmPasswordRequired": "请确认您的密码",
+      "passwordsMismatch": "密码不一致"
+    }
+  },
+  "forgotPassword": {
+    "recoverEmail": {
+      "title": "忘记密码",
+      "subtitle": "请输入您的电子邮件以接收重置密码的OTP验证码",
+      "emailLabel": "电子邮件",
+      "emailPlaceholder": "example@email.com",
+      "submitButton": "发送OTP",
+      "sending": "发送中...",
+      "rememberPassword": "记起密码了？",
+      "loginLink": "登录",
+      "validation": {
+        "emailRequired": "电子邮件不能为空",
+        "emailInvalid": "电子邮件格式无效"
+      }
+    },
+    "otpConfirm": {
+      "title": "OTP 验证",
+      "subtitle": "请输入发送到您邮筱的6位OTP验证码：",
+      "submitButton": "确认OTP",
+      "verifying": "验证中...",
+      "resend": "重新发送OTP",
+      "resendCountdown": "{{countdown}}秒后重新发送",
+      "backToLogin": "\u2190 返回登录",
+      "validation": {
+        "otpRequired": "请输入完整的6位OTP验证码"
+      }
+    }
   }
 }

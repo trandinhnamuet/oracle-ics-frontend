@@ -313,12 +313,14 @@
       },
       "table": {
         "title": "구독 목록",
-        "showing": "{{current}} / {{total}} 구독 표시",
+        "showing": "{{from}} - {{to}} / {{total}} 구독 표시",
         "noData": "구독을 찾을 수 없습니다",
         "id": "ID",
         "user": "사용자",
         "package": "패키지",
         "vmInfo": "VM 정보",
+        "noPublicIp": "공용 IP 없음",
+        "notConfigured": "구성되지 않음",
         "startDate": "시작 날짜",
         "endDate": "종료 날짜",
         "status": "상태",
@@ -327,7 +329,10 @@
         "createdAt": "생성 날짜",
         "actions": "작업",
         "yes": "예",
-        "no": "아니오"
+        "no": "아니오",
+        "recordsPerPage": "페이지당 항목 수:",
+        "goTo": "페이지로 이동:",
+        "pageOf": "{{current}} / {{total}} 페이지"
       },
       "actions": {
         "viewDetail": "세부 정보 보기",
@@ -1764,5 +1769,66 @@
     "successTitle": "등록 성공!",
     "successDesc": "{{planName}} 플랜 등록이 완료되었습니다. 계정에서 금액이 차감되었습니다.",
     "errorGeneral": "오류가 발생했습니다. 다시 시도해 주세요."
+  },
+  "register": {
+    "title": "계정 등록",
+    "subtitle": "새 계정을 만들어 서비스 이용을 시작하세요",
+    "firstName": "성",
+    "firstNamePlaceholder": "홍",
+    "lastName": "이름",
+    "lastNamePlaceholder": "길동",
+    "email": "이메일",
+    "emailPlaceholder": "your@email.com",
+    "password": "비밀번호",
+    "passwordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "confirmPassword": "비밀번호 확인",
+    "confirmPasswordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "registerButton": "등록",
+    "registering": "등록 중...",
+    "or": "또는",
+    "registerWithGoogle": "Google로 등록",
+    "googleComingSoon": "Google 등록 기능은 곳 제공될 예정입니다",
+    "haveAccount": "이미 계정이 있으신가요?",
+    "loginNow": "지금 로그인",
+    "validation": {
+      "firstNameRequired": "성을 입력하세요",
+      "firstNameMaxLength": "성은 50자를 초과할 수 없습니다",
+      "lastNameRequired": "이름을 입력하세요",
+      "lastNameMaxLength": "이름은 50자를 초과할 수 없습니다",
+      "emailRequired": "이메일을 입력하세요",
+      "emailInvalid": "유효하지 않은 이메일입니다",
+      "passwordMinLength": "비밀번호는 최소 6자 이상이어야 합니다",
+      "passwordMaxLength": "비밀번호는 100자를 초과할 수 없습니다",
+      "confirmPasswordRequired": "비밀번호를 확인해주세요",
+      "passwordsMismatch": "비밀번호가 일치하지 않습니다"
+    }
+  },
+  "forgotPassword": {
+    "recoverEmail": {
+      "title": "비밀번호 찾기",
+      "subtitle": "비밀번호 재설정 OTP를 받으려면 이메일을 입력하세요",
+      "emailLabel": "이메일",
+      "emailPlaceholder": "example@email.com",
+      "submitButton": "OTP 전송",
+      "sending": "전송 중...",
+      "rememberPassword": "비밀번호가 기억나시나요?",
+      "loginLink": "로그인",
+      "validation": {
+        "emailRequired": "이메일을 입력하세요",
+        "emailInvalid": "유효하지 않은 이메일입니다"
+      }
+    },
+    "otpConfirm": {
+      "title": "OTP 인증",
+      "subtitle": "이메일로 전송된 6자리 OTP를 입력하세요:",
+      "submitButton": "OTP 확인",
+      "verifying": "인증 중...",
+      "resend": "OTP 재전송",
+      "resendCountdown": "{{countdown}}초 후 재전송",
+      "backToLogin": "\u2190 로그인으로 돌아가기",
+      "validation": {
+        "otpRequired": "6자리 OTP를 모두 입력해주세요"
+      }
+    }
   }
 }

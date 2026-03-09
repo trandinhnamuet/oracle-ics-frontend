@@ -313,12 +313,14 @@
       },
       "table": {
         "title": "Subscription List",
-        "showing": "Showing {{current}} / {{total}} subscriptions",
+        "showing": "Showing {{from}} - {{to}} of {{total}} subscriptions",
         "noData": "No subscriptions found",
         "id": "ID",
         "user": "User",
         "package": "Package",
         "vmInfo": "VM Information",
+        "noPublicIp": "No public IP",
+        "notConfigured": "Not configured",
         "startDate": "Start Date",
         "endDate": "End Date",
         "status": "Status",
@@ -327,7 +329,10 @@
         "createdAt": "Created Date",
         "actions": "Actions",
         "yes": "Yes",
-        "no": "No"
+        "no": "No",
+        "recordsPerPage": "Records per page:",
+        "goTo": "Go to page:",
+        "pageOf": "Page {{current}} of {{total}}"
       },
       "actions": {
         "viewDetail": "View Details",
@@ -1765,5 +1770,66 @@
     "successTitle": "Registration successful!",
     "successDesc": "Successfully registered {{planName}} plan. Money has been deducted from account.",
     "errorGeneral": "An error occurred, please try again."
+  },
+  "register": {
+    "title": "Create Account",
+    "subtitle": "Create a new account to start using our service",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "First name",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Last name",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "registerButton": "Register",
+    "registering": "Registering...",
+    "or": "Or",
+    "registerWithGoogle": "Register with Google",
+    "googleComingSoon": "Google registration coming soon",
+    "haveAccount": "Already have an account?",
+    "loginNow": "Login now",
+    "validation": {
+      "firstNameRequired": "First name is required",
+      "firstNameMaxLength": "First name cannot exceed 50 characters",
+      "lastNameRequired": "Last name is required",
+      "lastNameMaxLength": "Last name cannot exceed 50 characters",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMaxLength": "Password cannot exceed 100 characters",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordsMismatch": "Passwords do not match"
+    }
+  },
+  "forgotPassword": {
+    "recoverEmail": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email to receive an OTP to reset your password",
+      "emailLabel": "Email",
+      "emailPlaceholder": "example@email.com",
+      "submitButton": "Send OTP",
+      "sending": "Sending...",
+      "rememberPassword": "Remember your password?",
+      "loginLink": "Login",
+      "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email"
+      }
+    },
+    "otpConfirm": {
+      "title": "OTP Verification",
+      "subtitle": "Enter the 6-digit OTP sent to your email:",
+      "submitButton": "Confirm OTP",
+      "verifying": "Verifying...",
+      "resend": "Resend OTP",
+      "resendCountdown": "Resend after {{countdown}}s",
+      "backToLogin": "\u2190 Back to login",
+      "validation": {
+        "otpRequired": "Please enter all 6 OTP digits"
+      }
+    }
   }
 }

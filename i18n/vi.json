@@ -313,12 +313,14 @@
       },
       "table": {
         "title": "Danh sách đăng ký dịch vụ",
-        "showing": "Hiển thị {{current}} / {{total}} đăng ký",
+        "showing": "Hiển thị {{from}} - {{to}} / {{total}} đăng ký",
         "noData": "Không tìm thấy đăng ký nào",
         "id": "ID",
         "user": "Người dùng",
         "package": "Gói dịch vụ",
         "vmInfo": "Thông tin VM",
+        "noPublicIp": "Không có IP công khai",
+        "notConfigured": "Chưa cấu hình",
         "startDate": "Ngày bắt đầu",
         "endDate": "Ngày kết thúc",
         "status": "Trạng thái",
@@ -327,7 +329,10 @@
         "createdAt": "Ngày tạo",
         "actions": "Hành động",
         "yes": "Có",
-        "no": "Không"
+        "no": "Không",
+        "recordsPerPage": "Số hàng mỗi trang:",
+        "goTo": "Đến trang:",
+        "pageOf": "Trang {{current}} / {{total}}"
       },
       "actions": {
         "viewDetail": "Xem chi tiết",
@@ -1764,5 +1769,66 @@
     "successTitle": "Đăng ký thành công!",
     "successDesc": "Đã đăng ký gói {{planName}} thành công. Tiền đã được trừ từ tài khoản.",
     "errorGeneral": "Có lỗi xảy ra, vui lòng thử lại."
+  },
+  "register": {
+    "title": "Đăng ký tài khoản",
+    "subtitle": "Tạo tài khoản mới để bắt đầu sử dụng dịch vụ",
+    "firstName": "Họ",
+    "firstNamePlaceholder": "Nguyễn",
+    "lastName": "Tên",
+    "lastNamePlaceholder": "Văn A",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "registerButton": "Đăng ký",
+    "registering": "Đang đăng ký...",
+    "or": "Hoặc",
+    "registerWithGoogle": "Đăng ký bằng Google",
+    "googleComingSoon": "Tính năng đăng ký bằng Google sẽ được cập nhật sớm",
+    "haveAccount": "Đã có tài khoản?",
+    "loginNow": "Đăng nhập ngay",
+    "validation": {
+      "firstNameRequired": "Họ không được để trống",
+      "firstNameMaxLength": "Họ không được quá 50 ký tự",
+      "lastNameRequired": "Tên không được để trống",
+      "lastNameMaxLength": "Tên không được quá 50 ký tự",
+      "emailRequired": "Email không được để trống",
+      "emailInvalid": "Email không hợp lệ",
+      "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
+      "passwordMaxLength": "Mật khẩu không được quá 100 ký tự",
+      "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+      "passwordsMismatch": "Mật khẩu xác nhận không khớp"
+    }
+  },
+  "forgotPassword": {
+    "recoverEmail": {
+      "title": "Quên mật khẩu",
+      "subtitle": "Nhập email của bạn để nhận mã OTP đặt lại mật khẩu",
+      "emailLabel": "Email",
+      "emailPlaceholder": "example@email.com",
+      "submitButton": "Gửi mã OTP",
+      "sending": "Đang gửi...",
+      "rememberPassword": "Nhớ mật khẩu?",
+      "loginLink": "Đăng nhập",
+      "validation": {
+        "emailRequired": "Email là bắt buộc",
+        "emailInvalid": "Email không hợp lệ"
+      }
+    },
+    "otpConfirm": {
+      "title": "Xác thực OTP",
+      "subtitle": "Nhập mã OTP 6 số đã được gửi đến email:",
+      "submitButton": "Xác nhận OTP",
+      "verifying": "Đang xác thực...",
+      "resend": "Gửi lại mã OTP",
+      "resendCountdown": "Gửi lại mã sau {{countdown}}s",
+      "backToLogin": "\u2190 Quay lại đăng nhập",
+      "validation": {
+        "otpRequired": "Vui lòng nhập đầy đủ 6 số OTP"
+      }
+    }
   }
 }
