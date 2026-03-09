@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, RefreshCw, CheckCircle, Clock, XCircle, DollarSign } from 'lucide-react'
+import { Search, RefreshCw, CheckCircle, Clock, XCircle, DollarSign, AlertTriangle } from 'lucide-react'
 import { paymentApi } from '@/api/payment.api'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '@/hooks/use-toast'
@@ -17,7 +17,7 @@ interface Payment {
   user_id: number
   subscription_id?: string
   amount: number
-  status: 'pending' | 'success' | 'failed'
+  status: 'pending' | 'success' | 'failed' | 'expired'
   payment_type: 'subscription' | 'deposit'
   payment_method: string
   transaction_code: string
@@ -121,6 +121,13 @@ export default function PaymentManagementPage() {
             Thất bại
           </Badge>
         )
+      case 'expired':
+        return (
+          <Badge className="bg-gray-500 hover:bg-gray-600">
+            <AlertTriangle className="w-3 h-3 mr-1" />
+            Quá hạn
+          </Badge>
+        )
       default:
         return <Badge>{status}</Badge>
     }
@@ -161,7 +168,7 @@ export default function PaymentManagementPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
@@ -184,6 +191,20 @@ export default function PaymentManagementPage() {
                 </p>
               </div>
               <Clock className="w-8 h-8 text-yellow-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Quá hạn</p>
+                <p className="text-2xl font-bold text-gray-500">
+                  {payments.filter((p) => p.status === 'expired').length}
+                </p>
+              </div>
+              <AlertTriangle className="w-8 h-8 text-gray-400" />
             </div>
           </CardContent>
         </Card>
@@ -296,6 +317,9 @@ export default function PaymentManagementPage() {
                         )}
                         {payment.status === 'failed' && (
                           <span className="text-xs text-red-600">Đã thất bại</span>
+                        )}
+                        {payment.status === 'expired' && (
+                          <span className="text-xs text-gray-500">Đã quá hạn</span>
                         )}
                       </TableCell>
                     </TableRow>
