@@ -131,11 +131,11 @@ export default function PaymentManagementPage() {
     try {
       setProcessingId(paymentId)
       await paymentApi.acceptPayment(paymentId)
-      toast({ title: 'ÄÃ£ cháº¥p nháº­n thanh toÃ¡n thÃ nh cÃ´ng!' })
+      toast({ title: 'Đã chấp nhận thanh toán thành công!' })
       await fetchPayments()
     } catch (error: any) {
       console.error('Error accepting payment:', error)
-      toast({ title: 'Lá»—i thanh toÃ¡n', description: error.response?.data?.message || 'CÃ³ lá»—i xáº£y ra khi cháº¥p nháº­n thanh toÃ¡n', variant: 'destructive' })
+      toast({ title: 'Lỗi thanh toán', description: error.response?.data?.message || 'Có lỗi xảy ra khi chấp nhận thanh toán', variant: 'destructive' })
     } finally {
       setProcessingId(null)
     }
@@ -144,15 +144,15 @@ export default function PaymentManagementPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'success':
-        return <Badge className="bg-green-500 hover:bg-green-600"><CheckCircle className="w-3 h-3 mr-1" />ThÃ nh cÃ´ng</Badge>
+        return <Badge className="bg-green-500 hover:bg-green-600"><CheckCircle className="w-3 h-3 mr-1" />Thành công</Badge>
       case 'pending':
-        return <Badge className="bg-yellow-500 hover:bg-yellow-600"><Clock className="w-3 h-3 mr-1" />Äang chá»</Badge>
+        return <Badge className="bg-yellow-500 hover:bg-yellow-600"><Clock className="w-3 h-3 mr-1" />Đang chờ</Badge>
       case 'failed':
-        return <Badge className="bg-red-500 hover:bg-red-600"><XCircle className="w-3 h-3 mr-1" />Tháº¥t báº¡i</Badge>
+        return <Badge className="bg-red-500 hover:bg-red-600"><XCircle className="w-3 h-3 mr-1" />Thất bại</Badge>
       case 'expired':
-        return <Badge className="bg-gray-500 hover:bg-gray-600"><AlertTriangle className="w-3 h-3 mr-1" />QuÃ¡ háº¡n</Badge>
+        return <Badge className="bg-gray-500 hover:bg-gray-600"><AlertTriangle className="w-3 h-3 mr-1" />Quá hạn</Badge>
       case 'deleted':
-        return <Badge variant="outline" className="text-gray-400 border-gray-400"><XCircle className="w-3 h-3 mr-1" />ÄÃ£ xÃ³a</Badge>
+        return <Badge variant="outline" className="text-gray-400 border-gray-400"><XCircle className="w-3 h-3 mr-1" />Đã xóa</Badge>
       default:
         return <Badge>{status}</Badge>
     }
@@ -160,7 +160,7 @@ export default function PaymentManagementPage() {
 
   const getPaymentTypeBadge = (type: string) => {
     switch (type) {
-      case 'deposit': return <Badge className="bg-blue-500 hover:bg-blue-600">Náº¡p tiá»n</Badge>
+      case 'deposit': return <Badge className="bg-blue-500 hover:bg-blue-600">Nạp tiền</Badge>
       case 'subscription': return <Badge className="bg-purple-500 hover:bg-purple-600">Subscription</Badge>
       default: return <Badge>{type}</Badge>
     }
@@ -185,12 +185,12 @@ export default function PaymentManagementPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Quáº£n lÃ½ thanh toÃ¡n</h1>
-          <p className="text-gray-500 dark:text-muted-foreground mt-1">Danh sÃ¡ch táº¥t cáº£ giao dá»‹ch thanh toÃ¡n</p>
+          <h1 className="text-3xl font-bold">Quản lý thanh toán</h1>
+          <p className="text-gray-500 dark:text-muted-foreground mt-1">Danh sách tất cả giao dịch thanh toán</p>
         </div>
         <Button onClick={fetchPayments} disabled={loading}>
           <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          LÃ m má»›i
+          Làm mới
         </Button>
       </div>
 
@@ -199,7 +199,7 @@ export default function PaymentManagementPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 dark:text-muted-foreground">Tá»•ng thanh toÃ¡n</p>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Tổng thanh toán</p>
                 <p className="text-2xl font-bold">{payments.length}</p>
               </div>
               <DollarSign className="w-8 h-8 text-gray-400 dark:text-muted-foreground" />
@@ -210,7 +210,7 @@ export default function PaymentManagementPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 dark:text-muted-foreground">Äang chá»</p>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Đang chờ</p>
                 <p className="text-2xl font-bold text-yellow-500">{payments.filter(p => p.status === 'pending').length}</p>
               </div>
               <Clock className="w-8 h-8 text-yellow-400" />
@@ -221,7 +221,7 @@ export default function PaymentManagementPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 dark:text-muted-foreground">QuÃ¡ háº¡n</p>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Quá hạn</p>
                 <p className="text-2xl font-bold text-gray-500">{payments.filter(p => p.status === 'expired').length}</p>
               </div>
               <AlertTriangle className="w-8 h-8 text-gray-400" />
@@ -232,7 +232,7 @@ export default function PaymentManagementPage() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 dark:text-muted-foreground">ThÃ nh cÃ´ng</p>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">Thành công</p>
                 <p className="text-2xl font-bold text-green-500">{payments.filter(p => p.status === 'success').length}</p>
               </div>
               <CheckCircle className="w-8 h-8 text-green-400" />
@@ -246,13 +246,13 @@ export default function PaymentManagementPage() {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="w-5 h-5" />
-              Danh sÃ¡ch thanh toÃ¡n ({filteredSorted.length})
+              Danh sách thanh toán ({filteredSorted.length})
             </CardTitle>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
-                placeholder="TÃ¬m kiáº¿m theo mÃ£ GD, email, tÃªn..."
+                placeholder="Tìm kiếm theo mã GD, email, tên..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 w-80"
@@ -264,11 +264,11 @@ export default function PaymentManagementPage() {
           {loading ? (
             <div className="text-center py-8">
               <RefreshCw className="w-8 h-8 animate-spin mx-auto text-gray-400 dark:text-muted-foreground" />
-              <p className="text-gray-500 dark:text-muted-foreground mt-2">Äang táº£i dá»¯ liá»‡u...</p>
+              <p className="text-gray-500 dark:text-muted-foreground mt-2">Đang tải dữ liệu...</p>
             </div>
           ) : filteredSorted.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 dark:text-muted-foreground">KhÃ´ng tÃ¬m tháº¥y thanh toÃ¡n nÃ o</p>
+              <p className="text-gray-500 dark:text-muted-foreground">Không tìm thấy thanh toán nào</p>
             </div>
           ) : (
             <>
@@ -276,15 +276,15 @@ export default function PaymentManagementPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      {th('MÃ£ giao dá»‹ch', 'transaction_code')}
+                      {th('Mã giao dịch', 'transaction_code')}
                       {th('Subscription ID', 'subscription_id')}
-                      {th('NgÆ°á»i dÃ¹ng', 'user')}
-                      {th('Sá»‘ tiá»n', 'amount')}
-                      {th('Loáº¡i', 'payment_type')}
-                      {th('PhÆ°Æ¡ng thá»©c', 'payment_method')}
-                      {th('Tráº¡ng thÃ¡i', 'status')}
-                      {th('NgÃ y táº¡o', 'created_at')}
-                      <TableHead className="text-right">HÃ nh Ä‘á»™ng</TableHead>
+                      {th('Người dùng', 'user')}
+                      {th('Số tiền', 'amount')}
+                      {th('Loại', 'payment_type')}
+                      {th('Phương thức', 'payment_method')}
+                      {th('Trạng thái', 'status')}
+                      {th('Ngày tạo', 'created_at')}
+                      <TableHead className="text-right">Hành động</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -307,14 +307,14 @@ export default function PaymentManagementPage() {
                           {payment.status === 'pending' && (
                             <Button size="sm" onClick={() => handleAcceptPayment(payment.id)} disabled={processingId === payment.id} className="bg-green-500 hover:bg-green-600">
                               {processingId === payment.id
-                                ? <><RefreshCw className="w-3 h-3 mr-1 animate-spin" />Äang xá»­ lÃ½...</>
-                                : <><CheckCircle className="w-3 h-3 mr-1" />Cháº¥p nháº­n</>}
+                                ? <><RefreshCw className="w-3 h-3 mr-1 animate-spin" />Đang xử lý...</>
+                                : <><CheckCircle className="w-3 h-3 mr-1" />Chấp nhận</>}
                             </Button>
                           )}
-                          {payment.status === 'success' && <span className="text-xs text-green-600">ÄÃ£ hoÃ n thÃ nh</span>}
-                          {payment.status === 'failed' && <span className="text-xs text-red-600">ÄÃ£ tháº¥t báº¡i</span>}
-                          {payment.status === 'expired' && <span className="text-xs text-gray-500">ÄÃ£ quÃ¡ háº¡n</span>}
-                          {payment.status === 'deleted' && <span className="text-xs text-gray-400">ÄÃ£ xÃ³a</span>}
+                          {payment.status === 'success' && <span className="text-xs text-green-600">Đã hoàn thành</span>}
+                          {payment.status === 'failed' && <span className="text-xs text-red-600">Đã thất bại</span>}
+                          {payment.status === 'expired' && <span className="text-xs text-gray-500">Đã quá hạn</span>}
+                          {payment.status === 'deleted' && <span className="text-xs text-gray-400">Đã xóa</span>}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -326,7 +326,7 @@ export default function PaymentManagementPage() {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <span className="text-sm text-muted-foreground">
-                    Trang {page} / {totalPages} &mdash; Tá»•ng {filteredSorted.length} giao dá»‹ch
+                    Trang {page} / {totalPages} &mdash; Tổng {filteredSorted.length} giao dịch
                   </span>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1 || loading}>
