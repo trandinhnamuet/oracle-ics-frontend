@@ -9,7 +9,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Search, Download, Users, Calendar, Building, Trash2, Crown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react'
+import { Search, Download, Users, Calendar, Building, Trash2, Crown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, ChevronDown, Pencil } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toggleUserAdminRole } from '@/api/user.api'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '@/hooks/use-toast'
@@ -24,8 +27,26 @@ interface User {
   company?: string | null
   role?: string
   isActive: boolean
+  gender?: string | null
+  idCard?: string | null
+  backupEmail?: string | null
+  address?: string | null
   createdAt: string
   updatedAt: string
+}
+
+interface EditForm {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+  company: string
+  role: string
+  isActive: boolean
+  gender: string
+  idCard: string
+  backupEmail: string
+  address: string
 }
 
 interface PaginatedResponse {
@@ -62,6 +83,23 @@ export default function UserManagementPage() {
   const { toast } = useToast()
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [editSaving, setEditSaving] = useState(false)
+  const [editForm, setEditForm] = useState<EditForm>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    company: '',
+    role: 'customer',
+    isActive: true,
+    gender: '',
+    idCard: '',
+    backupEmail: '',
+    address: '',
+  })
 
   const fetchUsers = useCallback(async (currentPage: number, search: string, col: SortableColumn, order: SortOrder) => {
     setLoading(true)
@@ -113,6 +151,52 @@ export default function UserManagementPage() {
     const timer = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timer)
   }, [])
+
+  const openEditDialog = (user: User) => {
+    setEditingUser(user)
+    setEditForm({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber || '',
+      company: user.company || '',
+      role: user.role || 'customer',
+      isActive: user.isActive,
+      gender: user.gender || '',
+      idCard: user.idCard || '',
+      backupEmail: user.backupEmail || '',
+      address: user.address || '',
+    })
+    setEditDialogOpen(true)
+  }
+
+  const saveEditUser = async () => {
+    if (!editingUser) return
+    setEditSaving(true)
+    try {
+      await axios.patch(`${API_URL}/users/${editingUser.id}`, {
+        firstName: editForm.firstName,
+        lastName: editForm.lastName,
+        email: editForm.email,
+        phoneNumber: editForm.phoneNumber || null,
+        company: editForm.company || null,
+        role: editForm.role,
+        isActive: editForm.isActive,
+        gender: editForm.gender || null,
+        idCard: editForm.idCard || null,
+        backupEmail: editForm.backupEmail || null,
+        address: editForm.address || null,
+      })
+      toast({ title: 'Đã cập nhật thông tin người dùng thành công' })
+      setEditDialogOpen(false)
+      fetchUsers(page, debouncedSearch, sortBy, sortOrder)
+    } catch (error) {
+      console.error('Error updating user:', error)
+      toast({ title: 'Lỗi', description: 'Không thể cập nhật thông tin người dùng', variant: 'destructive' })
+    } finally {
+      setEditSaving(false)
+    }
+  }
 
   // Toggle user active status
   const toggleUserStatus = async (userId: number, currentStatus: boolean) => {
@@ -335,7 +419,7 @@ export default function UserManagementPage() {
                   <TableHead className="cursor-pointer select-none w-[11%]" onClick={() => handleSort('updatedAt')}>
                     {t('admin.user.table.updatedAt')}<SortIcon col="updatedAt" />
                   </TableHead>
-                  <TableHead className="w-[7%]">{t('admin.user.table.actions')}</TableHead>
+                  <TableHead className="w-[10%]">{t('admin.user.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -406,7 +490,16 @@ export default function UserManagementPage() {
                         })}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
+                          <div title="Chỉnh sửa thông tin">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openEditDialog(user)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </div>
                           <div title={user.role === 'admin' ? t('admin.user.actions.revokeAdmin') : t('admin.user.actions.grantAdmin')}>
                             <Button
                               variant={user.role === 'admin' ? 'default' : 'outline'}
@@ -480,6 +573,98 @@ export default function UserManagementPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Chỉnh sửa thông tin người dùng #{editingUser?.id}</DialogTitle>
+            <DialogDescription>Cập nhật thông tin chi tiết của người dùng. Nhấn "Lưu thay đổi" để áp dụng.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Họ</Label>
+                <Input value={editForm.lastName} onChange={(e) => setEditForm(f => ({ ...f, lastName: e.target.value }))} placeholder="Họ" />
+              </div>
+              <div className="space-y-2">
+                <Label>Tên</Label>
+                <Input value={editForm.firstName} onChange={(e) => setEditForm(f => ({ ...f, firstName: e.target.value }))} placeholder="Tên" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input type="email" value={editForm.email} onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))} placeholder="Email" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Số điện thoại</Label>
+                <Input value={editForm.phoneNumber} onChange={(e) => setEditForm(f => ({ ...f, phoneNumber: e.target.value }))} placeholder="Số điện thoại" />
+              </div>
+              <div className="space-y-2">
+                <Label>Email dự phòng</Label>
+                <Input type="email" value={editForm.backupEmail} onChange={(e) => setEditForm(f => ({ ...f, backupEmail: e.target.value }))} placeholder="Email dự phòng" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Công ty</Label>
+              <Input value={editForm.company} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} placeholder="Tên công ty" />
+            </div>
+            <div className="space-y-2">
+              <Label>Địa chỉ</Label>
+              <Input value={editForm.address} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} placeholder="Địa chỉ" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Số CCCD / CMND</Label>
+                <Input value={editForm.idCard} onChange={(e) => setEditForm(f => ({ ...f, idCard: e.target.value }))} placeholder="CCCD / CMND" />
+              </div>
+              <div className="space-y-2">
+                <Label>Giới tính</Label>
+                <Select value={editForm.gender} onValueChange={(v) => setEditForm(f => ({ ...f, gender: v }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn giới tính" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Nam</SelectItem>
+                    <SelectItem value="female">Nữ</SelectItem>
+                    <SelectItem value="other">Khác</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Vai trò</Label>
+                <Select value={editForm.role} onValueChange={(v) => setEditForm(f => ({ ...f, role: v }))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="customer">Customer</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Trạng thái</Label>
+                <div className="flex items-center space-x-2 pt-2">
+                  <Switch
+                    checked={editForm.isActive}
+                    onCheckedChange={(checked) => setEditForm(f => ({ ...f, isActive: checked }))}
+                  />
+                  <span className="text-sm">{editForm.isActive ? 'Đang hoạt động' : 'Đã khóa'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)} disabled={editSaving}>Hủy</Button>
+            <Button onClick={saveEditUser} disabled={editSaving}>
+              {editSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={pendingDeleteUserId !== null} onOpenChange={(open) => !open && setPendingDeleteUserId(null)}>
         <AlertDialogContent>
