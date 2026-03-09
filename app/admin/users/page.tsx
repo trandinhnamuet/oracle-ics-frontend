@@ -306,36 +306,36 @@ export default function UserManagementPage() {
           <CardTitle>{t('admin.user.title')} ({total})</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
+          <div>
+            <Table className="table-fixed w-full">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('id')}>
+                  <TableHead className="cursor-pointer select-none w-12" onClick={() => handleSort('id')}>
                     {t('admin.user.table.id')}<SortIcon col="id" />
                   </TableHead>
-                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('email')}>
+                  <TableHead className="cursor-pointer select-none w-[18%]" onClick={() => handleSort('email')}>
                     {t('admin.user.table.email')}<SortIcon col="email" />
                   </TableHead>
-                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('firstName')}>
+                  <TableHead className="cursor-pointer select-none w-[13%]" onClick={() => handleSort('firstName')}>
                     {t('admin.user.table.name')}<SortIcon col="firstName" />
                   </TableHead>
-                  <TableHead>{t('admin.user.table.phone')}</TableHead>
-                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('company')}>
+                  <TableHead className="w-[11%]">{t('admin.user.table.phone')}</TableHead>
+                  <TableHead className="cursor-pointer select-none w-[13%]" onClick={() => handleSort('company')}>
                     {t('admin.user.table.company')}<SortIcon col="company" />
                   </TableHead>
-                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('role')}>
+                  <TableHead className="cursor-pointer select-none w-[8%]" onClick={() => handleSort('role')}>
                     {t('admin.user.table.role')}<SortIcon col="role" />
                   </TableHead>
-                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('isActive')}>
+                  <TableHead className="cursor-pointer select-none w-[10%]" onClick={() => handleSort('isActive')}>
                     {t('admin.user.table.status')}<SortIcon col="isActive" />
                   </TableHead>
-                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('createdAt')}>
+                  <TableHead className="cursor-pointer select-none w-[11%]" onClick={() => handleSort('createdAt')}>
                     {t('admin.user.table.createdAt')}<SortIcon col="createdAt" />
                   </TableHead>
-                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('updatedAt')}>
+                  <TableHead className="cursor-pointer select-none w-[11%]" onClick={() => handleSort('updatedAt')}>
                     {t('admin.user.table.updatedAt')}<SortIcon col="updatedAt" />
                   </TableHead>
-                  <TableHead>{t('admin.user.table.actions')}</TableHead>
+                  <TableHead className="w-[7%]">{t('admin.user.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -355,16 +355,16 @@ export default function UserManagementPage() {
                   users.map(user => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.id}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.firstName} {user.lastName}</TableCell>
-                      <TableCell>
+                      <TableCell className="break-all">{user.email}</TableCell>
+                      <TableCell className="break-words">{user.firstName} {user.lastName}</TableCell>
+                      <TableCell className="break-all">
                         {user.phoneNumber ? (
                           <span>{user.phoneNumber}</span>
                         ) : (
                           <span className="text-gray-400 dark:text-muted-foreground italic">{t('admin.user.table.noData')}</span>
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="break-words">
                         {user.company ? (
                           <span>{user.company}</span>
                         ) : (
