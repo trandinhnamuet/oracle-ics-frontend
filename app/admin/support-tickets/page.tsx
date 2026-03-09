@@ -176,7 +176,6 @@ export default function AdminSupportTicketsPage() {
             </div>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-full sm:w-44">
-<<<<<<< HEAD
                 <SelectValue placeholder={t('admin.supportTickets.filters.status')} />
               </SelectTrigger>
               <SelectContent>
@@ -185,21 +184,10 @@ export default function AdminSupportTicketsPage() {
                 <SelectItem value="in_progress">{t('admin.supportTickets.status.inProgress')}</SelectItem>
                 <SelectItem value="resolved">{t('admin.supportTickets.status.resolved')}</SelectItem>
                 <SelectItem value="closed">{t('admin.supportTickets.status.closed')}</SelectItem>
-=======
-                <SelectValue placeholder="Trạng thái" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="open">Đang mở</SelectItem>
-                <SelectItem value="in_progress">Đang xử lý</SelectItem>
-                <SelectItem value="resolved">Đã giải quyết</SelectItem>
-                <SelectItem value="closed">Đã đóng</SelectItem>
->>>>>>> bc10ca1 (React Google Translate crash)
               </SelectContent>
             </Select>
             <Select value={filterPriority} onValueChange={setFilterPriority}>
               <SelectTrigger className="w-full sm:w-40">
-<<<<<<< HEAD
                 <SelectValue placeholder={t('admin.supportTickets.filters.priority')} />
               </SelectTrigger>
               <SelectContent>
@@ -208,16 +196,6 @@ export default function AdminSupportTicketsPage() {
                 <SelectItem value="high">{t('admin.supportTickets.priority.high')}</SelectItem>
                 <SelectItem value="medium">{t('admin.supportTickets.priority.medium')}</SelectItem>
                 <SelectItem value="low">{t('admin.supportTickets.priority.low')}</SelectItem>
-=======
-                <SelectValue placeholder="Độ ưu tiên" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả mức độ</SelectItem>
-                <SelectItem value="urgent">Khẩn cấp</SelectItem>
-                <SelectItem value="high">Cao</SelectItem>
-                <SelectItem value="medium">Trung bình</SelectItem>
-                <SelectItem value="low">Thấp</SelectItem>
->>>>>>> bc10ca1 (React Google Translate crash)
               </SelectContent>
             </Select>
           </div>
@@ -266,10 +244,10 @@ export default function AdminSupportTicketsPage() {
                           <TableCell className="font-mono text-xs text-muted-foreground">#{ticket.id}</TableCell>
                           <TableCell>
                             <div className="font-medium line-clamp-1">{ticket.title}</div>
-                            <div className="text-xs text-muted-foreground">{ticket.customer_name} · {ticket.email}</div>
+                            <div className="text-xs text-muted-foreground">{ticket.customer_name} Â· {ticket.email}</div>
                           </TableCell>
                           <TableCell>
-                            <span className="text-sm">{ticket.service ? t(`admin.supportTickets.services.${ticket.service}`) : '—'}</span>
+                            <span className="text-sm">{ticket.service ? t(`admin.supportTickets.services.${ticket.service}`) : 'â€”'}</span>
                           </TableCell>
                           <TableCell>
                             <Badge className={`${statusCfg.className} flex items-center gap-1 w-fit`}>
@@ -328,11 +306,7 @@ export default function AdminSupportTicketsPage() {
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t">
                                   {/* Status */}
                                   <div className="space-y-1.5">
-<<<<<<< HEAD
                                     <p className="text-xs font-medium text-muted-foreground">{t('admin.supportTickets.detail.statusLabel')}</p>
-=======
-                                    <p className="text-xs font-medium text-muted-foreground">Trạng thái</p>
->>>>>>> bc10ca1 (React Google Translate crash)
                                     <Select
                                       value={ticket.status}
                                       onValueChange={v => handleUpdate(ticket.id, { status: v })}
@@ -341,28 +315,17 @@ export default function AdminSupportTicketsPage() {
                                         <SelectValue />
                                       </SelectTrigger>
                                       <SelectContent>
-<<<<<<< HEAD
                                         <SelectItem value="open">{t('admin.supportTickets.status.open')}</SelectItem>
                                         <SelectItem value="in_progress">{t('admin.supportTickets.status.inProgress')}</SelectItem>
                                         <SelectItem value="resolved">{t('admin.supportTickets.status.resolved')}</SelectItem>
                                         <SelectItem value="closed">{t('admin.supportTickets.status.closed')}</SelectItem>
-=======
-                                        <SelectItem value="open">Đang mở</SelectItem>
-                                        <SelectItem value="in_progress">Đang xử lý</SelectItem>
-                                        <SelectItem value="resolved">Đã giải quyết</SelectItem>
-                                        <SelectItem value="closed">Đóng</SelectItem>
->>>>>>> bc10ca1 (React Google Translate crash)
                                       </SelectContent>
                                     </Select>
                                   </div>
 
                                   {/* Priority */}
                                   <div className="space-y-1.5">
-<<<<<<< HEAD
                                     <p className="text-xs font-medium text-muted-foreground">{t('admin.supportTickets.detail.priorityLabel')}</p>
-=======
-                                    <p className="text-xs font-medium text-muted-foreground">Độ ưu tiên</p>
->>>>>>> bc10ca1 (React Google Translate crash)
                                     <Select
                                       value={ticket.priority}
                                       onValueChange={v => handleUpdate(ticket.id, { priority: v })}
@@ -371,17 +334,10 @@ export default function AdminSupportTicketsPage() {
                                         <SelectValue />
                                       </SelectTrigger>
                                       <SelectContent>
-<<<<<<< HEAD
                                         <SelectItem value="low">{t('admin.supportTickets.priority.low')}</SelectItem>
                                         <SelectItem value="medium">{t('admin.supportTickets.priority.medium')}</SelectItem>
                                         <SelectItem value="high">{t('admin.supportTickets.priority.high')}</SelectItem>
                                         <SelectItem value="urgent">{t('admin.supportTickets.priority.urgent')}</SelectItem>
-=======
-                                        <SelectItem value="low">Thấp</SelectItem>
-                                        <SelectItem value="medium">Trung bình</SelectItem>
-                                        <SelectItem value="high">Cao</SelectItem>
-                                        <SelectItem value="urgent">Khẩn cấp</SelectItem>
->>>>>>> bc10ca1 (React Google Translate crash)
                                       </SelectContent>
                                     </Select>
                                   </div>
