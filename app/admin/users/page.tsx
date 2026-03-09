@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import axios from 'axios'
 import * as XLSX from 'xlsx'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Search, Download, Users, Calendar, Building, Edit, Trash2, Crown } from 'lucide-react'
+import { Search, Download, Users, Calendar, Building, Trash2, Crown, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toggleUserAdminRole } from '@/api/user.api'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '@/hooks/use-toast'
@@ -28,58 +28,76 @@ interface User {
   updatedAt: string
 }
 
+interface PaginatedResponse {
+  data: User[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+const PAGE_SIZE = 20
+
 export default function UserManagementPage() {
   const { t } = useTranslation()
   const [users, setUsers] = useState<User[]>([])
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
+  const [initialLoad, setInitialLoad] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [isVisible, setIsVisible] = useState(false)
   const [pendingDeleteUserId, setPendingDeleteUserId] = useState<number | null>(null)
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
   const { toast } = useToast()
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async (currentPage: number, search: string) => {
+    setLoading(true)
     try {
-      const res = await axios.get<User[]>(`${API_URL}/users`)
-      setUsers(res.data)
-      setFilteredUsers(res.data)
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        limit: String(PAGE_SIZE),
+        search,
+      })
+      const res = await axios.get<PaginatedResponse>(`${API_URL}/users?${params}`)
+      setUsers(res.data.data)
+      setTotal(res.data.total)
+      setTotalPages(res.data.totalPages)
     } catch (error) {
       console.error('Error fetching users:', error)
       setUsers([])
-      setFilteredUsers([])
+      setTotal(0)
+      setTotalPages(1)
     } finally {
       setLoading(false)
+      setInitialLoad(false)
     }
-  }
+  }, [API_URL])
+
+  // Debounce search input
+  useEffect(() => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    debounceTimer.current = setTimeout(() => {
+      setDebouncedSearch(searchTerm)
+      setPage(1)
+    }, 400)
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    }
+  }, [searchTerm])
 
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    fetchUsers(page, debouncedSearch)
+  }, [page, debouncedSearch, fetchUsers])
 
   // Animation effect
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true)
-    }, 100)
-    
+    const timer = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timer)
   }, [])
-
-  // Search functionality
-  useEffect(() => {
-    if (!searchTerm) {
-      setFilteredUsers(users)
-    } else {
-      const filtered = users.filter(user =>
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.company && user.company.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-      setFilteredUsers(filtered)
-    }
-  }, [searchTerm, users])
 
   // Toggle user active status
   const toggleUserStatus = async (userId: number, currentStatus: boolean) => {
@@ -104,8 +122,8 @@ export default function UserManagementPage() {
     setPendingDeleteUserId(null)
     try {
       await axios.delete(`${API_URL}/users/${userId}`)
-      setUsers(prev => prev.filter(user => user.id !== userId))
       toast({ title: 'Đã xóa người dùng thành công' })
+      fetchUsers(page, debouncedSearch)
     } catch (error) {
       console.error('Error deleting user:', error)
       toast({ title: 'Lỗi', description: 'Không thể xóa người dùng', variant: 'destructive' })
@@ -126,7 +144,7 @@ export default function UserManagementPage() {
 
   // Export to Excel
   const exportToExcel = () => {
-    const exportData = filteredUsers.map(user => ({
+    const exportData = users.map(user => ({
       'ID': user.id,
       'Email': user.email,
       'Họ tên': `${user.firstName} ${user.lastName}`,
@@ -160,12 +178,12 @@ export default function UserManagementPage() {
   }
 
   const stats = {
-    total: users.length,
+    total,
     active: users.filter(user => user.isActive).length,
     inactive: users.filter(user => !user.isActive).length
   }
 
-  if (loading) {
+  if (initialLoad) {
     return (
       <div className="container mx-auto py-8 px-4">
         <div className="flex items-center justify-center h-64">
@@ -252,7 +270,7 @@ export default function UserManagementPage() {
         style={{ transitionDelay: '400ms' }}
       >
         <CardHeader>
-          <CardTitle>{t('admin.user.title')} ({filteredUsers.length})</CardTitle>
+          <CardTitle>{t('admin.user.title')} ({total})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -272,14 +290,20 @@ export default function UserManagementPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredUsers.length === 0 ? (
+                {loading ? (
                   <TableRow>
                     <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
-                      {searchTerm ? t('admin.user.table.noUserFound') : t('admin.user.table.noUser')}
+                      {t('admin.user.loading')}
+                    </TableCell>
+                  </TableRow>
+                ) : users.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
+                      {debouncedSearch ? t('admin.user.table.noUserFound') : t('admin.user.table.noUser')}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredUsers.map(user => (
+                  users.map(user => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.id}</TableCell>
                       <TableCell>{user.email}</TableCell>
@@ -361,6 +385,50 @@ export default function UserManagementPage() {
               </TableBody>
             </Table>
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+              <span className="text-sm text-muted-foreground">
+                Trang {page} / {totalPages} &mdash; Tổng {total} người dùng
+              </span>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1 || loading}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const startPage = Math.max(1, Math.min(page - 2, totalPages - 4))
+                  const pageNum = startPage + i
+                  if (pageNum > totalPages) return null
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={pageNum === page ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setPage(pageNum)}
+                      disabled={loading}
+                      className="w-9"
+                    >
+                      {pageNum}
+                    </Button>
+                  )
+                })}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages || loading}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
