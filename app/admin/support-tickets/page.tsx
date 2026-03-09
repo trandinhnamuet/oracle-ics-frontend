@@ -176,30 +176,34 @@ export default function AdminSupportTicketsPage() {
                 className="pl-9"
               />
             </div>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full sm:w-44">
-                <SelectValue placeholder="Trạng thái" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all"><span>Tất cả trạng thái</span></SelectItem>
-                <SelectItem value="open"><span>Đang mở</span></SelectItem>
-                <SelectItem value="in_progress"><span>Đang xử lý</span></SelectItem>
-                <SelectItem value="resolved"><span>Đã giải quyết</span></SelectItem>
-                <SelectItem value="closed"><span>Đã đóng</span></SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={filterPriority} onValueChange={setFilterPriority}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Độ ưu tiên" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all"><span>Tất cả mức độ</span></SelectItem>
-                <SelectItem value="urgent"><span>Khẩn cấp</span></SelectItem>
-                <SelectItem value="high"><span>Cao</span></SelectItem>
-                <SelectItem value="medium"><span>Trung bình</span></SelectItem>
-                <SelectItem value="low"><span>Thấp</span></SelectItem>
-              </SelectContent>
-            </Select>
+            <div translate="no">
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-full sm:w-44">
+                  <SelectValue placeholder="Trạng thái" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                  <SelectItem value="open">Đang mở</SelectItem>
+                  <SelectItem value="in_progress">Đang xử lý</SelectItem>
+                  <SelectItem value="resolved">Đã giải quyết</SelectItem>
+                  <SelectItem value="closed">Đã đóng</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div translate="no">
+              <Select value={filterPriority} onValueChange={setFilterPriority}>
+                <SelectTrigger className="w-full sm:w-40">
+                  <SelectValue placeholder="Độ ưu tiên" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả mức độ</SelectItem>
+                  <SelectItem value="urgent">Khẩn cấp</SelectItem>
+                  <SelectItem value="high">Cao</SelectItem>
+                  <SelectItem value="medium">Trung bình</SelectItem>
+                  <SelectItem value="low">Thấp</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -309,39 +313,43 @@ export default function AdminSupportTicketsPage() {
                                   {/* Status */}
                                   <div className="space-y-1.5">
                                     <p className="text-xs font-medium text-muted-foreground">Trạng thái</p>
-                                    <Select
-                                      value={ticket.status}
-                                      onValueChange={v => handleUpdate(ticket.id, { status: v })}
-                                    >
-                                      <SelectTrigger className="h-8 text-sm">
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="open"><span>Đang mở</span></SelectItem>
-                                        <SelectItem value="in_progress"><span>Đang xử lý</span></SelectItem>
-                                        <SelectItem value="resolved"><span>Đã giải quyết</span></SelectItem>
-                                        <SelectItem value="closed"><span>Đóng</span></SelectItem>
-                                      </SelectContent>
-                                    </Select>
+                                    <div translate="no">
+                                      <Select
+                                        value={ticket.status}
+                                        onValueChange={v => handleUpdate(ticket.id, { status: v })}
+                                      >
+                                        <SelectTrigger className="h-8 text-sm">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="open">Đang mở</SelectItem>
+                                          <SelectItem value="in_progress">Đang xử lý</SelectItem>
+                                          <SelectItem value="resolved">Đã giải quyết</SelectItem>
+                                          <SelectItem value="closed">Đóng</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
                                   </div>
 
                                   {/* Priority */}
                                   <div className="space-y-1.5">
                                     <p className="text-xs font-medium text-muted-foreground">Độ ưu tiên</p>
-                                    <Select
-                                      value={ticket.priority}
-                                      onValueChange={v => handleUpdate(ticket.id, { priority: v })}
-                                    >
-                                      <SelectTrigger className="h-8 text-sm">
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="low"><span>Thấp</span></SelectItem>
-                                        <SelectItem value="medium"><span>Trung bình</span></SelectItem>
-                                        <SelectItem value="high"><span>Cao</span></SelectItem>
-                                        <SelectItem value="urgent"><span>Khẩn cấp</span></SelectItem>
-                                      </SelectContent>
-                                    </Select>
+                                    <div translate="no">
+                                      <Select
+                                        value={ticket.priority}
+                                        onValueChange={v => handleUpdate(ticket.id, { priority: v })}
+                                      >
+                                        <SelectTrigger className="h-8 text-sm">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="low">Thấp</SelectItem>
+                                          <SelectItem value="medium">Trung bình</SelectItem>
+                                          <SelectItem value="high">Cao</SelectItem>
+                                          <SelectItem value="urgent">Khẩn cấp</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
                                   </div>
 
                                   {/* Resolved info */}
