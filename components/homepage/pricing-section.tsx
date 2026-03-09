@@ -198,8 +198,8 @@ export function PricingSection() {
 
       if (selectedPaymentMethod === 'account_balance') {
         // Phương thức 1: Trừ tiền tài khoản
-        const currentBalance = userBalance // Current balance in VND
-        const planPriceVND = selectedPlan.priceVnd
+        const currentBalance = parseFloat(String(userBalance)) // Current balance in VND
+        const planPriceVND = parseFloat(String(selectedPlan.priceVnd))
         
         if (planPriceVND > currentBalance) {
           toast({
