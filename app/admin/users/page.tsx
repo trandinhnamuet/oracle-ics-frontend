@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import axios from 'axios'
 import * as XLSX from 'xlsx'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -9,7 +9,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Search, Download, Users, Calendar, Building, Edit, Trash2, Crown } from 'lucide-react'
+import { Search, Download, Users, Calendar, Building, Trash2, Crown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, ChevronDown, Pencil } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toggleUserAdminRole } from '@/api/user.api'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '@/hooks/use-toast'
@@ -24,62 +27,176 @@ interface User {
   company?: string | null
   role?: string
   isActive: boolean
+  gender?: string | null
+  idCard?: string | null
+  backupEmail?: string | null
+  address?: string | null
   createdAt: string
   updatedAt: string
 }
 
+interface EditForm {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+  company: string
+  role: string
+  isActive: boolean
+  gender: string
+  idCard: string
+  backupEmail: string
+  address: string
+}
+
+interface PaginatedResponse {
+  data: User[]
+  total: number
+  totalActive: number
+  totalInactive: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+type SortOrder = 'ASC' | 'DESC'
+type SortableColumn = 'id' | 'email' | 'firstName' | 'lastName' | 'company' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'
+
+const PAGE_SIZE = 20
+
 export default function UserManagementPage() {
   const { t } = useTranslation()
   const [users, setUsers] = useState<User[]>([])
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
+  const [initialLoad, setInitialLoad] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [isVisible, setIsVisible] = useState(false)
   const [pendingDeleteUserId, setPendingDeleteUserId] = useState<number | null>(null)
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [totalActive, setTotalActive] = useState(0)
+  const [totalInactive, setTotalInactive] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [sortBy, setSortBy] = useState<SortableColumn>('createdAt')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('DESC')
   const { toast } = useToast()
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const fetchUsers = async () => {
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [editSaving, setEditSaving] = useState(false)
+  const [editForm, setEditForm] = useState<EditForm>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    company: '',
+    role: 'customer',
+    isActive: true,
+    gender: '',
+    idCard: '',
+    backupEmail: '',
+    address: '',
+  })
+
+  const fetchUsers = useCallback(async (currentPage: number, search: string, col: SortableColumn, order: SortOrder) => {
+    setLoading(true)
     try {
-      const res = await axios.get<User[]>(`${API_URL}/users`)
-      setUsers(res.data)
-      setFilteredUsers(res.data)
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        limit: String(PAGE_SIZE),
+        search,
+        sortBy: col,
+        sortOrder: order,
+      })
+      const res = await axios.get<PaginatedResponse>(`${API_URL}/users?${params}`)
+      setUsers(res.data.data)
+      setTotal(res.data.total)
+      setTotalActive(res.data.totalActive)
+      setTotalInactive(res.data.totalInactive)
+      setTotalPages(res.data.totalPages)
     } catch (error) {
       console.error('Error fetching users:', error)
       setUsers([])
-      setFilteredUsers([])
+      setTotal(0)
+      setTotalActive(0)
+      setTotalInactive(0)
+      setTotalPages(1)
     } finally {
       setLoading(false)
+      setInitialLoad(false)
     }
-  }
+  }, [API_URL])
+
+  // Debounce search input
+  useEffect(() => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    debounceTimer.current = setTimeout(() => {
+      setDebouncedSearch(searchTerm)
+      setPage(1)
+    }, 400)
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    }
+  }, [searchTerm])
 
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    fetchUsers(page, debouncedSearch, sortBy, sortOrder)
+  }, [page, debouncedSearch, sortBy, sortOrder, fetchUsers])
 
   // Animation effect
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true)
-    }, 100)
-    
+    const timer = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timer)
   }, [])
 
-  // Search functionality
-  useEffect(() => {
-    if (!searchTerm) {
-      setFilteredUsers(users)
-    } else {
-      const filtered = users.filter(user =>
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.company && user.company.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-      setFilteredUsers(filtered)
+  const openEditDialog = (user: User) => {
+    setEditingUser(user)
+    setEditForm({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber || '',
+      company: user.company || '',
+      role: user.role || 'customer',
+      isActive: user.isActive,
+      gender: user.gender || '',
+      idCard: user.idCard || '',
+      backupEmail: user.backupEmail || '',
+      address: user.address || '',
+    })
+    setEditDialogOpen(true)
+  }
+
+  const saveEditUser = async () => {
+    if (!editingUser) return
+    setEditSaving(true)
+    try {
+      await axios.patch(`${API_URL}/users/${editingUser.id}`, {
+        firstName: editForm.firstName,
+        lastName: editForm.lastName,
+        email: editForm.email,
+        phoneNumber: editForm.phoneNumber || null,
+        company: editForm.company || null,
+        role: editForm.role,
+        isActive: editForm.isActive,
+        gender: editForm.gender || null,
+        idCard: editForm.idCard || null,
+        backupEmail: editForm.backupEmail || null,
+        address: editForm.address || null,
+      })
+      toast({ title: 'Đã cập nhật thông tin người dùng thành công' })
+      setEditDialogOpen(false)
+      fetchUsers(page, debouncedSearch, sortBy, sortOrder)
+    } catch (error) {
+      console.error('Error updating user:', error)
+      toast({ title: 'Lỗi', description: 'Không thể cập nhật thông tin người dùng', variant: 'destructive' })
+    } finally {
+      setEditSaving(false)
     }
-  }, [searchTerm, users])
+  }
 
   // Toggle user active status
   const toggleUserStatus = async (userId: number, currentStatus: boolean) => {
@@ -104,8 +221,8 @@ export default function UserManagementPage() {
     setPendingDeleteUserId(null)
     try {
       await axios.delete(`${API_URL}/users/${userId}`)
-      setUsers(prev => prev.filter(user => user.id !== userId))
       toast({ title: 'Đã xóa người dùng thành công' })
+      fetchUsers(page, debouncedSearch, sortBy, sortOrder)
     } catch (error) {
       console.error('Error deleting user:', error)
       toast({ title: 'Lỗi', description: 'Không thể xóa người dùng', variant: 'destructive' })
@@ -125,8 +242,26 @@ export default function UserManagementPage() {
   }
 
   // Export to Excel
+  const handleSort = (col: SortableColumn) => {
+    if (sortBy === col) {
+      setSortOrder(o => o === 'ASC' ? 'DESC' : 'ASC')
+    } else {
+      setSortBy(col)
+      setSortOrder('ASC')
+    }
+    setPage(1)
+  }
+
+  const SortIcon = ({ col }: { col: SortableColumn }) => {
+    if (sortBy !== col) return <ChevronsUpDown className="inline h-3 w-3 ml-1 text-muted-foreground" />
+    return sortOrder === 'ASC'
+      ? <ChevronUp className="inline h-3 w-3 ml-1" />
+      : <ChevronDown className="inline h-3 w-3 ml-1" />
+  }
+
+  // Export to Excel
   const exportToExcel = () => {
-    const exportData = filteredUsers.map(user => ({
+    const exportData = users.map(user => ({
       'ID': user.id,
       'Email': user.email,
       'Họ tên': `${user.firstName} ${user.lastName}`,
@@ -160,12 +295,12 @@ export default function UserManagementPage() {
   }
 
   const stats = {
-    total: users.length,
-    active: users.filter(user => user.isActive).length,
-    inactive: users.filter(user => !user.isActive).length
+    total,
+    active: totalActive,
+    inactive: totalInactive,
   }
 
-  if (loading) {
+  if (initialLoad) {
     return (
       <div className="container mx-auto py-8 px-4">
         <div className="flex items-center justify-center h-64">
@@ -252,46 +387,68 @@ export default function UserManagementPage() {
         style={{ transitionDelay: '400ms' }}
       >
         <CardHeader>
-          <CardTitle>{t('admin.user.title')} ({filteredUsers.length})</CardTitle>
+          <CardTitle>{t('admin.user.title')} ({total})</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
+          <div>
+            <Table className="table-fixed w-full">
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('admin.user.table.id')}</TableHead>
-                  <TableHead>{t('admin.user.table.email')}</TableHead>
-                  <TableHead>{t('admin.user.table.name')}</TableHead>
-                  <TableHead>{t('admin.user.table.phone')}</TableHead>
-                  <TableHead>{t('admin.user.table.company')}</TableHead>
-                  <TableHead>{t('admin.user.table.role')}</TableHead>
-                  <TableHead>{t('admin.user.table.status')}</TableHead>
-                  <TableHead>{t('admin.user.table.createdAt')}</TableHead>
-                  <TableHead>{t('admin.user.table.updatedAt')}</TableHead>
-                  <TableHead>{t('admin.user.table.actions')}</TableHead>
+                  <TableHead className="cursor-pointer select-none w-12" onClick={() => handleSort('id')}>
+                    {t('admin.user.table.id')}<SortIcon col="id" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none w-[18%]" onClick={() => handleSort('email')}>
+                    {t('admin.user.table.email')}<SortIcon col="email" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none w-[13%]" onClick={() => handleSort('firstName')}>
+                    {t('admin.user.table.name')}<SortIcon col="firstName" />
+                  </TableHead>
+                  <TableHead className="w-[11%]">{t('admin.user.table.phone')}</TableHead>
+                  <TableHead className="cursor-pointer select-none w-[13%]" onClick={() => handleSort('company')}>
+                    {t('admin.user.table.company')}<SortIcon col="company" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none w-[8%]" onClick={() => handleSort('role')}>
+                    {t('admin.user.table.role')}<SortIcon col="role" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none w-[10%]" onClick={() => handleSort('isActive')}>
+                    {t('admin.user.table.status')}<SortIcon col="isActive" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none w-[11%]" onClick={() => handleSort('createdAt')}>
+                    {t('admin.user.table.createdAt')}<SortIcon col="createdAt" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none w-[11%]" onClick={() => handleSort('updatedAt')}>
+                    {t('admin.user.table.updatedAt')}<SortIcon col="updatedAt" />
+                  </TableHead>
+                  <TableHead className="w-[10%]">{t('admin.user.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredUsers.length === 0 ? (
+                {loading ? (
                   <TableRow>
                     <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
-                      {searchTerm ? t('admin.user.table.noUserFound') : t('admin.user.table.noUser')}
+                      {t('admin.user.loading')}
+                    </TableCell>
+                  </TableRow>
+                ) : users.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
+                      {debouncedSearch ? t('admin.user.table.noUserFound') : t('admin.user.table.noUser')}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredUsers.map(user => (
+                  users.map(user => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.id}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.firstName} {user.lastName}</TableCell>
-                      <TableCell>
+                      <TableCell className="break-all overflow-hidden">{user.email}</TableCell>
+                      <TableCell className="break-words overflow-hidden">{user.firstName} {user.lastName}</TableCell>
+                      <TableCell className="break-all overflow-hidden">
                         {user.phoneNumber ? (
                           <span>{user.phoneNumber}</span>
                         ) : (
                           <span className="text-gray-400 dark:text-muted-foreground italic">{t('admin.user.table.noData')}</span>
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="break-words overflow-hidden">
                         {user.company ? (
                           <span>{user.company}</span>
                         ) : (
@@ -333,7 +490,16 @@ export default function UserManagementPage() {
                         })}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
+                          <div title="Chỉnh sửa thông tin">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openEditDialog(user)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </div>
                           <div title={user.role === 'admin' ? t('admin.user.actions.revokeAdmin') : t('admin.user.actions.grantAdmin')}>
                             <Button
                               variant={user.role === 'admin' ? 'default' : 'outline'}
@@ -361,8 +527,144 @@ export default function UserManagementPage() {
               </TableBody>
             </Table>
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+              <span className="text-sm text-muted-foreground">
+                Trang {page} / {totalPages} &mdash; Tổng {total} người dùng
+              </span>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1 || loading}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const startPage = Math.max(1, Math.min(page - 2, totalPages - 4))
+                  const pageNum = startPage + i
+                  if (pageNum > totalPages) return null
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={pageNum === page ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setPage(pageNum)}
+                      disabled={loading}
+                      className="w-9"
+                    >
+                      {pageNum}
+                    </Button>
+                  )
+                })}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages || loading}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Chỉnh sửa thông tin người dùng #{editingUser?.id}</DialogTitle>
+            <DialogDescription>Cập nhật thông tin chi tiết của người dùng. Nhấn "Lưu thay đổi" để áp dụng.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Họ</Label>
+                <Input value={editForm.lastName} onChange={(e) => setEditForm(f => ({ ...f, lastName: e.target.value }))} placeholder="Họ" />
+              </div>
+              <div className="space-y-2">
+                <Label>Tên</Label>
+                <Input value={editForm.firstName} onChange={(e) => setEditForm(f => ({ ...f, firstName: e.target.value }))} placeholder="Tên" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input type="email" value={editForm.email} onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))} placeholder="Email" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Số điện thoại</Label>
+                <Input value={editForm.phoneNumber} onChange={(e) => setEditForm(f => ({ ...f, phoneNumber: e.target.value }))} placeholder="Số điện thoại" />
+              </div>
+              <div className="space-y-2">
+                <Label>Email dự phòng</Label>
+                <Input type="email" value={editForm.backupEmail} onChange={(e) => setEditForm(f => ({ ...f, backupEmail: e.target.value }))} placeholder="Email dự phòng" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Công ty</Label>
+              <Input value={editForm.company} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} placeholder="Tên công ty" />
+            </div>
+            <div className="space-y-2">
+              <Label>Địa chỉ</Label>
+              <Input value={editForm.address} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} placeholder="Địa chỉ" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Số CCCD / CMND</Label>
+                <Input value={editForm.idCard} onChange={(e) => setEditForm(f => ({ ...f, idCard: e.target.value }))} placeholder="CCCD / CMND" />
+              </div>
+              <div className="space-y-2">
+                <Label>Giới tính</Label>
+                <Select value={editForm.gender} onValueChange={(v) => setEditForm(f => ({ ...f, gender: v }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn giới tính" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Nam</SelectItem>
+                    <SelectItem value="female">Nữ</SelectItem>
+                    <SelectItem value="other">Khác</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Vai trò</Label>
+                <Select value={editForm.role} onValueChange={(v) => setEditForm(f => ({ ...f, role: v }))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="customer">Customer</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Trạng thái</Label>
+                <div className="flex items-center space-x-2 pt-2">
+                  <Switch
+                    checked={editForm.isActive}
+                    onCheckedChange={(checked) => setEditForm(f => ({ ...f, isActive: checked }))}
+                  />
+                  <span className="text-sm">{editForm.isActive ? 'Đang hoạt động' : 'Đã khóa'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)} disabled={editSaving}>Hủy</Button>
+            <Button onClick={saveEditUser} disabled={editSaving}>
+              {editSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={pendingDeleteUserId !== null} onOpenChange={(open) => !open && setPendingDeleteUserId(null)}>
         <AlertDialogContent>
