@@ -15,38 +15,38 @@ import { useAuth } from '@/lib/auth-context'
 
 const QUICK_AMOUNTS = [100000, 500000, 1000000, 2000000, 5000000, 10000000]
 
-const PAYMENT_METHODS = [
-  {
-    id: 'momo',
-    name: 'Ví MoMo',
-    icon: Smartphone,
-    description: 'Thanh toán qua ví điện tử MoMo',
-    enabled: false,
-    comingSoon: true
-  },
-  {
-    id: 'card',
-    name: 'Thẻ thanh toán quốc tế',
-    icon: CreditCard,
-    description: 'Visa, Mastercard, JCB',
-    enabled: false,
-    comingSoon: true
-  },
-  {
-    id: 'bank_transfer',
-    name: 'Chuyển khoản ngân hàng',
-    icon: QrCode,
-    description: 'Quét QR Code hoặc chuyển khoản thủ công',
-    enabled: true,
-    comingSoon: false
-  }
-]
-
 export default function AddFundsPage() {
   const { t } = useTranslation()
   const router = useRouter()
   const { toast } = useToast()
   const { user } = useAuth()
+
+  const PAYMENT_METHODS = [
+    {
+      id: 'momo',
+      name: t('addFunds.methods.momo.name'),
+      icon: Smartphone,
+      description: t('addFunds.methods.momo.description'),
+      enabled: false,
+      comingSoon: true
+    },
+    {
+      id: 'card',
+      name: t('addFunds.methods.card.name'),
+      icon: CreditCard,
+      description: t('addFunds.methods.card.description'),
+      enabled: false,
+      comingSoon: true
+    },
+    {
+      id: 'bank_transfer',
+      name: t('addFunds.methods.bank_transfer.name'),
+      icon: QrCode,
+      description: t('addFunds.methods.bank_transfer.description'),
+      enabled: true,
+      comingSoon: false
+    }
+  ]
   
   const [amount, setAmount] = useState('')
   const [selectedMethod, setSelectedMethod] = useState('bank_transfer')
@@ -67,8 +67,8 @@ export default function AddFundsPage() {
     
     if (!amount || numericAmount < 10000) {
       toast({
-        title: 'Lỗi',
-        description: 'Số tiền nạp tối thiểu là 10,000 VND',
+        title: t('addFunds.errorGeneral'),
+        description: t('addFunds.errorMin'),
         variant: 'destructive'
       })
       return
@@ -76,8 +76,8 @@ export default function AddFundsPage() {
 
     if (numericAmount > 100000000) {
       toast({
-        title: 'Lỗi', 
-        description: 'Số tiền nạp tối đa là 100,000,000 VND',
+        title: t('addFunds.errorGeneral'), 
+        description: t('addFunds.errorMax'),
         variant: 'destructive'
       })
       return
@@ -85,8 +85,8 @@ export default function AddFundsPage() {
 
     if (!selectedMethod) {
       toast({
-        title: 'Lỗi',
-        description: 'Vui lòng chọn phương thức thanh toán',
+        title: t('addFunds.errorGeneral'),
+        description: t('addFunds.errorSelectMethod'),
         variant: 'destructive'
       })
       return
@@ -95,8 +95,8 @@ export default function AddFundsPage() {
     const selectedPaymentMethod = PAYMENT_METHODS.find(m => m.id === selectedMethod)
     if (!selectedPaymentMethod?.enabled) {
       toast({
-        title: 'Lỗi',
-        description: 'Phương thức thanh toán này chưa khả dụng',
+        title: t('addFunds.errorGeneral'),
+        description: t('addFunds.errorMethodUnavailable'),
         variant: 'destructive'
       })
       return
@@ -104,8 +104,8 @@ export default function AddFundsPage() {
 
     if (!user?.id) {
       toast({
-        title: 'Lỗi',
-        description: 'Vui lòng đăng nhập để tiếp tục',
+        title: t('addFunds.errorGeneral'),
+        description: t('addFunds.errorLogin'),
         variant: 'destructive'
       })
       return
@@ -130,8 +130,8 @@ export default function AddFundsPage() {
       console.log('Payment creation response:', response)
       
       toast({
-        title: 'Thành công',
-        description: 'Đã tạo lệnh nạp tiền, đang chuyển đến trang thanh toán...',
+        title: t('addFunds.successTitle'),
+        description: t('addFunds.successDesc'),
         variant: 'default'
       })
 
@@ -155,7 +155,7 @@ export default function AddFundsPage() {
       const errorMessage = error.response?.data?.message || error.message || 'Có lỗi xảy ra khi tạo lệnh thanh toán. Vui lòng thử lại.'
       
       toast({
-        title: 'Lỗi',
+        title: t('addFunds.errorGeneral'),
         description: errorMessage,
         variant: 'destructive'
       })
@@ -182,16 +182,16 @@ export default function AddFundsPage() {
             className="mr-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Quay lại
+            {t('addFunds.back')}
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Nạp tiền vào tài khoản</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">{t('addFunds.title')}</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Chọn phương thức thanh toán - bên trái */}
           <Card>
             <CardHeader>
-              <CardTitle>Chọn phương thức thanh toán</CardTitle>
+              <CardTitle>{t('addFunds.selectPaymentMethod')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {PAYMENT_METHODS.map((method) => {
@@ -226,7 +226,7 @@ export default function AddFundsPage() {
                           <h3 className="font-medium text-gray-900 dark:text-foreground">{method.name}</h3>
                           {method.comingSoon && (
                             <Badge variant="outline" className="text-xs">
-                              Sắp có
+                              {t('addFunds.comingSoon')}
                             </Badge>
                           )}
                         </div>
@@ -247,19 +247,19 @@ export default function AddFundsPage() {
           {/* Nhập số tiền - bên phải */}
           <Card>
             <CardHeader>
-              <CardTitle>Nhập số tiền muốn nạp</CardTitle>
+              <CardTitle>{t('addFunds.enterAmount')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-muted-foreground">
-                  Số tiền (VND)
+                  {t('addFunds.amountLabel')}
                 </label>
                 <div className="relative">
                   <Input
                     type="text"
                     value={amount}
                     onChange={(e) => handleAmountChange(e.target.value)}
-                    placeholder="Nhập số tiền..."
+                    placeholder={t('addFunds.amountPlaceholder')}
                     className="text-lg font-semibold pr-12"
                   />
                   <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-muted-foreground">
@@ -268,7 +268,7 @@ export default function AddFundsPage() {
                 </div>
                 {amount && (
                   <p className="text-sm text-gray-600 dark:text-muted-foreground">
-                    Số tiền: <span className="font-semibold text-[#E60000]">
+                    {t('addFunds.amountDisplay')} <span className="font-semibold text-[#E60000]">
                       {formatAmountDisplay(amount)} VND
                     </span>
                   </p>
@@ -277,7 +277,7 @@ export default function AddFundsPage() {
               {/* Các mức nạp nhanh */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-muted-foreground">
-                  Hoặc chọn mức nạp nhanh
+                  {t('addFunds.quickAmounts')}
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {QUICK_AMOUNTS.map((quickAmount) => (
@@ -297,10 +297,10 @@ export default function AddFundsPage() {
                 <div className="flex items-start space-x-2">
                   <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div className="text-sm text-blue-800">
-                    <p className="font-medium">Lưu ý:</p>
-                    <p>• Số tiền nạp tối thiểu: 10,000 VND</p>
-                    <p>• Số tiền nạp tối đa: 100,000,000 VND</p>
-                    <p>• Tiền nạp sẽ được cộng vào tài khoản sau khi xác nhận thanh toán</p>
+                    <p className="font-medium">{t('addFunds.noteTitle')}</p>
+                    <p>• {t('addFunds.noteMin')}</p>
+                    <p>• {t('addFunds.noteMax')}</p>
+                    <p>• {t('addFunds.noteCredit')}</p>
                   </div>
                 </div>
               </div>
@@ -316,7 +316,7 @@ export default function AddFundsPage() {
             className="w-full bg-[#E60000] hover:bg-red-700 text-white py-4 text-lg font-semibold"
             size="lg"
           >
-            {isProcessing ? 'Đang xử lý...' : `Xác nhận nạp ${amount ? formatAmountDisplay(amount) : '0'} VND`}
+            {isProcessing ? t('addFunds.processing') : t('addFunds.confirm', { amount: amount ? formatAmountDisplay(amount) : '0' })}
           </Button>
         </div>
       </div>

@@ -197,9 +197,9 @@ Nội dung: ${transactionCode}
 
               {parseInt(planMonths) > 1 && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Số tháng đăng ký:</span>
+                  <span className="text-sm text-muted-foreground">{t('checkout.monthsSubscription')}:</span>
                   <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                    {planMonths} tháng
+                    {planMonths} {t('checkout.months')}
                   </Badge>
                 </div>
               )}
@@ -228,7 +228,7 @@ Nội dung: ${transactionCode}
                       return formatPrice(vndPrice);
                     })()}₫
                     {parseInt(planMonths) > 1 ? (
-                      <span className="text-sm text-muted-foreground"> (cho {planMonths} tháng)</span>
+                      <span className="text-sm text-muted-foreground"> {t('checkout.forMonths', { n: planMonths })}</span>
                     ) : planPeriod ? (
                       <span className="text-sm text-muted-foreground">/{planPeriod}</span>
                     ) : null}

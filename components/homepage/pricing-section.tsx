@@ -173,7 +173,7 @@ export function PricingSection() {
 
     // Disable button via DOM immediately - bypasses React render cycle entirely
     btn.disabled = true
-    btn.textContent = 'Đang xử lý...'
+    btn.textContent = t('pricingModal.processing')
     console.log(`[PAY-DEBUG] btn.disabled (DOM, after set):`, btn.disabled)
 
     if (isConfirmingRef.current) {
@@ -189,8 +189,8 @@ export function PricingSection() {
     try {
       if (!selectedPaymentMethod) {
         toast({
-          title: 'Lỗi',
-          description: 'Vui lòng chọn phương thức thanh toán',
+          title: t('pricingModal.errorTitle'),
+          description: t('pricingModal.errorSelectMethod'),
           variant: 'destructive'
         })
         return
@@ -203,8 +203,8 @@ export function PricingSection() {
         
         if (planPriceVND > currentBalance) {
           toast({
-            title: 'Số dư không đủ',
-            description: 'Số dư của bạn không đủ, hãy nạp thêm.',
+            title: t('pricingModal.insufficientBalanceTitle'),
+            description: t('pricingModal.insufficientBalanceDesc'),
             variant: 'destructive'
           })
           return
@@ -221,8 +221,8 @@ export function PricingSection() {
 
         setShowPaymentMethodPopup(false)
         toast({
-          title: 'Đăng ký thành công!',
-          description: `Đã đăng ký gói ${selectedPlan?.name} thành công. Tiền đã được trừ từ tài khoản.`,
+          title: t('pricingModal.successTitle'),
+          description: t('pricingModal.successDesc', { planName: selectedPlan?.name }),
           variant: 'default'
         })
 
@@ -234,8 +234,8 @@ export function PricingSection() {
         // Phương thức 2: Thanh toán trực tiếp
         if (monthsCount < 1) {
           toast({
-            title: 'Lỗi',
-            description: 'Số tháng phải lớn hơn 0',
+            title: t('pricingModal.errorTitle'),
+            description: t('pricingModal.errorMonths'),
             variant: 'destructive'
           })
           return
@@ -267,8 +267,8 @@ export function PricingSection() {
     } catch (error: any) {
       console.error('[PAY-DEBUG] Payment error:', error)
       toast({
-        title: 'Lỗi',
-        description: error.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại.',
+        title: t('pricingModal.errorTitle'),
+        description: error.response?.data?.message || t('pricingModal.errorGeneral'),
         variant: 'destructive'
       })
     } finally {
@@ -279,7 +279,7 @@ export function PricingSection() {
         isConfirmingRef.current = false
         setIsConfirming(false)
         btn.disabled = false
-        btn.textContent = 'Xác nhận'
+        btn.textContent = t('pricingModal.confirmBtn')
       }
     }
   }
@@ -683,10 +683,10 @@ export function PricingSection() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-center">
-              Chọn phương thức thanh toán
+              {t('pricingModal.title')}
             </DialogTitle>
             <DialogDescription className="text-center text-muted-foreground">
-              Chọn cách thức thanh toán phù hợp cho gói {selectedPlan?.name}
+              {t('pricingModal.subtitle', { planName: selectedPlan?.name })}
             </DialogDescription>
           </DialogHeader>
           
@@ -704,18 +704,18 @@ export function PricingSection() {
                 <div className={`mx-auto mb-3 p-3 rounded-2xl w-fit ${
                   selectedPaymentMethod === 'account_balance' 
                     ? 'bg-[#E60000] text-white' 
-                    : 'bg-muted text-muted-foreground'
+                    : 'bg-muted text-foreground/60'
                 }`}>
                   <Wallet className="h-8 w-8" />
                 </div>
-                <CardTitle className="text-lg">Trừ tiền tài khoản</CardTitle>
+                <CardTitle className="text-lg">{t('pricingModal.accountBalance')}</CardTitle>
                 <CardDescription className="text-sm">
-                  Sử dụng số dư có sẵn trong tài khoản để thanh toán
+                  {t('pricingModal.accountBalanceDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="text-center">
-                  <div className="text-sm text-muted-foreground">Số dư hiện tại</div>
+                  <div className="text-sm text-foreground/70">{t('pricingModal.currentBalance')}</div>
                   <div className="text-lg font-bold text-[#E60000]">{formatPrice(userBalance)} đ</div>
                   <Button 
                     variant="outline" 
@@ -726,11 +726,11 @@ export function PricingSection() {
                       router.push('/add-funds')
                     }}
                   >
-                    Nạp tiền
+                    {t('pricingModal.addFundsBtn')}
                   </Button>
-                  <div className="text-sm text-muted-foreground mt-2">
-                    ✓ Thanh toán ngay lập tức<br/>
-                    ✓ Không phí giao dịch
+                  <div className="text-sm text-foreground/70 mt-2">
+                    ✓ {t('pricingModal.instantPayment')}<br/>
+                    ✓ {t('pricingModal.noFees')}
                   </div>
                 </div>
               </CardContent>
@@ -749,20 +749,20 @@ export function PricingSection() {
                 <div className={`mx-auto mb-3 p-3 rounded-2xl w-fit ${
                   selectedPaymentMethod === 'direct_payment' 
                     ? 'bg-[#E60000] text-white' 
-                    : 'bg-muted text-muted-foreground'
+                    : 'bg-muted text-foreground/60'
                 }`}>
                   <CreditCard className="h-8 w-8" />
                 </div>
-                <CardTitle className="text-lg">Thanh toán trực tiếp</CardTitle>
+                <CardTitle className="text-lg">{t('pricingModal.directPayment')}</CardTitle>
                 <CardDescription className="text-sm">
-                  Thanh toán qua chuyển khoản ngân hàng hoặc QR code
+                  {t('pricingModal.directPaymentDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="space-y-3">
                   <div>
                     <label className="text-sm font-medium text-foreground mb-1 block">
-                      Số tháng đăng ký
+                      {t('pricingModal.monthsLabel')}
                     </label>
                     <Input
                       type="number"
@@ -776,12 +776,12 @@ export function PricingSection() {
                   </div>
                   {selectedPaymentMethod === 'direct_payment' && selectedPlan && (
                     <div className="text-center">
-                      <div className="text-sm text-muted-foreground">Tổng thanh toán</div>
+                      <div className="text-sm text-foreground/70">{t('pricingModal.totalPayment')}</div>
                       <div className="text-lg font-bold text-[#E60000]">
                         {formatPrice(selectedPlan.priceVnd * monthsCount)} VND
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {formatPrice(selectedPlan.priceVnd)} × {monthsCount} tháng
+                      <div className="text-xs text-foreground/60">
+                        {t('pricingModal.perMonthCalc', { price: formatPrice(selectedPlan.priceVnd), months: monthsCount })}
                       </div>
                     </div>
                   )}
@@ -800,7 +800,7 @@ export function PricingSection() {
               className="mt-0.5 h-4 w-4 cursor-pointer accent-[#E60000] shrink-0"
             />
             <label htmlFor="terms-checkbox" className="text-sm text-foreground cursor-pointer leading-relaxed select-none">
-              Tôi đã đọc và đồng ý với{' '}
+              {t('pricingModal.termsPrefix')}{' '}
               <a
                 href="/terms"
                 target="_blank"
@@ -808,9 +808,9 @@ export function PricingSection() {
                 className="text-[#E60000] font-medium underline underline-offset-2 hover:text-red-700"
                 onClick={(e) => e.stopPropagation()}
               >
-                điều khoản sử dụng
+                {t('pricingModal.termsLink')}
               </a>{' '}
-              của OracleCloud Vietnam.
+              {t('pricingModal.termsSuffix')}
             </label>
           </div>
 
@@ -820,14 +820,14 @@ export function PricingSection() {
               variant="outline" 
               onClick={() => setShowPaymentMethodPopup(false)}
             >
-              Đóng
+              {t('pricingModal.closeBtn')}
             </Button>
             <Button 
               className="bg-[#E60000] hover:bg-red-700"
               onClick={handleConfirmPaymentMethod}
               disabled={!selectedPaymentMethod || !agreedToTerms || isConfirming}
             >
-              {isConfirming ? 'Đang xử lý...' : 'Xác nhận'}
+              {isConfirming ? t('pricingModal.processing') : t('pricingModal.confirmBtn')}
             </Button>
           </div>
         </DialogContent>

@@ -62,8 +62,8 @@ function SubscriptionCheckoutContent() {
         }
         
         toast({
-          title: 'Thanh toán thành công!',
-          description: 'Subscription đã được kích hoạt.',
+          title: t('subscriptionCheckout.paymentSuccess'),
+          description: t('subscriptionCheckout.subscriptionActivated'),
           variant: 'default'
         })
         
@@ -116,14 +116,14 @@ function SubscriptionCheckoutContent() {
     if (!paymentData) return
     
     const transferInfo = `
-Ngân hàng: ${process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}
-Số tài khoản: ${process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}
-Số tiền: ${formatPrice(parseInt(amount))} VND
-Nội dung: ${paymentData.transaction_code}
+${t('subscriptionCheckout.bankLabel')} ${process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}
+${t('subscriptionCheckout.accountNumberLabel')} ${process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}
+${t('subscriptionCheckout.amountLabel')} ${formatPrice(parseInt(amount))} VND
+${t('subscriptionCheckout.contentLabel')} ${paymentData.transaction_code}
     `.trim()
     navigator.clipboard.writeText(transferInfo)
     toast({
-      title: 'Đã sao chép thông tin chuyển khoản',
+      title: t('subscriptionCheckout.copiedTransferInfo'),
       variant: 'default'
     })
   }
@@ -139,12 +139,12 @@ Nội dung: ${paymentData.transaction_code}
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold mb-2">Thông tin không hợp lệ</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('subscriptionCheckout.invalidInfo')}</h2>
             <p className="text-muted-foreground mb-4">
-              Không tìm thấy thông tin thanh toán. Vui lòng thử lại.
+              {t('subscriptionCheckout.invalidInfoDesc')}
             </p>
             <Button onClick={() => router.push('/')}>
-              Quay lại trang chủ
+              {t('subscriptionCheckout.backHome')}
             </Button>
           </CardContent>
         </Card>
@@ -164,9 +164,9 @@ Nội dung: ${paymentData.transaction_code}
             className="mr-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Quay lại
+            {t('subscriptionCheckout.back')}
           </Button>
-          <h1 className="text-3xl font-bold text-foreground">Thanh toán Subscription</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t('subscriptionCheckout.title')}</h1>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -175,66 +175,66 @@ Nội dung: ${paymentData.transaction_code}
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Banknote className="h-5 w-5 mr-2 text-[#E60000]" />
-                Thông tin giao dịch
+                {t('subscriptionCheckout.transactionInfo')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Loại giao dịch:</span>
+                <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.transactionType')}</span>
                 <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                  Đăng ký Subscription
+                  {t('subscriptionCheckout.subscriptionRegistration')}
                 </Badge>
               </div>
               
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Phương thức:</span>
-                <Badge variant="secondary">Chuyển khoản ngân hàng</Badge>
+                <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.paymentMethodLabel')}</span>
+                <Badge variant="secondary">{t('subscriptionCheckout.bankTransfer')}</Badge>
               </div>
 
               {subscriptionId && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Subscription ID:</span>
+                  <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.subscriptionIdLabel')}</span>
                   <span className="text-sm font-mono">{subscriptionId}</span>
                 </div>
               )}
 
               <div className="border-t pt-4">
                 <div className="flex items-center justify-between text-lg font-semibold">
-                  <span>Số tiền thanh toán:</span>
+                  <span>{t('subscriptionCheckout.paymentAmount')}</span>
                   <span className="text-[#E60000]">
                     {formatPrice(parseInt(amount))} VND
                   </span>
                 </div>
               </div>
 
-              <div className="bg-muted p-4 rounded-lg">
+              <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900 p-4 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
                   <Clock className="h-4 w-4 text-orange-500" />
-                  <span className="text-sm font-medium">Thời gian còn lại:</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-foreground">{t('subscriptionCheckout.timeLeft')}</span>
                   <span className="text-lg font-bold text-orange-600">
                     {formatTime(countdown)}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Giao dịch sẽ hết hạn sau thời gian trên. Vui lòng hoàn tất thanh toán trước khi hết hạn.
+                <p className="text-sm text-gray-600 dark:text-muted-foreground">
+                  {t('subscriptionCheckout.expireWarning')}
                 </p>
               </div>
 
               {paymentData && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-sm text-blue-800">
-                    <strong>Mã giao dịch:</strong> {paymentData.transaction_code}<br/>
-                    Giao dịch sẽ được xác nhận tự động sau khi nhận được tiền.
+                    <strong>{t('subscriptionCheckout.transactionCode')}</strong> {paymentData.transaction_code}<br/>
+                    {t('subscriptionCheckout.autoConfirm')}
                   </p>
                 </div>
               )}
 
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <p className="text-sm text-green-800">
-                  ✓ Subscription sẽ được kích hoạt ngay lập tức<br/>
-                  ✓ Không có phí giao dịch<br/>
-                  ✓ Hỗ trợ 24/7<br/>
-                  ✓ Giao dịch được mã hóa bảo mật
+                  ✓ {t('subscriptionCheckout.benefit1')}<br/>
+                  ✓ {t('subscriptionCheckout.benefit2')}<br/>
+                  ✓ {t('subscriptionCheckout.benefit3')}<br/>
+                  ✓ {t('subscriptionCheckout.benefit4')}
                 </p>
               </div>
             </CardContent>
@@ -245,16 +245,16 @@ Nội dung: ${paymentData.transaction_code}
             <CardHeader>
               <CardTitle className="flex items-center">
                 <CheckCircle className="h-5 w-5 mr-2" />
-                Quét QR để thanh toán
+                {t('subscriptionCheckout.scanQR')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-center">
                 {isLoading && !paymentData ? (
                   <div className="bg-white dark:bg-card p-4 rounded-lg inline-block shadow-sm border">
-                    <div className="w-[200px] h-[200px] flex items-center justify-center">
-                      <Loader className="h-8 w-8 animate-spin text-primary" />
-                    </div>
+                      <div className="w-[200px] h-[200px] flex items-center justify-center">
+                        <Loader className="h-8 w-8 animate-spin text-primary" />
+                      </div>
                   </div>
                 ) : paymentData ? (
                   <div className="bg-white dark:bg-white p-4 rounded-lg inline-block shadow-sm border">
@@ -269,23 +269,23 @@ Nội dung: ${paymentData.transaction_code}
                 ) : (
                   <div className="bg-white dark:bg-card p-4 rounded-lg inline-block shadow-sm border">
                     <div className="w-[200px] h-[200px] flex items-center justify-center text-gray-400 dark:text-muted-foreground">
-                      Đang tải thông tin thanh toán...
+                      {t('subscriptionCheckout.loadingPaymentInfo')}
                     </div>
                   </div>
                 )}
                 
                 {paymentStatus === 'success' ? (
                   <p className="text-sm text-green-600 mt-2 font-medium">
-                    ✅ Thanh toán thành công! Đang chuyển hướng...
+                    {t('subscriptionCheckout.paymentSuccessRedirect')}
                   </p>
                 ) : paymentStatus === 'pending' ? (
                   <p className="text-sm text-blue-600 mt-2 flex items-center justify-center">
                     <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-                    Đang kiểm tra thanh toán...
+                    {t('subscriptionCheckout.checkingPayment')}
                   </p>
                 ) : (
                   <p className="text-sm text-muted-foreground mt-2">
-                    Quét mã QR bằng app ngân hàng để thanh toán
+                    {t('subscriptionCheckout.scanQRDesc')}
                   </p>
                 )}
               </div>
@@ -293,26 +293,26 @@ Nội dung: ${paymentData.transaction_code}
               <div className="space-y-3">
                 <div className="bg-card border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Ngân hàng:</span>
+                    <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.bankLabel')}</span>
                     <span className="text-sm font-medium">{process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Số tài khoản:</span>
+                    <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.accountNumberLabel')}</span>
                     <span className="text-sm font-medium font-mono">{process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Chủ tài khoản:</span>
+                    <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.accountHolderLabel')}</span>
                     <span className="text-sm font-medium">{process.env.NEXT_PUBLIC_BANK_ACCOUNT_HOLDER || 'ICS COMPANY'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Số tiền:</span>
+                    <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.amountLabel')}</span>
                     <span className="text-sm font-medium text-[#E60000]">
                       {formatPrice(parseInt(amount))} VND
                     </span>
                   </div>
                   {paymentData && (
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Nội dung:</span>
+                      <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.contentLabel')}</span>
                       <span className="text-sm font-medium">{paymentData.transaction_code}</span>
                     </div>
                   )}
@@ -325,23 +325,23 @@ Nội dung: ${paymentData.transaction_code}
                   onClick={handleCopyTransferInfo}
                 >
                   <Copy className="h-4 w-4 mr-2" />
-                  Sao chép thông tin chuyển khoản
+                  {t('subscriptionCheckout.copyTransferInfo')}
                 </Button>
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800">
-                  <strong>Lưu ý quan trọng:</strong><br/>
-                  Vui lòng chuyển khoản <strong>đúng số tiền</strong> và <strong>đúng nội dung</strong> để hệ thống có thể tự động xác nhận giao dịch.
+                  <strong>{t('subscriptionCheckout.importantNote')}</strong><br/>
+                  {t('subscriptionCheckout.importantNoteDesc')}
                 </p>
               </div>
 
               <div className="space-y-2">
                 <Button className="w-full bg-[#E60000] hover:bg-red-700" size="lg">
-                  Liên hệ hỗ trợ
+                  {t('subscriptionCheckout.contactSupport')}
                 </Button>
                 <Button variant="outline" className="w-full" size="lg">
-                  Đã chuyển khoản
+                  {t('subscriptionCheckout.alreadyTransferred')}
                 </Button>
               </div>
             </CardContent>

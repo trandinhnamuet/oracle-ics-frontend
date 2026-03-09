@@ -499,7 +499,7 @@ export default function PackageDetailPage() {
           {/* Server Details Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Thông tin máy ảo của bạn</CardTitle>
+              <CardTitle>{t('packageDetail.vmInfoTitle')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

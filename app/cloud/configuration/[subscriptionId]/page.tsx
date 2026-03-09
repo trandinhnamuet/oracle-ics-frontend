@@ -209,8 +209,8 @@ export default function CloudConfigurationBySubscriptionPage() {
   const handleConfigureVM = async () => {
     if (!isFormValid()) {
       toast({
-        title: 'Validation Error',
-        description: 'Please fill all required fields with valid values',
+        title: t('cloudConfig.validationError'),
+        description: t('cloudConfig.validationErrorDesc'),
         variant: 'destructive'
       })
       return
@@ -236,7 +236,7 @@ export default function CloudConfigurationBySubscriptionPage() {
       const successMessage = response.message || 'Máy ảo đã tạo thành công! Thông tin truy cập đã được gửi đến email của bạn.'
 
       toast({
-        title: 'Thành công',
+        title: t('cloudConfig.configSuccess'),
         description: successMessage,
         variant: 'default'
       })
@@ -258,10 +258,10 @@ export default function CloudConfigurationBySubscriptionPage() {
       let title = 'Configuration Failed'
       
       if (isCapacityError && isArchitectureMismatch) {
-        title = 'ARM Capacity Unavailable'
+        title = t('cloudConfig.armCapacityUnavailable')
         displayMessage = `OCI currently has no available capacity for ARM instances (A1.Flex) in this region. Please try again later or select a different shape (e.g., E2.1.Micro, E3.Flex) with x86-compatible images.`
       } else if (isCapacityError) {
-        title = 'Capacity Unavailable'
+        title = t('cloudConfig.capacityUnavailable')
         displayMessage = `OCI has no available capacity for ${selectedShape}. Please try again later or select a different shape.`
       }
       
@@ -281,7 +281,7 @@ export default function CloudConfigurationBySubscriptionPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-background dark:via-background dark:to-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto" />
-          <p className="mt-4 text-muted-foreground">Loading subscription details...</p>
+          <p className="mt-4 text-muted-foreground">{t('cloudConfig.loadingSubscription')}</p>
         </div>
       </div>
     )
@@ -292,9 +292,9 @@ export default function CloudConfigurationBySubscriptionPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-background dark:via-background dark:to-background flex items-center justify-center">
         <Card className="max-w-md">
           <CardContent className="pt-6 text-center">
-            <p className="text-red-600">Subscription not found</p>
+            <p className="text-red-600">{t('cloudConfig.subscriptionNotFound')}</p>
             <Button className="mt-4" onClick={() => router.push('/package-management')}>
-              Back to Package Management
+              {t('cloudConfig.subscriptionNotFoundBtn')}
             </Button>
           </CardContent>
         </Card>
@@ -319,43 +319,43 @@ export default function CloudConfigurationBySubscriptionPage() {
               
               {/* Main Message */}
               <h3 className="text-2xl font-bold text-gray-900 dark:text-foreground mb-3">
-                Creating Your VM Instance
+                {t('cloudConfig.creatingVM')}
               </h3>
               
               {/* Submessage */}
               <p className="text-gray-600 dark:text-muted-foreground mb-4">
-                Your virtual machine is being provisioned...
+                {t('cloudConfig.creatingVMDesc')}
               </p>
               
               {/* Progress Steps */}
               <div className="space-y-3 text-left bg-blue-50 dark:bg-blue-950/30 rounded-lg p-4 mb-4">
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse"></div>
-                  <span className="text-gray-700 dark:text-foreground">Provisioning compartment and network</span>
+                  <span className="text-gray-700 dark:text-foreground">{t('cloudConfig.provisionStep1')}</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                  <span className="text-gray-700 dark:text-foreground">Launching compute instance</span>
+                  <span className="text-gray-700 dark:text-foreground">{t('cloudConfig.provisionStep2')}</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                  <span className="text-gray-700 dark:text-foreground">Configuring networking and security</span>
+                  <span className="text-gray-700 dark:text-foreground">{t('cloudConfig.provisionStep3')}</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse" style={{ animationDelay: '0.6s' }}></div>
-                  <span className="text-gray-700 dark:text-foreground">Preparing access credentials</span>
+                  <span className="text-gray-700 dark:text-foreground">{t('cloudConfig.provisionStep4')}</span>
                 </div>
               </div>
               
               {/* Estimated Time */}
               <div className="flex items-center justify-center text-sm text-gray-500 dark:text-muted-foreground">
                 <AlertCircle className="w-4 h-4 mr-2" />
-                <span>This may take 2-5 minutes</span>
+                <span>{t('cloudConfig.timeEstimate')}</span>
               </div>
               
               {/* Warning */}
               <p className="text-xs text-amber-600 mt-4">
-                ⚠️ Please do not close this window or navigate away
+                {t('cloudConfig.doNotClose')}
               </p>
             </div>
           </div>
@@ -371,14 +371,14 @@ export default function CloudConfigurationBySubscriptionPage() {
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Package Management
+            {t('cloudConfig.back')}
           </Button>
           
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Configure VM Instance</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">{t('cloudConfig.title')}</h1>
               <p className="text-gray-600 dark:text-muted-foreground mt-2">
-                Subscription: {subscription.id}
+                {t('cloudConfig.subscriptionLabel', { id: subscription.id })}
               </p>
             </div>
             <Badge variant="default">
@@ -396,14 +396,14 @@ export default function CloudConfigurationBySubscriptionPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Server className="h-5 w-5 mr-2" />
-                  VM Instance Details
+                  {t('cloudConfig.vmDetails')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label>VM Instance Name</Label>
+                  <Label>{t('cloudConfig.vmInstanceName')}</Label>
                   <p className="text-sm text-gray-600 dark:text-muted-foreground mt-2 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-md border border-blue-200 dark:border-blue-900">
-                    ℹ️ VM name will be auto-generated based on your email address in format: <code className="font-mono text-xs bg-white dark:bg-muted px-1 py-0.5 rounded">email-vm-{'{id}'}</code>
+                    ℹ️ {t('cloudConfig.vmNameNote')} <code className="font-mono text-xs bg-white dark:bg-muted px-1 py-0.5 rounded">email-vm-{'{id}'}</code>
                   </p>
                 </div>
               </CardContent>
@@ -414,13 +414,13 @@ export default function CloudConfigurationBySubscriptionPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Mail className="h-5 w-5 mr-2" />
-                  Notification Settings
+                  {t('cloudConfig.notificationSettings')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div>
                   <Label htmlFor="email">
-                    Email Address * (SSH keys will be sent here)
+                    {t('cloudConfig.emailLabel')}
                   </Label>
                   <Input
                     id="email"
@@ -431,7 +431,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                     className="mt-2 bg-gray-100 dark:bg-muted cursor-not-allowed"
                   />
                   <p className="text-sm text-gray-500 dark:text-muted-foreground mt-2">
-                    Your SSH private key will be sent to this email address. Please keep it secure.
+                    {t('cloudConfig.emailNote')}
                   </p>
                 </div>
               </CardContent>
@@ -446,10 +446,10 @@ export default function CloudConfigurationBySubscriptionPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Shield className="h-5 w-5 mr-2" />
-                  VM Shape *
+                  {t('cloudConfig.vmShape')}
                 </CardTitle>
                 <p className="text-xs text-gray-500 dark:text-muted-foreground mt-1">
-                  Select VM shape first - OS options will be filtered by compatibility
+                  {t('cloudConfig.vmShapeNote')}
                 </p>
               </CardHeader>
               <CardContent>
@@ -469,7 +469,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                           <div className="flex items-center gap-2">
                             <span className="font-semibold text-sm">{shape.name}</span>
                             {shape.recommended && (
-                              <Badge variant="default" className="text-xs">Recommended</Badge>
+                              <Badge variant="default" className="text-xs">{t('cloudConfig.recommended')}</Badge>
                             )}
                           </div>
                           <p className="text-xs text-gray-600 dark:text-muted-foreground mt-1">{shape.description}</p>
@@ -495,13 +495,13 @@ export default function CloudConfigurationBySubscriptionPage() {
                   <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-300 mb-1">
-                      ⚠️ ARM Capacity Limited
+                      {t('cloudConfig.armCapacityLimited')}
                     </h4>
                     <p className="text-xs text-amber-800 dark:text-amber-400 leading-relaxed">
-                      A1.Flex (ARM) instances often have limited capacity in Singapore region. If provisioning fails due to capacity, please try again later or switch to x86 shapes (E2.1.Micro, E3.Flex) which have better availability.
+                      {t('cloudConfig.armCapacityNote')}
                     </p>
                     <p className="text-xs text-amber-700 dark:text-amber-400 mt-2 font-medium">
-                      Note: ARM images (🔷) only work with A1.Flex. x86 images (🔵) work with E2, E3, E4, Standard shapes.
+                      {t('cloudConfig.armImageNote')}
                     </p>
                   </div>
                 </div>
@@ -513,23 +513,23 @@ export default function CloudConfigurationBySubscriptionPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Monitor className="h-5 w-5 mr-2" />
-                  Operating System
+                  {t('cloudConfig.operatingSystem')}
                 </CardTitle>
                 {selectedShape && (
                   <p className="text-xs text-gray-500 dark:text-muted-foreground mt-1">
-                    Showing compatible images for {selectedShape}
+                    {t('cloudConfig.showingCompatible', { shape: selectedShape })}
                   </p>
                 )}
               </CardHeader>
               <CardContent className="space-y-4">{isLoadingImages ? (
                   <div className="flex items-center justify-center py-8">
                     <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-                    <span className="ml-2 text-sm text-gray-600 dark:text-muted-foreground">Loading OS images...</span>
+                    <span className="ml-2 text-sm text-gray-600 dark:text-muted-foreground">{t('cloudConfig.loadingOsImages')}</span>
                   </div>
                 ) : (
                   <>
                     <div>
-                      <Label>Select Operating System *</Label>
+                      <Label>{t('cloudConfig.selectOS')}</Label>
                       <div className="grid grid-cols-1 gap-3 mt-2">
                         {Object.keys(groupedImages).sort().map(os => {
                           const icon = OS_ICONS[os] || '/image-logo/Oracle-Linux.png'
@@ -571,7 +571,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                                   </div>
                                   <div className="flex items-center gap-2">
                                     <div className="text-xs text-gray-500 dark:text-muted-foreground">
-                                      {groupedImages[os].length} version(s)
+                                      {groupedImages[os].length} {t('cloudConfig.versions')}
                                     </div>
                                     {isSelected && (
                                       <ChevronDown className="h-4 w-4 text-blue-500" />
@@ -585,7 +585,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                                 <div className="mt-2 p-3 border-2 border-blue-200 dark:border-blue-900 rounded-lg bg-white dark:bg-card">
                                   {/* Search box */}
                                   <Input
-                                    placeholder="Search version..."
+                                    placeholder={t('cloudConfig.searchVersion')}
                                     value={imageSearchTerm}
                                     onChange={(e) => setImageSearchTerm(e.target.value)}
                                     className="mb-2 text-sm"
@@ -594,7 +594,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                                   {/* Version list */}
                                   <div className="max-h-60 overflow-y-auto space-y-2">
                                     {availableImages.length === 0 ? (
-                                      <p className="text-xs text-gray-500 dark:text-muted-foreground text-center py-2">No images found</p>
+                                      <p className="text-xs text-gray-500 dark:text-muted-foreground text-center py-2">{t('cloudConfig.noImagesFound')}</p>
                                     ) : (
                                       availableImages.map(image => {
                                         const isArm = image.architecture?.toUpperCase() === 'AARCH64'
@@ -641,14 +641,14 @@ export default function CloudConfigurationBySubscriptionPage() {
           <div className="lg:col-span-1">
             <Card className="sticky top-4">
               <CardHeader>
-                <CardTitle>Configuration Summary</CardTitle>
+                <CardTitle>{t('cloudConfig.configSummary')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* OS */}
                 <div className="border-b dark:border-border pb-3">
-                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Operating System</p>
+                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.osLabel')}</p>
                   <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">
-                    {selectedOS || 'Not selected'}
+                    {selectedOS || t('cloudConfig.notSelected')}
                     {selectedImageId && availableImages.find(img => img.id === selectedImageId) && (
                     <span className="block text-xs text-gray-600 dark:text-muted-foreground mt-1">
                         {availableImages.find(img => img.id === selectedImageId)?.displayName}
@@ -659,7 +659,7 @@ export default function CloudConfigurationBySubscriptionPage() {
 
                 {/* VM Shape */}
                 <div className="border-b dark:border-border pb-3">
-                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">VM Shape</p>
+                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.vmShapeLabel')}</p>
                   <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{selectedShape}</p>
                 </div>
 
@@ -667,12 +667,12 @@ export default function CloudConfigurationBySubscriptionPage() {
                 {selectedShapeConfig?.id.includes('Flex') && (
                   <>
                     <div className="border-b dark:border-border pb-3">
-                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">OCPUs</p>
+                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.ocpus')}</p>
                       <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{ocpus}</p>
                     </div>
 
                     <div className="border-b dark:border-border pb-3">
-                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Memory</p>
+                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.memory')}</p>
                       <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{memoryInGBs} GB</p>
                     </div>
                   </>
@@ -680,14 +680,14 @@ export default function CloudConfigurationBySubscriptionPage() {
 
                 {/* Boot Volume */}
                 <div className="border-b dark:border-border pb-3">
-                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Boot Volume</p>
+                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.bootVolume')}</p>
                   <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{bootVolumeSize} GB</p>
                 </div>
 
                 {/* Email */}
                 <div className="border-b dark:border-border pb-3">
-                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">Notification Email</p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{user?.email || 'Not specified'}</p>
+                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.notificationEmail')}</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{user?.email || t('cloudConfig.notSpecified')}</p>
                 </div>
 
                 {/* Validation Status */}
@@ -695,15 +695,15 @@ export default function CloudConfigurationBySubscriptionPage() {
                   {isFormValid() ? (
                     <div className="flex items-center text-green-600 text-sm">
                       <Check className="h-4 w-4 mr-2" />
-                      <span>All required fields completed</span>
+                      <span>{t('cloudConfig.allFieldsCompleted')}</span>
                     </div>
                   ) : (
                     <div className="text-red-600 text-sm">
-                      <p>Please complete all required fields:</p>
+                      <p>{t('cloudConfig.incompleteFields')}</p>
                       <ul className="text-xs mt-2 space-y-1">
-                        {!selectedOS && <li>• Select Operating System</li>}
-                        {!selectedImageId && <li>• Select OS Version</li>}
-                        {!user?.email && <li>• Email address not found on account</li>}
+                        {!selectedOS && <li>• {t('cloudConfig.needOS')}</li>}
+                        {!selectedImageId && <li>• {t('cloudConfig.needOSVersion')}</li>}
+                        {!user?.email && <li>• {t('cloudConfig.needEmail')}</li>}
                       </ul>
                     </div>
                   )}
@@ -725,12 +725,12 @@ export default function CloudConfigurationBySubscriptionPage() {
                     {isProcessing ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Configuring...
+                        {t('cloudConfig.configuring')}
                       </>
                     ) : (
                       <>
                         <Check className="h-4 w-4 mr-2" />
-                        Configure VM
+                        {t('cloudConfig.configureVM')}
                       </>
                     )}
                   </Button>
@@ -740,7 +740,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                     disabled={isProcessing}
                     className="w-full"
                   >
-                    Cancel
+                    {t('cloudConfig.cancelBtn')}
                   </Button>
                 </div>
               </CardContent>
@@ -753,13 +753,13 @@ export default function CloudConfigurationBySubscriptionPage() {
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Xác nhận cài lại OS</AlertDialogTitle>
+            <AlertDialogTitle>{t('cloudConfig.confirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              VM cũ cùng toàn bộ data và phần mềm đã cài sẽ mất. Bạn có chắc chắn?
+              {t('cloudConfig.confirmDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isProcessing}>Hủy</AlertDialogCancel>
+            <AlertDialogCancel disabled={isProcessing}>{t('cloudConfig.confirmCancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setShowConfirmDialog(false)
@@ -768,7 +768,7 @@ export default function CloudConfigurationBySubscriptionPage() {
               disabled={isProcessing}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              Xác nhận
+              {t('cloudConfig.confirmOk')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

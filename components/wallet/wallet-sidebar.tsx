@@ -15,15 +15,15 @@ export default function WalletSidebar() {
   const menuItems = [
     {
       icon: Cloud,
-      label: 'Cloud của tôi',
+      label: t('walletSidebar.myCloud'),
       href: '/package-management',
-      description: 'Quản lý gói đã mua'
+      description: t('walletSidebar.myCloudDesc')
     },
     {
       icon: CreditCard,
-      label: 'Quản lý thanh toán',
+      label: t('walletSidebar.paymentManagement'),
       href: '/checkout/history',
-      description: 'Xem lịch sử giao dịch'
+      description: t('walletSidebar.paymentManagementDesc')
     }
   ]
 
@@ -39,8 +39,8 @@ export default function WalletSidebar() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       <div className="p-6 border-b border-gray-200 dark:border-border">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-foreground">Tài khoản của tôi</h2>
-        <p className="text-sm text-gray-500 dark:text-muted-foreground mt-1">Quản lý cloud và thanh toán</p>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-foreground">{t('walletSidebar.title')}</h2>
+        <p className="text-sm text-gray-500 dark:text-muted-foreground mt-1">{t('walletSidebar.subtitle')}</p>
       </div>
 
       <nav className="p-4 space-y-2 flex-1">
@@ -84,8 +84,8 @@ export default function WalletSidebar() {
       <div className="p-4 bg-gradient-to-t from-gray-50 dark:from-muted to-transparent border-t border-gray-200 dark:border-border">
         <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-3 text-center">
           <p className="text-xs text-gray-600 dark:text-muted-foreground">
-            <span className="font-medium text-gray-900 dark:text-foreground">Cần giúp?</span><br />
-            Liên hệ support
+            <span className="font-medium text-gray-900 dark:text-foreground">{t('walletSidebar.needHelp')}</span><br />
+            {t('walletSidebar.contactSupport')}
           </p>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function WalletSidebar() {
 
       {/* Mobile Header with Menu Button */}
       <div className="md:hidden fixed top-0 left-0 right-0 bg-white dark:bg-card border-b border-gray-200 dark:border-border px-4 py-3 flex items-center justify-between z-40">
-        <h2 className="font-bold text-gray-900 dark:text-foreground">Tài khoản</h2>
+        <h2 className="font-bold text-gray-900 dark:text-foreground">{t('walletSidebar.account')}</h2>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="p-2 hover:bg-gray-100 dark:hover:bg-muted rounded-lg transition-colors"

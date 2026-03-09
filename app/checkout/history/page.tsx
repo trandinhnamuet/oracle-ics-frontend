@@ -49,60 +49,60 @@ interface Payment {
   }
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
-  success: {
-    label: 'Thành công',
-    color: 'bg-green-50 text-green-700 border-green-200',
-    icon: CheckCircle,
-    iconColor: 'text-green-500'
-  },
-  pending: {
-    label: 'Đang xử lý',
-    color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-    icon: Clock,
-    iconColor: 'text-yellow-500'
-  },
-  failed: {
-    label: 'Thất bại',
-    color: 'bg-red-50 text-red-700 border-red-200',
-    icon: XCircle,
-    iconColor: 'text-red-500'
-  }
-}
-
-const DEFAULT_STATUS_CONFIG = {
-  label: 'Không xác định',
-  color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
-  icon: Clock,
-  iconColor: 'text-gray-500 dark:text-muted-foreground'
-}
-
-const TYPE_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
-  deposit: {
-    label: 'Nạp tiền',
-    color: 'bg-blue-50 text-blue-700 border-blue-200',
-    icon: Banknote,
-    iconColor: 'text-blue-500'
-  },
-  subscription: {
-    label: 'Thanh toán gói',
-    color: 'bg-purple-50 text-purple-700 border-purple-200',
-    icon: CreditCard,
-    iconColor: 'text-purple-500'
-  }
-}
-
-const DEFAULT_TYPE_CONFIG = {
-  label: 'Giao dịch',
-  color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
-  icon: CreditCard,
-  iconColor: 'text-gray-500 dark:text-muted-foreground'
-}
-
 export default function PaymentHistoryPage() {
   const { t } = useTranslation()
   const router = useRouter()
   const { toast } = useToast()
+
+  const STATUS_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
+    success: {
+      label: t('paymentHistory.statusSuccess'),
+      color: 'bg-green-50 text-green-700 border-green-200',
+      icon: CheckCircle,
+      iconColor: 'text-green-500'
+    },
+    pending: {
+      label: t('paymentHistory.statusPending'),
+      color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+      icon: Clock,
+      iconColor: 'text-yellow-500'
+    },
+    failed: {
+      label: t('paymentHistory.statusFailed'),
+      color: 'bg-red-50 text-red-700 border-red-200',
+      icon: XCircle,
+      iconColor: 'text-red-500'
+    }
+  }
+
+  const DEFAULT_STATUS_CONFIG = {
+    label: t('unknown') || 'Unknown',
+    color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
+    icon: Clock,
+    iconColor: 'text-gray-500 dark:text-muted-foreground'
+  }
+
+  const TYPE_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
+    deposit: {
+      label: t('paymentHistory.deposit'),
+      color: 'bg-blue-50 text-blue-700 border-blue-200',
+      icon: Banknote,
+      iconColor: 'text-blue-500'
+    },
+    subscription: {
+      label: t('paymentHistory.subscriptionPayment'),
+      color: 'bg-purple-50 text-purple-700 border-purple-200',
+      icon: CreditCard,
+      iconColor: 'text-purple-500'
+    }
+  }
+
+  const DEFAULT_TYPE_CONFIG = {
+    label: t('paymentHistory.transaction'),
+    color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
+    icon: CreditCard,
+    iconColor: 'text-gray-500 dark:text-muted-foreground'
+  }
   
   const [payments, setPayments] = useState<Payment[]>([])
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([])
@@ -122,8 +122,8 @@ export default function PaymentHistoryPage() {
       } catch (error) {
         console.error('Error fetching payments:', error)
         toast({
-          title: 'Lỗi',
-          description: 'Không thể tải lịch sử thanh toán',
+          title: t('paymentHistory.loadError'),
+          description: t('paymentHistory.loadErrorDesc'),
           variant: 'destructive'
         })
       } finally {
@@ -164,8 +164,8 @@ export default function PaymentHistoryPage() {
 
   const handleViewDetails = (payment: Payment) => {
     toast({
-      title: 'Xem chi tiết',
-      description: `Chi tiết giao dịch ${payment.transaction_code}`,
+      title: t('paymentHistory.viewDetail'),
+      description: t('paymentHistory.viewDetailDesc', { code: payment.transaction_code }),
       variant: 'default'
     })
   }
@@ -189,18 +189,18 @@ export default function PaymentHistoryPage() {
 
   const getPaymentDescription = (payment: Payment) => {
     if (payment.payment_type === 'deposit') {
-      return payment.description || 'Nạp tiền vào tài khoản'
+      return payment.description || t('paymentHistory.depositDescription')
     }
     if (payment.payment_type === 'subscription' && payment.subscription?.cloudPackage) {
-      return `Thanh toán gói ${payment.subscription.cloudPackage.name}`
+      return `${t('paymentHistory.subscriptionPayment')} ${payment.subscription.cloudPackage.name}`
     }
-    return payment.description || 'Thanh toán'
+    return payment.description || t('paymentHistory.payment')
   }
 
   const getPaymentMethodLabel = (method: string) => {
-    if (method === 'sepay_qr') return 'QR Code'
-    if (method === 'account_balance') return 'Số dư tài khoản'
-    return 'Chuyển khoản'
+    if (method === 'sepay_qr') return t('paymentHistory.qrCode')
+    if (method === 'account_balance') return t('paymentHistory.accountBalance')
+    return t('paymentHistory.bankTransfer')
   }
 
   const exportToExcel = async () => {
@@ -247,9 +247,9 @@ export default function PaymentHistoryPage() {
       headerRow.height = 28
 
       const statusLabelMap: Record<string, string> = {
-        success: 'Thành công',
-        pending: 'Đang xử lý',
-        failed: 'Thất bại',
+        success: t('paymentHistory.statusSuccess'),
+        pending: t('paymentHistory.statusPending'),
+        failed: t('paymentHistory.statusFailed'),
       }
       const statusColorMap: Record<string, string> = {
         success: 'FFD4EDDA',
@@ -257,8 +257,8 @@ export default function PaymentHistoryPage() {
         failed: 'FFF8D7DA',
       }
       const typeLabelMap: Record<string, string> = {
-        deposit: 'Nạp tiền',
-        subscription: 'Thanh toán gói',
+        deposit: t('paymentHistory.deposit'),
+        subscription: t('paymentHistory.subscriptionPayment'),
       }
 
       // Add data rows
@@ -319,7 +319,7 @@ export default function PaymentHistoryPage() {
       const summaryRow = worksheet.addRow({
         stt: '',
         transaction_code: '',
-        description: `Tổng cộng: ${filteredPayments.length} giao dịch`,
+        description: `${t('paymentHistory.excelSummary', { count: filteredPayments.length })}`,
         type: '',
         status: '',
         amount: totalSuccess,
@@ -355,15 +355,15 @@ export default function PaymentHistoryPage() {
       URL.revokeObjectURL(url)
 
       toast({
-        title: 'Xuất Excel thành công',
-        description: `Đã xuất ${filteredPayments.length} giao dịch`,
+        title: t('paymentHistory.exportSuccess'),
+        description: t('paymentHistory.exportSuccessDesc', { count: filteredPayments.length }),
         variant: 'default',
       })
     } catch (error) {
       console.error('Error exporting to Excel:', error)
       toast({
-        title: 'Lỗi xuất Excel',
-        description: 'Không thể xuất file Excel, vui lòng thử lại',
+        title: t('paymentHistory.exportError'),
+        description: t('paymentHistory.exportErrorDesc'),
         variant: 'destructive',
       })
     }
@@ -375,7 +375,7 @@ export default function PaymentHistoryPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center py-8">
             <Clock className="h-12 w-12 text-gray-400 dark:text-muted-foreground mx-auto mb-4 animate-spin" />
-            <p className="text-gray-500 dark:text-muted-foreground">Đang tải lịch sử thanh toán...</p>
+            <p className="text-gray-500 dark:text-muted-foreground">{t('paymentHistory.loading')}</p>
           </div>
         </div>
       </div>
@@ -392,7 +392,7 @@ export default function PaymentHistoryPage() {
         <div className="container mx-auto px-4 max-w-6xl py-8">
           {/* Header */}
           <div className="flex items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Lịch sử thanh toán</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">{t('paymentHistory.title')}</h1>
           </div>
 
           {/* Summary Cards */}
@@ -404,7 +404,7 @@ export default function PaymentHistoryPage() {
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Tổng đã thanh toán</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.totalPaid')}</p>
                   <p className="text-lg font-bold text-green-600">
                     {formatPrice(getTotalAmount())}₫
                   </p>
@@ -420,7 +420,7 @@ export default function PaymentHistoryPage() {
                   <Banknote className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần nạp tiền</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.depositCount')}</p>
                   <p className="text-lg font-bold text-blue-600">
                     {payments.filter(p => p.payment_type === 'deposit' && p.status === 'success').length}
                   </p>
@@ -436,7 +436,7 @@ export default function PaymentHistoryPage() {
                   <CreditCard className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Gói đã mua</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.packagesBought')}</p>
                   <p className="text-lg font-bold text-purple-600">
                     {payments.filter(p => p.payment_type === 'subscription' && p.status === 'success').length}
                   </p>
@@ -452,7 +452,7 @@ export default function PaymentHistoryPage() {
                   <Clock className="h-5 w-5 text-yellow-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Đang xử lý</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.processing')}</p>
                   <p className="text-lg font-bold text-yellow-600">
                     {payments.filter(p => p.status === 'pending').length}
                   </p>
@@ -466,10 +466,10 @@ export default function PaymentHistoryPage() {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Bộ lọc và tìm kiếm</span>
+              <span>{t('paymentHistory.filterTitle')}</span>
               <Button variant="outline" size="sm" onClick={exportToExcel}>
                 <Download className="h-4 w-4 mr-2" />
-                Xuất Excel
+                {t('paymentHistory.exportExcel')}
               </Button>
             </CardTitle>
           </CardHeader>
@@ -478,7 +478,7 @@ export default function PaymentHistoryPage() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-muted-foreground" />
                 <Input
-                  placeholder="Tìm kiếm theo ID hoặc mã giao dịch..."
+                  placeholder={t('paymentHistory.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -490,10 +490,10 @@ export default function PaymentHistoryPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-background dark:border-border dark:text-foreground"
               >
-                <option value="all">Tất cả trạng thái</option>
-                <option value="success">Thành công</option>
-                <option value="pending">Đang xử lý</option>
-                <option value="failed">Thất bại</option>
+                <option value="all">{t('paymentHistory.allStatus')}</option>
+                <option value="success">{t('paymentHistory.statusSuccess')}</option>
+                <option value="pending">{t('paymentHistory.statusPending')}</option>
+                <option value="failed">{t('paymentHistory.statusFailed')}</option>
               </select>
 
               <select
@@ -501,14 +501,14 @@ export default function PaymentHistoryPage() {
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-background dark:border-border dark:text-foreground"
               >
-                <option value="all">Tất cả loại giao dịch</option>
-                <option value="deposit">Nạp tiền</option>
-                <option value="subscription">Thanh toán gói</option>
+                <option value="all">{t('paymentHistory.allTypes')}</option>
+                <option value="deposit">{t('paymentHistory.deposit')}</option>
+                <option value="subscription">{t('paymentHistory.subscriptionPayment')}</option>
               </select>
 
               <Button variant="outline">
                 <Filter className="h-4 w-4 mr-2" />
-                Lọc nâng cao
+                {t('paymentHistory.advancedFilter')}
               </Button>
             </div>
           </CardContent>
@@ -518,7 +518,7 @@ export default function PaymentHistoryPage() {
         <Card>
           <CardHeader>
             <CardTitle>
-              Lịch sử giao dịch ({filteredPayments.length} giao dịch)
+              {t('paymentHistory.transactionHistory', { count: filteredPayments.length })}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -526,7 +526,7 @@ export default function PaymentHistoryPage() {
               {filteredPayments.length === 0 ? (
                 <div className="text-center py-8">
                   <Calendar className="h-12 w-12 text-gray-400 dark:text-muted-foreground mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-muted-foreground">Không tìm thấy giao dịch nào</p>
+                  <p className="text-gray-500 dark:text-muted-foreground">{t('paymentHistory.noTransactions')}</p>
                 </div>
               ) : (
                 filteredPayments.map((payment) => {
@@ -569,7 +569,7 @@ export default function PaymentHistoryPage() {
                                   <span>•</span>
                                   <span>{payment.subscription.cloudPackage.name}</span>
                                   {payment.subscription.months_paid && payment.subscription.months_paid > 1 && (
-                                    <span>({payment.subscription.months_paid} tháng)</span>
+                                    <span>({payment.subscription.months_paid} {t('paymentHistory.months')})</span>
                                   )}
                                 </>
                               )}
@@ -593,7 +593,7 @@ export default function PaymentHistoryPage() {
                             onClick={() => handleViewDetails(payment)}
                           >
                             <Eye className="h-4 w-4 mr-1" />
-                            Chi tiết
+                            {t('paymentHistory.viewDetail')}
                             <ChevronRight className="h-4 w-4 ml-1" />
                           </Button>
                         </div>
