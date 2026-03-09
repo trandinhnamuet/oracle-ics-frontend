@@ -232,8 +232,8 @@ export default function PackageDetailPage() {
   const handleVmAction = async (action: 'START' | 'STOP' | 'RESTART' | 'TERMINATE') => {
     if (!subscription?.vm_instance_id) {
       toast({
-        title: 'VM Not Configured',
-        description: 'Please configure your VM first',
+        title: t('packageDetail.toast.vmNotConfigured'),
+        description: t('packageDetail.toast.vmNotConfiguredDesc'),
         variant: 'destructive'
       })
       return
@@ -243,8 +243,8 @@ export default function PackageDetailPage() {
     try {
       await performVmAction(subscriptionId, action)
       toast({
-        title: 'Success',
-        description: `VM ${action.toLowerCase()} command sent successfully`,
+        title: t('packageDetail.toast.vmActionSuccess'),
+        description: t('packageDetail.toast.vmActionSuccessDesc'),
         variant: 'default'
       })
       
@@ -260,8 +260,8 @@ export default function PackageDetailPage() {
     } catch (error: any) {
       console.error(`Error performing VM ${action}:`, error)
       toast({
-        title: 'Action Failed',
-        description: error.response?.data?.message || `Failed to ${action.toLowerCase()} VM`,
+        title: t('packageDetail.toast.vmActionFailed'),
+        description: error.response?.data?.message || t('packageDetail.toast.vmActionFailedDesc'),
         variant: 'destructive'
       })
     } finally {
@@ -272,8 +272,8 @@ export default function PackageDetailPage() {
   const handleRequestNewKey = async () => {
     if (!subscription?.vm_instance_id) {
       toast({
-        title: 'VM Not Configured',
-        description: 'Please configure your VM first',
+        title: t('packageDetail.toast.vmNotConfigured'),
+        description: t('packageDetail.toast.vmNotConfiguredDesc'),
         variant: 'destructive'
       })
       return
@@ -341,16 +341,16 @@ export default function PackageDetailPage() {
   const handleDeleteVmOnly = () => {
     setConfirmDialog({
       open: true,
-      title: 'Xóa VM của subscription',
-      description: 'Subscription vẫn còn hiệu lực nhưng máy ảo sẽ bị xóa. Bạn cần cấu hình lại VM mới để tiếp tục sử dụng dịch vụ.',
+      title: t('packageDetail.confirmDialog.deleteVmOnly.title'),
+      description: t('packageDetail.confirmDialog.deleteVmOnly.description'),
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, open: false }))
         setIsLoading(true)
         try {
           await deleteVmOnly(subscriptionId)
           toast({
-            title: 'Xóa VM thành công',
-            description: 'VM đã được xóa. Subscription vẫn còn hiệu lực.',
+            title: t('packageDetail.toast.deleteVmSuccess'),
+            description: t('packageDetail.toast.deleteVmSuccessDesc'),
             variant: 'default'
           })
           setVmDetails(null)
@@ -359,8 +359,8 @@ export default function PackageDetailPage() {
         } catch (error: any) {
           console.error('Error deleting VM:', error)
           toast({
-            title: 'Xóa VM thất bại',
-            description: error?.response?.data?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
+            title: t('packageDetail.toast.deleteVmFailed'),
+            description: error?.response?.data?.message || t('packageDetail.toast.deleteVmFailedDesc'),
             variant: 'destructive'
           })
         } finally {
@@ -375,16 +375,16 @@ export default function PackageDetailPage() {
       // Handle delete subscription
       setConfirmDialog({
         open: true,
-        title: 'Xác nhận xóa subscription',
-        description: 'Hành động này sẽ XÓA HOÀN TOÀN subscription và máy ảo (VM) trên Oracle Cloud. Tất cả dữ liệu liên quan sẽ bị xóa và KHÔNG THỂ KHÔI PHỤC. Vui lòng backup dữ liệu quan trọng trước khi xóa.',
+        title: t('packageDetail.confirmDialog.deleteSubscription.title'),
+        description: t('packageDetail.confirmDialog.deleteSubscription.description'),
         onConfirm: async () => {
           setConfirmDialog(prev => ({ ...prev, open: false }))
           setIsLoading(true)
           try {
             await deleteSubscription(subscriptionId)
             toast({
-              title: 'Xóa thành công',
-              description: 'Subscription và VM đã được xóa hoàn toàn',
+              title: t('packageDetail.toast.deleteSuccess'),
+              description: t('packageDetail.toast.deleteSuccessDesc'),
               variant: 'default'
             })
             setTimeout(() => {
@@ -393,7 +393,7 @@ export default function PackageDetailPage() {
           } catch (error: any) {
             console.error('Error deleting subscription:', error)
             toast({
-              title: 'Lỗi xóa subscription',
+              title: t('packageDetail.toast.deleteError'),
               description: error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
               variant: 'destructive'
             })
@@ -1196,8 +1196,8 @@ export default function PackageDetailPage() {
             <AlertDialogDescription>{confirmDialog.description}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">Xác nhận</AlertDialogAction>
+            <AlertDialogCancel>{t('packageDetail.confirmDialog.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">{t('packageDetail.confirmDialog.confirm')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

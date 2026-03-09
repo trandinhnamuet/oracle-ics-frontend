@@ -37,6 +37,46 @@
       "pauseTitle": "暂停套餐",
       "activateTitle": "激活套餐",
       "deleteTitle": "删除套餐"
+    },
+    "confirmDialog": {
+      "cancel": "取消",
+      "confirm": "确认",
+      "deleteSubscription": {
+        "title": "确认删除订阅",
+        "description": "此操作将永久删除Oracle Cloud上的订阅和虚拟机(VM)。所有相关数据将被删除且无法恢复。删除前请备份重要数据。"
+      },
+      "stopVm": {
+        "title": "确认停止VM",
+        "description": "您确定要停止此VM吗？"
+      },
+      "startVm": {
+        "title": "确认启动VM",
+        "description": "您确定要启动此VM吗？"
+      }
+    },
+    "toast": {
+      "loadingList": "正在加载订阅列表...",
+      "vmNotConfigured": "VM未配置",
+      "vmStopSent": "已发送VM停止命令",
+      "vmStartSent": "已发送VM启动命令",
+      "vmActionPending": "完成后状态将自动更新。",
+      "vmStopError": "停止VM出错",
+      "vmStartError": "启动VM出错",
+      "deleteSuccess": "订阅和VM已成功删除！",
+      "deleteError": "删除订阅时发生错误"
+    },
+    "notConfigured": "未配置",
+    "tooltip": {
+      "stopVm": "停止VM",
+      "startVm": "启动VM",
+      "stopping": "VM停止中...",
+      "starting": "VM启动中...",
+      "transitioning": "VM正在过渡状态"
+    },
+    "fetchError": {
+      "title": "错误",
+      "system": "加载订阅列表时出现系统错误。请稍后再试。",
+      "network": "无法加载订阅列表。请检查您的网络连接。"
     }
   },
   "contactInfo": {
@@ -51,7 +91,9 @@
     "email": "电子邮件",
     "website": "网站",
     "mapTitle": "地图位置",
-    "mapDesc": "查找我们办公室的路线"
+    "mapDesc": "查找我们办公室的路线",
+    "learnMore": "了解更多关于我们 →",
+    "openInMaps": "在地图中打开"
   },
   "dashboard": {
     "title": "系统管理",
@@ -879,7 +921,32 @@
     "vmInfoTitle": "您的虚拟机信息",
     "toast": {
       "error": "错误",
-      "loadError": "无法加载订阅信息"
+      "loadError": "无法加载订阅信息",
+      "vmNotConfigured": "VM未配置",
+      "vmNotConfiguredDesc": "请先配置VM",
+      "vmActionSuccess": "成功",
+      "vmActionSuccessDesc": "VM命令已成功发送",
+      "vmActionFailed": "操作失败",
+      "vmActionFailedDesc": "VM操作失败",
+      "deleteVmSuccess": "VM删除成功",
+      "deleteVmSuccessDesc": "VM已删除。订阅仍然有效。",
+      "deleteVmFailed": "VM删除失败",
+      "deleteVmFailedDesc": "请稍后再试或联系支持。",
+      "deleteSuccess": "删除成功",
+      "deleteSuccessDesc": "订阅和VM已完全删除",
+      "deleteError": "删除订阅出错"
+    },
+    "confirmDialog": {
+      "cancel": "取消",
+      "confirm": "确认",
+      "deleteVmOnly": {
+        "title": "删除订阅的VM",
+        "description": "订阅将保持有效但虚拟机将被删除。您需要配置新VM才能继续使用服务。"
+      },
+      "deleteSubscription": {
+        "title": "确认删除订阅",
+        "description": "此操作将永久删除Oracle Cloud上的订阅和虚拟机(VM)。所有相关数据将被删除且无法恢复。删除前请备份重要数据。"
+      }
     }
   },
   "support": {
@@ -916,12 +983,33 @@
       "other": "其他"
     },
     "myTickets": "我的工单",
+    "myTicketsSubtitle": "跟踪已提交请求的状态",
     "noTickets": "暂无支持请求",
+    "loadingTickets": "正在加载您的请求...",
+    "fetchErrorTitle": "无法加载数据",
+    "retryBtn": "重试",
+    "emptyTitle": "暂无请求",
+    "emptySubtitle": "您的请求将显示在此处",
+    "ticketSubmittedOn": "提交于",
+    "statusLabel": "状态:",
+    "resolvedAt": "解决于:",
+    "serviceLabel": "服务:",
+    "requestContent": "请求内容:",
+    "adminReplyTitle": "支持团队回复:",
+    "waitingReply": "我们正在处理您的请求。请等待支持团队的回复。",
+    "hasReply": "有回复",
+    "formNote": "请填写完整信息，以便我们清楚了解您的问题",
     "status": {
       "open": "开放",
       "in_progress": "处理中",
       "resolved": "已解决",
       "closed": "已关闭"
+    },
+    "validation": {
+      "titleMin": "标题至少4字符以上",
+      "nameMin": "请输入您的姓名",
+      "emailInvalid": "无效的电子邮件地址",
+      "contentMin": "内容至少10字符以上"
     },
     "priority": {
       "low": "低",
@@ -990,7 +1078,17 @@
     "accountBalance": "账户余额",
     "qrCode": "QR码",
     "bankTransfer": "银行转账",
-    "excelSummary": "总计: {{count}} 笔交易"
+    "excelSummary": "总计: {{count}} 笔交易",
+    "showing": "显示 {{total}} 中的 {{count}} 笔交易",
+    "prevPage": "上一页",
+    "nextPage": "下一页"
+  },
+  "balanceDisplay": {
+    "label": "余额:",
+    "addFunds": "充値",
+    "loading": "加载中...",
+    "error": "无法加载余额",
+    "refresh": "刷新余额"
   },
   "subscriptionCheckout": {
     "title": "订阅付款",

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -27,38 +27,46 @@ import {
   CreateTicketPayload,
 } from '@/api/support-ticket.api'
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  open:        { label: 'Đang mở',      color: 'bg-red-50 text-red-700 border border-red-200',   icon: AlertCircle },
-  in_progress: { label: 'Đang xử lý',  color: 'bg-orange-50 text-orange-700 border border-orange-200', icon: RefreshCw },
-  resolved:    { label: 'Đã giải quyết', color: 'bg-green-50 text-green-700 border border-green-200', icon: CheckCircle2 },
-  closed:      { label: 'Đã đóng',      color: 'bg-gray-50 text-gray-600 border border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',   icon: XCircle },
+type FormData = {
+  title: string
+  customer_name: string
+  email: string
+  phone?: string
+  address?: string
+  service?: string
+  content: string
 }
-
-const SERVICES = [
-  { value: 'cloud',   label: 'Cloud Server' },
-  { value: 'storage', label: 'Object Storage' },
-  { value: 'network', label: 'Network / VPN' },
-  { value: 'billing', label: 'Thanh toán' },
-  { value: 'account', label: 'Tài khoản' },
-  { value: 'other',   label: 'Khác' },
-]
-
-const schema = z.object({
-  title:         z.string().min(5, 'Tiêu đề phải có ít nhất 5 ký tự').max(255),
-  customer_name: z.string().min(2, 'Vui lòng nhập tên').max(150),
-  email:         z.string().email('Email không hợp lệ'),
-  phone:         z.string().optional(),
-  address:       z.string().optional(),
-  service:       z.string().optional(),
-  content:       z.string().min(10, 'Nội dung phải có ít nhất 10 ký tự'),
-})
-
-type FormData = z.infer<typeof schema>
 
 export default function SupportPage() {
   const { t } = useTranslation()
   const { user, isAuthenticated } = useAuth()
   const { toast } = useToast()
+
+  const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ElementType }> = useMemo(() => ({
+    open:        { label: t('support.status.open'),        color: 'bg-red-50 text-red-700 border border-red-200',   icon: AlertCircle },
+    in_progress: { label: t('support.status.in_progress'), color: 'bg-orange-50 text-orange-700 border border-orange-200', icon: RefreshCw },
+    resolved:    { label: t('support.status.resolved'),    color: 'bg-green-50 text-green-700 border border-green-200', icon: CheckCircle2 },
+    closed:      { label: t('support.status.closed'),      color: 'bg-gray-50 text-gray-600 border border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border', icon: XCircle },
+  }), [t])
+
+  const SERVICES = useMemo(() => [
+    { value: 'cloud',   label: t('support.services.cloud') },
+    { value: 'storage', label: t('support.services.storage') },
+    { value: 'network', label: t('support.services.network') },
+    { value: 'billing', label: t('support.services.billing') },
+    { value: 'account', label: t('support.services.account') },
+    { value: 'other',   label: t('support.services.other') },
+  ], [t])
+
+  const schema = useMemo(() => z.object({
+    title:         z.string().min(5, t('support.validation.titleMin')).max(255),
+    customer_name: z.string().min(2, t('support.validation.nameMin')).max(150),
+    email:         z.string().email(t('support.validation.emailInvalid')),
+    phone:         z.string().optional(),
+    address:       z.string().optional(),
+    service:       z.string().optional(),
+    content:       z.string().min(10, t('support.validation.contentMin')),
+  }), [t])
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [myTickets, setMyTickets] = useState<SupportTicket[]>([])
@@ -156,7 +164,7 @@ export default function SupportPage() {
                 <Send className="h-6 w-6" />
                 {t('support.submit') || 'Gửi Yêu Cầu Hỗ Trợ'}
               </CardTitle>
-              <p className="text-red-100 text-sm mt-2">Điền đầy đủ thông tin để chúng tôi hiểu rõ vấn đề của bạn</p>
+              <p className="text-red-100 text-sm mt-2">{t('support.formNote')}</p>
             </CardHeader>
 
             <CardContent className="p-8">
@@ -165,11 +173,11 @@ export default function SupportPage() {
                 {/* Title Field */}
                 <div className="space-y-2">
                   <Label htmlFor="title" className="font-semibold text-gray-700 dark:text-muted-foreground">
-                    Tiêu đề yêu cầu <span className="text-red-500">*</span>
+                    {t('support.fields.title')} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="title"
-                    placeholder="Ví dụ: Vấn đề về kết nối máy chủ"
+                    placeholder={t('support.fields.titlePlaceholder')}
                     {...register('title')}
                     className={`h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500 ${errors.title ? 'border-red-500' : ''}`}
                   />
@@ -180,11 +188,11 @@ export default function SupportPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="customer_name" className="font-semibold text-gray-700 dark:text-muted-foreground">
-                      Tên của bạn <span className="text-red-500">*</span>
+                      {t('support.fields.name')} <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="customer_name"
-                      placeholder="Nhập tên đầy đủ"
+                      placeholder={t('support.fields.namePlaceholder')}
                       {...register('customer_name')}
                       className={`h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500 ${errors.customer_name ? 'border-red-500' : ''}`}
                     />
@@ -209,7 +217,7 @@ export default function SupportPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="font-semibold text-gray-700 dark:text-muted-foreground">
-                      Điện thoại
+                      {t('support.fields.phone')}
                     </Label>
                     <Input
                       id="phone"
@@ -219,10 +227,10 @@ export default function SupportPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="font-semibold text-gray-700 dark:text-muted-foreground">Dịch vụ liên quan</Label>
+                    <Label className="font-semibold text-gray-700 dark:text-muted-foreground">{t('support.fields.service')}</Label>
                     <Select value={selectedService} onValueChange={setSelectedService}>
                       <SelectTrigger className="h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500">
-                        <SelectValue placeholder="Chọn dịch vụ" />
+                        <SelectValue placeholder={t('support.fields.servicePlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
                         {SERVICES.map(s => (
@@ -236,11 +244,11 @@ export default function SupportPage() {
                 {/* Address Field */}
                 <div className="space-y-2">
                   <Label htmlFor="address" className="font-semibold text-gray-700 dark:text-muted-foreground">
-                    Địa chỉ
+                    {t('support.fields.address')}
                   </Label>
                   <Input
                     id="address"
-                    placeholder="Địa chỉ công ty hoặc nơi làm việc"
+                    placeholder={t('support.fields.addressPlaceholder')}
                     {...register('address')}
                     className="h-11 border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500"
                   />
@@ -249,11 +257,11 @@ export default function SupportPage() {
                 {/* Content Field */}
                 <div className="space-y-2">
                   <Label htmlFor="content" className="font-semibold text-gray-700 dark:text-muted-foreground">
-                    Chi tiết vấn đề <span className="text-red-500">*</span>
+                    {t('support.fields.content')} <span className="text-red-500">*</span>
                   </Label>
                   <Textarea
                     id="content"
-                    placeholder="Mô tả chi tiết vấn đề bạn gặp phải... (tối thiểu 10 ký tự)"
+                    placeholder={t('support.fields.contentPlaceholder')}
                     rows={5}
                     {...register('content')}
                     className={`border-gray-200 dark:border-input rounded-lg focus:border-red-500 focus:ring-red-500 resize-none ${errors.content ? 'border-red-500' : ''}`}
@@ -268,9 +276,9 @@ export default function SupportPage() {
                   className="w-full h-12 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all"
                 >
                   {isSubmitting ? (
-                    <><RefreshCw className="mr-2 h-4 w-4 animate-spin" />Đang gửi...</>
+                    <><RefreshCw className="mr-2 h-4 w-4 animate-spin" />{t('support.submitting')}</>
                   ) : (
-                    <><Send className="mr-2 h-4 w-4" />Gửi Yêu Cầu</>
+                    <><Send className="mr-2 h-4 w-4" />{t('support.submit')}</>
                   )}
                 </Button>
               </form>
@@ -286,8 +294,8 @@ export default function SupportPage() {
                 <Clock className="h-6 w-6 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">Yêu Cầu Của Tôi</h2>
-                <p className="text-sm text-gray-500 dark:text-muted-foreground">Theo dõi trạng thái các yêu cầu đã gửi</p>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground">{t('support.myTickets')}</h2>
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">{t('support.myTicketsSubtitle')}</p>
               </div>
               <Button
                 variant="outline"
@@ -305,7 +313,7 @@ export default function SupportPage() {
                 <CardContent className="flex justify-center py-12">
                   <div className="text-center space-y-3">
                     <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-200 border-t-red-500 mx-auto" />
-                    <p className="text-sm text-gray-500 dark:text-muted-foreground">Đang tải yêu cầu của bạn...</p>
+                    <p className="text-sm text-gray-500 dark:text-muted-foreground">{t('support.loadingTickets')}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -314,7 +322,7 @@ export default function SupportPage() {
                 <CardContent className="pt-6 text-center space-y-4">
                   <AlertTriangle className="h-8 w-8 text-red-500 mx-auto" />
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-foreground">Không thể tải dữ liệu</p>
+                    <p className="font-medium text-gray-900 dark:text-foreground">{t('support.fetchErrorTitle')}</p>
                     <p className="text-sm text-red-600 mt-1">{ticketError}</p>
                   </div>
                   <Button
@@ -322,7 +330,7 @@ export default function SupportPage() {
                     className="bg-red-500 hover:bg-red-600 text-white"
                     onClick={loadTickets}
                   >
-                    <RefreshCw className="mr-2 h-4 w-4" />Thử lại
+                    <RefreshCw className="mr-2 h-4 w-4" />{t('support.retryBtn')}
                   </Button>
                 </CardContent>
               </Card>
@@ -331,8 +339,8 @@ export default function SupportPage() {
                 <CardContent className="pt-12 pb-12 text-center space-y-4">
                   <MessageSquare className="h-12 w-12 text-gray-300 dark:text-muted-foreground mx-auto" />
                   <div>
-                    <p className="font-medium text-gray-700 dark:text-foreground">Chưa có yêu cầu nào</p>
-                    <p className="text-sm text-gray-500 dark:text-muted-foreground">Các yêu cầu của bạn sẽ hiển thị tại đây</p>
+                    <p className="font-medium text-gray-700 dark:text-foreground">{t('support.emptyTitle')}</p>
+                    <p className="text-sm text-gray-500 dark:text-muted-foreground">{t('support.emptySubtitle')}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -365,12 +373,12 @@ export default function SupportPage() {
                               <h3 className="font-semibold text-gray-900 dark:text-foreground truncate">{ticket.title}</h3>
                               {hasAdminReply && (
                                 <Badge className="bg-red-500 text-white text-[10px] shrink-0">
-                                  Có phản hồi
+                                  {t('support.hasReply')}
                                 </Badge>
                               )}
                             </div>
                             <p className="text-xs text-gray-500 dark:text-muted-foreground">
-                              #{ticket.id} • Gửi {formatDate(ticket.created_at)}
+                              #{ticket.id} • {t('support.ticketSubmittedOn')} {formatDate(ticket.created_at)}
                             </p>
                           </div>
                           <Badge className={`${cfg.color} text-xs font-medium shrink-0`}>
@@ -391,7 +399,7 @@ export default function SupportPage() {
                           <div className="px-6 py-4 bg-white dark:bg-card border-b border-gray-200 dark:border-border">
                             <div className="flex flex-wrap items-center gap-4">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs font-medium text-gray-600 dark:text-muted-foreground">Trạng thái:</span>
+                                <span className="text-xs font-medium text-gray-600 dark:text-muted-foreground">{t('support.statusLabel')}</span>
                                 <Badge className={`${cfg.color} flex items-center gap-1 text-xs`}>
                                   <StatusIcon className="h-3 w-3" />
                                   {cfg.label}
@@ -399,12 +407,12 @@ export default function SupportPage() {
                               </div>
                               {ticket.resolved_at && (
                                 <span className="text-xs text-gray-500 dark:text-muted-foreground">
-                                  Giải quyết: {formatDate(ticket.resolved_at)}
+                                  {t('support.resolvedAt')} {formatDate(ticket.resolved_at)}
                                 </span>
                               )}
                               {ticket.service && (
                                 <span className="text-xs text-gray-500 dark:text-muted-foreground ml-auto">
-                                  Dịch vụ: <span className="font-medium">{SERVICES.find(s => s.value === ticket.service)?.label}</span>
+                                  {t('support.serviceLabel')} <span className="font-medium">{SERVICES.find(s => s.value === ticket.service)?.label}</span>
                                 </span>
                               )}
                             </div>
@@ -412,7 +420,7 @@ export default function SupportPage() {
 
                           {/* Content Section */}
                           <div className="px-6 py-4 border-b border-gray-200 dark:border-border">
-                            <p className="text-xs font-semibold text-gray-600 dark:text-muted-foreground mb-2">Nội dung yêu cầu:</p>
+                            <p className="text-xs font-semibold text-gray-600 dark:text-muted-foreground mb-2">{t('support.requestContent')}</p>
                             <p className="text-sm text-gray-700 dark:text-foreground leading-relaxed whitespace-pre-wrap">{ticket.content}</p>
                           </div>
 
@@ -422,7 +430,7 @@ export default function SupportPage() {
                               <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                   <CheckCircle2 className="h-4 w-4 text-red-500" />
-                                  <p className="text-xs font-semibold text-red-600">Phản hồi từ bộ phận hỗ trợ:</p>
+                                  <p className="text-xs font-semibold text-red-600">{t('support.adminReplyTitle')}</p>
                                 </div>
                                 <p className="text-sm text-gray-800 dark:text-foreground leading-relaxed whitespace-pre-wrap ml-6 bg-white dark:bg-card rounded p-3 border border-red-200">
                                   {ticket.admin_note}
@@ -431,7 +439,7 @@ export default function SupportPage() {
                             ) : (
                               <div className="flex items-start gap-3 text-sm text-gray-600 dark:text-muted-foreground">
                                 <Clock className="h-4 w-4 mt-0.5 text-orange-500 flex-shrink-0" />
-                                <p>Chúng tôi đang xử lý yêu cầu của bạn. Vui lòng chờ phản hồi từ bộ phận hỗ trợ.</p>
+                                <p>{t('support.waitingReply')}</p>
                               </div>
                             )}
                           </div>

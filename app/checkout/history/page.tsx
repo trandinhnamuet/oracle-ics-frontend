@@ -76,7 +76,7 @@ export default function PaymentHistoryPage() {
   }
 
   const DEFAULT_STATUS_CONFIG = {
-    label: t('unknown') || 'Unknown',
+    label: t('paymentHistory.unknown') || 'Unknown',
     color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
     icon: Clock,
     iconColor: 'text-gray-500 dark:text-muted-foreground'
@@ -608,14 +608,14 @@ export default function PaymentHistoryPage() {
             {filteredPayments.length > 0 && (
               <div className="flex items-center justify-between mt-6 pt-4 border-t">
                 <p className="text-sm text-gray-600 dark:text-muted-foreground">
-                  Hiển thị {filteredPayments.length} trong tổng số {payments.length} giao dịch
+                  {t('paymentHistory.showing', { count: filteredPayments.length, total: payments.length })}
                 </p>
                 <div className="flex space-x-2">
                   <Button variant="outline" size="sm" disabled>
-                    Trang trước
+                    {t('paymentHistory.prevPage')}
                   </Button>
                   <Button variant="outline" size="sm" disabled>
-                    Trang sau
+                    {t('paymentHistory.nextPage')}
                   </Button>
                 </div>
               </div>

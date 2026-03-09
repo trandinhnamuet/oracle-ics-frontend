@@ -37,6 +37,46 @@
       "pauseTitle": "Pause Package",
       "activateTitle": "Activate Package",
       "deleteTitle": "Delete Package"
+    },
+    "confirmDialog": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "deleteSubscription": {
+        "title": "Confirm Delete Subscription",
+        "description": "This action will PERMANENTLY DELETE the subscription and the virtual machine (VM) on Oracle Cloud. All related data will be deleted and CANNOT BE RECOVERED. Please backup important data before deleting."
+      },
+      "stopVm": {
+        "title": "Confirm Stop VM",
+        "description": "Are you sure you want to stop this VM?"
+      },
+      "startVm": {
+        "title": "Confirm Start VM",
+        "description": "Are you sure you want to start this VM?"
+      }
+    },
+    "toast": {
+      "loadingList": "Loading subscription list...",
+      "vmNotConfigured": "VM not configured",
+      "vmStopSent": "Stop VM command sent",
+      "vmStartSent": "Start VM command sent",
+      "vmActionPending": "Status will update automatically when complete.",
+      "vmStopError": "Error stopping VM",
+      "vmStartError": "Error starting VM",
+      "deleteSuccess": "Subscription and VM deleted successfully!",
+      "deleteError": "An error occurred while deleting the subscription"
+    },
+    "notConfigured": "Not Configured",
+    "tooltip": {
+      "stopVm": "Stop VM",
+      "startVm": "Start VM",
+      "stopping": "VM is stopping...",
+      "starting": "VM is starting...",
+      "transitioning": "VM is in transition state"
+    },
+    "fetchError": {
+      "title": "Error",
+      "system": "System error loading subscription list. Please try again later.",
+      "network": "Unable to load subscription list. Please check your network connection."
     }
   },
   "contactInfo": {
@@ -51,7 +91,9 @@
     "email": "Email",
     "website": "Website",
     "mapTitle": "Location on Map",
-    "mapDesc": "Find directions to our office"
+    "mapDesc": "Find directions to our office",
+    "learnMore": "Learn more about us →",
+    "openInMaps": "Open in Maps"
   },
   "dashboard": {
     "title": "System Management",
@@ -878,7 +920,32 @@
     "vmInfoTitle": "Your virtual machine information",
     "toast": {
       "error": "Error",
-      "loadError": "Unable to load subscription information"
+      "loadError": "Unable to load subscription information",
+      "vmNotConfigured": "VM Not Configured",
+      "vmNotConfiguredDesc": "Please configure your VM first",
+      "vmActionSuccess": "Success",
+      "vmActionSuccessDesc": "VM command sent successfully",
+      "vmActionFailed": "Action Failed",
+      "vmActionFailedDesc": "Failed to perform VM action",
+      "deleteVmSuccess": "VM deleted successfully",
+      "deleteVmSuccessDesc": "VM has been deleted. Subscription remains active.",
+      "deleteVmFailed": "VM deletion failed",
+      "deleteVmFailedDesc": "Please try again or contact support.",
+      "deleteSuccess": "Deleted successfully",
+      "deleteSuccessDesc": "Subscription and VM have been completely removed",
+      "deleteError": "Error deleting subscription"
+    },
+    "confirmDialog": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "deleteVmOnly": {
+        "title": "Delete VM of Subscription",
+        "description": "The subscription will remain active but the virtual machine will be deleted. You will need to configure a new VM to continue using the service."
+      },
+      "deleteSubscription": {
+        "title": "Confirm Delete Subscription",
+        "description": "This action will PERMANENTLY DELETE the subscription and the virtual machine (VM) on Oracle Cloud. All related data will be deleted and CANNOT BE RECOVERED. Please backup important data before deleting."
+      }
     }
   },
   "support": {
@@ -915,12 +982,33 @@
       "other": "Other"
     },
     "myTickets": "My Tickets",
+    "myTicketsSubtitle": "Track the status of submitted requests",
     "noTickets": "No support requests yet",
+    "loadingTickets": "Loading your requests...",
+    "fetchErrorTitle": "Unable to load data",
+    "retryBtn": "Retry",
+    "emptyTitle": "No requests yet",
+    "emptySubtitle": "Your requests will appear here",
+    "ticketSubmittedOn": "Submitted",
+    "statusLabel": "Status:",
+    "resolvedAt": "Resolved:",
+    "serviceLabel": "Service:",
+    "requestContent": "Request content:",
+    "adminReplyTitle": "Response from support team:",
+    "waitingReply": "We are processing your request. Please wait for a response from the support team.",
+    "hasReply": "Has response",
+    "formNote": "Fill in all information so we can understand your issue clearly",
     "status": {
       "open": "Open",
       "in_progress": "In Progress",
       "resolved": "Resolved",
       "closed": "Closed"
+    },
+    "validation": {
+      "titleMin": "Title must be at least 5 characters",
+      "nameMin": "Please enter your name",
+      "emailInvalid": "Invalid email address",
+      "contentMin": "Content must be at least 10 characters"
     },
     "priority": {
       "low": "Low",
@@ -989,7 +1077,17 @@
     "accountBalance": "Account Balance",
     "qrCode": "QR Code",
     "bankTransfer": "Bank Transfer",
-    "excelSummary": "Total: {{count}} transactions"
+    "excelSummary": "Total: {{count}} transactions",
+    "showing": "Showing {{count}} of {{total}} transactions",
+    "prevPage": "Previous",
+    "nextPage": "Next"
+  },
+  "balanceDisplay": {
+    "label": "Balance:",
+    "addFunds": "Add Funds",
+    "loading": "Loading...",
+    "error": "Unable to load balance",
+    "refresh": "Refresh balance"
   },
   "subscriptionCheckout": {
     "title": "Subscription Payment",

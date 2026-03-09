@@ -98,10 +98,10 @@ export default function PackageManagementPage() {
       
       // Show user-friendly error message in Vietnamese
       const errorMessage = error?.response?.status === 500 
-        ? 'Lỗi hệ thống khi tải danh sách subscription. Vui lòng thử lại sau.'
-        : 'Không thể tải danh sách subscription. Vui lòng kiểm tra kết nối mạng.'
+        ? t('packageManagement.fetchError.system')
+        : t('packageManagement.fetchError.network')
       
-      toast({ title: 'Lỗi', description: errorMessage, variant: 'destructive' })
+      toast({ title: t('packageManagement.fetchError.title'), description: errorMessage, variant: 'destructive' })
     } finally {
       setLoading(false)
     }
@@ -193,19 +193,19 @@ export default function PackageManagementPage() {
     if (!subscription) return
 
     if (!subscription.vm_instance_id) {
-      toast({ title: 'VM chưa được cấu hình', variant: 'destructive' })
+      toast({ title: t('packageManagement.toast.vmNotConfigured'), variant: 'destructive' })
       return
     }
 
     const vmState = subscription.vmInstance?.lifecycle_state
     const action = vmState === 'RUNNING' ? 'STOP' : 'START'
-    const actionText = action === 'STOP' ? 'dừng' : 'khởi động'
-    const optimisticState = action === 'STOP' ? 'STOPPING' : 'STARTING'
+    const isStop = action === 'STOP'
+    const optimisticState = isStop ? 'STOPPING' : 'STARTING'
 
     setConfirmDialog({
       open: true,
-      title: `Xác nhận ${actionText} VM`,
-      description: `Bạn có chắc chắn muốn ${actionText} VM này?`,
+      title: isStop ? t('packageManagement.confirmDialog.stopVm.title') : t('packageManagement.confirmDialog.startVm.title'),
+      description: isStop ? t('packageManagement.confirmDialog.stopVm.description') : t('packageManagement.confirmDialog.startVm.description'),
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, open: false }))
         // Optimistic update: show transitioning state immediately
@@ -218,8 +218,8 @@ export default function PackageManagementPage() {
         try {
           await performVmAction(id, action)
           toast({
-            title: `Đã gửi lệnh ${actionText} VM`,
-            description: 'Trạng thái sẽ tự động cập nhật khi hoàn thành.',
+            title: isStop ? t('packageManagement.toast.vmStopSent') : t('packageManagement.toast.vmStartSent'),
+            description: t('packageManagement.toast.vmActionPending'),
           })
           startPollingUntilStable()
         } catch (error: any) {
@@ -227,7 +227,7 @@ export default function PackageManagementPage() {
           // Revert optimistic update on error
           await fetchUserSubscriptions()
           toast({
-            title: `Lỗi khi ${actionText} VM`,
+            title: isStop ? t('packageManagement.toast.vmStopError') : t('packageManagement.toast.vmStartError'),
             description: error?.response?.data?.message || error?.message || 'Vui lòng thử lại sau',
             variant: 'destructive',
           })
@@ -245,19 +245,19 @@ export default function PackageManagementPage() {
   const cancelUserSubscription = (id: string) => {
     setConfirmDialog({
       open: true,
-      title: 'Xác nhận xóa subscription',
-      description: 'Hành động này sẽ XÓA HOÀN TOÀN subscription và máy ảo (VM) trên Oracle Cloud. Tất cả dữ liệu liên quan sẽ bị xóa và KHÔNG THỂ KHÔI PHỤC. Vui lòng backup dữ liệu quan trọng trước khi xóa.',
+      title: t('packageManagement.confirmDialog.deleteSubscription.title'),
+      description: t('packageManagement.confirmDialog.deleteSubscription.description'),
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, open: false }))
         setLoading(true)
         try {
           await deleteSubscription(id)
           setSubscriptions(prev => prev.filter(sub => sub.id !== id))
-          toast({ title: 'Đã xóa subscription và VM thành công!' })
+          toast({ title: t('packageManagement.toast.deleteSuccess') })
         } catch (error: any) {
           console.error('Error deleting subscription:', error)
           toast({
-            title: 'Có lỗi xảy ra khi xóa subscription',
+            title: t('packageManagement.toast.deleteError'),
             description: error?.message || 'Vui lòng thử lại sau hoặc liên hệ hỗ trợ.',
             variant: 'destructive',
           })
@@ -397,7 +397,7 @@ export default function PackageManagementPage() {
           {loading ? (
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <p className="mt-2 text-muted-foreground">Đang tải danh sách subscription...</p>
+              <p className="mt-2 text-muted-foreground">{t('packageManagement.toast.loadingList')}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -473,7 +473,7 @@ export default function PackageManagementPage() {
                             {/* VM Configuration Status */}
                             {sub.status === 'active' && !sub.vm_instance_id && (
                               <Badge variant="outline" className="bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900">
-                                Not Configured
+                                {t('packageManagement.notConfigured')}
                               </Badge>
                             )}
                             {sub.vm_instance_id && sub.vmInstance && (() => {
@@ -531,11 +531,11 @@ export default function PackageManagementPage() {
                               // Show Stop button for RUNNING or STARTING; show Start button for STOPPED or STOPPING
                               const showStopBtn = isRunning || state === 'STARTING'
                               const isDisabled = isToggling || !isStable
-                              const title = isRunning ? 'Dừng VM (Stop)'
-                                : isStopped ? 'Khởi động VM (Start)'
-                                : state === 'STOPPING' ? 'VM đang dừng...'
-                                : state === 'STARTING' ? 'VM đang khởi động...'
-                                : 'VM đang trong trạng thái chuyển đổi'
+                              const title = isRunning ? t('packageManagement.tooltip.stopVm')
+                                : isStopped ? t('packageManagement.tooltip.startVm')
+                                : state === 'STOPPING' ? t('packageManagement.tooltip.stopping')
+                                : state === 'STARTING' ? t('packageManagement.tooltip.starting')
+                                : t('packageManagement.tooltip.transitioning')
                               return (
                                 <div title={title}>
                                   <Button
@@ -586,8 +586,8 @@ export default function PackageManagementPage() {
             <AlertDialogDescription>{confirmDialog.description}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">Xác nhận</AlertDialogAction>
+            <AlertDialogCancel>{t('packageManagement.confirmDialog.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">{t('packageManagement.confirmDialog.confirm')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

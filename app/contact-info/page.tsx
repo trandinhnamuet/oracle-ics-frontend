@@ -91,7 +91,7 @@ export default function ContactInfoPage() {
                   {/* Shimmer overlay */}
                   <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none" />
                   <Globe className="h-4 w-4 group-hover:rotate-[360deg] transition-transform duration-500" />
-                  Tìm hiểu thêm về chúng tôi →
+                  {t('contactInfo.learnMore')}
                   <span className="ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-blue-200">→</span>
                 </motion.a>
               </CardContent>
@@ -167,6 +167,17 @@ export default function ContactInfoPage() {
                     title="ICS Google Map"
                     className="w-full"
                   ></iframe>
+                </div>
+                <div className="mt-4">
+                  <a
+                    href="https://maps.google.com/?q=20.9801586,105.813893&z=16"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline"
+                  >
+                    {t('contactInfo.openInMaps')}
+                    <span>→</span>
+                  </a>
                 </div>
               </CardContent>
             </Card>

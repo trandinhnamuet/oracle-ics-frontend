@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { getUserBalance } from '@/api/user-wallet.api'
@@ -7,6 +7,7 @@ import { Wallet, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
+import { useTranslation } from 'react-i18next'
 
 interface BalanceDisplayProps {
   userId?: number
@@ -20,6 +21,7 @@ export default function BalanceDisplay({
   className = '' 
 }: BalanceDisplayProps) {
   const { isAuthenticated, isLoading } = useAuth()
+  const { t } = useTranslation()
   const [balance, setBalance] = useState<number>(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -39,7 +41,7 @@ export default function BalanceDisplay({
       setBalance(response.balance)
     } catch (err) {
       console.error('Error fetching balance:', err)
-      setError('Không thể tải số dư')
+      setError(t('balanceDisplay.error'))
       setBalance(0)
     } finally {
       setLoading(false)
@@ -69,7 +71,7 @@ export default function BalanceDisplay({
       <div className={`flex items-center space-x-2 ${className}`}>
         <Wallet className="h-4 w-4 text-gray-400" />
         <RefreshCw className="h-4 w-4 animate-spin text-gray-400" />
-        <span className="text-sm text-gray-500">Đang tải...</span>
+        <span className="text-sm text-gray-500">{t('balanceDisplay.loading')}</span>
       </div>
     )
   }
@@ -94,7 +96,7 @@ export default function BalanceDisplay({
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
       <Wallet className="h-4 w-4 text-[#E60000]" />
-      <span className="text-sm font-medium text-gray-700">Số dư:</span>
+      <span className="text-sm font-medium text-gray-700">{t('balanceDisplay.label')}</span>
       <span className="text-sm font-bold text-[#E60000]">
         {formatPrice(balance)} VND
       </span>
@@ -105,7 +107,7 @@ export default function BalanceDisplay({
           onClick={handleAddFunds}
           className="h-auto py-1 px-2 text-xs"
         >
-          Nạp tiền
+          {t('balanceDisplay.addFunds')}
         </Button>
       )}
       <Button
@@ -113,7 +115,7 @@ export default function BalanceDisplay({
         size="sm"
         onClick={fetchBalance}
         className="h-auto p-1"
-        title="Làm mới số dư"
+        title={t('balanceDisplay.refresh')}
       >
         <RefreshCw className="h-3 w-3" />
       </Button>

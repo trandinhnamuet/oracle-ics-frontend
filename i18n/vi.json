@@ -37,6 +37,46 @@
       "pauseTitle": "Tạm dừng gói",
       "activateTitle": "Kích hoạt gói",
       "deleteTitle": "Xóa gói"
+    },
+    "confirmDialog": {
+      "cancel": "Hủy",
+      "confirm": "Xác nhận",
+      "deleteSubscription": {
+        "title": "Xác nhận xóa subscription",
+        "description": "Hành động này sẽ XÓA HOÀN TOÀN subscription và máy ảo (VM) trên Oracle Cloud. Tất cả dữ liệu liên quan sẽ bị xóa và KHÔNG THỂ KHÔI PHỤC. Vui lòng backup dữ liệu quan trọng trước khi xóa."
+      },
+      "stopVm": {
+        "title": "Xác nhận dừng VM",
+        "description": "Bạn có chắc chắn muốn dừng VM này không?"
+      },
+      "startVm": {
+        "title": "Xác nhận khởi động VM",
+        "description": "Bạn có chắc chắn muốn khởi động VM này không?"
+      }
+    },
+    "toast": {
+      "loadingList": "Đang tải danh sách subscription...",
+      "vmNotConfigured": "VM chưa được cấu hình",
+      "vmStopSent": "Đã gửi lệnh dừng VM",
+      "vmStartSent": "Đã gửi lệnh khởi động VM",
+      "vmActionPending": "Trạng thái sẽ tự động cập nhật khi hoàn thành.",
+      "vmStopError": "Lỗi khi dừng VM",
+      "vmStartError": "Lỗi khi khởi động VM",
+      "deleteSuccess": "Đã xóa subscription và VM thành công!",
+      "deleteError": "Có lỗi xảy ra khi xóa subscription"
+    },
+    "notConfigured": "Chưa cấu hình",
+    "tooltip": {
+      "stopVm": "Dừng VM (Stop)",
+      "startVm": "Khởi động VM (Start)",
+      "stopping": "VM đang dừng...",
+      "starting": "VM đang khởi động...",
+      "transitioning": "VM đang trong trạng thái chuyển đổi"
+    },
+    "fetchError": {
+      "title": "Lỗi",
+      "system": "Lỗi hệ thống khi tải danh sách subscription. Vui lòng thử lại sau.",
+      "network": "Không thể tải danh sách subscription. Vui lòng kiểm tra kết nối mạng."
     }
   },
   "contactInfo": {
@@ -51,7 +91,9 @@
     "email": "Email",
     "website": "Website",
     "mapTitle": "Vị trí trên bản đồ",
-    "mapDesc": "Tìm đường đến văn phòng của chúng tôi"
+    "mapDesc": "Tìm đường đến văn phòng của chúng tôi",
+    "learnMore": "Tìm hiểu thêm về chúng tôi →",
+    "openInMaps": "Mở trong Maps"
   },
   "dashboard": {
     "title": "Quản lý hệ thống",
@@ -877,7 +919,32 @@
     "vmInfoTitle": "Thông tin máy ảo của bạn",
     "toast": {
       "error": "Lỗi",
-      "loadError": "Không thể tải thông tin subscription"
+      "loadError": "Không thể tải thông tin subscription",
+      "vmNotConfigured": "VM chưa được cấu hình",
+      "vmNotConfiguredDesc": "Vui lòng cấu hình VM trước",
+      "vmActionSuccess": "Thành công",
+      "vmActionSuccessDesc": "Lệnh VM đã được gửi thành công",
+      "vmActionFailed": "Thao tác thất bại",
+      "vmActionFailedDesc": "Không thể thực hiện hành động VM",
+      "deleteVmSuccess": "Xóa VM thành công",
+      "deleteVmSuccessDesc": "VM đã được xóa. Subscription vẫn còn hiệu lực.",
+      "deleteVmFailed": "Xóa VM thất bại",
+      "deleteVmFailedDesc": "Vui lòng thử lại sau hoặc liên hệ hỗ trợ.",
+      "deleteSuccess": "Xóa thành công",
+      "deleteSuccessDesc": "Subscription và VM đã được xóa hoàn toàn",
+      "deleteError": "Lỗi xóa subscription"
+    },
+    "confirmDialog": {
+      "cancel": "Hủy",
+      "confirm": "Xác nhận",
+      "deleteVmOnly": {
+        "title": "Xóa VM của subscription",
+        "description": "Subscription vẫn còn hiệu lực nhưng máy ảo sẽ bị xóa. Bạn cần cấu hình lại VM mới để tiếp tục sử dụng dịch vụ."
+      },
+      "deleteSubscription": {
+        "title": "Xác nhận xóa subscription",
+        "description": "Hành động này sẽ XÓA HOÀN TOÀN subscription và máy ảo (VM) trên Oracle Cloud. Tất cả dữ liệu liên quan sẽ bị xóa và KHÔNG THỂ KHÔI PHỤC. Vui lòng backup dữ liệu quan trọng trước khi xóa."
+      }
     }
   },
   "support": {
@@ -914,12 +981,33 @@
       "other": "Khác"
     },
     "myTickets": "Yêu cầu của tôi",
+    "myTicketsSubtitle": "Theo dõi trạng thái các yêu cầu đã gửi",
     "noTickets": "Chưa có yêu cầu hỗ trợ nào",
+    "loadingTickets": "Đang tải yêu cầu của bạn...",
+    "fetchErrorTitle": "Không thể tải dữ liệu",
+    "retryBtn": "Thử lại",
+    "emptyTitle": "Chưa có yêu cầu nào",
+    "emptySubtitle": "Các yêu cầu của bạn sẽ hiển thị tại đây",
+    "ticketSubmittedOn": "Gửi",
+    "statusLabel": "Trạng thái:",
+    "resolvedAt": "Giải quyết:",
+    "serviceLabel": "Dịch vụ:",
+    "requestContent": "Nội dung yêu cầu:",
+    "adminReplyTitle": "Phản hồi từ bộ phận hỗ trợ:",
+    "waitingReply": "Chúng tôi đang xử lý yêu cầu của bạn. Vui lòng chờ phản hồi từ bộ phận hỗ trợ.",
+    "hasReply": "Có phản hồi",
+    "formNote": "Điền đầy đủ thông tin để chúng tôi hiểu rõ vấn đề của bạn",
     "status": {
       "open": "Đang mở",
       "in_progress": "Đang xử lý",
       "resolved": "Đã giải quyết",
       "closed": "Đã đóng"
+    },
+    "validation": {
+      "titleMin": "Tiêu đề phải có ít nhất 5 ký tự",
+      "nameMin": "Vui lòng nhập tên",
+      "emailInvalid": "Email không hợp lệ",
+      "contentMin": "Nội dung phải có ít nhất 10 ký tự"
     },
     "priority": {
       "low": "Thấp",
@@ -988,7 +1076,17 @@
     "accountBalance": "Số dư tài khoản",
     "qrCode": "QR Code",
     "bankTransfer": "Chuyển khoản",
-    "excelSummary": "Tổng cộng: {{count}} giao dịch"
+    "excelSummary": "Tổng cộng: {{count}} giao dịch",
+    "showing": "Hiển thị {{count}} trong tổng số {{total}} giao dịch",
+    "prevPage": "Trang trước",
+    "nextPage": "Trang sau"
+  },
+  "balanceDisplay": {
+    "label": "Số dư:",
+    "addFunds": "Nạp tiền",
+    "loading": "Đang tải...",
+    "error": "Không thể tải số dư",
+    "refresh": "Làm mới số dư"
   },
   "subscriptionCheckout": {
     "title": "Thanh toán Subscription",

@@ -37,6 +37,46 @@
       "pauseTitle": "패키지 일시 중지",
       "activateTitle": "패키지 활성화",
       "deleteTitle": "패키지 삭제"
+    },
+    "confirmDialog": {
+      "cancel": "취소",
+      "confirm": "확인",
+      "deleteSubscription": {
+        "title": "구독 삭제 확인",
+        "description": "이 작업은 Oracle Cloud의 구독과 가상 머신(VM)을 영구적으로 삭제합니다. 관련된 모든 데이터가 삭제되며 복원할 수 없습니다. 삭제 전에 중요한 데이터를 백업하세요."
+      },
+      "stopVm": {
+        "title": "VM 중지 확인",
+        "description": "이 VM을 중지하시겠습니까?"
+      },
+      "startVm": {
+        "title": "VM 시작 확인",
+        "description": "이 VM을 시작하시겠습니까?"
+      }
+    },
+    "toast": {
+      "loadingList": "구독 목록 로드 중...",
+      "vmNotConfigured": "VM이 구성되지 않았습니다",
+      "vmStopSent": "VM 중지 명령이 전송되었습니다",
+      "vmStartSent": "VM 시작 명령이 전송되었습니다",
+      "vmActionPending": "완료 시 상태가 자동으로 업데이트됩니다.",
+      "vmStopError": "VM 중지 오류",
+      "vmStartError": "VM 시작 오류",
+      "deleteSuccess": "구독과 VM이 성공적으로 삭제되었습니다!",
+      "deleteError": "구독 삭제 중 오류가 발생했습니다"
+    },
+    "notConfigured": "구성되지 않음",
+    "tooltip": {
+      "stopVm": "VM 중지 (Stop)",
+      "startVm": "VM 시작 (Start)",
+      "stopping": "VM 중지 중...",
+      "starting": "VM 시작 중...",
+      "transitioning": "VM이 전환 상태입니다"
+    },
+    "fetchError": {
+      "title": "오류",
+      "system": "구독 목록 로드 중 시스템 오류. 나중에 다시 시도하세요.",
+      "network": "구독 목록을 로드할 수 없습니다. 네트워크 연결을 확인하세요."
     }
   },
   "contactInfo": {
@@ -51,7 +91,9 @@
     "email": "이메일",
     "website": "웹사이트",
     "mapTitle": "지도상의 위치",
-    "mapDesc": "저희 사무소로 가는 길 찾기"
+    "mapDesc": "저희 사무소로 가는 길 찾기",
+    "learnMore": "저희에 대해 더 알아보기 →",
+    "openInMaps": "지도에서 열기"
   },
   "dashboard": {
     "title": "시스템 관리",
@@ -877,7 +919,32 @@
     "vmInfoTitle": "가상 머신 정보",
     "toast": {
       "error": "오류",
-      "loadError": "구독 정보를 로드할 수 없습니다"
+      "loadError": "구독 정보를 로드할 수 없습니다",
+      "vmNotConfigured": "VM이 구성되지 않았습니다",
+      "vmNotConfiguredDesc": "VM을 먼저 구성해 주세요",
+      "vmActionSuccess": "성공",
+      "vmActionSuccessDesc": "VM 명령이 성공적으로 전송되었습니다",
+      "vmActionFailed": "작업 실패",
+      "vmActionFailedDesc": "VM 작업을 실패했습니다",
+      "deleteVmSuccess": "VM 삭제 성공",
+      "deleteVmSuccessDesc": "VM이 삭제되었습니다. 구독은 여전히 활성 상태입니다.",
+      "deleteVmFailed": "VM 삭제 실패",
+      "deleteVmFailedDesc": "나중에 다시 시도하거나 지원팀에 문의하세요.",
+      "deleteSuccess": "삭제 성공",
+      "deleteSuccessDesc": "구독과 VM이 완전히 제거되었습니다",
+      "deleteError": "구독 삭제 오류"
+    },
+    "confirmDialog": {
+      "cancel": "취소",
+      "confirm": "확인",
+      "deleteVmOnly": {
+        "title": "구독의 VM 삭제",
+        "description": "구독은 여전히 유효하지만 가상 머신이 삭제됩니다. 서비스를 계속 사용하려면 새 VM을 구성해야 합니다."
+      },
+      "deleteSubscription": {
+        "title": "구독 삭제 확인",
+        "description": "이 작업은 Oracle Cloud의 구독과 가상 머신(VM)을 영구적으로 삭제합니다. 관련된 모든 데이터가 삭제되며 복원할 수 없습니다. 삭제 전에 중요한 데이터를 백업하세요."
+      }
     }
   },
   "support": {
@@ -914,12 +981,33 @@
       "other": "기타"
     },
     "myTickets": "내 티켓",
+    "myTicketsSubtitle": "제출한 요청의 상태 추적",
     "noTickets": "아직 지원 요청이 없습니다",
+    "loadingTickets": "요청을 불러오는 중...",
+    "fetchErrorTitle": "데이터를 불러올 수 없습니다",
+    "retryBtn": "다시 시도",
+    "emptyTitle": "요청이 없습니다",
+    "emptySubtitle": "요청사항이 여기에 표시됩니다",
+    "ticketSubmittedOn": "제출",
+    "statusLabel": "상태:",
+    "resolvedAt": "해결:",
+    "serviceLabel": "서비스:",
+    "requestContent": "요청 내용:",
+    "adminReplyTitle": "지원팀 답변:",
+    "waitingReply": "요청을 처리 중임니다. 지원팀의 답변을 기다려 주세요.",
+    "hasReply": "답변 있음",
+    "formNote": "문제를 정확하게 파악할 수 있도록 모든 정보를 입력해 주세요",
     "status": {
       "open": "열림",
       "in_progress": "처리 중",
       "resolved": "해결됨",
       "closed": "닫힘"
+    },
+    "validation": {
+      "titleMin": "제목은 최소 5자 이상이어야 합니다",
+      "nameMin": "이름을 입력해 주세요",
+      "emailInvalid": "유효하지 않은 이메일 주소",
+      "contentMin": "내용은 최소 10자 이상이어야 합니다"
     },
     "priority": {
       "low": "낮음",
@@ -988,7 +1076,17 @@
     "accountBalance": "계정 잔액",
     "qrCode": "QR 코드",
     "bankTransfer": "계좌 이체",
-    "excelSummary": "조계: {{count}}건의 거래"
+    "excelSummary": "조계: {{count}}건의 거래",
+    "showing": "{{total}}업무 중 {{count}}건 표시",
+    "prevPage": "이전",
+    "nextPage": "다음"
+  },
+  "balanceDisplay": {
+    "label": "잔액:",
+    "addFunds": "충전",
+    "loading": "로드 중...",
+    "error": "잔액을 불러올 수 없습니다",
+    "refresh": "잔액 새로고침"
   },
   "subscriptionCheckout": {
     "title": "구독 결제",

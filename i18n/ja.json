@@ -37,6 +37,46 @@
       "pauseTitle": "パッケージ一時停止",
       "activateTitle": "パッケージ有効化",
       "deleteTitle": "パッケージ削除"
+    },
+    "confirmDialog": {
+      "cancel": "キャンセル",
+      "confirm": "確認",
+      "deleteSubscription": {
+        "title": "サブスクリプションの削除を確認",
+        "description": "この操作は、Oracle Cloud上のサブスクリプションと仮想マシン(VM)を永久に削除します。関連するすべてのデータが削除され、復元できません。削除前に重要なデータをバックアップしてください。"
+      },
+      "stopVm": {
+        "title": "VM停止の確認",
+        "description": "このVMを停止しますか？"
+      },
+      "startVm": {
+        "title": "VM起動の確認",
+        "description": "このVMを起動しますか？"
+      }
+    },
+    "toast": {
+      "loadingList": "サブスクリプションリストを読み込み中...",
+      "vmNotConfigured": "VMが構成されていません",
+      "vmStopSent": "VM停止コマンドを送信しました",
+      "vmStartSent": "VM起動コマンドを送信しました",
+      "vmActionPending": "完了時にステータスが自動的に更新されます。",
+      "vmStopError": "VM停止エラー",
+      "vmStartError": "VM起動エラー",
+      "deleteSuccess": "サブスクリプションとVMを正常に削除しました！",
+      "deleteError": "サブスクリプションの削除中にエラーが発生しました"
+    },
+    "notConfigured": "未構成",
+    "tooltip": {
+      "stopVm": "VMを停止",
+      "startVm": "VMを起動",
+      "stopping": "VM停止中...",
+      "starting": "VM起動中...",
+      "transitioning": "VMは移行状態です"
+    },
+    "fetchError": {
+      "title": "エラー",
+      "system": "サブスクリプションリストの読み込み中にシステムエラーが発生しました。後で再試してください。",
+      "network": "サブスクリプションリストを読み込めません。ネットワーク接続を確認してください。"
     }
   },
   "contactInfo": {
@@ -51,7 +91,9 @@
     "email": "メール",
     "website": "ウェブサイト",
     "mapTitle": "地図上の位置",
-    "mapDesc": "当社オフィスへの道順"
+    "mapDesc": "当社オフィスへの道順",
+    "learnMore": "弊社について詳しく →",
+    "openInMaps": "地図で開く"
   },
   "dashboard": {
     "title": "システム管理",
@@ -877,7 +919,32 @@
     "vmInfoTitle": "お客様の仮想マシン情報",
     "toast": {
       "error": "エラー",
-      "loadError": "サブスクリプション情報を読み込めません"
+      "loadError": "サブスクリプション情報を読み込めません",
+      "vmNotConfigured": "VMが構成されていません",
+      "vmNotConfiguredDesc": "先にVMを構成してください",
+      "vmActionSuccess": "成功",
+      "vmActionSuccessDesc": "VMコマンドを正常に送信しました",
+      "vmActionFailed": "操作失敗",
+      "vmActionFailedDesc": "VM操作に失敗しました",
+      "deleteVmSuccess": "VMを正常に削除しました",
+      "deleteVmSuccessDesc": "VMが削除されました。サブスクリプションは有効のままです。",
+      "deleteVmFailed": "VM削除失敗",
+      "deleteVmFailedDesc": "後で再試するか、サポートにお問い合わせください。",
+      "deleteSuccess": "削除成功",
+      "deleteSuccessDesc": "サブスクリプションとVMが完全に削除されました",
+      "deleteError": "サブスクリプションの削除エラー"
+    },
+    "confirmDialog": {
+      "cancel": "キャンセル",
+      "confirm": "確認",
+      "deleteVmOnly": {
+        "title": "サブスクリプションのVMを削除",
+        "description": "サブスクリプションは有効のままですが、仮想マシンは削除されます。サービスを続けるには新しいVMを構成する必要があります。"
+      },
+      "deleteSubscription": {
+        "title": "サブスクリプションの削除を確認",
+        "description": "この操作は、Oracle Cloud上のサブスクリプションと仮想マシン(VM)を永久に削除します。関連するすべてのデータが削除され、復元できません。削除前に重要なデータをバックアップしてください。"
+      }
     }
   },
   "support": {
@@ -914,12 +981,33 @@
       "other": "その他"
     },
     "myTickets": "マイチケット",
+    "myTicketsSubtitle": "提出したリクエストのステータスをトラッキング",
     "noTickets": "サポートリクエストはまだありません",
+    "loadingTickets": "リクエストを読み込み中...",
+    "fetchErrorTitle": "データを読み込めません",
+    "retryBtn": "再試する",
+    "emptyTitle": "リクエストはありません",
+    "emptySubtitle": "リクエストはここに表示されます",
+    "ticketSubmittedOn": "送信",
+    "statusLabel": "ステータス:",
+    "resolvedAt": "解決:",
+    "serviceLabel": "サービス:",
+    "requestContent": "リクエスト内容:",
+    "adminReplyTitle": "サポートチームからの返信:",
+    "waitingReply": "リクエストを処理中です。サポートチームからの返信をお待ちください。",
+    "hasReply": "返信あり",
+    "formNote": "問題を正確に把握できるよう、すべての情報を入力してください",
     "status": {
       "open": "オープン",
       "in_progress": "処理中",
       "resolved": "解決済み",
       "closed": "クローズ"
+    },
+    "validation": {
+      "titleMin": "タイトルは最創2文字以上必要です",
+      "nameMin": "名前を入力してください",
+      "emailInvalid": "メールアドレスが無効です",
+      "contentMin": "内容は最切10文字以上必要です"
     },
     "priority": {
       "low": "低",
@@ -988,7 +1076,17 @@
     "accountBalance": "アカウント残高",
     "qrCode": "QRコード",
     "bankTransfer": "銀行振込",
-    "excelSummary": "合計: {{count}}件の取引"
+    "excelSummary": "合計: {{count}}件の取引",
+    "showing": "{{total}}件中{{count}}件表示",
+    "prevPage": "前のページ",
+    "nextPage": "次のページ"
+  },
+  "balanceDisplay": {
+    "label": "残高:",
+    "addFunds": "チャージ",
+    "loading": "読み込み中...",
+    "error": "残高を読み込めません",
+    "refresh": "残高を更新"
   },
   "subscriptionCheckout": {
     "title": "サブスクリプション支払い",
