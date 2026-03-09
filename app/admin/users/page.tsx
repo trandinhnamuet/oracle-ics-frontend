@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Search, Download, Users, Calendar, Building, Trash2, Crown, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Download, Users, Calendar, Building, Trash2, Crown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react'
 import { toggleUserAdminRole } from '@/api/user.api'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '@/hooks/use-toast'
@@ -31,10 +31,15 @@ interface User {
 interface PaginatedResponse {
   data: User[]
   total: number
+  totalActive: number
+  totalInactive: number
   page: number
   limit: number
   totalPages: number
 }
+
+type SortOrder = 'ASC' | 'DESC'
+type SortableColumn = 'id' | 'email' | 'firstName' | 'lastName' | 'company' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'
 
 const PAGE_SIZE = 20
 
@@ -49,27 +54,37 @@ export default function UserManagementPage() {
   const [pendingDeleteUserId, setPendingDeleteUserId] = useState<number | null>(null)
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
+  const [totalActive, setTotalActive] = useState(0)
+  const [totalInactive, setTotalInactive] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
+  const [sortBy, setSortBy] = useState<SortableColumn>('createdAt')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('DESC')
   const { toast } = useToast()
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const fetchUsers = useCallback(async (currentPage: number, search: string) => {
+  const fetchUsers = useCallback(async (currentPage: number, search: string, col: SortableColumn, order: SortOrder) => {
     setLoading(true)
     try {
       const params = new URLSearchParams({
         page: String(currentPage),
         limit: String(PAGE_SIZE),
         search,
+        sortBy: col,
+        sortOrder: order,
       })
       const res = await axios.get<PaginatedResponse>(`${API_URL}/users?${params}`)
       setUsers(res.data.data)
       setTotal(res.data.total)
+      setTotalActive(res.data.totalActive)
+      setTotalInactive(res.data.totalInactive)
       setTotalPages(res.data.totalPages)
     } catch (error) {
       console.error('Error fetching users:', error)
       setUsers([])
       setTotal(0)
+      setTotalActive(0)
+      setTotalInactive(0)
       setTotalPages(1)
     } finally {
       setLoading(false)
@@ -90,8 +105,8 @@ export default function UserManagementPage() {
   }, [searchTerm])
 
   useEffect(() => {
-    fetchUsers(page, debouncedSearch)
-  }, [page, debouncedSearch, fetchUsers])
+    fetchUsers(page, debouncedSearch, sortBy, sortOrder)
+  }, [page, debouncedSearch, sortBy, sortOrder, fetchUsers])
 
   // Animation effect
   useEffect(() => {
@@ -123,7 +138,7 @@ export default function UserManagementPage() {
     try {
       await axios.delete(`${API_URL}/users/${userId}`)
       toast({ title: 'Đã xóa người dùng thành công' })
-      fetchUsers(page, debouncedSearch)
+      fetchUsers(page, debouncedSearch, sortBy, sortOrder)
     } catch (error) {
       console.error('Error deleting user:', error)
       toast({ title: 'Lỗi', description: 'Không thể xóa người dùng', variant: 'destructive' })
@@ -140,6 +155,24 @@ export default function UserManagementPage() {
     } catch (error) {
       console.error('Error toggling admin role:', error)
     }
+  }
+
+  // Export to Excel
+  const handleSort = (col: SortableColumn) => {
+    if (sortBy === col) {
+      setSortOrder(o => o === 'ASC' ? 'DESC' : 'ASC')
+    } else {
+      setSortBy(col)
+      setSortOrder('ASC')
+    }
+    setPage(1)
+  }
+
+  const SortIcon = ({ col }: { col: SortableColumn }) => {
+    if (sortBy !== col) return <ChevronsUpDown className="inline h-3 w-3 ml-1 text-muted-foreground" />
+    return sortOrder === 'ASC'
+      ? <ChevronUp className="inline h-3 w-3 ml-1" />
+      : <ChevronDown className="inline h-3 w-3 ml-1" />
   }
 
   // Export to Excel
@@ -179,8 +212,8 @@ export default function UserManagementPage() {
 
   const stats = {
     total,
-    active: users.filter(user => user.isActive).length,
-    inactive: users.filter(user => !user.isActive).length
+    active: totalActive,
+    inactive: totalInactive,
   }
 
   if (initialLoad) {
@@ -277,15 +310,31 @@ export default function UserManagementPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('admin.user.table.id')}</TableHead>
-                  <TableHead>{t('admin.user.table.email')}</TableHead>
-                  <TableHead>{t('admin.user.table.name')}</TableHead>
+                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('id')}>
+                    {t('admin.user.table.id')}<SortIcon col="id" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('email')}>
+                    {t('admin.user.table.email')}<SortIcon col="email" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('firstName')}>
+                    {t('admin.user.table.name')}<SortIcon col="firstName" />
+                  </TableHead>
                   <TableHead>{t('admin.user.table.phone')}</TableHead>
-                  <TableHead>{t('admin.user.table.company')}</TableHead>
-                  <TableHead>{t('admin.user.table.role')}</TableHead>
-                  <TableHead>{t('admin.user.table.status')}</TableHead>
-                  <TableHead>{t('admin.user.table.createdAt')}</TableHead>
-                  <TableHead>{t('admin.user.table.updatedAt')}</TableHead>
+                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('company')}>
+                    {t('admin.user.table.company')}<SortIcon col="company" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('role')}>
+                    {t('admin.user.table.role')}<SortIcon col="role" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('isActive')}>
+                    {t('admin.user.table.status')}<SortIcon col="isActive" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('createdAt')}>
+                    {t('admin.user.table.createdAt')}<SortIcon col="createdAt" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer select-none" onClick={() => handleSort('updatedAt')}>
+                    {t('admin.user.table.updatedAt')}<SortIcon col="updatedAt" />
+                  </TableHead>
                   <TableHead>{t('admin.user.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
