@@ -65,7 +65,7 @@ type SortableColumn = 'id' | 'email' | 'firstName' | 'lastName' | 'company' | 'r
 const PAGE_SIZE = 20
 
 export default function UserManagementPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [initialLoad, setInitialLoad] = useState(true)
@@ -187,12 +187,12 @@ export default function UserManagementPage() {
         backupEmail: editForm.backupEmail || null,
         address: editForm.address || null,
       })
-      toast({ title: 'Đã cập nhật thông tin người dùng thành công' })
+      toast({ title: t('admin.users.toast.updateSuccess') })
       setEditDialogOpen(false)
       fetchUsers(page, debouncedSearch, sortBy, sortOrder)
     } catch (error) {
       console.error('Error updating user:', error)
-      toast({ title: 'Lỗi', description: 'Không thể cập nhật thông tin người dùng', variant: 'destructive' })
+      toast({ title: t('common.error'), description: t('admin.users.toast.updateError'), variant: 'destructive' })
     } finally {
       setEditSaving(false)
     }
@@ -221,11 +221,11 @@ export default function UserManagementPage() {
     setPendingDeleteUserId(null)
     try {
       await axios.delete(`${API_URL}/users/${userId}`)
-      toast({ title: 'Đã xóa người dùng thành công' })
+      toast({ title: t('admin.users.toast.deleteSuccess') })
       fetchUsers(page, debouncedSearch, sortBy, sortOrder)
     } catch (error) {
       console.error('Error deleting user:', error)
-      toast({ title: 'Lỗi', description: 'Không thể xóa người dùng', variant: 'destructive' })
+      toast({ title: t('common.error'), description: t('admin.users.toast.deleteError'), variant: 'destructive' })
     }
   }
 
@@ -261,21 +261,22 @@ export default function UserManagementPage() {
 
   // Export to Excel
   const exportToExcel = () => {
+    const locale = i18n.language
     const exportData = users.map(user => ({
       'ID': user.id,
       'Email': user.email,
-      'Họ tên': `${user.firstName} ${user.lastName}`,
-      'Số điện thoại': user.phoneNumber || 'Chưa có',
-      'Công ty': user.company || 'Chưa có',
-      'Vai trò': user.role === 'admin' ? 'Admin' : 'Customer',
-      'Trạng thái': user.isActive ? 'Hoạt động' : 'Khóa',
-      'Ngày tạo': new Date(user.createdAt).toLocaleDateString('vi-VN'),
-      'Ngày cập nhật': new Date(user.updatedAt).toLocaleDateString('vi-VN')
+      [t('admin.users.export.fullName')]: `${user.firstName} ${user.lastName}`,
+      [t('admin.users.export.phone')]: user.phoneNumber || t('admin.users.export.notAvailable'),
+      [t('admin.users.export.company')]: user.company || t('admin.users.export.notAvailable'),
+      [t('admin.users.export.role')]: user.role === 'admin' ? 'Admin' : 'Customer',
+      [t('admin.users.export.status')]: user.isActive ? t('admin.users.export.active') : t('admin.users.export.locked'),
+      [t('admin.users.export.createdAt')]: new Date(user.createdAt).toLocaleDateString(locale),
+      [t('admin.users.export.updatedAt')]: new Date(user.updatedAt).toLocaleDateString(locale)
     }))
 
     const ws = XLSX.utils.json_to_sheet(exportData)
     const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, 'Danh sách người dùng')
+    XLSX.utils.book_append_sheet(wb, ws, t('admin.users.export.sheetName'))
 
     const colWidths = [
       { wch: 5 },   // ID
@@ -532,7 +533,7 @@ export default function UserManagementPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-4 pt-4 border-t">
               <span className="text-sm text-muted-foreground">
-                Trang {page} / {totalPages} &mdash; Tổng {total} người dùng
+                {t('admin.users.pagination.info', { current: page, total: totalPages, count: total })}
               </span>
               <div className="flex items-center space-x-2">
                 <Button
@@ -577,64 +578,64 @@ export default function UserManagementPage() {
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Chỉnh sửa thông tin người dùng #{editingUser?.id}</DialogTitle>
-            <DialogDescription>Cập nhật thông tin chi tiết của người dùng. Nhấn "Lưu thay đổi" để áp dụng.</DialogDescription>
+            <DialogTitle>{t('admin.users.editDialog.title', { id: editingUser?.id })}</DialogTitle>
+            <DialogDescription>{t('admin.users.editDialog.description')}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Họ</Label>
-                <Input value={editForm.lastName} onChange={(e) => setEditForm(f => ({ ...f, lastName: e.target.value }))} placeholder="Họ" />
+                <Label>{t('admin.users.editDialog.lastName')}</Label>
+                <Input value={editForm.lastName} onChange={(e) => setEditForm(f => ({ ...f, lastName: e.target.value }))} placeholder={t('admin.users.editDialog.lastName')} />
               </div>
               <div className="space-y-2">
-                <Label>Tên</Label>
-                <Input value={editForm.firstName} onChange={(e) => setEditForm(f => ({ ...f, firstName: e.target.value }))} placeholder="Tên" />
+                <Label>{t('admin.users.editDialog.firstName')}</Label>
+                <Input value={editForm.firstName} onChange={(e) => setEditForm(f => ({ ...f, firstName: e.target.value }))} placeholder={t('admin.users.editDialog.firstName')} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" value={editForm.email} onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))} placeholder="Email" />
+              <Label>{t('admin.users.editDialog.email')}</Label>
+              <Input type="email" value={editForm.email} onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))} placeholder={t('admin.users.editDialog.email')} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Số điện thoại</Label>
-                <Input value={editForm.phoneNumber} onChange={(e) => setEditForm(f => ({ ...f, phoneNumber: e.target.value }))} placeholder="Số điện thoại" />
+                <Label>{t('admin.users.editDialog.phone')}</Label>
+                <Input value={editForm.phoneNumber} onChange={(e) => setEditForm(f => ({ ...f, phoneNumber: e.target.value }))} placeholder={t('admin.users.editDialog.phone')} />
               </div>
               <div className="space-y-2">
-                <Label>Email dự phòng</Label>
-                <Input type="email" value={editForm.backupEmail} onChange={(e) => setEditForm(f => ({ ...f, backupEmail: e.target.value }))} placeholder="Email dự phòng" />
+                <Label>{t('admin.users.editDialog.backupEmail')}</Label>
+                <Input type="email" value={editForm.backupEmail} onChange={(e) => setEditForm(f => ({ ...f, backupEmail: e.target.value }))} placeholder={t('admin.users.editDialog.backupEmail')} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Công ty</Label>
-              <Input value={editForm.company} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} placeholder="Tên công ty" />
+              <Label>{t('admin.users.editDialog.company')}</Label>
+              <Input value={editForm.company} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} placeholder={t('admin.users.editDialog.company')} />
             </div>
             <div className="space-y-2">
-              <Label>Địa chỉ</Label>
-              <Input value={editForm.address} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} placeholder="Địa chỉ" />
+              <Label>{t('admin.users.editDialog.address')}</Label>
+              <Input value={editForm.address} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} placeholder={t('admin.users.editDialog.address')} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Số CCCD / CMND</Label>
-                <Input value={editForm.idCard} onChange={(e) => setEditForm(f => ({ ...f, idCard: e.target.value }))} placeholder="CCCD / CMND" />
+                <Label>{t('admin.users.editDialog.idCard')}</Label>
+                <Input value={editForm.idCard} onChange={(e) => setEditForm(f => ({ ...f, idCard: e.target.value }))} placeholder={t('admin.users.editDialog.idCard')} />
               </div>
               <div className="space-y-2">
-                <Label>Giới tính</Label>
+                <Label>{t('admin.users.editDialog.gender')}</Label>
                 <Select value={editForm.gender} onValueChange={(v) => setEditForm(f => ({ ...f, gender: v }))}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn giới tính" />
+                    <SelectValue placeholder={t('admin.users.editDialog.genderPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="male">Nam</SelectItem>
-                    <SelectItem value="female">Nữ</SelectItem>
-                    <SelectItem value="other">Khác</SelectItem>
+                    <SelectItem value="male">{t('admin.users.editDialog.male')}</SelectItem>
+                    <SelectItem value="female">{t('admin.users.editDialog.female')}</SelectItem>
+                    <SelectItem value="other">{t('admin.users.editDialog.other')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Vai trò</Label>
+                <Label>{t('admin.users.editDialog.role')}</Label>
                 <Select value={editForm.role} onValueChange={(v) => setEditForm(f => ({ ...f, role: v }))}>
                   <SelectTrigger>
                     <SelectValue />
@@ -646,21 +647,21 @@ export default function UserManagementPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Trạng thái</Label>
+                <Label>{t('admin.users.editDialog.statusLabel')}</Label>
                 <div className="flex items-center space-x-2 pt-2">
                   <Switch
                     checked={editForm.isActive}
                     onCheckedChange={(checked) => setEditForm(f => ({ ...f, isActive: checked }))}
                   />
-                  <span className="text-sm">{editForm.isActive ? 'Đang hoạt động' : 'Đã khóa'}</span>
+                  <span className="text-sm">{editForm.isActive ? t('admin.users.editDialog.active') : t('admin.users.editDialog.locked')}</span>
                 </div>
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditDialogOpen(false)} disabled={editSaving}>Hủy</Button>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)} disabled={editSaving}>{t('admin.users.editDialog.cancel')}</Button>
             <Button onClick={saveEditUser} disabled={editSaving}>
-              {editSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
+              {editSaving ? t('admin.users.editDialog.saving') : t('admin.users.editDialog.save')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -669,12 +670,12 @@ export default function UserManagementPage() {
       <AlertDialog open={pendingDeleteUserId !== null} onOpenChange={(open) => !open && setPendingDeleteUserId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Xác nhận xóa người dùng</AlertDialogTitle>
-            <AlertDialogDescription>Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác.</AlertDialogDescription>
+            <AlertDialogTitle>{t('admin.users.deleteDialog.title')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('admin.users.deleteDialog.description')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={executeDeleteUser} className="bg-destructive hover:bg-destructive/90">Xóa</AlertDialogAction>
+            <AlertDialogCancel>{t('admin.users.deleteDialog.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={executeDeleteUser} className="bg-destructive hover:bg-destructive/90">{t('admin.users.deleteDialog.confirm')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

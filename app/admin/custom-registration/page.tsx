@@ -26,7 +26,7 @@ interface CustomRegistration {
 }
 
 export default function CustomRegistrationAdminPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [data, setData] = useState<CustomRegistration[]>([])
   const [filteredData, setFilteredData] = useState<CustomRegistration[]>([])
   const [loading, setLoading] = useState(true)
@@ -44,22 +44,23 @@ export default function CustomRegistrationAdminPage() {
 
   // Hàm xuất Excel
   const exportToExcel = () => {
+    const locale = i18n.language
     // Chuẩn bị dữ liệu cho Excel
     const exportData = filteredData.map(reg => ({
       'ID': reg.id,
-      'Số điện thoại': reg.phoneNumber,
+      [t('admin.customRegistration.export.phone')]: reg.phoneNumber,
       'Email': reg.email,
-      'Công ty': reg.company || 'Chưa có',
-      'Chi tiết': typeof reg.detail === 'object' ? JSON.stringify(reg.detail) : reg.detail,
-      'Trạng thái': reg.processed ? 'Đã xử lý' : 'Chưa xử lý',
-      'Ngày tạo': new Date(reg.createdAt).toLocaleDateString('vi-VN'),
-      'Người tạo': reg.createdBy || 'Hệ thống'
+      [t('admin.customRegistration.table.company')]: reg.company || t('admin.customRegistration.export.notAvailable'),
+      [t('admin.customRegistration.export.detail')]: typeof reg.detail === 'object' ? JSON.stringify(reg.detail) : reg.detail,
+      [t('admin.customRegistration.table.status')]: reg.processed ? t('admin.customRegistration.filter.processed') : t('admin.customRegistration.filter.unprocessed'),
+      [t('admin.customRegistration.export.createdAt')]: new Date(reg.createdAt).toLocaleDateString(locale),
+      [t('admin.customRegistration.export.createdBy')]: reg.createdBy || t('admin.customRegistration.export.system')
     }))
 
     // Tạo workbook
     const ws = XLSX.utils.json_to_sheet(exportData)
     const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, 'Đăng ký gói Custom')
+    XLSX.utils.book_append_sheet(wb, ws, t('admin.customRegistration.export.sheetName'))
 
     // Điều chỉnh độ rộng cột
     const colWidths = [
@@ -282,7 +283,7 @@ export default function CustomRegistrationAdminPage() {
                           </p>
                         </TableCell>
                         <TableCell>
-                          <p className="text-sm">{new Date(item.createdAt).toLocaleString('vi-VN')}</p>
+                          <p className="text-sm">{new Date(item.createdAt).toLocaleString(i18n.language)}</p>
                         </TableCell>
                         <TableCell className="text-center">
                           <div className="flex items-center justify-center">

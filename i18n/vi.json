@@ -192,7 +192,16 @@
         "bandwidth": "Bandwidth"
       },
       "footer": "Hiển thị {{current}} / {{total}} đăng ký",
-      "loading": "Đang tải dữ liệu..."
+      "loading": "Đang tải dữ liệu...",
+      "export": {
+        "phone": "Số điện thoại",
+        "detail": "Chi tiết",
+        "createdAt": "Ngày đăng ký",
+        "createdBy": "Người tạo",
+        "notAvailable": "Chưa có",
+        "sheetName": "Đăng ký gói Custom",
+        "system": "Hệ thống"
+      }
     },
     "packages": {
       "createPackage": {
@@ -264,7 +273,9 @@
           "actions": "Thao tác",
           "moreFeatures": "tính năng khác",
           "popular": "Phổ biến",
-          "noPackagesFound": "Không tìm thấy gói dịch vụ nào"
+          "noPackagesFound": "Không tìm thấy gói dịch vụ nào",
+          "active": "Đang hoạt động",
+          "inactive": "Không hoạt động"
         },
         "toast": {
           "createSuccess": "Thành công",
@@ -329,7 +340,519 @@
         "loadError": "Không thể tải danh sách đăng ký dịch vụ",
         "deleteSuccess": "Đã xóa subscription thành công",
         "deleteError": "Không thể xóa subscription",
+        "deleteWithVmSuccess": "Đã xóa subscription và VM thành công.",
+        "deleteVmOnlySuccess": "Đã xóa VM. Subscription vẫn còn hiệu lực.",
+        "deleteVmOnlyError": "Không thể xóa VM",
+        "stopVmSuccess": "Đã dừng VM thành công.",
+        "stopVmError": "Không thể dừng VM",
+        "startVmSuccess": "Đã khởi động VM thành công.",
+        "startVmError": "Không thể khởi động VM",
         "editInDevelopment": "Chức năng chỉnh sửa đang được phát triển"
+      },
+      "confirmDialog": {
+        "deleteSub": {
+          "title": "Xác nhận xóa subscription",
+          "description": "Bạn có chắc chắn muốn xóa subscription này? Hành động này không thể hoàn tác."
+        },
+        "deleteWithVm": {
+          "title": "Xác nhận xóa subscription và VM",
+          "description": "Xóa toàn bộ subscription và máy ảo (VM)? Hành động này không thể hoàn tác."
+        },
+        "deleteVmOnly": {
+          "title": "Xác nhận xóa VM",
+          "description": "Chỉ xóa máy ảo (VM)? Subscription vẫn còn hiệu lực nhưng cần cấu hình VM mới."
+        },
+        "stopVm": {
+          "title": "Xác nhận dừng VM",
+          "description": "Bạn có chắc chắn muốn dừng VM này không?"
+        },
+        "startVm": {
+          "title": "Xác nhận khởi động VM",
+          "description": "Bạn có chắc chắn muốn khởi động VM này không?"
+        },
+        "cancel": "Hủy",
+        "confirm": "Xác nhận"
+      },
+      "table": {
+        "vmInfo": "Thông tin VM",
+        "noPublicIp": "Chưa có Public IP",
+        "notConfigured": "Chưa cấu hình",
+        "showing": "Hiển thị {{from}} đến {{to}} trong số {{total}} mục",
+        "recordsPerPage": "Số bản ghi mỗi trang:",
+        "goTo": "Đến trang:",
+        "pageOf": "Trang {{current}} / {{total}}"
+      }
+    },
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "subtitle": "Thống kê lượt truy cập và tương tác người dùng trên trang web",
+      "dateRange": {
+        "last7Days": "7 ngày qua",
+        "last30Days": "30 ngày qua",
+        "last90Days": "90 ngày qua",
+        "refresh": "Làm mới"
+      },
+      "summary": {
+        "totalPageViews": "Tổng lượt xem trang",
+        "totalPageViewsDesc": "Lượt xem trang trong khoảng thời gian đã chọn",
+        "uniqueUsers": "Người dùng duy nhất",
+        "uniqueUsersDesc": "Khách truy cập duy nhất vào trang web",
+        "bounceRate": "Tỷ lệ thoát",
+        "bounceRateDesc": "Khách rời trang không tương tác",
+        "avgLoadTime": "Thời gian tải trung bình",
+        "avgLoadTimeDesc": "Thời gian tải trang trung bình"
+      },
+      "charts": {
+        "pageViewsOverTime": "Lượt xem trang theo thời gian",
+        "topPages": "Trang hàng đầu",
+        "userEvents": "Sự kiện người dùng",
+        "allEvents": "Tất cả sự kiện",
+        "googleAnalytics": "Tích hợp Google Analytics",
+        "googleAnalyticsDesc": "Bảng điều khiển này hiển thị dữ liệu phân tích từ trang web của bạn. Để bật theo dõi Google Analytics:",
+        "gaStep1": "Đặt ID đo lường Google Analytics trong tệp .env.local là NEXT_PUBLIC_GA_MEASUREMENT_ID",
+        "gaStep2": "Triển khai thay đổi để kích hoạt theo dõi Google Analytics",
+        "gaStep3": "Xem phân tích chi tiết trong bảng điều khiển Google Analytics của bạn"
+      },
+      "loading": "Đang tải dữ liệu analytics...",
+      "error": "Lỗi",
+      "retry": "Thử lại",
+      "noData": "Không có dữ liệu",
+      "noPageData": "Không có dữ liệu trang",
+      "noEventData": "Không có dữ liệu sự kiện"
+    },
+    "bandwidth": {
+      "title": "Giám sát Băng thông",
+      "subtitle": "Theo dõi và kiểm tra băng thông của tất cả máy ảo",
+      "loading": "Đang tải dữ liệu băng thông...",
+      "refresh": "Làm mới",
+      "timeRange": {
+        "24h": "24 giờ",
+        "7d": "7 ngày",
+        "30d": "30 ngày",
+        "90d": "90 ngày"
+      },
+      "summary": {
+        "totalVMs": "Tổng số VM",
+        "overLimit": "Vượt giới hạn",
+        "nearLimit": "Gần giới hạn",
+        "totalBandwidth": "Tổng băng thông",
+        "average": "Trung bình"
+      },
+      "filter": {
+        "label": "Lọc:",
+        "all": "Tất cả",
+        "over": "Vượt giới hạn",
+        "near": "Cảnh báo",
+        "normal": "Bình thường"
+      },
+      "sort": {
+        "label": "Sắp xếp:",
+        "usage": "Mức sử dụng",
+        "name": "Tên VM",
+        "user": "Người dùng"
+      },
+      "status": {
+        "overLimit": "Vượt giới hạn",
+        "warning": "Cảnh báo",
+        "normal": "Bình thường",
+        "error": "Lỗi"
+      },
+      "details": {
+        "download": "Tải xuống",
+        "upload": "Tải lên",
+        "remaining": "Còn lại",
+        "exceeded": "Vượt quá",
+        "bandwidth": "Băng thông",
+        "package": "Gói dịch vụ",
+        "company": "Công ty"
+      },
+      "warning": {
+        "overLimitTitle": "Cảnh báo: Đã vượt giới hạn băng thông!",
+        "overLimitMessage": "VM này đã dùng vượt quá {{exceeded}} TB so với giới hạn cho phép (10 TB). Hãy liên hệ người dùng để xử lý.",
+        "nearLimitTitle": "Cảnh báo: Sắp đạt giới hạn băng thông!",
+        "nearLimitMessage": "VM này đã dùng {{usage}}% băng thông. Còn {{remaining}} TB trước khi đạt giới hạn.",
+        "errorMessage": "Không thể lấy dữ liệu băng thông: {{error}}"
+      },
+      "noVms": "Không có VM nào phù hợp với bộ lọc hiện tại"
+    },
+    "compartment": {
+      "title": "Quản lý Compartments",
+      "subtitle": "Danh sách compartments trong OCI tenancy",
+      "refresh": "Làm mới",
+      "loading": "Đang tải compartments...",
+      "noCompartments": "Không có compartment nào",
+      "noDescription": "Không có mô tả",
+      "createdAt": "Ngày tạo",
+      "deleteButton": "Xóa Compartment",
+      "dialog": {
+        "title": "Xác nhận xóa Compartment",
+        "description1": "Bạn có chắc chắn muốn xóa compartment",
+        "description2": "?",
+        "warning": "⚠️ Hành động này sẽ XÓA TẤT CẢ tài nguyên bên trong compartment bao gồm:",
+        "items": {
+          "vms": "Tất cả VM instances",
+          "vcns": "Tất cả VCNs (Virtual Cloud Networks)",
+          "subnets": "Tất cả Subnets",
+          "gateways": "Tất cả Internet Gateways",
+          "routes": "Tất cả Route Tables"
+        },
+        "irreversible": "Hành động này KHÔNG THỂ hoàn tác!",
+        "deleting": "Đang xóa...",
+        "confirmButton": "Xác nhận Xóa",
+        "cancelButton": "Hủy"
+      },
+      "toast": {
+        "loadError": "Không thể tải danh sách compartments: {{message}}",
+        "deleteSuccess": "Đã xóa compartment \"{{name}}\" và tất cả tài nguyên bên trong",
+        "deleteError": "Không thể xóa compartment: {{message}}"
+      }
+    },
+    "costs": {
+      "title": "Chi phí & Credit",
+      "subtitle": "Tổng quan tài chính tất cả người dùng",
+      "back": "Quay lại",
+      "refresh": "Làm mới",
+      "loading": "Đang tải dữ liệu chi phí...",
+      "summary": {
+        "totalBalance": "Tổng số dư còn lại",
+        "totalBalanceDesc": "Tổng hợp tất cả ví người dùng",
+        "totalDeposited": "Tổng tiền đã nạp",
+        "totalDepositedDesc": "Luỹ kế từ tất cả giao dịch nạp tiền",
+        "totalSpent": "Tổng tiền đã dùng",
+        "totalSpentDesc": "Luỹ kế từ tất cả giao dịch trừ tiền",
+        "users": "Số người dùng",
+        "usersDesc": "Người dùng có ví đang hoạt động"
+      },
+      "timeBreakdown": {
+        "title": "Thống kê theo thời gian",
+        "monthly": "Theo tháng",
+        "yearly": "Theo năm"
+      },
+      "months": {
+        "jan": "Tháng 1", "feb": "Tháng 2", "mar": "Tháng 3",
+        "apr": "Tháng 4", "may": "Tháng 5", "jun": "Tháng 6",
+        "jul": "Tháng 7", "aug": "Tháng 8", "sep": "Tháng 9",
+        "oct": "Tháng 10", "nov": "Tháng 11", "dec": "Tháng 12"
+      },
+      "table": {
+        "month": "Tháng",
+        "year": "Năm",
+        "deposited": "Tiền nạp",
+        "spent": "Tiền dùng",
+        "difference": "Chênh lệch"
+      },
+      "perUser": {
+        "title": "Chi tiết theo người dùng",
+        "searchPlaceholder": "Tìm kiếm email hoặc tên...",
+        "user": "Người dùng",
+        "currentBalance": "Số dư hiện tại",
+        "totalDeposited": "Tổng nạp",
+        "totalSpent": "Tổng chi",
+        "status": "Trạng thái",
+        "low": "Thấp",
+        "normal": "Bình thường",
+        "noUser": "Không tìm thấy người dùng nào"
+      }
+    },
+    "loginHistory": {
+      "title": "Lịch sử Đăng nhập",
+      "subtitle": "Theo dõi và giám sát tất cả hoạt động đăng nhập của admin",
+      "stats": {
+        "totalLogins": "Tổng lượt đăng nhập",
+        "last30Days": "30 ngày qua",
+        "successRate": "Tỷ lệ thành công",
+        "successful": "{{count}} thành công",
+        "failedAttempts": "Lần thất bại",
+        "locked": "Khóa: {{count}}",
+        "uniqueDevices": "Thiết bị duy nhất",
+        "countries": "{{count}} quốc gia"
+      },
+      "suspicious": {
+        "alert": "⚠️ Phát hiện {{count}} lần đăng nhập đáng ngờ",
+        "failedFrom": "Đăng nhập thất bại từ {{ip}} vào {{date}}",
+        "more": "... và {{count}} lần nữa"
+      },
+      "filters": {
+        "status": "Trạng thái",
+        "all": "Tất cả",
+        "success": "Thành công",
+        "failed": "Thất bại",
+        "locked": "Bị khóa",
+        "fromDate": "Từ ngày",
+        "toDate": "Đến ngày",
+        "sortBy": "Sắp xếp theo",
+        "loginTime": "Thời gian đăng nhập",
+        "username": "Tên đăng nhập",
+        "statusSort": "Trạng thái",
+        "refresh": "Làm mới",
+        "loading": "Đang tải..."
+      },
+      "showing": "Hiển thị {{from}} đến {{to}} trong số {{total}} bản ghi",
+      "export": "Xuất CSV",
+      "exportSuccess": "Đã xuất lịch sử đăng nhập ra CSV",
+      "exportError": "Không thể xuất lịch sử đăng nhập",
+      "table": {
+        "account": "Tài khoản",
+        "loginTime": "Thời gian đăng nhập",
+        "status": "Trạng thái",
+        "ip": "Địa chỉ IP",
+        "location": "Vị trí",
+        "browser": "Trình duyệt",
+        "os": "Hệ điều hành",
+        "device": "Thiết bị",
+        "duration": "Thời lượng",
+        "newDevice": "Thiết bị mới"
+      },
+      "noRecords": "Không có bản ghi đăng nhập nào",
+      "loading": "Đang tải...",
+      "active": "Đang hoạt động",
+      "new": "Mới",
+      "known": "Đã biết",
+      "pagination": {
+        "recordsPerPage": "Số bản ghi mỗi trang:",
+        "page": "Trang {{current}} / {{total}}",
+        "prev": "Trước",
+        "next": "Tiếp"
+      }
+    },
+    "payments": {
+      "title": "Quản lý Thanh toán",
+      "subtitle": "Danh sách tất cả giao dịch thanh toán",
+      "refresh": "Làm mới",
+      "summary": {
+        "total": "Tổng thanh toán",
+        "pending": "Đang chờ",
+        "expired": "Quá hạn",
+        "success": "Thành công"
+      },
+      "list": {
+        "title": "Danh sách thanh toán ({{count}})",
+        "searchPlaceholder": "Tìm theo mã giao dịch, email, tên..."
+      },
+      "table": {
+        "transactionCode": "Mã giao dịch",
+        "subscriptionId": "Subscription ID",
+        "user": "Người dùng",
+        "amount": "Số tiền",
+        "type": "Loại",
+        "method": "Phương thức",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "actions": "Hành động"
+      },
+      "status": {
+        "success": "Thành công",
+        "pending": "Đang chờ",
+        "failed": "Thất bại",
+        "expired": "Quá hạn",
+        "deleted": "Đã xóa"
+      },
+      "paymentType": {
+        "deposit": "Nạp tiền",
+        "subscription": "Subscription"
+      },
+      "actions": {
+        "accept": "Chấp nhận",
+        "processing": "Đang xử lý...",
+        "completed": "Đã hoàn thành",
+        "failed": "Thất bại",
+        "expired": "Quá hạn",
+        "deleted": "Đã xóa"
+      },
+      "pagination": {
+        "info": "Trang {{current}} / {{total}} — Tổng {{count}} giao dịch"
+      },
+      "confirm": {
+        "title": "Xác nhận chấp nhận thanh toán",
+        "description": "Bạn có chắc chắn muốn chấp nhận thanh toán này? Hành động này sẽ kích hoạt subscription hoặc nạp tiền cho người dùng.",
+        "confirm": "Xác nhận",
+        "cancel": "Hủy"
+      },
+      "loading": "Đang tải dữ liệu...",
+      "noPayments": "Không có giao dịch nào",
+      "toast": {
+        "acceptSuccess": "Thanh toán đã được chấp nhận thành công!",
+        "acceptError": "Lỗi thanh toán",
+        "acceptErrorDesc": "Đã xảy ra lỗi khi chấp nhận thanh toán"
+      }
+    },
+    "supportTickets": {
+      "title": "Quản lý Yêu cầu Hỗ trợ",
+      "subtitle": "Theo dõi và xử lý yêu cầu hỗ trợ từ người dùng",
+      "refresh": "Làm mới",
+      "stats": {
+        "total": "Tổng yêu cầu",
+        "open": "Mở",
+        "inProgress": "Đang xử lý",
+        "resolved": "Đã giải quyết",
+        "urgent": "Khẩn cấp"
+      },
+      "filters": {
+        "searchPlaceholder": "Tìm theo tiêu đề, email, tên...",
+        "status": "Trạng thái",
+        "priority": "Ưu tiên",
+        "allStatus": "Tất cả trạng thái",
+        "allPriority": "Tất cả mức độ"
+      },
+      "status": {
+        "open": "Mở",
+        "inProgress": "Đang xử lý",
+        "resolved": "Đã giải quyết",
+        "closed": "Đóng"
+      },
+      "priority": {
+        "low": "Thấp",
+        "medium": "Trung bình",
+        "high": "Cao",
+        "urgent": "Khẩn cấp"
+      },
+      "services": {
+        "cloud": "Cloud Server",
+        "storage": "Object Storage",
+        "network": "Network / VPN",
+        "billing": "Thanh toán",
+        "account": "Tài khoản",
+        "other": "Khác"
+      },
+      "table": {
+        "title": "Yêu cầu ({{count}})",
+        "id": "#",
+        "titleHeader": "Tiêu đề / Khách hàng",
+        "service": "Dịch vụ",
+        "status": "Trạng thái",
+        "priority": "Ưu tiên",
+        "date": "Ngày gửi",
+        "actions": "Hành động",
+        "noData": "Không có yêu cầu nào"
+      },
+      "detail": {
+        "phone": "Điện thoại",
+        "address": "Địa chỉ",
+        "content": "Nội dung yêu cầu",
+        "statusLabel": "Trạng thái",
+        "priorityLabel": "Mức độ ưu tiên",
+        "resolvedAt": "Đã giải quyết lúc",
+        "adminNote": "Ghi chú / Phản hồi cho khách hàng",
+        "adminNotePlaceholder": "Nhập phản hồi cho khách hàng... (khách hàng sẽ thấy nội dung này)",
+        "save": "Lưu phản hồi",
+        "saving": "Đang lưu..."
+      },
+      "delete": {
+        "title": "Xác nhận xóa yêu cầu hỗ trợ",
+        "description": "Bạn có chắc chắn muốn xóa yêu cầu này? Hành động này không thể hoàn tác.",
+        "confirm": "Xóa",
+        "cancel": "Hủy"
+      },
+      "toast": {
+        "loadError": "Không thể tải danh sách yêu cầu",
+        "updated": "Đã cập nhật",
+        "updateSuccess": "Ticket đã được cập nhật thành công",
+        "deleted": "Đã xóa ticket",
+        "error": "Lỗi"
+      }
+    },
+    "paymentsTitle": "Quản lý Thanh toán",
+    "paymentsDesc": "Xem và chấp nhận thanh toán",
+    "paymentsStats": "Quản lý thanh toán",
+    "loginHistoryTitle": "Lịch sử Đăng nhập",
+    "loginHistoryDesc": "Theo dõi các hoạt động đăng nhập của admin",
+    "loginHistoryStats": "Kiểm tra bảo mật",
+    "compartmentTitle": "Quản lý Compartments",
+    "compartmentDesc": "Xem và xóa compartments trong OCI",
+    "compartmentStats": "Tài nguyên OCI",
+    "analyticsTitle": "Analytics",
+    "analyticsDesc": "Xem thống kê lượt truy cập và tương tác người dùng",
+    "analyticsStats": "Phân tích trang web",
+    "bandwidthTitle": "Giám sát Băng thông",
+    "bandwidthDesc": "Theo dõi băng thông của tất cả máy ảo (giới hạn 10TB)",
+    "bandwidthStats": "Giám sát băng thông",
+    "supportTicketsTitle": "Yêu cầu Hỗ trợ",
+    "supportTicketsDesc": "Theo dõi và xử lý yêu cầu hỗ trợ từ người dùng",
+    "supportTicketsStats": "Phiếu hỗ trợ",
+    "costsTitle": "Chi phí & Credit",
+    "costsDesc": "Tổng số dư, tiền nạp và tiền dùng của từng người dùng, tháng, năm",
+    "costsStats": "Tổng quan chi phí & credit",
+    "users": {
+      "editDialog": {
+        "title": "Chỉnh sửa thông tin người dùng #{{id}}",
+        "description": "Cập nhật thông tin chi tiết của người dùng. Nhấn \"Lưu thay đổi\" để áp dụng.",
+        "lastName": "Họ",
+        "firstName": "Tên",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "backupEmail": "Email dự phòng",
+        "company": "Công ty",
+        "address": "Địa chỉ",
+        "idCard": "Số CCCD / CMND",
+        "gender": "Giới tính",
+        "genderPlaceholder": "Chọn giới tính",
+        "male": "Nam",
+        "female": "Nữ",
+        "other": "Khác",
+        "role": "Vai trò",
+        "statusLabel": "Trạng thái",
+        "active": "Hoạt động",
+        "locked": "Bị khóa",
+        "cancel": "Hủy",
+        "save": "Lưu thay đổi",
+        "saving": "Đang lưu..."
+      },
+      "deleteDialog": {
+        "title": "Xác nhận xóa người dùng",
+        "description": "Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.",
+        "confirm": "Xóa",
+        "cancel": "Hủy"
+      },
+      "pagination": {
+        "info": "Trang {{current}} / {{total}} — Tổng {{count}} người dùng"
+      },
+      "toast": {
+        "updateSuccess": "Cập nhật thông tin người dùng thành công",
+        "updateError": "Không thể cập nhật thông tin người dùng",
+        "deleteSuccess": "Đã xóa người dùng thành công",
+        "deleteError": "Không thể xóa người dùng"
+      },
+      "export": {
+        "fullName": "Họ tên",
+        "phone": "Số điện thoại",
+        "company": "Công ty",
+        "role": "Vai trò",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        "notAvailable": "Chưa có",
+        "sheetName": "Danh sách người dùng",
+        "active": "Hoạt động",
+        "locked": "Khóa"
+      }
+    },
+    "packagesExtra": {
+      "dialog": {
+        "deleteTitle": "Xác nhận xóa gói dịch vụ",
+        "deleteDesc": "Bạn có chắc chắn muốn xóa gói này không? Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "delete": "Xóa"
+      },
+      "table": {
+        "package": "Gói dịch vụ",
+        "type": "Loại",
+        "price": "Giá",
+        "specs": "Cấu hình",
+        "features": "Tính năng",
+        "status": "Trạng thái",
+        "actions": "Hành động"
+      },
+      "createForm": {
+        "priceUSD": "Giá (USD / tháng)",
+        "priceVND": "Giá (VND / tháng)",
+        "storage": "Lưu trữ",
+        "storagePlaceholder": "VD: 80 GB SSD",
+        "bandwidthLabel": "Băng thông",
+        "bandwidthPlaceholder": "VD: 1 TB",
+        "feature": "Tính năng / Ghi chú",
+        "featurePlaceholder": "Tính năng bổ sung hoặc ghi chú...",
+        "isActive": "Kích hoạt (hiển thị cho người dùng)",
+        "saving": "Đang lưu..."
       }
     }
   },
@@ -685,7 +1208,8 @@
   },
   "common": {
     "loading": "Đang tải...",
-    "logoutSuccess": "Đăng xuất thành công!"
+    "logoutSuccess": "Đăng xuất thành công!",
+    "error": "Lỗi"
   },
   "checkout": {
     "title": "Thanh toán",

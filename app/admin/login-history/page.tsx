@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from 'react-i18next'
 import {
   getLoginHistory,
   getLoginStatistics,
@@ -16,6 +17,7 @@ import { formatDistanceToNow, format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 
 export default function AdminLoginHistoryPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const user = useAuthStore((state) => state.user)
   const isLoading = useAuthStore((state) => state.isLoading)
@@ -132,7 +134,7 @@ export default function AdminLoginHistoryPage() {
         fullError: error
       })
       toast({
-        title: 'Error',
+        title: t('admin.loginHistory.filters.loading'),
         description: `Failed to load login history: ${error?.message || 'Unknown error'}`,
         variant: 'destructive'
       })
@@ -208,13 +210,13 @@ export default function AdminLoginHistoryPage() {
 
       toast({
         title: 'Success',
-        description: 'Login history exported to CSV'
+        description: t('admin.loginHistory.exportSuccess')
       })
     } catch (error) {
       console.error('Error exporting CSV:', error)
       toast({
         title: 'Error',
-        description: 'Failed to export login history',
+        description: t('admin.loginHistory.exportError'),
         variant: 'destructive'
       })
     }
@@ -233,35 +235,35 @@ export default function AdminLoginHistoryPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">Login History</h1>
-          <p className="text-gray-600 dark:text-muted-foreground mt-2">Track and monitor all admin login activities</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground">{t('admin.loginHistory.title')}</h1>
+          <p className="text-gray-600 dark:text-muted-foreground mt-2">{t('admin.loginHistory.subtitle')}</p>
         </div>
 
         {/* Statistics Dashboard */}
         {statistics && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-white dark:bg-card rounded-lg shadow p-6">
-              <div className="text-sm text-gray-600 dark:text-muted-foreground">Total Logins</div>
+              <div className="text-sm text-gray-600 dark:text-muted-foreground">{t('admin.loginHistory.stats.totalLogins')}</div>
               <div className="text-3xl font-bold text-gray-900 dark:text-foreground">{statistics.totalLogins}</div>
-              <div className="text-xs text-gray-500 dark:text-muted-foreground mt-2">Last 30 days</div>
+              <div className="text-xs text-gray-500 dark:text-muted-foreground mt-2">{t('admin.loginHistory.stats.last30Days')}</div>
             </div>
 
             <div className="bg-white dark:bg-card rounded-lg shadow p-6">
-              <div className="text-sm text-gray-600 dark:text-muted-foreground">Success Rate</div>
+              <div className="text-sm text-gray-600 dark:text-muted-foreground">{t('admin.loginHistory.stats.successRate')}</div>
               <div className="text-3xl font-bold text-green-600">{statistics.successRate.toFixed(1)}%</div>
-              <div className="text-xs text-gray-500 dark:text-muted-foreground mt-2">{statistics.successfulLogins} successful</div>
+              <div className="text-xs text-gray-500 dark:text-muted-foreground mt-2">{t('admin.loginHistory.stats.successful', { count: statistics.successfulLogins })}</div>
             </div>
 
             <div className="bg-white dark:bg-card rounded-lg shadow p-6">
-              <div className="text-sm text-gray-600 dark:text-muted-foreground">Failed Attempts</div>
+              <div className="text-sm text-gray-600 dark:text-muted-foreground">{t('admin.loginHistory.stats.failedAttempts')}</div>
               <div className="text-3xl font-bold text-red-600">{statistics.failedLogins}</div>
-              <div className="text-xs text-gray-500 dark:text-muted-foreground mt-2">Locked: {statistics.lockedAttempts}</div>
+              <div className="text-xs text-gray-500 dark:text-muted-foreground mt-2">{t('admin.loginHistory.stats.locked', { count: statistics.lockedAttempts })}</div>
             </div>
 
             <div className="bg-white dark:bg-card rounded-lg shadow p-6">
-              <div className="text-sm text-gray-600 dark:text-muted-foreground">Unique Devices</div>
+              <div className="text-sm text-gray-600 dark:text-muted-foreground">{t('admin.loginHistory.stats.uniqueDevices')}</div>
               <div className="text-3xl font-bold text-blue-600">{statistics.uniqueDevices}</div>
-              <div className="text-xs text-gray-500 dark:text-muted-foreground mt-2">{statistics.uniqueCountries} countries</div>
+              <div className="text-xs text-gray-500 dark:text-muted-foreground mt-2">{t('admin.loginHistory.stats.countries', { count: statistics.uniqueCountries })}</div>
             </div>
           </div>
         )}
@@ -277,17 +279,17 @@ export default function AdminLoginHistoryPage() {
               </div>
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-red-800">
-                  ⚠️ {suspiciousAttempts.length} suspicious login attempt(s) detected
+                  {t('admin.loginHistory.suspicious.alert', { count: suspiciousAttempts.length })}
                 </h3>
                 <div className="mt-2 text-sm text-red-700">
                   <ul className="list-disc pl-5 space-y-1">
                     {suspiciousAttempts.slice(0, 3).map((attempt, index) => (
                       <li key={index}>
-                        Failed login from {attempt.ipV4 || attempt.ipV6} on {format(new Date(attempt.loginTime), 'PPp', { locale: vi })}
+                        {t('admin.loginHistory.suspicious.failedFrom', { ip: attempt.ipV4 || attempt.ipV6, date: format(new Date(attempt.loginTime), 'PPp', { locale: vi }) })}
                       </li>
                     ))}
                     {suspiciousAttempts.length > 3 && (
-                      <li>... and {suspiciousAttempts.length - 3} more</li>
+                      <li>{t('admin.loginHistory.suspicious.more', { count: suspiciousAttempts.length - 3 })}</li>
                     )}
                   </ul>
                 </div>
@@ -302,24 +304,24 @@ export default function AdminLoginHistoryPage() {
             {/* Status Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-2">
-                Status
+                {t('admin.loginHistory.filters.status')}
               </label>
               <select
                 value={filters.status || ''}
                 onChange={(e) => handleFilterChange('status', e.target.value || undefined)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-foreground"
               >
-                <option value="">All</option>
-                <option value="success">Success</option>
-                <option value="failed">Failed</option>
-                <option value="locked">Locked</option>
+                <option value="">{t('admin.loginHistory.filters.all')}</option>
+                <option value="success">{t('admin.loginHistory.filters.success')}</option>
+                <option value="failed">{t('admin.loginHistory.filters.failed')}</option>
+                <option value="locked">{t('admin.loginHistory.filters.locked')}</option>
               </select>
             </div>
 
             {/* Start Date Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-2">
-                From Date
+                {t('admin.loginHistory.filters.fromDate')}
               </label>
               <input
                 type="date"
@@ -332,7 +334,7 @@ export default function AdminLoginHistoryPage() {
             {/* End Date Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-2">
-                To Date
+                {t('admin.loginHistory.filters.toDate')}
               </label>
               <input
                 type="date"
@@ -345,16 +347,16 @@ export default function AdminLoginHistoryPage() {
             {/* Sort By */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-2">
-                Sort By
+                {t('admin.loginHistory.filters.sortBy')}
               </label>
               <select
                 value={filters.sortBy || 'loginTime'}
                 onChange={(e) => handleFilterChange('sortBy', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-foreground"
               >
-                <option value="loginTime">Login Time</option>
-                <option value="username">Username</option>
-                <option value="status">Status</option>
+                <option value="loginTime">{t('admin.loginHistory.filters.loginTime')}</option>
+                <option value="username">{t('admin.loginHistory.filters.username')}</option>
+                <option value="status">{t('admin.loginHistory.filters.statusSort')}</option>
               </select>
             </div>
 
@@ -365,7 +367,7 @@ export default function AdminLoginHistoryPage() {
                 disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition disabled:opacity-50"
               >
-                {loading ? 'Loading...' : 'Refresh'}
+                {loading ? t('admin.loginHistory.filters.loading') : t('admin.loginHistory.filters.refresh')}
               </button>
             </div>
           </div>
@@ -374,14 +376,14 @@ export default function AdminLoginHistoryPage() {
         {/* Actions */}
         <div className="flex justify-between items-center mb-6">
           <div className="text-sm text-gray-600 dark:text-muted-foreground">
-            Showing {loginHistory.length > 0 ? (page - 1) * limit + 1 : 0} to {Math.min(page * limit, total)} of {total} entries
+            {t('admin.loginHistory.showing', { from: loginHistory.length > 0 ? (page - 1) * limit + 1 : 0, to: Math.min(page * limit, total), total })}
           </div>
           <button
             onClick={handleExportCSV}
             disabled={loginHistory.length === 0}
             className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition disabled:opacity-50"
           >
-            Export to CSV
+            {t('admin.loginHistory.export')}
           </button>
         </div>
 
@@ -392,34 +394,34 @@ export default function AdminLoginHistoryPage() {
               <thead className="bg-gray-100 dark:bg-muted">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    Tài khoản
+                    {t('admin.loginHistory.table.account')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    Login Time
+                    {t('admin.loginHistory.table.loginTime')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    Status
+                    {t('admin.loginHistory.table.status')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    IP Address
+                    {t('admin.loginHistory.table.ip')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    Location
+                    {t('admin.loginHistory.table.location')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    Browser
+                    {t('admin.loginHistory.table.browser')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    OS
+                    {t('admin.loginHistory.table.os')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    Device
+                    {t('admin.loginHistory.table.device')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    Duration
+                    {t('admin.loginHistory.table.duration')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-muted-foreground uppercase tracking-wider">
-                    New Device
+                    {t('admin.loginHistory.table.newDevice')}
                   </th>
                 </tr>
               </thead>
@@ -427,13 +429,13 @@ export default function AdminLoginHistoryPage() {
                 {loading ? (
                   <tr>
                     <td colSpan={10} className="px-6 py-4 text-center text-gray-500 dark:text-muted-foreground">
-                      Loading...
+                      {t('admin.loginHistory.loading')}
                     </td>
                   </tr>
                 ) : loginHistory.length === 0 ? (
                   <tr>
                     <td colSpan={10} className="px-6 py-4 text-center text-gray-500 dark:text-muted-foreground">
-                      No login records found
+                      {t('admin.loginHistory.noRecords')}
                     </td>
                   </tr>
                 ) : (
@@ -480,13 +482,13 @@ export default function AdminLoginHistoryPage() {
                         </span>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-foreground">
-                        {record.sessionDurationMinutes ? `${record.sessionDurationMinutes}m` : 'Active'}
+                        {record.sessionDurationMinutes ? `${record.sessionDurationMinutes}m` : t('admin.loginHistory.active')}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm">
                         {record.isNewDevice ? (
-                          <span className="text-orange-600 font-semibold">⚠️ New</span>
+                          <span className="text-orange-600 font-semibold">⚠️ {t('admin.loginHistory.new')}</span>
                         ) : (
-                          <span className="text-gray-500 dark:text-muted-foreground">Known</span>
+                          <span className="text-gray-500 dark:text-muted-foreground">{t('admin.loginHistory.known')}</span>
                         )}
                       </td>
                     </tr>
@@ -501,7 +503,7 @@ export default function AdminLoginHistoryPage() {
         <div className="mt-6 flex justify-between items-center">
           <div>
             <label htmlFor="limit" className="text-sm text-gray-700 dark:text-muted-foreground mr-2">
-              Records per page:
+              {t('admin.loginHistory.pagination.recordsPerPage')}
             </label>
             <select
               id="limit"
@@ -526,11 +528,11 @@ export default function AdminLoginHistoryPage() {
               disabled={page === 1}
               className="px-4 py-2 border border-gray-300 dark:border-border rounded-lg hover:bg-gray-50 dark:hover:bg-muted/50 dark:text-foreground disabled:opacity-50 transition"
             >
-              Previous
+              {t('admin.loginHistory.pagination.prev')}
             </button>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-700 dark:text-muted-foreground">
-                Page {page} of {Math.ceil(total / limit) || 1}
+                {t('admin.loginHistory.pagination.page', { current: page, total: Math.ceil(total / limit) || 1 })}
               </span>
             </div>
             <button
@@ -538,7 +540,7 @@ export default function AdminLoginHistoryPage() {
               disabled={page >= Math.ceil(total / limit)}
               className="px-4 py-2 border border-gray-300 dark:border-border rounded-lg hover:bg-gray-50 dark:hover:bg-muted/50 dark:text-foreground disabled:opacity-50 transition"
             >
-              Next
+              {t('admin.loginHistory.pagination.next')}
             </button>
           </div>
         </div>

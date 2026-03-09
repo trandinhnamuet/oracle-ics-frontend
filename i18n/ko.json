@@ -192,7 +192,16 @@
         "bandwidth": "대역폭"
       },
       "footer": "{{current}} / {{total}} 등록 표시",
-      "loading": "데이터 로딩 중..."
+      "loading": "데이터 로딩 중...",
+      "export": {
+        "phone": "전화번호",
+        "detail": "세부 정보",
+        "createdAt": "등록일",
+        "createdBy": "작성자",
+        "notAvailable": "없음",
+        "sheetName": "커스텀 등록 목록",
+        "system": "시스템"
+      }
     },
     "packages": {
       "createPackage": {
@@ -264,7 +273,9 @@
           "actions": "작업",
           "moreFeatures": "더 많은 기능",
           "popular": "인기",
-          "noPackagesFound": "서비스 패키지를 찾을 수 없습니다"
+          "noPackagesFound": "서비스 패키지를 찾을 수 없습니다",
+          "active": "활성",
+          "inactive": "비활성"
         },
         "toast": {
           "createSuccess": "성공",
@@ -329,7 +340,519 @@
         "loadError": "구독 목록을 로드할 수 없습니다",
         "deleteSuccess": "구독이 성공적으로 삭제되었습니다",
         "deleteError": "구독을 삭제할 수 없습니다",
+        "deleteWithVmSuccess": "구독 및 VM이 성공적으로 삭제되었습니다.",
+        "deleteVmOnlySuccess": "VM이 삭제되었습니다. 구독은 여전히 유효합니다.",
+        "deleteVmOnlyError": "VM을 삭제할 수 없습니다",
+        "stopVmSuccess": "VM이 성공적으로 중지되었습니다.",
+        "stopVmError": "VM을 중지할 수 없습니다",
+        "startVmSuccess": "VM이 성공적으로 시작되었습니다.",
+        "startVmError": "VM을 시작할 수 없습니다",
         "editInDevelopment": "편집 기능이 개발 중입니다"
+      },
+      "confirmDialog": {
+        "deleteSub": {
+          "title": "구독 삭제 확인",
+          "description": "이 구독을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
+        },
+        "deleteWithVm": {
+          "title": "구독 및 VM 삭제 확인",
+          "description": "구독 및 가상 머신(VM)을 모두 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
+        },
+        "deleteVmOnly": {
+          "title": "VM 삭제 확인",
+          "description": "가상 머신(VM)만 삭제하시겠습니까? 구독은 유효하지만 새 VM을 설정해야 합니다."
+        },
+        "stopVm": {
+          "title": "VM 중지 확인",
+          "description": "이 VM을 중지하시겠습니까?"
+        },
+        "startVm": {
+          "title": "VM 시작 확인",
+          "description": "이 VM을 시작하시겠습니까?"
+        },
+        "cancel": "취소",
+        "confirm": "확인"
+      },
+      "table": {
+        "vmInfo": "VM 정보",
+        "noPublicIp": "공인 IP 없음",
+        "notConfigured": "구성되지 않음",
+        "showing": "{{total}}개 중 {{from}}~{{to}} 표시",
+        "recordsPerPage": "페이지당 레코드:",
+        "goTo": "이동:",
+        "pageOf": "{{current}} / {{total}} 페이지"
+      }
+    },
+    "analytics": {
+      "title": "분석 대시보드",
+      "subtitle": "웹사이트 트래픽 및 방문자 통계",
+      "dateRange": {
+        "last7Days": "지난 7일",
+        "last30Days": "지난 30일",
+        "last90Days": "지난 90일",
+        "refresh": "새로고침"
+      },
+      "summary": {
+        "totalPageViews": "총 페이지 뷰",
+        "totalPageViewsDesc": "선택한 기간의 페이지 뷰",
+        "uniqueUsers": "고유 사용자",
+        "uniqueUsersDesc": "사이트의 고유 방문자",
+        "bounceRate": "이탈률",
+        "bounceRateDesc": "상호작용 없이 떠난 방문자",
+        "avgLoadTime": "평균 로딩 시간",
+        "avgLoadTimeDesc": "평균 페이지 로딩 시간"
+      },
+      "charts": {
+        "pageViewsOverTime": "시간별 페이지 뷰",
+        "topPages": "인기 페이지",
+        "userEvents": "사용자 이벤트",
+        "allEvents": "모든 이벤트",
+        "googleAnalytics": "Google Analytics 통합",
+        "googleAnalyticsDesc": "이 대시보드는 웹사이트의 분석 데이터를 표시합니다. Google Analytics 추적을 활성화하려면:",
+        "gaStep1": ".env.local 파일에서 NEXT_PUBLIC_GA_MEASUREMENT_ID로 Google Analytics 측정 ID를 설정하세요",
+        "gaStep2": "변경 사항을 배포하여 Google Analytics 추적을 활성화하세요",
+        "gaStep3": "Google Analytics 콘솔에서 자세한 분석을 확인하세요"
+      },
+      "loading": "분석 데이터 로딩 중...",
+      "error": "오류",
+      "retry": "재시도",
+      "noData": "데이터 없음",
+      "noPageData": "페이지 데이터 없음",
+      "noEventData": "이벤트 데이터 없음"
+    },
+    "bandwidth": {
+      "title": "대역폭 모니터",
+      "subtitle": "모든 가상 머신의 대역폭을 추적 및 모니터링",
+      "loading": "대역폭 데이터 로딩 중...",
+      "refresh": "새로고침",
+      "timeRange": {
+        "24h": "24시간",
+        "7d": "7일",
+        "30d": "30일",
+        "90d": "90일"
+      },
+      "summary": {
+        "totalVMs": "총 VM",
+        "overLimit": "한도 초과",
+        "nearLimit": "한도 근접",
+        "totalBandwidth": "총 대역폭",
+        "average": "평균"
+      },
+      "filter": {
+        "label": "필터:",
+        "all": "전체",
+        "over": "한도 초과",
+        "near": "경고",
+        "normal": "정상"
+      },
+      "sort": {
+        "label": "정렬:",
+        "usage": "사용량",
+        "name": "VM 이름",
+        "user": "사용자"
+      },
+      "status": {
+        "overLimit": "한도 초과",
+        "warning": "경고",
+        "normal": "정상",
+        "error": "오류"
+      },
+      "details": {
+        "download": "다운로드",
+        "upload": "업로드",
+        "remaining": "남은 용량",
+        "exceeded": "초과",
+        "bandwidth": "대역폭",
+        "package": "패키지",
+        "company": "회사"
+      },
+      "warning": {
+        "overLimitTitle": "경고: 대역폭 한도 초과!",
+        "overLimitMessage": "이 VM은 허용 한도(10 TB)를 {{exceeded}} TB 초과했습니다. 처리를 위해 사용자에게 연락하세요.",
+        "nearLimitTitle": "경고: 대역폭 한도 근접!",
+        "nearLimitMessage": "이 VM은 대역폭의 {{usage}}%를 사용했습니다. 한도에 도달하기까지 {{remaining}} TB 남았습니다.",
+        "errorMessage": "대역폭 데이터를 가져올 수 없습니다: {{error}}"
+      },
+      "noVms": "현재 필터와 일치하는 VM이 없습니다"
+    },
+    "compartment": {
+      "title": "컴파트먼트 관리",
+      "subtitle": "OCI 테넌시의 컴파트먼트 목록",
+      "refresh": "새로고침",
+      "loading": "컴파트먼트 로딩 중...",
+      "noCompartments": "컴파트먼트 없음",
+      "noDescription": "설명 없음",
+      "createdAt": "생성일",
+      "deleteButton": "컴파트먼트 삭제",
+      "dialog": {
+        "title": "컴파트먼트 삭제 확인",
+        "description1": "컴파트먼트를 삭제하시겠습니까",
+        "description2": "?",
+        "warning": "⚠️ 이 작업은 컴파트먼트 내의 모든 리소스를 삭제합니다:",
+        "items": {
+          "vms": "모든 VM 인스턴스",
+          "vcns": "모든 VCN(가상 클라우드 네트워크)",
+          "subnets": "모든 서브넷",
+          "gateways": "모든 인터넷 게이트웨이",
+          "routes": "모든 라우트 테이블"
+        },
+        "irreversible": "이 작업은 취소할 수 없습니다!",
+        "deleting": "삭제 중...",
+        "confirmButton": "삭제 확인",
+        "cancelButton": "취소"
+      },
+      "toast": {
+        "loadError": "컴파트먼트 목록을 로드할 수 없습니다: {{message}}",
+        "deleteSuccess": "컴파트먼트 \"{{name}}\" 및 내부의 모든 리소스가 삭제되었습니다",
+        "deleteError": "컴파트먼트를 삭제할 수 없습니다: {{message}}"
+      }
+    },
+    "costs": {
+      "title": "비용 & 크레딧",
+      "subtitle": "모든 사용자의 재무 개요",
+      "back": "뒤로",
+      "refresh": "새로고침",
+      "loading": "비용 데이터 로딩 중...",
+      "summary": {
+        "totalBalance": "총 잔여 잔액",
+        "totalBalanceDesc": "모든 사용자 지갑 합계",
+        "totalDeposited": "총 충전액",
+        "totalDepositedDesc": "모든 충전 거래 누계",
+        "totalSpent": "총 사용액",
+        "totalSpentDesc": "모든 차감 거래 누계",
+        "users": "사용자 수",
+        "usersDesc": "활성 지갑이 있는 사용자"
+      },
+      "timeBreakdown": {
+        "title": "시간별 통계",
+        "monthly": "월별",
+        "yearly": "연별"
+      },
+      "months": {
+        "jan": "1월", "feb": "2월", "mar": "3월",
+        "apr": "4월", "may": "5월", "jun": "6월",
+        "jul": "7월", "aug": "8월", "sep": "9월",
+        "oct": "10월", "nov": "11월", "dec": "12월"
+      },
+      "table": {
+        "month": "월",
+        "year": "연도",
+        "deposited": "충전",
+        "spent": "사용",
+        "difference": "차이"
+      },
+      "perUser": {
+        "title": "사용자별 상세",
+        "searchPlaceholder": "이메일 또는 이름 검색...",
+        "user": "사용자",
+        "currentBalance": "현재 잔액",
+        "totalDeposited": "총 충전",
+        "totalSpent": "총 사용",
+        "status": "상태",
+        "low": "낮음",
+        "normal": "정상",
+        "noUser": "사용자를 찾을 수 없습니다"
+      }
+    },
+    "loginHistory": {
+      "title": "로그인 기록",
+      "subtitle": "모든 관리자 로그인 활동 추적 및 모니터링",
+      "stats": {
+        "totalLogins": "총 로그인",
+        "last30Days": "지난 30일",
+        "successRate": "성공률",
+        "successful": "{{count}}회 성공",
+        "failedAttempts": "실패 시도",
+        "locked": "잠김: {{count}}",
+        "uniqueDevices": "고유 장치",
+        "countries": "{{count}}개 국가"
+      },
+      "suspicious": {
+        "alert": "⚠️ {{count}}건의 의심스러운 로그인 시도가 감지되었습니다",
+        "failedFrom": "{{date}}에 {{ip}}에서 로그인 실패",
+        "more": "... 그리고 {{count}}건 더"
+      },
+      "filters": {
+        "status": "상태",
+        "all": "전체",
+        "success": "성공",
+        "failed": "실패",
+        "locked": "잠김",
+        "fromDate": "시작일",
+        "toDate": "종료일",
+        "sortBy": "정렬 기준",
+        "loginTime": "로그인 시간",
+        "username": "사용자명",
+        "statusSort": "상태",
+        "refresh": "새로고침",
+        "loading": "로딩 중..."
+      },
+      "showing": "{{total}}개 중 {{from}}~{{to}} 표시",
+      "export": "CSV 내보내기",
+      "exportSuccess": "로그인 기록이 CSV로 내보내기 되었습니다",
+      "exportError": "로그인 기록 내보내기 실패",
+      "table": {
+        "account": "계정",
+        "loginTime": "로그인 시간",
+        "status": "상태",
+        "ip": "IP 주소",
+        "location": "위치",
+        "browser": "브라우저",
+        "os": "OS",
+        "device": "장치",
+        "duration": "시간",
+        "newDevice": "새 장치"
+      },
+      "noRecords": "로그인 기록이 없습니다",
+      "loading": "로딩 중...",
+      "active": "활성",
+      "new": "새로운",
+      "known": "알려진",
+      "pagination": {
+        "recordsPerPage": "페이지당 레코드:",
+        "page": "{{current}} / {{total}} 페이지",
+        "prev": "이전",
+        "next": "다음"
+      }
+    },
+    "payments": {
+      "title": "결제 관리",
+      "subtitle": "모든 결제 거래 목록",
+      "refresh": "새로고침",
+      "summary": {
+        "total": "총 결제",
+        "pending": "대기 중",
+        "expired": "만료됨",
+        "success": "성공"
+      },
+      "list": {
+        "title": "결제 목록 ({{count}})",
+        "searchPlaceholder": "거래 코드, 이메일, 이름으로 검색..."
+      },
+      "table": {
+        "transactionCode": "거래 코드",
+        "subscriptionId": "구독 ID",
+        "user": "사용자",
+        "amount": "금액",
+        "type": "유형",
+        "method": "방법",
+        "status": "상태",
+        "createdAt": "생성일",
+        "actions": "작업"
+      },
+      "status": {
+        "success": "성공",
+        "pending": "대기 중",
+        "failed": "실패",
+        "expired": "만료됨",
+        "deleted": "삭제됨"
+      },
+      "paymentType": {
+        "deposit": "충전",
+        "subscription": "구독"
+      },
+      "actions": {
+        "accept": "수락",
+        "processing": "처리 중...",
+        "completed": "완료됨",
+        "failed": "실패",
+        "expired": "만료됨",
+        "deleted": "삭제됨"
+      },
+      "pagination": {
+        "info": "{{current}} / {{total}} 페이지 — 총 {{count}}건"
+      },
+      "confirm": {
+        "title": "결제 수락 확인",
+        "description": "이 결제를 수락하시겠습니까? 구독을 활성화하거나 사용자에게 자금을 추가합니다.",
+        "confirm": "확인",
+        "cancel": "취소"
+      },
+      "loading": "데이터 로딩 중...",
+      "noPayments": "결제 내역이 없습니다",
+      "toast": {
+        "acceptSuccess": "결제가 성공적으로 수락되었습니다!",
+        "acceptError": "결제 오류",
+        "acceptErrorDesc": "결제 수락 중 오류가 발생했습니다"
+      }
+    },
+    "supportTickets": {
+      "title": "지원 요청 관리",
+      "subtitle": "사용자의 지원 요청 추적 및 처리",
+      "refresh": "새로고침",
+      "stats": {
+        "total": "총 요청",
+        "open": "열림",
+        "inProgress": "처리 중",
+        "resolved": "해결됨",
+        "urgent": "긴급"
+      },
+      "filters": {
+        "searchPlaceholder": "제목, 이메일, 이름으로 검색...",
+        "status": "상태",
+        "priority": "우선순위",
+        "allStatus": "모든 상태",
+        "allPriority": "모든 우선순위"
+      },
+      "status": {
+        "open": "열림",
+        "inProgress": "처리 중",
+        "resolved": "해결됨",
+        "closed": "닫힘"
+      },
+      "priority": {
+        "low": "낮음",
+        "medium": "보통",
+        "high": "높음",
+        "urgent": "긴급"
+      },
+      "services": {
+        "cloud": "클라우드 서버",
+        "storage": "오브젝트 스토리지",
+        "network": "네트워크 / VPN",
+        "billing": "청구",
+        "account": "계정",
+        "other": "기타"
+      },
+      "table": {
+        "title": "요청 ({{count}})",
+        "id": "#",
+        "titleHeader": "제목 / 고객",
+        "service": "서비스",
+        "status": "상태",
+        "priority": "우선순위",
+        "date": "제출일",
+        "actions": "작업",
+        "noData": "요청이 없습니다"
+      },
+      "detail": {
+        "phone": "전화",
+        "address": "주소",
+        "content": "요청 내용",
+        "statusLabel": "상태",
+        "priorityLabel": "우선순위",
+        "resolvedAt": "해결 시간",
+        "adminNote": "메모 / 고객에 대한 응답",
+        "adminNotePlaceholder": "고객에 대한 응답 입력... (고객이 이 내용을 볼 것입니다)",
+        "save": "응답 저장",
+        "saving": "저장 중..."
+      },
+      "delete": {
+        "title": "지원 요청 삭제 확인",
+        "description": "이 지원 요청을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+        "confirm": "삭제",
+        "cancel": "취소"
+      },
+      "toast": {
+        "loadError": "지원 요청 목록을 로드할 수 없습니다",
+        "updated": "업데이트됨",
+        "updateSuccess": "티켓이 성공적으로 업데이트되었습니다",
+        "deleted": "티켓 삭제됨",
+        "error": "오류"
+      }
+    },
+    "paymentsTitle": "결제 관리",
+    "paymentsDesc": "결제 보기 및 수락",
+    "paymentsStats": "결제 관리",
+    "loginHistoryTitle": "로그인 기록",
+    "loginHistoryDesc": "관리자 로그인 활동 추적",
+    "loginHistoryStats": "보안 감사",
+    "compartmentTitle": "컴파트먼트 관리",
+    "compartmentDesc": "OCI의 컴파트먼트 보기 및 삭제",
+    "compartmentStats": "OCI 리소스",
+    "analyticsTitle": "분석",
+    "analyticsDesc": "페이지 뷰 및 사용자 상호작용 통계 보기",
+    "analyticsStats": "웹사이트 분석",
+    "bandwidthTitle": "대역폭 모니터",
+    "bandwidthDesc": "모든 가상 머신의 대역폭 모니터링 (한도 10TB)",
+    "bandwidthStats": "대역폭 모니터",
+    "supportTicketsTitle": "지원 요청",
+    "supportTicketsDesc": "사용자의 지원 요청 추적 및 처리",
+    "supportTicketsStats": "지원 티켓",
+    "costsTitle": "비용 & 크레딧",
+    "costsDesc": "사용자별, 월별, 연별 총 잔액, 충전 및 사용 금액",
+    "costsStats": "비용 & 크레딧 개요",
+    "users": {
+      "editDialog": {
+        "title": "사용자 정보 편집 #{{id}}",
+        "description": "사용자의 상세 정보를 업데이트하세요. \"변경 사항 저장\"을 클릭하여 적용하세요.",
+        "lastName": "성",
+        "firstName": "이름",
+        "email": "이메일",
+        "phone": "전화번호",
+        "backupEmail": "백업 이메일",
+        "company": "회사",
+        "address": "주소",
+        "idCard": "신분증 번호",
+        "gender": "성별",
+        "genderPlaceholder": "성별 선택",
+        "male": "남성",
+        "female": "여성",
+        "other": "기타",
+        "role": "역할",
+        "statusLabel": "상태",
+        "active": "활성",
+        "locked": "잠김",
+        "cancel": "취소",
+        "save": "변경 사항 저장",
+        "saving": "저장 중..."
+      },
+      "deleteDialog": {
+        "title": "사용자 삭제 확인",
+        "description": "이 사용자를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+        "confirm": "삭제",
+        "cancel": "취소"
+      },
+      "pagination": {
+        "info": "{{current}} / {{total}} 페이지 — 총 {{count}}명"
+      },
+      "toast": {
+        "updateSuccess": "사용자 정보가 성공적으로 업데이트되었습니다",
+        "updateError": "사용자 정보를 업데이트할 수 없습니다",
+        "deleteSuccess": "사용자가 성공적으로 삭제되었습니다",
+        "deleteError": "사용자를 삭제할 수 없습니다"
+      },
+      "export": {
+        "fullName": "이름",
+        "phone": "전화번호",
+        "company": "회사",
+        "role": "역할",
+        "status": "상태",
+        "createdAt": "생성일",
+        "updatedAt": "수정일",
+        "notAvailable": "없음",
+        "sheetName": "사용자 목록",
+        "active": "활성",
+        "locked": "잠김"
+      }
+    },
+    "packagesExtra": {
+      "dialog": {
+        "deleteTitle": "서비스 패키지 삭제 확인",
+        "deleteDesc": "이 패키지를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+        "cancel": "취소",
+        "delete": "삭제"
+      },
+      "table": {
+        "package": "패키지",
+        "type": "유형",
+        "price": "가격",
+        "specs": "사양",
+        "features": "기능",
+        "status": "상태",
+        "actions": "작업"
+      },
+      "createForm": {
+        "priceUSD": "가격 (USD / 월)",
+        "priceVND": "가격 (VND / 월)",
+        "storage": "스토리지",
+        "storagePlaceholder": "예: 80 GB SSD",
+        "bandwidthLabel": "대역폭",
+        "bandwidthPlaceholder": "예: 1 TB",
+        "feature": "기능 / 메모",
+        "featurePlaceholder": "추가 기능 또는 메모...",
+        "isActive": "활성 (사용자에게 표시)",
+        "saving": "저장 중..."
       }
     }
   },
@@ -685,7 +1208,8 @@
   },
   "common": {
     "loading": "로딩 중...",
-    "logoutSuccess": "로그아웃 성공!"
+    "logoutSuccess": "로그아웃 성공!",
+    "error": "오류"
   },
   "checkout": {
     "title": "결제",

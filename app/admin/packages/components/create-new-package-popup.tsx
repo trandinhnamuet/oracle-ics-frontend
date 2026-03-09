@@ -161,7 +161,7 @@ export default function CreateNewPackagePopup({
           {/* Cost + Cost VND */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="cost">Price (USD / month)</Label>
+              <Label htmlFor="cost">{t('admin.packagesExtra.createForm.priceUSD')}</Label>
               <Input
                 id="cost"
                 type="number"
@@ -173,7 +173,7 @@ export default function CreateNewPackagePopup({
               />
             </div>
             <div>
-              <Label htmlFor="cost_vnd">Price (VND / month)</Label>
+              <Label htmlFor="cost_vnd">{t('admin.packagesExtra.createForm.priceVND')}</Label>
               <Input
                 id="cost_vnd"
                 type="number"
@@ -192,18 +192,18 @@ export default function CreateNewPackagePopup({
             {field('ram', 'RAM', 'e.g. 4 GB')}
           </div>
           <div className="grid grid-cols-2 gap-4">
-            {field('memory', 'Storage', 'e.g. 80 GB SSD')}
-            {field('bandwidth', 'Bandwidth', 'e.g. 1 TB')}
+            {field('memory', t('admin.packagesExtra.createForm.storage'), t('admin.packagesExtra.createForm.storagePlaceholder'))}
+            {field('bandwidth', t('admin.packagesExtra.createForm.bandwidthLabel'), t('admin.packagesExtra.createForm.bandwidthPlaceholder'))}
           </div>
 
           {/* Feature (free text) */}
           <div>
-            <Label htmlFor="feature">Features / Notes</Label>
+            <Label htmlFor="feature">{t('admin.packagesExtra.createForm.feature')}</Label>
             <textarea
               id="feature"
               value={formData.feature}
               onChange={(e) => setFormData({ ...formData, feature: e.target.value })}
-              placeholder="Additional features or notes..."
+              placeholder={t('admin.packagesExtra.createForm.featurePlaceholder')}
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 dark:border-border rounded-md resize-none text-sm bg-white dark:bg-background dark:text-foreground"
             />
@@ -217,7 +217,7 @@ export default function CreateNewPackagePopup({
               checked={formData.is_active}
               onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
             />
-            <Label htmlFor="is_active">Active (visible to users)</Label>
+            <Label htmlFor="is_active">{t('admin.packagesExtra.createForm.isActive')}</Label>
           </div>
         </div>
 
@@ -231,7 +231,7 @@ export default function CreateNewPackagePopup({
             disabled={isSubmitting}
           >
             {isSubmitting
-              ? 'Saving...'
+              ? t('admin.packagesExtra.createForm.saving')
               : editingPackage
               ? t('admin.packages.createPackage.buttons.update')
               : t('admin.packages.createPackage.buttons.create')}

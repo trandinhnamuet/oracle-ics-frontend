@@ -192,7 +192,16 @@
         "bandwidth": "带宽"
       },
       "footer": "显示 {{current}} / {{total}} 注册",
-      "loading": "加载数据中..."
+      "loading": "加载数据中...",
+      "export": {
+        "phone": "电话号码",
+        "detail": "详情",
+        "createdAt": "注册日期",
+        "createdBy": "创建人",
+        "notAvailable": "无",
+        "sheetName": "自定义注册列表",
+        "system": "系统"
+      }
     },
     "packages": {
       "createPackage": {
@@ -264,7 +273,9 @@
           "actions": "操作",
           "moreFeatures": "更多功能",
           "popular": "热门",
-          "noPackagesFound": "未找到服务套餐"
+          "noPackagesFound": "未找到服务套餐",
+          "active": "活跃",
+          "inactive": "非活跃"
         },
         "toast": {
           "createSuccess": "成功",
@@ -329,7 +340,519 @@
         "loadError": "无法加载订阅列表",
         "deleteSuccess": "订阅删除成功",
         "deleteError": "无法删除订阅",
+        "deleteWithVmSuccess": "订阅和VM删除成功。",
+        "deleteVmOnlySuccess": "VM已删除。订阅仍然有效。",
+        "deleteVmOnlyError": "无法删除VM",
+        "stopVmSuccess": "VM停止成功。",
+        "stopVmError": "无法停止VM",
+        "startVmSuccess": "VM启动成功。",
+        "startVmError": "无法启动VM",
         "editInDevelopment": "编辑功能正在开发中"
+      },
+      "confirmDialog": {
+        "deleteSub": {
+          "title": "确认删除订阅",
+          "description": "您确定要删除此订阅吗？此操作无法撤销。"
+        },
+        "deleteWithVm": {
+          "title": "确认删除订阅和VM",
+          "description": "删除整个订阅和虚拟机(VM)？此操作无法撤销。"
+        },
+        "deleteVmOnly": {
+          "title": "确认删除VM",
+          "description": "仅删除虚拟机(VM)？订阅仍然有效，但需要配置新VM。"
+        },
+        "stopVm": {
+          "title": "确认停止VM",
+          "description": "您确定要停止此VM吗？"
+        },
+        "startVm": {
+          "title": "确认启动VM",
+          "description": "您确定要启动此VM吗？"
+        },
+        "cancel": "取消",
+        "confirm": "确认"
+      },
+      "table": {
+        "vmInfo": "VM信息",
+        "noPublicIp": "无公网IP",
+        "notConfigured": "未配置",
+        "showing": "显示第{{from}}至{{to}}条，共{{total}}条",
+        "recordsPerPage": "每页记录数:",
+        "goTo": "跳转:",
+        "pageOf": "第 {{current}} / {{total}} 页"
+      }
+    },
+    "analytics": {
+      "title": "分析仪表板",
+      "subtitle": "网站流量和访客统计",
+      "dateRange": {
+        "last7Days": "过去7天",
+        "last30Days": "过去30天",
+        "last90Days": "过去90天",
+        "refresh": "刷新"
+      },
+      "summary": {
+        "totalPageViews": "总页面浏览量",
+        "totalPageViewsDesc": "所选时间段的页面浏览量",
+        "uniqueUsers": "独立用户",
+        "uniqueUsersDesc": "网站的独立访客",
+        "bounceRate": "跳出率",
+        "bounceRateDesc": "未互动即离开的访客",
+        "avgLoadTime": "平均加载时间",
+        "avgLoadTimeDesc": "平均页面加载时间"
+      },
+      "charts": {
+        "pageViewsOverTime": "页面浏览量趋势",
+        "topPages": "热门页面",
+        "userEvents": "用户事件",
+        "allEvents": "所有事件",
+        "googleAnalytics": "Google Analytics集成",
+        "googleAnalyticsDesc": "此仪表板显示您网站的分析数据。要启用Google Analytics跟踪:",
+        "gaStep1": "在.env.local文件中将Google Analytics测量ID设置为NEXT_PUBLIC_GA_MEASUREMENT_ID",
+        "gaStep2": "部署更改以激活Google Analytics跟踪",
+        "gaStep3": "在Google Analytics控制台中查看详细分析"
+      },
+      "loading": "加载分析数据中...",
+      "error": "错误",
+      "retry": "重试",
+      "noData": "无数据",
+      "noPageData": "无页面数据",
+      "noEventData": "无事件数据"
+    },
+    "bandwidth": {
+      "title": "带宽监控",
+      "subtitle": "跟踪和监控所有虚拟机的带宽",
+      "loading": "加载带宽数据中...",
+      "refresh": "刷新",
+      "timeRange": {
+        "24h": "24小时",
+        "7d": "7天",
+        "30d": "30天",
+        "90d": "90天"
+      },
+      "summary": {
+        "totalVMs": "VM总数",
+        "overLimit": "超出限制",
+        "nearLimit": "接近限制",
+        "totalBandwidth": "总带宽",
+        "average": "平均值"
+      },
+      "filter": {
+        "label": "筛选:",
+        "all": "全部",
+        "over": "超出限制",
+        "near": "警告",
+        "normal": "正常"
+      },
+      "sort": {
+        "label": "排序:",
+        "usage": "使用量",
+        "name": "VM名称",
+        "user": "用户"
+      },
+      "status": {
+        "overLimit": "超出限制",
+        "warning": "警告",
+        "normal": "正常",
+        "error": "错误"
+      },
+      "details": {
+        "download": "下载",
+        "upload": "上传",
+        "remaining": "剩余",
+        "exceeded": "超出",
+        "bandwidth": "带宽",
+        "package": "套餐",
+        "company": "公司"
+      },
+      "warning": {
+        "overLimitTitle": "警告：带宽限制已超出！",
+        "overLimitMessage": "此VM已超出允许限制(10 TB) {{exceeded}} TB。请联系用户进行处理。",
+        "nearLimitTitle": "警告：带宽即将达到限制！",
+        "nearLimitMessage": "此VM已使用{{usage}}%带宽。距限制还有{{remaining}} TB。",
+        "errorMessage": "无法获取带宽数据: {{error}}"
+      },
+      "noVms": "没有VM符合当前筛选条件"
+    },
+    "compartment": {
+      "title": "分区管理",
+      "subtitle": "OCI租户中的分区列表",
+      "refresh": "刷新",
+      "loading": "加载分区中...",
+      "noCompartments": "无分区",
+      "noDescription": "无描述",
+      "createdAt": "创建日期",
+      "deleteButton": "删除分区",
+      "dialog": {
+        "title": "确认删除分区",
+        "description1": "您确定要删除分区",
+        "description2": "吗？",
+        "warning": "⚠️ 此操作将删除分区内的所有资源，包括:",
+        "items": {
+          "vms": "所有VM实例",
+          "vcns": "所有VCN（虚拟云网络）",
+          "subnets": "所有子网",
+          "gateways": "所有互联网网关",
+          "routes": "所有路由表"
+        },
+        "irreversible": "此操作无法撤销！",
+        "deleting": "删除中...",
+        "confirmButton": "确认删除",
+        "cancelButton": "取消"
+      },
+      "toast": {
+        "loadError": "无法加载分区列表: {{message}}",
+        "deleteSuccess": "已删除分区\"{{name}}\"及其内部所有资源",
+        "deleteError": "无法删除分区: {{message}}"
+      }
+    },
+    "costs": {
+      "title": "费用 & 积分",
+      "subtitle": "所有用户的财务概览",
+      "back": "返回",
+      "refresh": "刷新",
+      "loading": "加载费用数据中...",
+      "summary": {
+        "totalBalance": "总剩余余额",
+        "totalBalanceDesc": "所有用户钱包的总和",
+        "totalDeposited": "总充值金额",
+        "totalDepositedDesc": "所有充值交易的累计",
+        "totalSpent": "总消费金额",
+        "totalSpentDesc": "所有扣款交易的累计",
+        "users": "用户数量",
+        "usersDesc": "拥有活跃钱包的用户"
+      },
+      "timeBreakdown": {
+        "title": "按时间统计",
+        "monthly": "按月",
+        "yearly": "按年"
+      },
+      "months": {
+        "jan": "1月", "feb": "2月", "mar": "3月",
+        "apr": "4月", "may": "5月", "jun": "6月",
+        "jul": "7月", "aug": "8月", "sep": "9月",
+        "oct": "10月", "nov": "11月", "dec": "12月"
+      },
+      "table": {
+        "month": "月份",
+        "year": "年份",
+        "deposited": "充值",
+        "spent": "消费",
+        "difference": "差额"
+      },
+      "perUser": {
+        "title": "按用户明细",
+        "searchPlaceholder": "搜索邮箱或姓名...",
+        "user": "用户",
+        "currentBalance": "当前余额",
+        "totalDeposited": "总充值",
+        "totalSpent": "总消费",
+        "status": "状态",
+        "low": "低",
+        "normal": "正常",
+        "noUser": "未找到用户"
+      }
+    },
+    "loginHistory": {
+      "title": "登录历史",
+      "subtitle": "跟踪和监控所有管理员登录活动",
+      "stats": {
+        "totalLogins": "总登录次数",
+        "last30Days": "过去30天",
+        "successRate": "成功率",
+        "successful": "{{count}}次成功",
+        "failedAttempts": "失败次数",
+        "locked": "锁定: {{count}}",
+        "uniqueDevices": "独立设备",
+        "countries": "{{count}}个国家"
+      },
+      "suspicious": {
+        "alert": "⚠️ 检测到{{count}}次可疑登录尝试",
+        "failedFrom": "{{date}}从{{ip}}登录失败",
+        "more": "...还有{{count}}条"
+      },
+      "filters": {
+        "status": "状态",
+        "all": "全部",
+        "success": "成功",
+        "failed": "失败",
+        "locked": "已锁定",
+        "fromDate": "开始日期",
+        "toDate": "结束日期",
+        "sortBy": "排序方式",
+        "loginTime": "登录时间",
+        "username": "用户名",
+        "statusSort": "状态",
+        "refresh": "刷新",
+        "loading": "加载中..."
+      },
+      "showing": "显示第{{from}}至{{to}}条，共{{total}}条",
+      "export": "导出CSV",
+      "exportSuccess": "登录历史已导出为CSV",
+      "exportError": "导出登录历史失败",
+      "table": {
+        "account": "账户",
+        "loginTime": "登录时间",
+        "status": "状态",
+        "ip": "IP地址",
+        "location": "位置",
+        "browser": "浏览器",
+        "os": "系统",
+        "device": "设备",
+        "duration": "时长",
+        "newDevice": "新设备"
+      },
+      "noRecords": "无登录记录",
+      "loading": "加载中...",
+      "active": "活跃",
+      "new": "新",
+      "known": "已知",
+      "pagination": {
+        "recordsPerPage": "每页记录数:",
+        "page": "第{{current}} / {{total}}页",
+        "prev": "上一页",
+        "next": "下一页"
+      }
+    },
+    "payments": {
+      "title": "支付管理",
+      "subtitle": "所有支付交易列表",
+      "refresh": "刷新",
+      "summary": {
+        "total": "总支付",
+        "pending": "待处理",
+        "expired": "已过期",
+        "success": "成功"
+      },
+      "list": {
+        "title": "支付列表 ({{count}})",
+        "searchPlaceholder": "按交易码、邮箱、姓名搜索..."
+      },
+      "table": {
+        "transactionCode": "交易码",
+        "subscriptionId": "订阅ID",
+        "user": "用户",
+        "amount": "金额",
+        "type": "类型",
+        "method": "方式",
+        "status": "状态",
+        "createdAt": "创建日期",
+        "actions": "操作"
+      },
+      "status": {
+        "success": "成功",
+        "pending": "待处理",
+        "failed": "失败",
+        "expired": "已过期",
+        "deleted": "已删除"
+      },
+      "paymentType": {
+        "deposit": "充值",
+        "subscription": "订阅"
+      },
+      "actions": {
+        "accept": "接受",
+        "processing": "处理中...",
+        "completed": "已完成",
+        "failed": "失败",
+        "expired": "已过期",
+        "deleted": "已删除"
+      },
+      "pagination": {
+        "info": "第{{current}} / {{total}}页 — 共{{count}}笔"
+      },
+      "confirm": {
+        "title": "确认接受支付",
+        "description": "您确定要接受此支付吗？这将激活订阅或为用户添加资金。",
+        "confirm": "确认",
+        "cancel": "取消"
+      },
+      "loading": "加载数据中...",
+      "noPayments": "未找到支付记录",
+      "toast": {
+        "acceptSuccess": "支付已成功接受！",
+        "acceptError": "支付错误",
+        "acceptErrorDesc": "接受支付时发生错误"
+      }
+    },
+    "supportTickets": {
+      "title": "支持请求管理",
+      "subtitle": "跟踪和处理用户支持请求",
+      "refresh": "刷新",
+      "stats": {
+        "total": "总请求",
+        "open": "开放",
+        "inProgress": "处理中",
+        "resolved": "已解决",
+        "urgent": "紧急"
+      },
+      "filters": {
+        "searchPlaceholder": "按标题、邮箱、姓名搜索...",
+        "status": "状态",
+        "priority": "优先级",
+        "allStatus": "所有状态",
+        "allPriority": "所有优先级"
+      },
+      "status": {
+        "open": "开放",
+        "inProgress": "处理中",
+        "resolved": "已解决",
+        "closed": "已关闭"
+      },
+      "priority": {
+        "low": "低",
+        "medium": "中",
+        "high": "高",
+        "urgent": "紧急"
+      },
+      "services": {
+        "cloud": "云服务器",
+        "storage": "对象存储",
+        "network": "网络 / VPN",
+        "billing": "账单",
+        "account": "账户",
+        "other": "其他"
+      },
+      "table": {
+        "title": "请求 ({{count}})",
+        "id": "#",
+        "titleHeader": "标题 / 客户",
+        "service": "服务",
+        "status": "状态",
+        "priority": "优先级",
+        "date": "提交日期",
+        "actions": "操作",
+        "noData": "无请求"
+      },
+      "detail": {
+        "phone": "电话",
+        "address": "地址",
+        "content": "请求内容",
+        "statusLabel": "状态",
+        "priorityLabel": "优先级",
+        "resolvedAt": "解决时间",
+        "adminNote": "备注 / 客户回复",
+        "adminNotePlaceholder": "输入客户回复... (客户将看到此内容)",
+        "save": "保存回复",
+        "saving": "保存中..."
+      },
+      "delete": {
+        "title": "确认删除支持请求",
+        "description": "您确定要删除此支持请求吗？此操作无法撤销。",
+        "confirm": "删除",
+        "cancel": "取消"
+      },
+      "toast": {
+        "loadError": "无法加载支持请求列表",
+        "updated": "已更新",
+        "updateSuccess": "工单更新成功",
+        "deleted": "工单已删除",
+        "error": "错误"
+      }
+    },
+    "paymentsTitle": "支付管理",
+    "paymentsDesc": "查看和接受支付",
+    "paymentsStats": "支付管理",
+    "loginHistoryTitle": "登录历史",
+    "loginHistoryDesc": "跟踪管理员登录活动",
+    "loginHistoryStats": "安全审计",
+    "compartmentTitle": "分区管理",
+    "compartmentDesc": "查看和删除OCI中的分区",
+    "compartmentStats": "OCI资源",
+    "analyticsTitle": "分析",
+    "analyticsDesc": "查看页面浏览量和用户互动统计",
+    "analyticsStats": "网站分析",
+    "bandwidthTitle": "带宽监控",
+    "bandwidthDesc": "监控所有虚拟机的带宽（限制10TB）",
+    "bandwidthStats": "带宽监控",
+    "supportTicketsTitle": "支持请求",
+    "supportTicketsDesc": "跟踪和处理用户支持请求",
+    "supportTicketsStats": "支持工单",
+    "costsTitle": "费用 & 积分",
+    "costsDesc": "各用户、月份、年份的总余额、充值和消费额",
+    "costsStats": "费用 & 积分概览",
+    "users": {
+      "editDialog": {
+        "title": "编辑用户信息 #{{id}}",
+        "description": "更新用户的详细信息。点击\"保存更改\"以应用。",
+        "lastName": "姓",
+        "firstName": "名",
+        "email": "邮箱",
+        "phone": "电话号码",
+        "backupEmail": "备用邮箱",
+        "company": "公司",
+        "address": "地址",
+        "idCard": "身份证号",
+        "gender": "性别",
+        "genderPlaceholder": "选择性别",
+        "male": "男",
+        "female": "女",
+        "other": "其他",
+        "role": "角色",
+        "statusLabel": "状态",
+        "active": "活跃",
+        "locked": "已锁定",
+        "cancel": "取消",
+        "save": "保存更改",
+        "saving": "保存中..."
+      },
+      "deleteDialog": {
+        "title": "确认删除用户",
+        "description": "您确定要删除此用户吗？此操作无法撤销。",
+        "confirm": "删除",
+        "cancel": "取消"
+      },
+      "pagination": {
+        "info": "第{{current}} / {{total}}页 — 共{{count}}名用户"
+      },
+      "toast": {
+        "updateSuccess": "用户信息更新成功",
+        "updateError": "无法更新用户信息",
+        "deleteSuccess": "用户删除成功",
+        "deleteError": "无法删除用户"
+      },
+      "export": {
+        "fullName": "全名",
+        "phone": "电话号码",
+        "company": "公司",
+        "role": "角色",
+        "status": "状态",
+        "createdAt": "创建日期",
+        "updatedAt": "更新日期",
+        "notAvailable": "无",
+        "sheetName": "用户列表",
+        "active": "活跃",
+        "locked": "锁定"
+      }
+    },
+    "packagesExtra": {
+      "dialog": {
+        "deleteTitle": "确认删除服务套餐",
+        "deleteDesc": "您确定要删除此套餐吗？此操作无法撤销。",
+        "cancel": "取消",
+        "delete": "删除"
+      },
+      "table": {
+        "package": "套餐",
+        "type": "类型",
+        "price": "价格",
+        "specs": "规格",
+        "features": "功能",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "createForm": {
+        "priceUSD": "价格 (USD / 月)",
+        "priceVND": "价格 (VND / 月)",
+        "storage": "存储",
+        "storagePlaceholder": "例如: 80 GB SSD",
+        "bandwidthLabel": "带宽",
+        "bandwidthPlaceholder": "例如: 1 TB",
+        "feature": "功能 / 备注",
+        "featurePlaceholder": "附加功能或备注...",
+        "isActive": "激活（对用户可见）",
+        "saving": "保存中..."
       }
     }
   },
@@ -686,7 +1209,8 @@
   },
   "common": {
     "loading": "加载中...",
-    "logoutSuccess": "退出成功！"
+    "logoutSuccess": "退出成功！",
+    "error": "错误"
   },
   "checkout": {
     "title": "结账",

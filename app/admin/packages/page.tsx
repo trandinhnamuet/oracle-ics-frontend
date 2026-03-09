@@ -224,25 +224,25 @@ export default function PackagesManagementPage() {
                   <thead className="bg-gray-50 dark:bg-muted border-b dark:border-border">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
-                        Package
+                        {t('admin.packagesExtra.table.package')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
-                        Type
+                        {t('admin.packagesExtra.table.type')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
-                        Price
+                        {t('admin.packagesExtra.table.price')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
-                        Specs
+                        {t('admin.packagesExtra.table.specs')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
-                        Features
+                        {t('admin.packagesExtra.table.features')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
-                        Status
+                        {t('admin.packagesExtra.table.status')}
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
-                        Actions
+                        {t('admin.packagesExtra.table.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -300,11 +300,11 @@ export default function PackagesManagementPage() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             {pkg.is_active ? (
                               <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-0 gap-1">
-                                <CheckCircle className="h-3 w-3" /> Active
+                                <CheckCircle className="h-3 w-3" /> {t('admin.packages.management.table.active')}
                               </Badge>
                             ) : (
                               <Badge className="bg-gray-100 dark:bg-muted text-gray-500 dark:text-muted-foreground border-0 gap-1">
-                                <XCircle className="h-3 w-3" /> Inactive
+                                <XCircle className="h-3 w-3" /> {t('admin.packages.management.table.inactive')}
                               </Badge>
                             )}
                           </td>
@@ -356,12 +356,12 @@ export default function PackagesManagementPage() {
         <AlertDialog open={pendingDeleteId !== null} onOpenChange={(open) => !open && setPendingDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Xác nhận xóa gói dịch vụ</AlertDialogTitle>
-              <AlertDialogDescription>Bạn có chắc chắn muốn xóa gói này không? Hành động này không thể hoàn tác.</AlertDialogDescription>
+              <AlertDialogTitle>{t('admin.packagesExtra.dialog.deleteTitle')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('admin.packagesExtra.dialog.deleteDesc')}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction onClick={executeDeletePackage} className="bg-destructive hover:bg-destructive/90">Xóa</AlertDialogAction>
+              <AlertDialogCancel>{t('admin.packagesExtra.dialog.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={executeDeletePackage} className="bg-destructive hover:bg-destructive/90">{t('admin.packagesExtra.dialog.delete')}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

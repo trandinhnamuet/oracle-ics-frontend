@@ -111,15 +111,15 @@ export default function BandwidthManagementPage() {
 
   const getStatusBadge = (bandwidth: BandwidthData) => {
     if (bandwidth.error) {
-      return <Badge variant="secondary">Error</Badge>
+      return <Badge variant="secondary">{t('admin.bandwidth.status.error')}</Badge>
     }
     if (bandwidth.isOverLimit) {
-      return <Badge variant="destructive" className="animate-pulse">Vượt giới hạn</Badge>
+      return <Badge variant="destructive" className="animate-pulse">{t('admin.bandwidth.status.overLimit')}</Badge>
     }
     if (bandwidth.isNearLimit) {
-      return <Badge variant="default" className="bg-orange-500">Cảnh báo</Badge>
+      return <Badge variant="default" className="bg-orange-500">{t('admin.bandwidth.status.warning')}</Badge>
     }
-    return <Badge variant="default" className="bg-green-500">Bình thường</Badge>
+    return <Badge variant="default" className="bg-green-500">{t('admin.bandwidth.status.normal')}</Badge>
   }
 
   const getProgressBarColor = (percentage: number) => {
@@ -156,7 +156,7 @@ export default function BandwidthManagementPage() {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <RefreshCw className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
-            <p className="text-lg">Đang tải dữ liệu băng thông...</p>
+            <p className="text-lg">{t('admin.bandwidth.loading')}</p>
           </div>
         </div>
       </div>
@@ -168,9 +168,9 @@ export default function BandwidthManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Giám sát Băng thông</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('admin.bandwidth.title')}</h1>
           <p className="text-muted-foreground">
-            Theo dõi và kiểm tra băng thông của tất cả các máy ảo
+            {t('admin.bandwidth.subtitle')}
           </p>
         </div>
         <div className="flex gap-2">
@@ -179,14 +179,14 @@ export default function BandwidthManagementPage() {
             onChange={(e) => setTimeRange(e.target.value)}
             className="px-4 py-2 border rounded-md bg-background"
           >
-            <option value="24h">24 giờ</option>
-            <option value="7d">7 ngày</option>
-            <option value="30d">30 ngày</option>
-            <option value="90d">90 ngày</option>
+            <option value="24h">{t('admin.bandwidth.timeRange.24h')}</option>
+            <option value="7d">{t('admin.bandwidth.timeRange.7d')}</option>
+            <option value="30d">{t('admin.bandwidth.timeRange.30d')}</option>
+            <option value="90d">{t('admin.bandwidth.timeRange.90d')}</option>
           </select>
           <Button onClick={handleRefresh} disabled={refreshing} variant="outline">
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Làm mới
+            {t('admin.bandwidth.refresh')}
           </Button>
         </div>
       </div>
@@ -198,7 +198,7 @@ export default function BandwidthManagementPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">Tổng số VM</p>
+                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.totalVMs')}</p>
                   <p className="text-3xl font-bold">{data.summary.totalVMs}</p>
                 </div>
                 <Server className="h-12 w-12 opacity-80" />
@@ -210,7 +210,7 @@ export default function BandwidthManagementPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">Vượt giới hạn</p>
+                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.overLimit')}</p>
                   <p className="text-3xl font-bold">{data.summary.overLimitVMs}</p>
                 </div>
                 <AlertTriangle className="h-12 w-12 opacity-80" />
@@ -222,7 +222,7 @@ export default function BandwidthManagementPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">Gần giới hạn</p>
+                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.nearLimit')}</p>
                   <p className="text-3xl font-bold">{data.summary.nearLimitVMs}</p>
                 </div>
                 <Activity className="h-12 w-12 opacity-80" />
@@ -234,7 +234,7 @@ export default function BandwidthManagementPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">Tổng băng thông</p>
+                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.totalBandwidth')}</p>
                   <p className="text-3xl font-bold">{data.summary.totalBandwidthUsedTB.toFixed(2)} TB</p>
                 </div>
                 <Database className="h-12 w-12 opacity-80" />
@@ -246,7 +246,7 @@ export default function BandwidthManagementPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">Trung bình</p>
+                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.average')}</p>
                   <p className="text-3xl font-bold">{data.summary.averageUsagePercentage.toFixed(1)}%</p>
                 </div>
                 <TrendingUp className="h-12 w-12 opacity-80" />
@@ -262,7 +262,7 @@ export default function BandwidthManagementPage() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
-              <span className="font-medium">Lọc:</span>
+              <span className="font-medium">{t('admin.bandwidth.filter.label')}</span>
             </div>
             <div className="flex gap-2">
               <Button
@@ -270,41 +270,41 @@ export default function BandwidthManagementPage() {
                 size="sm"
                 onClick={() => setFilterStatus('all')}
               >
-                Tất cả ({data?.vms.length || 0})
+                {t('admin.bandwidth.filter.all')} ({data?.vms.length || 0})
               </Button>
               <Button
                 variant={filterStatus === 'over' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterStatus('over')}
               >
-                Vượt giới hạn ({data?.summary.overLimitVMs || 0})
+                {t('admin.bandwidth.filter.over')} ({data?.summary.overLimitVMs || 0})
               </Button>
               <Button
                 variant={filterStatus === 'near' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterStatus('near')}
               >
-                Cảnh báo ({data?.summary.nearLimitVMs || 0})
+                {t('admin.bandwidth.filter.near')} ({data?.summary.nearLimitVMs || 0})
               </Button>
               <Button
                 variant={filterStatus === 'normal' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterStatus('normal')}
               >
-                Bình thường
+                {t('admin.bandwidth.filter.normal')}
               </Button>
             </div>
             <div className="ml-auto flex items-center gap-2">
               <ArrowUpDown className="h-4 w-4" />
-              <span className="font-medium">Sắp xếp:</span>
+              <span className="font-medium">{t('admin.bandwidth.sort.label')}</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="px-3 py-1 border rounded-md bg-background"
               >
-                <option value="usage">Mức sử dụng</option>
-                <option value="name">Tên VM</option>
-                <option value="user">Người dùng</option>
+                <option value="usage">{t('admin.bandwidth.sort.usage')}</option>
+                <option value="name">{t('admin.bandwidth.sort.name')}</option>
+                <option value="user">{t('admin.bandwidth.sort.user')}</option>
               </select>
             </div>
           </div>
@@ -335,8 +335,8 @@ export default function BandwidthManagementPage() {
                       </div>
                       <div>Email: {vm.userEmail}</div>
                       <div>IP: {vm.publicIp || 'N/A'}</div>
-                      <div>Gói: {vm.packageName}</div>
-                      {vm.companyName && <div>Công ty: {vm.companyName}</div>}
+                      <div>{t('admin.bandwidth.details.package')}: {vm.packageName}</div>
+                      {vm.companyName && <div>{t('admin.bandwidth.details.company')}: {vm.companyName}</div>}
                     </div>
                   </div>
                 </div>
@@ -346,7 +346,7 @@ export default function BandwidthManagementPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium">
-                        Băng thông: {vm.bandwidth.totalTB.toFixed(4)} TB / {vm.bandwidth.limitTB} TB
+                        {t('admin.bandwidth.details.bandwidth')}: {vm.bandwidth.totalTB.toFixed(4)} TB / {vm.bandwidth.limitTB} TB
                       </span>
                       <span className="font-bold text-lg">
                         {vm.bandwidth.usagePercentage.toFixed(2)}%
@@ -366,22 +366,22 @@ export default function BandwidthManagementPage() {
                 {/* Bandwidth Details */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Tải xuống</p>
+                    <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.download')}</p>
                     <p className="text-lg font-bold">{formatBytes(vm.bandwidth.bytesIn)}</p>
                   </div>
                   <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Tải lên</p>
+                    <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.upload')}</p>
                     <p className="text-lg font-bold">{formatBytes(vm.bandwidth.bytesOut)}</p>
                   </div>
                   <div className="bg-purple-50 dark:bg-purple-950 p-3 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Còn lại</p>
+                    <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.remaining')}</p>
                     <p className="text-lg font-bold">
                       {vm.bandwidth.remainingTB > 0 ? `${vm.bandwidth.remainingTB.toFixed(4)} TB` : '0 TB'}
                     </p>
                   </div>
                   {vm.bandwidth.isOverLimit && (
                     <div className="bg-red-50 dark:bg-red-950 p-3 rounded-lg border-2 border-red-500">
-                      <p className="text-xs text-muted-foreground mb-1">Vượt quá</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.exceeded')}</p>
                       <p className="text-lg font-bold text-red-600 dark:text-red-400">
                         +{vm.bandwidth.exceededTB.toFixed(4)} TB
                       </p>
@@ -395,11 +395,10 @@ export default function BandwidthManagementPage() {
                     <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-bold text-red-700 dark:text-red-400">
-                        Cảnh báo: Vượt quá giới hạn băng thông!
+                        {t('admin.bandwidth.warning.overLimitTitle')}
                       </p>
                       <p className="text-sm text-red-600 dark:text-red-300">
-                        VM này đã sử dụng vượt quá {vm.bandwidth.exceededTB.toFixed(4)} TB so với giới hạn cho phép (10 TB). 
-                        Vui lòng liên hệ với người dùng để xử lý.
+                        {t('admin.bandwidth.warning.overLimitMessage', { exceeded: vm.bandwidth.exceededTB.toFixed(4) })}
                       </p>
                     </div>
                   </div>
@@ -409,11 +408,10 @@ export default function BandwidthManagementPage() {
                     <Activity className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-bold text-orange-700 dark:text-orange-400">
-                        Cảnh báo: Sắp đạt giới hạn băng thông!
+                        {t('admin.bandwidth.warning.nearLimitTitle')}
                       </p>
                       <p className="text-sm text-orange-600 dark:text-orange-300">
-                        VM này đã sử dụng {vm.bandwidth.usagePercentage.toFixed(2)}% băng thông. 
-                        Còn lại {vm.bandwidth.remainingTB.toFixed(4)} TB trước khi đạt giới hạn.
+                        {t('admin.bandwidth.warning.nearLimitMessage', { usage: vm.bandwidth.usagePercentage.toFixed(2), remaining: vm.bandwidth.remainingTB.toFixed(4) })}
                       </p>
                     </div>
                   </div>
@@ -422,7 +420,7 @@ export default function BandwidthManagementPage() {
                 {vm.bandwidth.error && (
                   <div className="bg-gray-50 dark:bg-gray-900 border border-gray-300 rounded-lg p-4">
                     <p className="text-sm text-muted-foreground">
-                      Không thể lấy dữ liệu băng thông: {vm.bandwidth.error}
+                      {t('admin.bandwidth.warning.errorMessage', { error: vm.bandwidth.error })}
                     </p>
                   </div>
                 )}
@@ -436,7 +434,7 @@ export default function BandwidthManagementPage() {
             <CardContent className="py-12 text-center">
               <CheckCircle className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
               <p className="text-lg text-muted-foreground">
-                Không có VM nào phù hợp với bộ lọc hiện tại
+                {t('admin.bandwidth.noVms')}
               </p>
             </CardContent>
           </Card>

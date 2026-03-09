@@ -107,8 +107,8 @@ export default function AdminSubscriptionsPage() {
   const handleDeleteSubscription = (subscriptionId: string) => {
     setConfirmDialog({
       open: true,
-      title: 'Xác nhận xóa subscription',
-      description: 'Bạn có chắc chắn muốn xóa subscription này? Hành động này không thể hoàn tác.',
+      title: t('admin.subscriptions.confirmDialog.deleteSub.title'),
+      description: t('admin.subscriptions.confirmDialog.deleteSub.description'),
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, open: false }))
         try {
@@ -126,13 +126,13 @@ export default function AdminSubscriptionsPage() {
   const handleDeleteSubscriptionWithVm = (subscriptionId: string) => {
     setConfirmDialog({
       open: true,
-      title: 'Xác nhận xóa subscription và VM',
-      description: 'Xóa toàn bộ subscription và máy ảo (VM)? Hành động này không thể hoàn tác.',
+      title: t('admin.subscriptions.confirmDialog.deleteWithVm.title'),
+      description: t('admin.subscriptions.confirmDialog.deleteWithVm.description'),
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, open: false }))
         try {
           await deleteSubscriptionWithVm(subscriptionId)
-          toast({ title: t('admin.subscriptions.toast.success'), description: 'Subscription và VM đã được xóa thành công.' })
+          toast({ title: t('admin.subscriptions.toast.success'), description: t('admin.subscriptions.toast.deleteWithVmSuccess') })
           fetchAllSubscriptions()
         } catch (error: any) {
           console.error('Error deleting subscription:', error)
@@ -145,17 +145,17 @@ export default function AdminSubscriptionsPage() {
   const handleDeleteVmOnly = (subscriptionId: string) => {
     setConfirmDialog({
       open: true,
-      title: 'Xác nhận xóa VM',
-      description: 'Chỉ xóa máy ảo (VM)? Subscription vẫn còn hiệu lực nhưng bạn cần cấu hình lại VM mới.',
+      title: t('admin.subscriptions.confirmDialog.deleteVmOnly.title'),
+      description: t('admin.subscriptions.confirmDialog.deleteVmOnly.description'),
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, open: false }))
         try {
           await deleteVmOnly(subscriptionId)
-          toast({ title: t('admin.subscriptions.toast.success'), description: 'VM đã được xóa. Subscription vẫn còn hiệu lực.' })
+          toast({ title: t('admin.subscriptions.toast.success'), description: t('admin.subscriptions.toast.deleteVmOnlySuccess') })
           fetchAllSubscriptions()
         } catch (error: any) {
           console.error('Error deleting VM:', error)
-          toast({ title: t('admin.subscriptions.toast.error'), description: 'Không thể xóa VM', variant: 'destructive' })
+          toast({ title: t('admin.subscriptions.toast.error'), description: t('admin.subscriptions.toast.deleteVmOnlyError'), variant: 'destructive' })
         }
       },
     })
@@ -164,17 +164,17 @@ export default function AdminSubscriptionsPage() {
   const handleStopVm = (subscriptionId: string) => {
     setConfirmDialog({
       open: true,
-      title: 'Xác nhận dừng VM',
-      description: 'Bạn có chắc chắn muốn dừng VM này không?',
+      title: t('admin.subscriptions.confirmDialog.stopVm.title'),
+      description: t('admin.subscriptions.confirmDialog.stopVm.description'),
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, open: false }))
         try {
           await stopVm(subscriptionId)
-          toast({ title: t('admin.subscriptions.toast.success'), description: 'VM đã được dừng thành công.' })
+          toast({ title: t('admin.subscriptions.toast.success'), description: t('admin.subscriptions.toast.stopVmSuccess') })
           fetchAllSubscriptions()
         } catch (error: any) {
           console.error('Error stopping VM:', error)
-          toast({ title: t('admin.subscriptions.toast.error'), description: 'Không thể dừng VM', variant: 'destructive' })
+          toast({ title: t('admin.subscriptions.toast.error'), description: t('admin.subscriptions.toast.stopVmError'), variant: 'destructive' })
         }
       },
     })
@@ -183,17 +183,17 @@ export default function AdminSubscriptionsPage() {
   const handleStartVm = (subscriptionId: string) => {
     setConfirmDialog({
       open: true,
-      title: 'Xác nhận khởi động VM',
-      description: 'Bạn có chắc chắn muốn khởi động VM này không?',
+      title: t('admin.subscriptions.confirmDialog.startVm.title'),
+      description: t('admin.subscriptions.confirmDialog.startVm.description'),
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, open: false }))
         try {
           await startVm(subscriptionId)
-          toast({ title: t('admin.subscriptions.toast.success'), description: 'VM đã được khởi động thành công.' })
+          toast({ title: t('admin.subscriptions.toast.success'), description: t('admin.subscriptions.toast.startVmSuccess') })
           fetchAllSubscriptions()
         } catch (error: any) {
           console.error('Error starting VM:', error)
-          toast({ title: t('admin.subscriptions.toast.error'), description: 'Không thể khởi động VM', variant: 'destructive' })
+          toast({ title: t('admin.subscriptions.toast.error'), description: t('admin.subscriptions.toast.startVmError'), variant: 'destructive' })
         }
       },
     })
@@ -312,7 +312,7 @@ export default function AdminSubscriptionsPage() {
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search by user, email, ID..."
+              placeholder={t('admin.subscriptions.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -414,7 +414,7 @@ export default function AdminSubscriptionsPage() {
         <CardHeader>
           <CardTitle>{t('admin.subscriptions.table.title')}</CardTitle>
           <div className="text-sm text-gray-500">
-            Showing {subscriptions.length > 0 ? (page - 1) * limit + 1 : 0} to {Math.min(page * limit, total)} of {total} entries
+            {t('admin.subscriptions.table.showing', { from: subscriptions.length > 0 ? (page - 1) * limit + 1 : 0, to: Math.min(page * limit, total), total })}
           </div>
         </CardHeader>
         <CardContent>
@@ -425,7 +425,7 @@ export default function AdminSubscriptionsPage() {
                   <div className="inline-block">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   </div>
-                  <p className="mt-2 text-sm text-gray-600">Loading...</p>
+                  <p className="mt-2 text-sm text-gray-600">{t('common.loading')}</p>
                 </div>
               </div>
             )}
@@ -451,7 +451,7 @@ export default function AdminSubscriptionsPage() {
                       {t('admin.subscriptions.table.user')} {getSortIcon('user_id')}
                     </TableHead>
                     <TableHead>{t('admin.subscriptions.table.package')}</TableHead>
-                    <TableHead>VM Information</TableHead>
+                    <TableHead>{t('admin.subscriptions.table.vmInfo')}</TableHead>
                     <TableHead 
                       onClick={() => handleSort('start_date')}
                       className="cursor-pointer hover:bg-gray-50"
@@ -524,7 +524,7 @@ export default function AdminSubscriptionsPage() {
                             </div>
                             <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
                               <Globe className="h-3 w-3" />
-                              {subscription.vmInstance.public_ip || 'No Public IP'}
+                              {subscription.vmInstance.public_ip || t('admin.subscriptions.table.noPublicIp')}
                             </div>
                             <Badge 
                               variant="outline" 
@@ -541,7 +541,7 @@ export default function AdminSubscriptionsPage() {
                           </div>
                         ) : (
                           <span className="text-xs text-gray-400 italic">
-                            Not configured
+                            {t('admin.subscriptions.table.notConfigured')}
                           </span>
                         )}
                       </TableCell>
@@ -649,7 +649,7 @@ export default function AdminSubscriptionsPage() {
             <div className="mt-6 flex justify-between items-center">
               {/* Records per page */}
               <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-700">Records per page:</label>
+                <label className="text-sm text-gray-700">{t('admin.subscriptions.table.recordsPerPage')}</label>
                 <Select 
                   value={limit.toString()} 
                   onValueChange={(val) => {
@@ -672,12 +672,12 @@ export default function AdminSubscriptionsPage() {
               {/* Page info & navigation */}
               <div className="flex items-center gap-4">
                 <span className="text-sm text-gray-700">
-                  Page {page} of {totalPages}
+                  {t('admin.subscriptions.table.pageOf', { current: page, total: totalPages })}
                 </span>
                 
                 {/* Jump to page */}
                 <div className="flex items-center gap-2">
-                  <label className="text-sm text-gray-700">Go to:</label>
+                  <label className="text-sm text-gray-700">{t('admin.subscriptions.table.goTo')}</label>
                   <Input
                     type="number"
                     min={1}
@@ -723,8 +723,8 @@ export default function AdminSubscriptionsPage() {
             <AlertDialogDescription>{confirmDialog.description}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">Xác nhận</AlertDialogAction>
+            <AlertDialogCancel>{t('admin.subscriptions.confirmDialog.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">{t('admin.subscriptions.confirmDialog.confirm')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

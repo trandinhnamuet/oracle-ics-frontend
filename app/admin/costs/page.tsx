@@ -11,9 +11,7 @@ import { RefreshCw, Search, TrendingUp, TrendingDown, Wallet, Users, ArrowLeft }
 import { getAllWallets, getAllWalletTransactions, UserWallet, WalletTransaction } from '@/api/user-wallet.api'
 import { formatPrice } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-
-const MONTHS_VI = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
-  'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
+import { useTranslation } from 'react-i18next'
 
 interface UserCostSummary {
   userId: number
@@ -34,6 +32,7 @@ interface MonthlyData {
 }
 
 export default function AdminCostsPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const [wallets, setWallets] = useState<UserWallet[]>([])
   const [transactions, setTransactions] = useState<WalletTransaction[]>([])
@@ -95,6 +94,13 @@ export default function AdminCostsPage() {
   }, [transactions])
 
   // ── Monthly breakdown for selected year ─────────────────────
+  const MONTHS = useMemo(() => [
+    t('admin.costs.months.jan'), t('admin.costs.months.feb'), t('admin.costs.months.mar'),
+    t('admin.costs.months.apr'), t('admin.costs.months.may'), t('admin.costs.months.jun'),
+    t('admin.costs.months.jul'), t('admin.costs.months.aug'), t('admin.costs.months.sep'),
+    t('admin.costs.months.oct'), t('admin.costs.months.nov'), t('admin.costs.months.dec'),
+  ], [t])
+
   const monthlyData = useMemo((): MonthlyData[] => {
     const year = parseInt(selectedYear)
     const map = new Map<number, { deposited: number; spent: number }>()
@@ -113,12 +119,12 @@ export default function AdminCostsPage() {
     return Array.from(map.entries()).map(([month, { deposited, spent }]) => ({
       month,
       year,
-      label: MONTHS_VI[month - 1],
+      label: MONTHS[month - 1],
       totalDeposited: deposited,
       totalSpent: spent,
       net: deposited - spent,
     }))
-  }, [transactions, selectedYear])
+  }, [transactions, selectedYear, MONTHS])
 
   // ── Yearly breakdown ─────────────────────────────────────────
   const yearlyData = useMemo(() => {
@@ -197,7 +203,7 @@ export default function AdminCostsPage() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <RefreshCw className="h-8 w-8 animate-spin text-primary mr-2" />
-        <span>Đang tải dữ liệu chi phí...</span>
+        <span>{t('admin.costs.loading')}</span>
       </div>
     )
   }
@@ -209,16 +215,16 @@ export default function AdminCostsPage() {
         <div className="flex items-center gap-4">
           <Button variant="outline" size="sm" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Quay lại
+            {t('admin.costs.back')}
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Chi phí &amp; Credit</h1>
-            <p className="text-muted-foreground mt-1">Tổng quan tài chính tất cả người dùng</p>
+            <h1 className="text-3xl font-bold">{t('admin.costs.title')}</h1>
+            <p className="text-muted-foreground mt-1">{t('admin.costs.subtitle')}</p>
           </div>
         </div>
         <Button onClick={fetchData} variant="outline" disabled={loading}>
           <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          Làm mới
+          {t('admin.costs.refresh')}
         </Button>
       </div>
 
@@ -226,45 +232,45 @@ export default function AdminCostsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng số dư còn lại</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('admin.costs.summary.totalBalance')}</CardTitle>
             <Wallet className="h-5 w-5 text-blue-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">{formatPrice(totalBalance)}₫</div>
-            <p className="text-xs text-muted-foreground mt-1">Tổng tất cả ví người dùng</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('admin.costs.summary.totalBalanceDesc')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng tiền đã nạp</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('admin.costs.summary.totalDeposited')}</CardTitle>
             <TrendingUp className="h-5 w-5 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{formatPrice(totalDeposited)}₫</div>
-            <p className="text-xs text-muted-foreground mt-1">Tích lũy từ tất cả giao dịch nạp</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('admin.costs.summary.totalDepositedDesc')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng tiền đã sử dụng</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('admin.costs.summary.totalSpent')}</CardTitle>
             <TrendingDown className="h-5 w-5 text-red-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{formatPrice(totalSpent)}₫</div>
-            <p className="text-xs text-muted-foreground mt-1">Tích lũy từ tất cả giao dịch trừ</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('admin.costs.summary.totalSpentDesc')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Số người dùng</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('admin.costs.summary.users')}</CardTitle>
             <Users className="h-5 w-5 text-purple-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">{totalUsers}</div>
-            <p className="text-xs text-muted-foreground mt-1">Người dùng có ví đang hoạt động</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('admin.costs.summary.usersDesc')}</p>
           </CardContent>
         </Card>
       </div>
@@ -273,20 +279,20 @@ export default function AdminCostsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <CardTitle>Thống kê theo thời gian</CardTitle>
+            <CardTitle>{t('admin.costs.timeBreakdown.title')}</CardTitle>
             <div className="flex items-center gap-2">
               <div className="flex border rounded-lg overflow-hidden">
                 <button
                   className={`px-3 py-1.5 text-sm font-medium transition-colors ${viewMode === 'monthly' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
                   onClick={() => setViewMode('monthly')}
                 >
-                  Theo tháng
+                  {t('admin.costs.timeBreakdown.monthly')}
                 </button>
                 <button
                   className={`px-3 py-1.5 text-sm font-medium transition-colors ${viewMode === 'yearly' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
                   onClick={() => setViewMode('yearly')}
                 >
-                  Theo năm
+                  {t('admin.costs.timeBreakdown.yearly')}
                 </button>
               </div>
               {viewMode === 'monthly' && (
@@ -308,10 +314,10 @@ export default function AdminCostsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{viewMode === 'monthly' ? 'Tháng' : 'Năm'}</TableHead>
-                <TableHead className="text-right">Tiền nạp</TableHead>
-                <TableHead className="text-right">Tiền dùng</TableHead>
-                <TableHead className="text-right">Chênh lệch</TableHead>
+                <TableHead>{viewMode === 'monthly' ? t('admin.costs.table.month') : t('admin.costs.table.year')}</TableHead>
+                <TableHead className="text-right">{t('admin.costs.table.deposited')}</TableHead>
+                <TableHead className="text-right">{t('admin.costs.table.spent')}</TableHead>
+                <TableHead className="text-right">{t('admin.costs.table.difference')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -357,12 +363,12 @@ export default function AdminCostsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <CardTitle>Chi tiết theo người dùng</CardTitle>
+            <CardTitle>{t('admin.costs.perUser.title')}</CardTitle>
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 className="pl-9"
-                placeholder="Tìm email hoặc tên..."
+                placeholder={t('admin.costs.perUser.searchPlaceholder')}
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
@@ -373,18 +379,18 @@ export default function AdminCostsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Người dùng</TableHead>
-                <TableHead className="text-right">Số dư hiện tại</TableHead>
-                <TableHead className="text-right">Tổng đã nạp</TableHead>
-                <TableHead className="text-right">Tổng đã dùng</TableHead>
-                <TableHead className="text-right">Trạng thái</TableHead>
+                <TableHead>{t('admin.costs.perUser.user')}</TableHead>
+                <TableHead className="text-right">{t('admin.costs.perUser.currentBalance')}</TableHead>
+                <TableHead className="text-right">{t('admin.costs.perUser.totalDeposited')}</TableHead>
+                <TableHead className="text-right">{t('admin.costs.perUser.totalSpent')}</TableHead>
+                <TableHead className="text-right">{t('admin.costs.perUser.status')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                    Không tìm thấy người dùng nào
+                    {t('admin.costs.perUser.noUser')}
                   </TableCell>
                 </TableRow>
               )}
@@ -410,7 +416,7 @@ export default function AdminCostsPage() {
                         ? 'border-green-300 text-green-700 bg-green-50'
                         : 'border-gray-300 text-gray-600 bg-gray-50'}
                     >
-                      {user.balance > 0 ? 'Còn dư' : 'Hết dư'}
+                      {user.balance > 0 ? t('admin.costs.perUser.normal') : t('admin.costs.perUser.low')}
                     </Badge>
                   </TableCell>
                 </TableRow>

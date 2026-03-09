@@ -192,7 +192,16 @@
         "bandwidth": "帯域幅"
       },
       "footer": "{{current}} / {{total}} 登録を表示",
-      "loading": "データ読み込み中..."
+      "loading": "データ読み込み中...",
+      "export": {
+        "phone": "電話番号",
+        "detail": "詳細",
+        "createdAt": "登録日",
+        "createdBy": "作成者",
+        "notAvailable": "なし",
+        "sheetName": "カスタム登録履歴",
+        "system": "システム"
+      }
     },
     "packages": {
       "createPackage": {
@@ -264,7 +273,9 @@
           "actions": "操作",
           "moreFeatures": "その他の機能",
           "popular": "人気",
-          "noPackagesFound": "サービスパッケージが見つかりません"
+          "noPackagesFound": "サービスパッケージが見つかりません",
+          "active": "アクティブ",
+          "inactive": "非アクティブ"
         },
         "toast": {
           "createSuccess": "成功",
@@ -329,7 +340,519 @@
         "loadError": "サブスクリプションリストを読み込めません",
         "deleteSuccess": "サブスクリプションが正常に削除されました",
         "deleteError": "サブスクリプションを削除できません",
+        "deleteWithVmSuccess": "サブスクリプションとVMが正常に削除されました。",
+        "deleteVmOnlySuccess": "VMが削除されました。サブスクリプションは有効です。",
+        "deleteVmOnlyError": "VMを削除できません",
+        "stopVmSuccess": "VMが正常に停止されました。",
+        "stopVmError": "VMを停止できません",
+        "startVmSuccess": "VMが正常に起動されました。",
+        "startVmError": "VMを起動できません",
         "editInDevelopment": "編集機能は開発中です"
+      },
+      "confirmDialog": {
+        "deleteSub": {
+          "title": "サブスクリプション削除の確認",
+          "description": "このサブスクリプションを削除しますか？この操作は取り消せません。"
+        },
+        "deleteWithVm": {
+          "title": "サブスクリプションとVM削除の確認",
+          "description": "サブスクリプションと仮想マシン(VM)をすべて削除しますか？この操作は取り消せません。"
+        },
+        "deleteVmOnly": {
+          "title": "VM削除の確認",
+          "description": "仮想マシン(VM)のみ削除しますか？サブスクリプションは有効ですが、新しいVMを設定する必要があります。"
+        },
+        "stopVm": {
+          "title": "VM停止の確認",
+          "description": "このVMを停止しますか？"
+        },
+        "startVm": {
+          "title": "VM起動の確認",
+          "description": "このVMを起動しますか？"
+        },
+        "cancel": "キャンセル",
+        "confirm": "確認"
+      },
+      "table": {
+        "vmInfo": "VM情報",
+        "noPublicIp": "パブリックIPなし",
+        "notConfigured": "未設定",
+        "showing": "{{total}}件中{{from}}～{{to}}件を表示",
+        "recordsPerPage": "1ページあたりの件数:",
+        "goTo": "移動:",
+        "pageOf": "{{current}} / {{total}} ページ"
+      }
+    },
+    "analytics": {
+      "title": "アナリティクスダッシュボード",
+      "subtitle": "ウェブサイトのトラフィックと訪問者の統計",
+      "dateRange": {
+        "last7Days": "過去7日間",
+        "last30Days": "過去30日間",
+        "last90Days": "過去90日間",
+        "refresh": "更新"
+      },
+      "summary": {
+        "totalPageViews": "総ページビュー",
+        "totalPageViewsDesc": "選択期間のページビュー",
+        "uniqueUsers": "ユニークユーザー",
+        "uniqueUsersDesc": "サイトのユニーク訪問者",
+        "bounceRate": "直帰率",
+        "bounceRateDesc": "インタラクションなしで離脱した訪問者",
+        "avgLoadTime": "平均ロード時間",
+        "avgLoadTimeDesc": "平均ページロード時間"
+      },
+      "charts": {
+        "pageViewsOverTime": "時間別ページビュー",
+        "topPages": "人気ページ",
+        "userEvents": "ユーザーイベント",
+        "allEvents": "すべてのイベント",
+        "googleAnalytics": "Google Analytics統合",
+        "googleAnalyticsDesc": "このダッシュボードはウェブサイトの分析データを表示します。Google Analyticsトラッキングを有効にするには:",
+        "gaStep1": ".env.localファイルにNEXT_PUBLIC_GA_MEASUREMENT_IDとしてGoogle Analytics測定IDを設定してください",
+        "gaStep2": "変更をデプロイしてGoogle Analyticsトラッキングを有効化してください",
+        "gaStep3": "Google Analyticsコンソールで詳細な分析を確認してください"
+      },
+      "loading": "アナリティクスを読み込み中...",
+      "error": "エラー",
+      "retry": "再試行",
+      "noData": "データがありません",
+      "noPageData": "ページデータがありません",
+      "noEventData": "イベントデータがありません"
+    },
+    "bandwidth": {
+      "title": "帯域幅モニター",
+      "subtitle": "すべての仮想マシンの帯域幅を追跡・監視",
+      "loading": "帯域幅データを読み込み中...",
+      "refresh": "更新",
+      "timeRange": {
+        "24h": "24時間",
+        "7d": "7日間",
+        "30d": "30日間",
+        "90d": "90日間"
+      },
+      "summary": {
+        "totalVMs": "総VM数",
+        "overLimit": "制限超過",
+        "nearLimit": "制限近傍",
+        "totalBandwidth": "総帯域幅",
+        "average": "平均"
+      },
+      "filter": {
+        "label": "フィルター:",
+        "all": "すべて",
+        "over": "制限超過",
+        "near": "警告",
+        "normal": "正常"
+      },
+      "sort": {
+        "label": "並び替え:",
+        "usage": "使用量",
+        "name": "VM名",
+        "user": "ユーザー"
+      },
+      "status": {
+        "overLimit": "制限超過",
+        "warning": "警告",
+        "normal": "正常",
+        "error": "エラー"
+      },
+      "details": {
+        "download": "ダウンロード",
+        "upload": "アップロード",
+        "remaining": "残量",
+        "exceeded": "超過",
+        "bandwidth": "帯域幅",
+        "package": "パッケージ",
+        "company": "会社"
+      },
+      "warning": {
+        "overLimitTitle": "警告: 帯域幅制限超過！",
+        "overLimitMessage": "このVMは許可制限(10 TB)を{{exceeded}} TB超過しました。処理のためユーザーに連絡してください。",
+        "nearLimitTitle": "警告: 帯域幅制限に近づいています！",
+        "nearLimitMessage": "このVMは帯域幅の{{usage}}%を使用しています。制限まで{{remaining}} TB残っています。",
+        "errorMessage": "帯域幅データを取得できません: {{error}}"
+      },
+      "noVms": "現在のフィルターに一致するVMがありません"
+    },
+    "compartment": {
+      "title": "コンパートメント管理",
+      "subtitle": "OCIテナンシのコンパートメント一覧",
+      "refresh": "更新",
+      "loading": "コンパートメントを読み込み中...",
+      "noCompartments": "コンパートメントがありません",
+      "noDescription": "説明なし",
+      "createdAt": "作成日",
+      "deleteButton": "コンパートメントを削除",
+      "dialog": {
+        "title": "コンパートメント削除の確認",
+        "description1": "コンパートメントを削除しますか",
+        "description2": "?",
+        "warning": "⚠️ この操作はコンパートメント内のすべてのリソースを削除します:",
+        "items": {
+          "vms": "すべてのVMインスタンス",
+          "vcns": "すべてのVCN（仮想クラウドネットワーク）",
+          "subnets": "すべてのサブネット",
+          "gateways": "すべてのインターネットゲートウェイ",
+          "routes": "すべてのルートテーブル"
+        },
+        "irreversible": "この操作は取り消せません！",
+        "deleting": "削除中...",
+        "confirmButton": "削除を確認",
+        "cancelButton": "キャンセル"
+      },
+      "toast": {
+        "loadError": "コンパートメントリストを読み込めません: {{message}}",
+        "deleteSuccess": "コンパートメント\"{{name}}\"と内部のすべてのリソースが削除されました",
+        "deleteError": "コンパートメントを削除できません: {{message}}"
+      }
+    },
+    "costs": {
+      "title": "コスト & クレジット",
+      "subtitle": "すべてのユーザーの財務概要",
+      "back": "戻る",
+      "refresh": "更新",
+      "loading": "コストデータを読み込み中...",
+      "summary": {
+        "totalBalance": "総残高",
+        "totalBalanceDesc": "すべてのユーザーウォレットの合計",
+        "totalDeposited": "総入金額",
+        "totalDepositedDesc": "すべての入金取引の累計",
+        "totalSpent": "総使用額",
+        "totalSpentDesc": "すべての控除取引の累計",
+        "users": "ユーザー数",
+        "usersDesc": "アクティブなウォレットを持つユーザー"
+      },
+      "timeBreakdown": {
+        "title": "時間別統計",
+        "monthly": "月別",
+        "yearly": "年別"
+      },
+      "months": {
+        "jan": "1月", "feb": "2月", "mar": "3月",
+        "apr": "4月", "may": "5月", "jun": "6月",
+        "jul": "7月", "aug": "8月", "sep": "9月",
+        "oct": "10月", "nov": "11月", "dec": "12月"
+      },
+      "table": {
+        "month": "月",
+        "year": "年",
+        "deposited": "入金",
+        "spent": "使用",
+        "difference": "差額"
+      },
+      "perUser": {
+        "title": "ユーザー別詳細",
+        "searchPlaceholder": "メールまたは名前で検索...",
+        "user": "ユーザー",
+        "currentBalance": "現在の残高",
+        "totalDeposited": "総入金",
+        "totalSpent": "総使用",
+        "status": "ステータス",
+        "low": "低",
+        "normal": "通常",
+        "noUser": "ユーザーが見つかりません"
+      }
+    },
+    "loginHistory": {
+      "title": "ログイン履歴",
+      "subtitle": "すべての管理者ログインアクティビティを追跡・監視",
+      "stats": {
+        "totalLogins": "総ログイン数",
+        "last30Days": "過去30日間",
+        "successRate": "成功率",
+        "successful": "{{count}}回成功",
+        "failedAttempts": "失敗試行",
+        "locked": "ロック: {{count}}",
+        "uniqueDevices": "ユニークデバイス",
+        "countries": "{{count}}カ国"
+      },
+      "suspicious": {
+        "alert": "⚠️ {{count}}件の不審なログイン試行が検出されました",
+        "failedFrom": "{{date}}に{{ip}}からログイン失敗",
+        "more": "... さらに{{count}}件"
+      },
+      "filters": {
+        "status": "ステータス",
+        "all": "すべて",
+        "success": "成功",
+        "failed": "失敗",
+        "locked": "ロック",
+        "fromDate": "開始日",
+        "toDate": "終了日",
+        "sortBy": "並び替え",
+        "loginTime": "ログイン時間",
+        "username": "ユーザー名",
+        "statusSort": "ステータス",
+        "refresh": "更新",
+        "loading": "読み込み中..."
+      },
+      "showing": "{{total}}件中{{from}}～{{to}}件を表示",
+      "export": "CSVエクスポート",
+      "exportSuccess": "ログイン履歴をCSVにエクスポートしました",
+      "exportError": "ログイン履歴のエクスポートに失敗しました",
+      "table": {
+        "account": "アカウント",
+        "loginTime": "ログイン時間",
+        "status": "ステータス",
+        "ip": "IPアドレス",
+        "location": "場所",
+        "browser": "ブラウザ",
+        "os": "OS",
+        "device": "デバイス",
+        "duration": "時間",
+        "newDevice": "新しいデバイス"
+      },
+      "noRecords": "ログイン記録がありません",
+      "loading": "読み込み中...",
+      "active": "アクティブ",
+      "new": "新規",
+      "known": "既知",
+      "pagination": {
+        "recordsPerPage": "1ページあたりの件数:",
+        "page": "{{current}} / {{total}} ページ",
+        "prev": "前へ",
+        "next": "次へ"
+      }
+    },
+    "payments": {
+      "title": "支払い管理",
+      "subtitle": "すべての支払い取引の一覧",
+      "refresh": "更新",
+      "summary": {
+        "total": "総支払い",
+        "pending": "保留中",
+        "expired": "期限切れ",
+        "success": "成功"
+      },
+      "list": {
+        "title": "支払いリスト ({{count}})",
+        "searchPlaceholder": "取引コード、メール、名前で検索..."
+      },
+      "table": {
+        "transactionCode": "取引コード",
+        "subscriptionId": "サブスクリプションID",
+        "user": "ユーザー",
+        "amount": "金額",
+        "type": "種類",
+        "method": "方法",
+        "status": "ステータス",
+        "createdAt": "作成日",
+        "actions": "アクション"
+      },
+      "status": {
+        "success": "成功",
+        "pending": "保留中",
+        "failed": "失敗",
+        "expired": "期限切れ",
+        "deleted": "削除済み"
+      },
+      "paymentType": {
+        "deposit": "入金",
+        "subscription": "サブスクリプション"
+      },
+      "actions": {
+        "accept": "承認",
+        "processing": "処理中...",
+        "completed": "完了",
+        "failed": "失敗",
+        "expired": "期限切れ",
+        "deleted": "削除済み"
+      },
+      "pagination": {
+        "info": "{{current}} / {{total}} ページ — 合計{{count}}件"
+      },
+      "confirm": {
+        "title": "支払い承認の確認",
+        "description": "この支払いを承認しますか？サブスクリプションを有効化するか、ユーザーに資金を追加します。",
+        "confirm": "確認",
+        "cancel": "キャンセル"
+      },
+      "loading": "データを読み込み中...",
+      "noPayments": "支払いが見つかりません",
+      "toast": {
+        "acceptSuccess": "支払いが正常に承認されました！",
+        "acceptError": "支払いエラー",
+        "acceptErrorDesc": "支払い承認中にエラーが発生しました"
+      }
+    },
+    "supportTickets": {
+      "title": "サポートリクエスト管理",
+      "subtitle": "ユーザーからのサポートリクエストを追跡・処理",
+      "refresh": "更新",
+      "stats": {
+        "total": "総リクエスト",
+        "open": "オープン",
+        "inProgress": "処理中",
+        "resolved": "解決済み",
+        "urgent": "緊急"
+      },
+      "filters": {
+        "searchPlaceholder": "タイトル、メール、名前で検索...",
+        "status": "ステータス",
+        "priority": "優先度",
+        "allStatus": "すべてのステータス",
+        "allPriority": "すべての優先度"
+      },
+      "status": {
+        "open": "オープン",
+        "inProgress": "処理中",
+        "resolved": "解決済み",
+        "closed": "クローズ"
+      },
+      "priority": {
+        "low": "低",
+        "medium": "中",
+        "high": "高",
+        "urgent": "緊急"
+      },
+      "services": {
+        "cloud": "クラウドサーバー",
+        "storage": "オブジェクトストレージ",
+        "network": "ネットワーク / VPN",
+        "billing": "請求",
+        "account": "アカウント",
+        "other": "その他"
+      },
+      "table": {
+        "title": "リクエスト ({{count}})",
+        "id": "#",
+        "titleHeader": "タイトル / 顧客",
+        "service": "サービス",
+        "status": "ステータス",
+        "priority": "優先度",
+        "date": "提出日",
+        "actions": "アクション",
+        "noData": "リクエストがありません"
+      },
+      "detail": {
+        "phone": "電話",
+        "address": "住所",
+        "content": "リクエスト内容",
+        "statusLabel": "ステータス",
+        "priorityLabel": "優先度",
+        "resolvedAt": "解決日時",
+        "adminNote": "メモ / 顧客への返答",
+        "adminNotePlaceholder": "顧客への返答を入力... (顧客がこの内容を見ます)",
+        "save": "返答を保存",
+        "saving": "保存中..."
+      },
+      "delete": {
+        "title": "サポートリクエスト削除の確認",
+        "description": "このサポートリクエストを削除しますか？この操作は取り消せません。",
+        "confirm": "削除",
+        "cancel": "キャンセル"
+      },
+      "toast": {
+        "loadError": "サポートリクエストリストを読み込めません",
+        "updated": "更新しました",
+        "updateSuccess": "チケットが正常に更新されました",
+        "deleted": "チケットを削除しました",
+        "error": "エラー"
+      }
+    },
+    "paymentsTitle": "支払い管理",
+    "paymentsDesc": "支払いの表示と承認",
+    "paymentsStats": "支払い管理",
+    "loginHistoryTitle": "ログイン履歴",
+    "loginHistoryDesc": "管理者ログインアクティビティの追跡",
+    "loginHistoryStats": "セキュリティ監査",
+    "compartmentTitle": "コンパートメント管理",
+    "compartmentDesc": "OCIのコンパートメントの表示と削除",
+    "compartmentStats": "OCIリソース",
+    "analyticsTitle": "アナリティクス",
+    "analyticsDesc": "ページビューとユーザーインタラクション統計の表示",
+    "analyticsStats": "ウェブサイト分析",
+    "bandwidthTitle": "帯域幅モニター",
+    "bandwidthDesc": "すべての仮想マシンの帯域幅を監視 (制限10TB)",
+    "bandwidthStats": "帯域幅モニター",
+    "supportTicketsTitle": "サポートリクエスト",
+    "supportTicketsDesc": "ユーザーからのサポートリクエストを追跡・処理",
+    "supportTicketsStats": "サポートチケット",
+    "costsTitle": "コスト & クレジット",
+    "costsDesc": "ユーザー別、月別、年別の総残高、入金・使用額",
+    "costsStats": "コスト & クレジット概要",
+    "users": {
+      "editDialog": {
+        "title": "ユーザー情報の編集 #{{id}}",
+        "description": "ユーザーの詳細情報を更新してください。\"変更を保存\"をクリックして適用してください。",
+        "lastName": "姓",
+        "firstName": "名",
+        "email": "メールアドレス",
+        "phone": "電話番号",
+        "backupEmail": "バックアップメール",
+        "company": "会社",
+        "address": "住所",
+        "idCard": "身分証明書番号",
+        "gender": "性別",
+        "genderPlaceholder": "性別を選択",
+        "male": "男性",
+        "female": "女性",
+        "other": "その他",
+        "role": "役割",
+        "statusLabel": "ステータス",
+        "active": "アクティブ",
+        "locked": "ロック",
+        "cancel": "キャンセル",
+        "save": "変更を保存",
+        "saving": "保存中..."
+      },
+      "deleteDialog": {
+        "title": "ユーザー削除の確認",
+        "description": "このユーザーを削除しますか？この操作は取り消せません。",
+        "confirm": "削除",
+        "cancel": "キャンセル"
+      },
+      "pagination": {
+        "info": "{{current}} / {{total}} ページ — 合計{{count}}人"
+      },
+      "toast": {
+        "updateSuccess": "ユーザー情報が正常に更新されました",
+        "updateError": "ユーザー情報を更新できません",
+        "deleteSuccess": "ユーザーが正常に削除されました",
+        "deleteError": "ユーザーを削除できません"
+      },
+      "export": {
+        "fullName": "フルネーム",
+        "phone": "電話番号",
+        "company": "会社",
+        "role": "役割",
+        "status": "ステータス",
+        "createdAt": "作成日",
+        "updatedAt": "更新日",
+        "notAvailable": "なし",
+        "sheetName": "ユーザーリスト",
+        "active": "アクティブ",
+        "locked": "ロック"
+      }
+    },
+    "packagesExtra": {
+      "dialog": {
+        "deleteTitle": "サービスパッケージ削除の確認",
+        "deleteDesc": "このパッケージを削除しますか？この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "delete": "削除"
+      },
+      "table": {
+        "package": "パッケージ",
+        "type": "種類",
+        "price": "価格",
+        "specs": "仕様",
+        "features": "機能",
+        "status": "ステータス",
+        "actions": "アクション"
+      },
+      "createForm": {
+        "priceUSD": "価格 (USD / 月)",
+        "priceVND": "価格 (VND / 月)",
+        "storage": "ストレージ",
+        "storagePlaceholder": "例: 80 GB SSD",
+        "bandwidthLabel": "帯域幅",
+        "bandwidthPlaceholder": "例: 1 TB",
+        "feature": "機能 / メモ",
+        "featurePlaceholder": "追加機能またはメモ...",
+        "isActive": "アクティブ (ユーザーに表示)",
+        "saving": "保存中..."
       }
     }
   },
@@ -685,7 +1208,8 @@
   },
   "common": {
     "loading": "読み込み中...",
-    "logoutSuccess": "ログアウト成功！"
+    "logoutSuccess": "ログアウト成功！",
+    "error": "エラー"
   },
   "checkout": {
     "title": "チェックアウト",

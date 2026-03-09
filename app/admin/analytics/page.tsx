@@ -32,14 +32,6 @@ export default function AnalyticsDashboard() {
   const [error, setError] = useState<string | null>(null)
   const [dateRange, setDateRange] = useState<'7days' | '30days' | '90days'>('30days')
   
-  // Fallback translation function
-  const tFallback = (key: string, defaultValue?: any) => {
-    if (!t || typeof t !== 'function') {
-      return defaultValue || key
-    }
-    return t(key)
-  }
-
   useEffect(() => {
     fetchAnalytics()
   }, [dateRange])
@@ -84,7 +76,7 @@ export default function AnalyticsDashboard() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          <p className="mt-4 text-gray-600">Loading analytics...</p>
+          <p className="mt-4 text-gray-600">{t('admin.analytics.loading')}</p>
         </div>
       </div>
     )
@@ -96,10 +88,10 @@ export default function AnalyticsDashboard() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-red-600">
-              <p className="font-semibold">Error</p>
+              <p className="font-semibold">{t('admin.analytics.error')}</p>
               <p>{error}</p>
               <Button onClick={fetchAnalytics} className="mt-4">
-                Retry
+                {t('admin.analytics.retry')}
               </Button>
             </div>
           </CardContent>
@@ -113,9 +105,9 @@ export default function AnalyticsDashboard() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
+          <h1 className="text-3xl font-bold">{t('admin.analytics.title')}</h1>
           <p className="text-gray-500 mt-1">
-            Website traffic and visitor statistics
+            {t('admin.analytics.subtitle')}
           </p>
         </div>
 
@@ -126,24 +118,24 @@ export default function AnalyticsDashboard() {
             onClick={() => setDateRange('7days')}
             size="sm"
           >
-            Last 7 Days
+            {t('admin.analytics.dateRange.last7Days')}
           </Button>
           <Button
             variant={dateRange === '30days' ? 'default' : 'outline'}
             onClick={() => setDateRange('30days')}
             size="sm"
           >
-            Last 30 Days
+            {t('admin.analytics.dateRange.last30Days')}
           </Button>
           <Button
             variant={dateRange === '90days' ? 'default' : 'outline'}
             onClick={() => setDateRange('90days')}
             size="sm"
           >
-            Last 90 Days
+            {t('admin.analytics.dateRange.last90Days')}
           </Button>
           <Button onClick={fetchAnalytics} variant="outline" size="sm">
-            Refresh
+            {t('admin.analytics.dateRange.refresh')}
           </Button>
         </div>
       </div>
@@ -154,52 +146,52 @@ export default function AnalyticsDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Page Views</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('admin.analytics.summary.totalPageViews')}</CardTitle>
                 <Eye className="h-4 w-4 text-blue-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{(stats.summary?.total_page_views || 0).toLocaleString()}</div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Page views over selected period
+                  {t('admin.analytics.summary.totalPageViewsDesc')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Unique Users</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('admin.analytics.summary.uniqueUsers')}</CardTitle>
                 <Users className="h-4 w-4 text-green-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{(stats.summary?.unique_users || 0).toLocaleString()}</div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Unique visitors to the site
+                  {t('admin.analytics.summary.uniqueUsersDesc')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Bounce Rate</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('admin.analytics.summary.bounceRate')}</CardTitle>
                 <TrendingDown className="h-4 w-4 text-orange-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{(stats.summary?.bounce_rate || 0).toFixed(2)}%</div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Visitors who left without interaction
+                  {t('admin.analytics.summary.bounceRateDesc')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg Load Time</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('admin.analytics.summary.avgLoadTime')}</CardTitle>
                 <Zap className="h-4 w-4 text-yellow-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.summary?.avg_load_time || 0}ms</div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Average page load time
+                  {t('admin.analytics.summary.avgLoadTimeDesc')}
                 </p>
               </CardContent>
             </Card>
@@ -210,7 +202,7 @@ export default function AnalyticsDashboard() {
             {/* Page Views Over Time */}
             <Card>
               <CardHeader>
-                <CardTitle>Page Views Over Time</CardTitle>
+                <CardTitle>{t('admin.analytics.charts.pageViewsOverTime')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {stats.daily_views && stats.daily_views.length > 0 ? (
@@ -228,13 +220,13 @@ export default function AnalyticsDashboard() {
                         type="monotone"
                         dataKey="view_count"
                         stroke="#3b82f6"
-                        name="Views"
+                        name={t('admin.analytics.charts.pageViewsOverTime')}
                       />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
                   <div className="h-[300px] flex items-center justify-center text-gray-500">
-                    No data available
+                    {t('admin.analytics.noData')}
                   </div>
                 )}
               </CardContent>
@@ -243,7 +235,7 @@ export default function AnalyticsDashboard() {
             {/* Top Pages */}
             <Card>
               <CardHeader>
-                <CardTitle>Top Pages</CardTitle>
+                <CardTitle>{t('admin.analytics.charts.topPages')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {stats.pages && stats.pages.length > 0 ? (
@@ -272,7 +264,7 @@ export default function AnalyticsDashboard() {
                     })}
                   </div>
                 ) : (
-                  <div className="text-gray-500 text-center py-8">No page data available</div>
+                  <div className="text-gray-500 text-center py-8">{t('admin.analytics.noPageData')}</div>
                 )}
               </CardContent>
             </Card>
@@ -283,7 +275,7 @@ export default function AnalyticsDashboard() {
             {/* Event Distribution */}
             <Card>
               <CardHeader>
-                <CardTitle>User Events</CardTitle>
+                <CardTitle>{t('admin.analytics.charts.userEvents')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {stats.events && stats.events.length > 0 ? (
@@ -307,7 +299,7 @@ export default function AnalyticsDashboard() {
                   </ResponsiveContainer>
                 ) : (
                   <div className="h-[300px] flex items-center justify-center text-gray-500">
-                    No event data available
+                    {t('admin.analytics.noEventData')}
                   </div>
                 )}
               </CardContent>
@@ -316,7 +308,7 @@ export default function AnalyticsDashboard() {
             {/* All Events List */}
             <Card>
               <CardHeader>
-                <CardTitle>All Events</CardTitle>
+                <CardTitle>{t('admin.analytics.charts.allEvents')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {stats.events && stats.events.length > 0 ? (
@@ -335,7 +327,7 @@ export default function AnalyticsDashboard() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-gray-500 text-center py-8">No event data available</div>
+                  <div className="text-gray-500 text-center py-8">{t('admin.analytics.noEventData')}</div>
                 )}
               </CardContent>
             </Card>
@@ -344,16 +336,16 @@ export default function AnalyticsDashboard() {
           {/* Google Analytics Integration Notice */}
           <Card className="border-blue-200 bg-blue-50">
             <CardHeader>
-              <CardTitle className="text-blue-900">Google Analytics Integration</CardTitle>
+              <CardTitle className="text-blue-900">{t('admin.analytics.charts.googleAnalytics')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-blue-800">
-                This dashboard displays analytics data from your website. To enable Google Analytics tracking:
+                {t('admin.analytics.charts.googleAnalyticsDesc')}
               </p>
               <ol className="list-decimal list-inside mt-3 text-sm text-blue-800 space-y-1">
-                <li>Set your Google Analytics Measurement ID in the .env.local file as NEXT_PUBLIC_GA_MEASUREMENT_ID</li>
-                <li>Deploy the changes to make Google Analytics tracking active</li>
-                <li>View detailed analytics in your Google Analytics console</li>
+                <li>{t('admin.analytics.charts.gaStep1')}</li>
+                <li>{t('admin.analytics.charts.gaStep2')}</li>
+                <li>{t('admin.analytics.charts.gaStep3')}</li>
               </ol>
             </CardContent>
           </Card>

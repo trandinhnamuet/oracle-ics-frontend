@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Trash2, RefreshCw, AlertTriangle, Loader2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { getCompartments, deleteCompartment, Compartment } from '@/api/oci.api'
+import { useTranslation } from 'react-i18next'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog"
 
 export default function CompartmentManagementPage() {
+  const { t } = useTranslation()
   const [compartments, setCompartments] = useState<Compartment[]>([])
   const [loading, setLoading] = useState(true)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -33,8 +35,8 @@ export default function CompartmentManagementPage() {
       setCompartments(data)
     } catch (error: any) {
       toast({
-        title: 'Lỗi',
-        description: `Không thể tải danh sách compartments: ${error.message}`,
+        title: t('admin.compartment.toast.loadError', { message: '' }).split(':')[0],
+        description: t('admin.compartment.toast.loadError', { message: error.message }),
         variant: 'destructive',
       })
     } finally {
@@ -59,16 +61,16 @@ export default function CompartmentManagementPage() {
       await deleteCompartment(selectedCompartment.name)
       
       toast({
-        title: 'Thành công',
-        description: `Đã xóa compartment "${selectedCompartment.name}" và tất cả tài nguyên bên trong`,
+        title: t('admin.compartment.toast.deleteSuccess', { name: '' }).split('"')[0],
+        description: t('admin.compartment.toast.deleteSuccess', { name: selectedCompartment.name }),
       })
 
       // Reload danh sách sau khi xóa
       await loadCompartments()
     } catch (error: any) {
       toast({
-        title: 'Lỗi',
-        description: `Không thể xóa compartment: ${error.response?.data?.message || error.message}`,
+        title: t('admin.compartment.toast.deleteError', { message: '' }).split(':')[0],
+        description: t('admin.compartment.toast.deleteError', { message: error.response?.data?.message || error.message }),
         variant: 'destructive',
       })
     } finally {
@@ -96,26 +98,26 @@ export default function CompartmentManagementPage() {
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Quản lý Compartments</h1>
+          <h1 className="text-3xl font-bold">{t('admin.compartment.title')}</h1>
           <p className="text-muted-foreground mt-2">
-            Danh sách compartments trong OCI tenancy
+            {t('admin.compartment.subtitle')}
           </p>
         </div>
         <Button onClick={loadCompartments} disabled={loading} variant="outline">
           <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-          Làm mới
+          {t('admin.compartment.refresh')}
         </Button>
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <span className="ml-2">Đang tải compartments...</span>
+          <span className="ml-2">{t('admin.compartment.loading')}</span>
         </div>
       ) : compartments.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
-            Không có compartment nào
+          {t('admin.compartment.noCompartments')}
           </CardContent>
         </Card>
       ) : (
@@ -127,7 +129,7 @@ export default function CompartmentManagementPage() {
                   <div className="flex-1">
                     <CardTitle className="text-xl">{compartment.name}</CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {compartment.description || 'Không có mô tả'}
+                      {compartment.description || t('admin.compartment.noDescription')}
                     </p>
                   </div>
                   <Badge className={getStateColor(compartment.lifecycleState)}>
@@ -142,7 +144,7 @@ export default function CompartmentManagementPage() {
                     <p className="text-sm font-mono break-all">{compartment.id}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Ngày tạo</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('admin.compartment.createdAt')}</p>
                     <p className="text-sm">
                       {new Date(compartment.timeCreated).toLocaleString('vi-VN')}
                     </p>
@@ -157,7 +159,7 @@ export default function CompartmentManagementPage() {
                     disabled={compartment.lifecycleState !== 'ACTIVE'}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Xóa Compartment
+                    {t('admin.compartment.deleteButton')}
                   </Button>
                 </div>
               </CardContent>
@@ -171,33 +173,33 @@ export default function CompartmentManagementPage() {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-destructive" />
-              Xác nhận xóa Compartment
+              {t('admin.compartment.dialog.title')}
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-2">
               <p>
-                Bạn có chắc chắn muốn xóa compartment{' '}
+                {t('admin.compartment.dialog.description1')}{' '}
                 <strong className="text-foreground">
                   {selectedCompartment?.name}
                 </strong>
-                ?
+                {t('admin.compartment.dialog.description2')}
               </p>
               <p className="text-destructive font-medium">
-                ⚠️ Hành động này sẽ XÓA TẤT CẢ tài nguyên bên trong compartment bao gồm:
+                {t('admin.compartment.dialog.warning')}
               </p>
               <ul className="list-disc list-inside space-y-1 text-sm">
-                <li>Tất cả VM instances</li>
-                <li>Tất cả VCNs (Virtual Cloud Networks)</li>
-                <li>Tất cả Subnets</li>
-                <li>Tất cả Internet Gateways</li>
-                <li>Tất cả Route Tables</li>
+                <li>{t('admin.compartment.dialog.items.vms')}</li>
+                <li>{t('admin.compartment.dialog.items.vcns')}</li>
+                <li>{t('admin.compartment.dialog.items.subnets')}</li>
+                <li>{t('admin.compartment.dialog.items.gateways')}</li>
+                <li>{t('admin.compartment.dialog.items.routes')}</li>
               </ul>
               <p className="font-medium">
-                Hành động này KHÔNG THỂ hoàn tác!
+                {t('admin.compartment.dialog.irreversible')}
               </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>Hủy</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{t('admin.compartment.dialog.cancelButton')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
               disabled={deleting}
@@ -206,12 +208,12 @@ export default function CompartmentManagementPage() {
               {deleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Đang xóa...
+                  {t('admin.compartment.dialog.deleting')}
                 </>
               ) : (
                 <>
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Xác nhận xóa
+                  {t('admin.compartment.dialog.confirmButton')}
                 </>
               )}
             </AlertDialogAction>
