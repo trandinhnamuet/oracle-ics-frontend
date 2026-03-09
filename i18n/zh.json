@@ -318,6 +318,7 @@
         "id": "ID",
         "user": "用户",
         "package": "套餐",
+        "vmInfo": "虚拟机信息",
         "startDate": "开始日期",
         "endDate": "结束日期",
         "status": "状态",
@@ -372,15 +373,6 @@
         },
         "cancel": "取消",
         "confirm": "确认"
-      },
-      "table": {
-        "vmInfo": "VM信息",
-        "noPublicIp": "无公网IP",
-        "notConfigured": "未配置",
-        "showing": "显示第{{from}}至{{to}}条，共{{total}}条",
-        "recordsPerPage": "每页记录数:",
-        "goTo": "跳转:",
-        "pageOf": "第 {{current}} / {{total}} 页"
       }
     },
     "analytics": {

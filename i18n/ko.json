@@ -318,6 +318,7 @@
         "id": "ID",
         "user": "사용자",
         "package": "패키지",
+        "vmInfo": "VM 정보",
         "startDate": "시작 날짜",
         "endDate": "종료 날짜",
         "status": "상태",
@@ -372,15 +373,6 @@
         },
         "cancel": "취소",
         "confirm": "확인"
-      },
-      "table": {
-        "vmInfo": "VM 정보",
-        "noPublicIp": "공인 IP 없음",
-        "notConfigured": "구성되지 않음",
-        "showing": "{{total}}개 중 {{from}}~{{to}} 표시",
-        "recordsPerPage": "페이지당 레코드:",
-        "goTo": "이동:",
-        "pageOf": "{{current}} / {{total}} 페이지"
       }
     },
     "analytics": {

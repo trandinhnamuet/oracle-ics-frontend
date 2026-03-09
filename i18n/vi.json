@@ -318,6 +318,7 @@
         "id": "ID",
         "user": "Người dùng",
         "package": "Gói dịch vụ",
+        "vmInfo": "Thông tin VM",
         "startDate": "Ngày bắt đầu",
         "endDate": "Ngày kết thúc",
         "status": "Trạng thái",
@@ -372,15 +373,6 @@
         },
         "cancel": "Hủy",
         "confirm": "Xác nhận"
-      },
-      "table": {
-        "vmInfo": "Thông tin VM",
-        "noPublicIp": "Chưa có Public IP",
-        "notConfigured": "Chưa cấu hình",
-        "showing": "Hiển thị {{from}} đến {{to}} trong số {{total}} mục",
-        "recordsPerPage": "Số bản ghi mỗi trang:",
-        "goTo": "Đến trang:",
-        "pageOf": "Trang {{current}} / {{total}}"
       }
     },
     "analytics": {

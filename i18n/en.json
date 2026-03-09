@@ -318,6 +318,7 @@
         "id": "ID",
         "user": "User",
         "package": "Package",
+        "vmInfo": "VM Information",
         "startDate": "Start Date",
         "endDate": "End Date",
         "status": "Status",
@@ -372,15 +373,6 @@
         },
         "cancel": "Cancel",
         "confirm": "Confirm"
-      },
-      "table": {
-        "vmInfo": "VM Information",
-        "noPublicIp": "No Public IP",
-        "notConfigured": "Not configured",
-        "showing": "Showing {{from}} to {{to}} of {{total}} entries",
-        "recordsPerPage": "Records per page:",
-        "goTo": "Go to:",
-        "pageOf": "Page {{current}} of {{total}}"
       }
     },
     "analytics": {

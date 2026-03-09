@@ -318,6 +318,7 @@
         "id": "ID",
         "user": "ユーザー",
         "package": "パッケージ",
+        "vmInfo": "VM 情報",
         "startDate": "開始日",
         "endDate": "終了日",
         "status": "ステータス",
@@ -372,15 +373,6 @@
         },
         "cancel": "キャンセル",
         "confirm": "確認"
-      },
-      "table": {
-        "vmInfo": "VM情報",
-        "noPublicIp": "パブリックIPなし",
-        "notConfigured": "未設定",
-        "showing": "{{total}}件中{{from}}～{{to}}件を表示",
-        "recordsPerPage": "1ページあたりの件数:",
-        "goTo": "移動:",
-        "pageOf": "{{current}} / {{total}} ページ"
       }
     },
     "analytics": {
