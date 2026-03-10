@@ -123,7 +123,7 @@
     "packagesStats": "Total: {{count}} packages",
     "subscriptionsTitle": "Manage Service Subscriptions",
     "subscriptionsDesc": "View and manage user-subscribed service packages (subscriptions)",
-    "subscriptionsStats": "Feature not yet implemented",
+    "subscriptionsStats": "View and manage subscribed user plans (subscriptions)",
     "user": {
       "title": "User Management",
       "subtitle": "Manage user accounts in the system",

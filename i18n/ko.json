@@ -123,7 +123,7 @@
     "packagesStats": "총: {{count}}개 패키지",
     "subscriptionsTitle": "서비스 구독 관리",
     "subscriptionsDesc": "사용자가 구독한 서비스 패키지(구독) 보기 및 관리",
-    "subscriptionsStats": "기능 미구현",
+    "subscriptionsStats": "사용자가 구독한 서비스 패키지(구독) 보기 및 관리",
     "user": {
       "title": "사용자 관리",
       "subtitle": "시스템 내 사용자 계정 관리",

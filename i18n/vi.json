@@ -123,7 +123,7 @@
     "packagesStats": "Tổng: {{count}} gói",
     "subscriptionsTitle": "Quản lý đăng ký dịch vụ",
     "subscriptionsDesc": "Xem và quản lý các gói người dùng đã đăng ký (subscription)",
-    "subscriptionsStats": "Chưa có chức năng",
+    "subscriptionsStats": "Xem và quản lý các gói người dùng đã đăng ký (subscription)",
     "user": {
       "title": "Quản lý người dùng",
       "subtitle": "Quản lý tài khoản người dùng trong hệ thống",

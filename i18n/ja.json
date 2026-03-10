@@ -123,7 +123,7 @@
     "packagesStats": "合計：{{count}}個のパッケージ",
     "subscriptionsTitle": "サービスサブスクリプション管理",
     "subscriptionsDesc": "ユーザーがサブスクライブしたサービスパッケージ（サブスクリプション）の表示と管理",
-    "subscriptionsStats": "機能はまだ実装されていません",
+    "subscriptionsStats": "ユーザーがサブスクライブしたサービスパッケージ（サブスクリプション）の表示と管理",
     "user": {
       "title": "ユーザー管理",
       "subtitle": "システム内のユーザーアカウントを管理",

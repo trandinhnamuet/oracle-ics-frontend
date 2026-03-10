@@ -123,7 +123,7 @@
     "packagesStats": "总计：{{count}}个包",
     "subscriptionsTitle": "管理服务订阅",
     "subscriptionsDesc": "查看和管理用户订阅的服务包（订阅）",
-    "subscriptionsStats": "功能尚未实现",
+    "subscriptionsStats": "查看和管理用户订阅的服务包（订阅）",
     "user": {
       "title": "用户管理",
       "subtitle": "管理系统中的用户账户",
