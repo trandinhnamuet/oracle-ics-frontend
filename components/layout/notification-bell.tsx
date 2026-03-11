@@ -421,7 +421,7 @@ export function NotificationBell() {
                       )}>
                         {getTitle(n, lang)}
                       </p>
-                      <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">
+                      <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-3">
                         {getMessage(n, lang)}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
