@@ -207,7 +207,7 @@ Nội dung: ${paymentData.transaction_code}
                     {formatTime(countdown)}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-foreground">
                   Giao dịch sẽ hết hạn sau thời gian trên. Vui lòng hoàn tất thanh toán trước khi hết hạn.
                 </p>
               </div>
