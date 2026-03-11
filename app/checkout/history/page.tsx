@@ -183,7 +183,7 @@ export default function PaymentHistoryPage() {
 
   const getTotalAmount = () => {
     return filteredPayments
-      .filter(p => p.status === 'success')
+      .filter(p => p.status === 'success' && p.payment_type === 'subscription')
       .reduce((sum, p) => sum + Number(p.amount), 0)
   }
 
