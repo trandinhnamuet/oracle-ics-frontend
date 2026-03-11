@@ -328,7 +328,7 @@ export default function PackageManagementPage() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto pt-16 md:pt-0">
-        <div className="container mx-auto py-8 px-4 space-y-8 max-w-6xl">
+        <div className="container mx-auto py-8 px-4 space-y-8 max-w-full lg:max-w-7xl">
           {/* Balance Bar */}
           <div className="w-full flex items-center justify-between bg-white dark:bg-card rounded-lg shadow p-4 mb-4 border border-gray-100 dark:border-border">
             <BalanceDisplay showAddFunds={true} className="flex items-center gap-2" />
@@ -430,20 +430,20 @@ export default function PackageManagementPage() {
       </div>
 
       {/* Packages Table */}
-      <Card className={`transition-all duration-700 transform ${
+      <Card className={`w-full transition-all duration-700 transform ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
       }`} style={{ transitionDelay: '600ms' }}>
         <CardHeader>
           <CardTitle>{t('packageManagement.table.title', { count: filteredSubscriptions.length })}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="w-full p-0 md:p-6">
           {loading ? (
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               <p className="mt-2 text-muted-foreground">{t('packageManagement.toast.loadingList')}</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto w-full">
               <Table>
               <TableHeader>
                 <TableRow>
@@ -452,6 +452,7 @@ export default function PackageManagementPage() {
                   <TableHead>VM Name</TableHead>
                   <TableHead>IPv4</TableHead>
                   <TableHead>{t('packageManagement.table.createdAt')}</TableHead>
+                  <TableHead>End Date</TableHead>
                   <TableHead>{t('packageManagement.table.status')}</TableHead>
                   <TableHead>{t('packageManagement.table.actions')}</TableHead>
                 </TableRow>
@@ -459,7 +460,7 @@ export default function PackageManagementPage() {
               <TableBody>
                 {filteredSubscriptions.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       {searchTerm || statusFilter !== 'all' || typeFilter !== 'all' 
                         ? t('packageManagement.table.noMatch')
                         : t('packageManagement.table.noPackage')
@@ -496,6 +497,9 @@ export default function PackageManagementPage() {
                         </TableCell>
                         <TableCell>
                           {new Date(sub.created_at).toLocaleDateString('vi-VN')}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(sub.end_date).toLocaleDateString('vi-VN')}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">
