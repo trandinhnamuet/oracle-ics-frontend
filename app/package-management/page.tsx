@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useAuth } from '@/lib/auth-context'
-import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, deleteSubscription, suspendSubscription, reactivateSubscription, Subscription } from '@/api/subscription.api'
+import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, deleteSubscription, suspendSubscription, reactivateSubscription, renewSubscription, Subscription } from '@/api/subscription.api'
 import { performVmAction, getSubscriptionVm } from '@/api/vm-subscription.api'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye, Loader2 } from 'lucide-react'
+import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye, Loader2, RefreshCw } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import BalanceDisplay from '@/components/wallet/balance-display'
@@ -69,6 +69,7 @@ export default function PackageManagementPage() {
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [isVisible, setIsVisible] = useState(false)
   const [togglingVmIds, setTogglingVmIds] = useState<Set<string>>(new Set())
+  const [renewingIds, setRenewingIds] = useState<Set<string>>(new Set())
   const { toast } = useToast()
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean
@@ -233,6 +234,48 @@ export default function PackageManagementPage() {
           })
         } finally {
           setTogglingVmIds(prev => {
+            const next = new Set(prev)
+            next.delete(id)
+            return next
+          })
+        }
+      },
+    })
+  }
+
+  const handleRenewSubscription = (id: string) => {
+    const sub = subscriptions.find(s => s.id === id)
+    if (!sub) return
+    const pkgName = sub.cloudPackage?.name || t('packageManagement.table.customPackage')
+    const cost = Number(sub.cloudPackage?.cost_vnd || 0)
+    const fmtCost = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(cost)
+    setConfirmDialog({
+      open: true,
+      title: t('packageManagement.confirmDialog.renewSubscription.title'),
+      description: t('packageManagement.confirmDialog.renewSubscription.description', { packageName: pkgName, cost: fmtCost }),
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+        setRenewingIds(prev => new Set(prev).add(id))
+        try {
+          await renewSubscription(id)
+          toast({
+            title: t('packageManagement.toast.renewSuccess'),
+            description: t('packageManagement.toast.renewSuccessDesc'),
+          })
+          await fetchUserSubscriptions()
+          startPollingUntilStable()
+        } catch (error: any) {
+          const msg = error?.response?.data?.message || error?.message || t('packageManagement.toast.renewError')
+          const isInsufficientFunds = msg.includes('không đủ tiền') || msg.includes('insufficient')
+          toast({
+            title: t('packageManagement.toast.renewFailed'),
+            description: isInsufficientFunds
+              ? t('packageManagement.toast.renewInsufficientFunds')
+              : msg,
+            variant: 'destructive',
+          })
+        } finally {
+          setRenewingIds(prev => {
             const next = new Set(prev)
             next.delete(id)
             return next
@@ -521,8 +564,26 @@ export default function PackageManagementPage() {
                                 </Button>
                               </div>
                             )}
-                            {/* Stop/Start VM button - only show if VM is configured */}
-                            {sub.vm_instance_id && sub.vmInstance && (() => {
+                            {/* Renew button for expired subscriptions */}
+                            {sub.status === 'expired' && (
+                              <div title={t('packageManagement.tooltip.renewSubscription')}>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleRenewSubscription(sub.id)}
+                                  disabled={renewingIds.has(sub.id)}
+                                  className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 border-orange-300"
+                                >
+                                  {renewingIds.has(sub.id) ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <RefreshCw className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </div>
+                            )}
+                            {/* Stop/Start VM button - only show if VM is configured and subscription is active */}
+                            {sub.vm_instance_id && sub.vmInstance && sub.status !== 'expired' && (() => {
                               const state = sub.vmInstance.lifecycle_state
                               const isRunning = state === 'RUNNING'
                               const isStopped = state === 'STOPPED'

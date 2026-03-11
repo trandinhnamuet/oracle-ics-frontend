@@ -52,6 +52,10 @@
       "startVm": {
         "title": "VM起動の確認",
         "description": "このVMを起動しますか？"
+      },
+      "renewSubscription": {
+        "title": "サブスクリプション更新の確認",
+        "description": "\"{{packageName}}\"プランを更新しますか？{{cost}}がウォレットから差し引かれます。"
       }
     },
     "toast": {
@@ -62,6 +66,11 @@
       "vmActionPending": "完了時にステータスが自動的に更新されます。",
       "vmStopError": "VM停止エラー",
       "vmStartError": "VM起動エラー",
+      "renewSuccess": "サブスクリプション更新成功！",
+      "renewSuccessDesc": "サブスクリプションが有効化され、VMが起動されました。",
+      "renewFailed": "更新失敗",
+      "renewInsufficientFunds": "更新のためのウォレット残高が不足しています。チャージしてください。",
+      "renewError": "サブスクリプション更新中にエラーが発生しました",
       "deleteSuccess": "サブスクリプションとVMを正常に削除しました！",
       "deleteError": "サブスクリプションの削除中にエラーが発生しました"
     },
@@ -71,7 +80,8 @@
       "startVm": "VMを起動",
       "stopping": "VM停止中...",
       "starting": "VM起動中...",
-      "transitioning": "VMは移行状態です"
+      "transitioning": "VMは移行状態です",
+      "renewSubscription": "サブスクリプションを更新"
     },
     "fetchError": {
       "title": "エラー",

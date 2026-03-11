@@ -52,6 +52,10 @@
       "startVm": {
         "title": "VM 시작 확인",
         "description": "이 VM을 시작하시겠습니까?"
+      },
+      "renewSubscription": {
+        "title": "구독 갱신 확인",
+        "description": "\"{{packageName}}\" 패키지를 갱신하시겠습니까? {{cost}}가 지갑에서 차감됩니다."
       }
     },
     "toast": {
@@ -62,6 +66,11 @@
       "vmActionPending": "완료 시 상태가 자동으로 업데이트됩니다.",
       "vmStopError": "VM 중지 오류",
       "vmStartError": "VM 시작 오류",
+      "renewSuccess": "구독 갱신 성공!",
+      "renewSuccessDesc": "구독이 활성화되었고 VM이 시작되었습니다.",
+      "renewFailed": "갱신 실패",
+      "renewInsufficientFunds": "갱신하기에 지갑 잔액이 부족합니다. 충전해 주세요.",
+      "renewError": "구독 갱신 중 오류가 발생했습니다",
       "deleteSuccess": "구독과 VM이 성공적으로 삭제되었습니다!",
       "deleteError": "구독 삭제 중 오류가 발생했습니다"
     },
@@ -71,7 +80,8 @@
       "startVm": "VM 시작 (Start)",
       "stopping": "VM 중지 중...",
       "starting": "VM 시작 중...",
-      "transitioning": "VM이 전환 상태입니다"
+      "transitioning": "VM이 전환 상태입니다",
+      "renewSubscription": "구독 갱신"
     },
     "fetchError": {
       "title": "오류",

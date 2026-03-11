@@ -280,6 +280,20 @@ export const reactivateSubscription = async (subscriptionId: string): Promise<Su
   }
 }
 
+// Manually renew an expired subscription (deducts wallet balance, restores active status, starts VM)
+export const renewSubscription = async (subscriptionId: string): Promise<Subscription> => {
+  try {
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}/renew`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    })
+    return result
+  } catch (error) {
+    console.error('Error renewing subscription:', error)
+    throw error
+  }
+}
+
 // Delete subscription (and its VM if exists)
 export const deleteSubscription = async (subscriptionId: string): Promise<void> => {
   try {

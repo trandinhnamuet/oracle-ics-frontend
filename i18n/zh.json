@@ -52,6 +52,10 @@
       "startVm": {
         "title": "确认启动VM",
         "description": "您确定要启动此VM吗？"
+      },
+      "renewSubscription": {
+        "title": "确认续费订阅",
+        "description": "您确定要续费\"{{packageName}}\"套餐吗？将从您的钉包中扣除{{cost}}。"
       }
     },
     "toast": {
@@ -62,6 +66,11 @@
       "vmActionPending": "完成后状态将自动更新。",
       "vmStopError": "停止VM出错",
       "vmStartError": "启动VM出错",
+      "renewSuccess": "订阅续费成功！",
+      "renewSuccessDesc": "您的订阅已激活，VM已启动。",
+      "renewFailed": "续费失败",
+      "renewInsufficientFunds": "账户余额不足，无法续费，请充值。",
+      "renewError": "续费订阅时出错",
       "deleteSuccess": "订阅和VM已成功删除！",
       "deleteError": "删除订阅时发生错误"
     },
@@ -71,7 +80,8 @@
       "startVm": "启动VM",
       "stopping": "VM停止中...",
       "starting": "VM启动中...",
-      "transitioning": "VM正在过渡状态"
+      "transitioning": "VM正在过渡状态",
+      "renewSubscription": "续费订阅"
     },
     "fetchError": {
       "title": "错误",

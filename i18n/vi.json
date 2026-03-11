@@ -52,6 +52,10 @@
       "startVm": {
         "title": "Xác nhận khởi động VM",
         "description": "Bạn có chắc chắn muốn khởi động VM này không?"
+      },
+      "renewSubscription": {
+        "title": "Xác nhận gia hạn subscription",
+        "description": "Bạn có chắc chắn muốn gia hạn gói \"{{packageName}}\"? {{cost}} sẽ được trừ từ ví của bạn."
       }
     },
     "toast": {
@@ -62,6 +66,11 @@
       "vmActionPending": "Trạng thái sẽ tự động cập nhật khi hoàn thành.",
       "vmStopError": "Lỗi khi dừng VM",
       "vmStartError": "Lỗi khi khởi động VM",
+      "renewSuccess": "Gia hạn subscription thành công!",
+      "renewSuccessDesc": "Subscription của bạn đã được kích hoạt và VM đã được khởi động.",
+      "renewFailed": "Gia hạn thất bại",
+      "renewInsufficientFunds": "Bạn không đủ tiền trong tài khoản để gia hạn, xin hãy nạp thêm.",
+      "renewError": "Có lỗi xảy ra khi gia hạn subscription",
       "deleteSuccess": "Đã xóa subscription và VM thành công!",
       "deleteError": "Có lỗi xảy ra khi xóa subscription"
     },
@@ -71,7 +80,8 @@
       "startVm": "Khởi động VM (Start)",
       "stopping": "VM đang dừng...",
       "starting": "VM đang khởi động...",
-      "transitioning": "VM đang trong trạng thái chuyển đổi"
+      "transitioning": "VM đang trong trạng thái chuyển đổi",
+      "renewSubscription": "Gia hạn subscription"
     },
     "fetchError": {
       "title": "Lỗi",

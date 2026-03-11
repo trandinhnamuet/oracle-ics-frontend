@@ -52,6 +52,10 @@
       "startVm": {
         "title": "Confirm Start VM",
         "description": "Are you sure you want to start this VM?"
+      },
+      "renewSubscription": {
+        "title": "Confirm Subscription Renewal",
+        "description": "Are you sure you want to renew the \"{{packageName}}\" package? {{cost}} will be deducted from your wallet."
       }
     },
     "toast": {
@@ -62,6 +66,11 @@
       "vmActionPending": "Status will update automatically when complete.",
       "vmStopError": "Error stopping VM",
       "vmStartError": "Error starting VM",
+      "renewSuccess": "Subscription renewed successfully!",
+      "renewSuccessDesc": "Your subscription is now active and your VM has been started.",
+      "renewFailed": "Renewal failed",
+      "renewInsufficientFunds": "You do not have enough balance to renew. Please top up your wallet.",
+      "renewError": "An error occurred while renewing the subscription",
       "deleteSuccess": "Subscription and VM deleted successfully!",
       "deleteError": "An error occurred while deleting the subscription"
     },
@@ -71,7 +80,8 @@
       "startVm": "Start VM",
       "stopping": "VM is stopping...",
       "starting": "VM is starting...",
-      "transitioning": "VM is in transition state"
+      "transitioning": "VM is in transition state",
+      "renewSubscription": "Renew subscription"
     },
     "fetchError": {
       "title": "Error",
