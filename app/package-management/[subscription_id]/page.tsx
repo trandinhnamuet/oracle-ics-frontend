@@ -35,6 +35,7 @@ import { getSubscriptionById, deleteSubscription, Subscription } from '@/api/sub
 import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
+import useAuthStore from '@/hooks/use-auth-store'
 
 // Demo data for charts
 const cpuData = [
@@ -84,6 +85,7 @@ export default function PackageDetailPage() {
   const router = useRouter()
   const { t } = useTranslation()
   const subscriptionId = params.subscription_id as string
+  const { user: authUser } = useAuthStore()
 
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [packageDetail, setPackageDetail] = useState<CloudPackageDetail | null>(null)
@@ -110,6 +112,13 @@ export default function PackageDetailPage() {
       try {
         setIsDataLoading(true)
         const data = await getSubscriptionById(subscriptionId)
+
+        // Ownership check: only the subscription owner or admin may access this page
+        if (data.user_id !== authUser?.id && authUser?.role !== 'admin') {
+          router.replace('/unauthorized')
+          return
+        }
+
         setSubscription(data)
         
         // Transform subscription data to package detail format
@@ -136,6 +145,10 @@ export default function PackageDetailPage() {
         
       } catch (error: any) {
         console.error('Error fetching subscription:', error)
+        if (error?.status === 403 || error?.response?.status === 403) {
+          router.replace('/unauthorized')
+          return
+        }
         toast({
           title: t('packageDetail.toast.error'),
           description: t('packageDetail.toast.loadError'),
