@@ -17,10 +17,11 @@ import {
 } from "@/api/notification.api"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 // ---------- helpers ----------
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, lang: string): string {
   try {
     // Normalise: if the string has no timezone indicator, treat it as UTC.
     // @CreateDateColumn() can return "2026-03-05T03:00:00.000" (no Z),
@@ -33,36 +34,48 @@ function timeAgo(dateStr: string): string {
     
     // Check if date is valid
     if (isNaN(date.getTime())) {
-      return "thời gian không rõ"
+      return lang === 'vi' ? "thời gian không rõ" : "unknown time"
     }
 
     const diff = Date.now() - date.getTime()
     
     // If difference is negative, the notification is from the future (clock skew)
     if (diff < 0) {
-      return "vừa xong"
+      return lang === 'vi' ? "vừa xong" : "just now"
     }
     
     const minutes = Math.floor(diff / 60_000)
-    if (minutes < 1) return "vừa xong"
-    if (minutes < 60) return `${minutes} phút trước`
+    if (minutes < 1) return lang === 'vi' ? "vừa xong" : "just now"
+    if (minutes < 60) return lang === 'vi' ? `${minutes} phút trước` : `${minutes}m ago`
     
     const hours = Math.floor(minutes / 60)
-    if (hours < 24) return `${hours} giờ trước`
+    if (hours < 24) return lang === 'vi' ? `${hours} giờ trước` : `${hours}h ago`
     
     const days = Math.floor(hours / 24)
-    if (days < 7) return `${days} ngày trước`
+    if (days < 7) return lang === 'vi' ? `${days} ngày trước` : `${days}d ago`
     
     // For older dates, show the actual date
-    return date.toLocaleDateString("vi-VN", {
+    return date.toLocaleDateString(lang === 'vi' ? "vi-VN" : "en-US", {
       month: "2-digit",
       day: "2-digit",
       hour: "2-digit",
       minute: "2-digit"
     })
   } catch (e) {
-    return "thời gian không rõ"
+    return lang === 'vi' ? "thời gian không rõ" : "unknown time"
   }
+}
+
+/** Returns the title in the user's locale — falls back to the other language if missing. */
+function getTitle(n: Notification, lang: string): string {
+  if (lang === 'vi') return n.title || n.title_en || ''
+  return n.title_en || n.title || ''
+}
+
+/** Returns the message in the user's locale — falls back to the other language if missing. */
+function getMessage(n: Notification, lang: string): string {
+  if (lang === 'vi') return n.message || n.message_en || ''
+  return n.message_en || n.message || ''
 }
 
 const TYPE_ICON: Record<NotificationType, string> = {
@@ -109,6 +122,8 @@ const TYPE_COLOR: Record<NotificationType, string> = {
 
 export function NotificationBell() {
   const { isAuthenticated } = useAuth()
+  const { i18n } = useTranslation()
+  const lang = i18n.language || 'vi'
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -267,7 +282,10 @@ export function NotificationBell() {
           "hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
           open && "bg-muted"
         )}
-        aria-label={`Thông báo${hasUnread ? ` (${unreadCount} chưa đọc)` : ""}`}
+        aria-label={lang === 'vi'
+          ? `Thông báo${hasUnread ? ` (${unreadCount} chưa đọc)` : ""}`
+          : `Notifications${hasUnread ? ` (${unreadCount} unread)` : ""}`
+        }
       >
         <Bell className="h-5 w-5 text-foreground" />
         {hasUnread && (
@@ -293,7 +311,9 @@ export function NotificationBell() {
           <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/95 backdrop-blur-sm">
             <div className="flex items-center gap-2">
               <Bell className="h-5 w-5 text-primary" />
-              <h3 className="font-bold text-foreground text-base">Thông báo</h3>
+              <h3 className="font-bold text-foreground text-base">
+                {lang === 'vi' ? 'Thông báo' : 'Notifications'}
+              </h3>
               {hasUnread && (
                 <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white px-1.5">
                   {unreadCount}
@@ -310,7 +330,7 @@ export function NotificationBell() {
                   disabled={markingAll}
                 >
                   {markingAll ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCheck className="h-3.5 w-3.5 mr-1" />}
-                  Đã đọc tất cả
+                  {lang === 'vi' ? 'Đã đọc tất cả' : 'Mark all read'}
                 </Button>
               )}
               <Button
@@ -319,7 +339,7 @@ export function NotificationBell() {
                 className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
                 onClick={handleRefresh}
                 disabled={loading}
-                title="Làm mới thông báo"
+                title={lang === 'vi' ? 'Làm mới thông báo' : 'Refresh notifications'}
               >
                 <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
               </Button>
@@ -330,7 +350,7 @@ export function NotificationBell() {
                   className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                   onClick={handleClearRead}
                   disabled={clearingRead}
-                  title="Xoá thông báo đã đọc"
+                  title={lang === 'vi' ? 'Xoá thông báo đã đọc' : 'Clear read notifications'}
                 >
                   {clearingRead ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
                 </Button>
@@ -366,8 +386,12 @@ export function NotificationBell() {
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-3">
                   <Bell className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <p className="text-sm font-medium text-foreground">Không có thông báo</p>
-                <p className="text-xs text-muted-foreground mt-1">Các thông báo về tài khoản sẽ hiện ở đây</p>
+                <p className="text-sm font-medium text-foreground">
+                  {lang === 'vi' ? 'Không có thông báo' : 'No notifications'}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {lang === 'vi' ? 'Các thông báo về tài khoản sẽ hiện ở đây' : 'Account notifications will appear here'}
+                </p>
               </div>
             ) : (
               <div>
@@ -395,17 +419,17 @@ export function NotificationBell() {
                         "text-xs leading-tight line-clamp-1",
                         n.is_read ? "font-normal text-foreground" : "font-semibold text-foreground"
                       )}>
-                        {n.title}
+                        {getTitle(n, lang)}
                       </p>
                       <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">
-                        {n.message}
+                        {getMessage(n, lang)}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className={cn(
                           "text-[10px] font-medium whitespace-nowrap",
                           n.is_read ? "text-muted-foreground" : "text-primary"
                         )}>
-                          {timeAgo(n.created_at)}
+                          {timeAgo(n.created_at, lang)}
                         </span>
                         {!n.is_read && (
                           <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
@@ -434,9 +458,9 @@ export function NotificationBell() {
                       disabled={loadingMore}
                     >
                       {loadingMore ? (
-                        <><Loader2 className="h-3 w-3 animate-spin mr-1" /> Đang tải...</>
+                        <><Loader2 className="h-3 w-3 animate-spin mr-1" /> {lang === 'vi' ? 'Đang tải...' : 'Loading...'}</>
                       ) : (
-                        "Tải thêm"
+                        lang === 'vi' ? 'Tải thêm' : 'Load more'
                       )}
                     </Button>
                   </div>
@@ -449,7 +473,7 @@ export function NotificationBell() {
           {notifications.length > 0 && (
             <div className="px-4 py-1.5 border-t border-border bg-muted/30 text-center">
               <p className="text-xs text-muted-foreground">
-                {notifications.length} / {data?.total ?? notifications.length} thông báo
+                {notifications.length} / {data?.total ?? notifications.length} {lang === 'vi' ? 'thông báo' : 'notifications'}
               </p>
             </div>
           )}
@@ -471,8 +495,14 @@ export function NotificationBell() {
                 <Trash2 className="h-5 w-5 text-destructive" />
               </div>
               <div>
-                <h4 className="font-semibold text-foreground text-sm">Xoá thông báo đã đọc</h4>
-                <p className="text-xs text-muted-foreground mt-0.5">Bạn có chắc muốn xoá tất cả thông báo đã đọc không? Hành động này không thể hoàn tác.</p>
+                <h4 className="font-semibold text-foreground text-sm">
+                  {lang === 'vi' ? 'Xoá thông báo đã đọc' : 'Clear read notifications'}
+                </h4>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {lang === 'vi'
+                    ? 'Bạn có chắc muốn xoá tất cả thông báo đã đọc không? Hành động này không thể hoàn tác.'
+                    : 'Are you sure you want to delete all read notifications? This action cannot be undone.'}
+                </p>
               </div>
             </div>
             <div className="flex gap-2 justify-end">
@@ -481,7 +511,7 @@ export function NotificationBell() {
                 size="sm"
                 onClick={() => setShowClearConfirm(false)}
               >
-                Huỷ
+                {lang === 'vi' ? 'Huỷ' : 'Cancel'}
               </Button>
               <Button
                 variant="destructive"
@@ -489,7 +519,7 @@ export function NotificationBell() {
                 onClick={handleConfirmClearRead}
               >
                 <Trash2 className="h-3.5 w-3.5 mr-1.5" />
-                Xoá
+                {lang === 'vi' ? 'Xoá' : 'Delete'}
               </Button>
             </div>
           </div>
