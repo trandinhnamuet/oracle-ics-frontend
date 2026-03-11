@@ -40,11 +40,11 @@ export default function LoginPage() {
     const passwordReset = searchParams.get('passwordReset')
     
     if (verified === 'true') {
-      setSuccessMessage('Email đã được xác thực thành công! Vui lòng đăng nhập.')
+      setSuccessMessage(t('login.successEmailVerified'))
     }
     
     if (passwordReset === 'true') {
-      setSuccessMessage('Đặt lại mật khẩu thành công! Vui lòng đăng nhập với mật khẩu mới.')
+      setSuccessMessage(t('login.successPasswordReset'))
     }
   }, [searchParams])
 
@@ -91,7 +91,14 @@ export default function LoginPage() {
         // Don't reset form, don't show error - just let redirect happen
         return
       }
-      setError(error.message)
+      const msg: string = error.message || ''
+      if (msg.includes('mật khẩu không đúng') || msg.includes('Invalid credentials') || msg.includes('Unauthorized') || msg.includes('incorrect') || msg.toLowerCase().includes('invalid password') || msg.toLowerCase().includes('invalid email')) {
+        setError(t('login.errorInvalidCredentials'))
+      } else if (msg.includes('đã được đăng ký') || msg.includes('already registered') || msg.includes('already exists')) {
+        setError(t('login.errorEmailAlreadyExists'))
+      } else {
+        setError(msg || t('login.errorDefault'))
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircle, AlertCircle, Mail, Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface OtpStatusProps {
   status: 'idle' | 'sending' | 'sent' | 'verifying' | 'success' | 'error';
@@ -9,13 +10,15 @@ interface OtpStatusProps {
 }
 
 export function OtpStatus({ status, error, email, resendTimeLeft }: OtpStatusProps) {
+  const { t } = useTranslation();
+
   const renderStatus = () => {
     switch (status) {
       case 'sending':
         return (
           <div className="flex items-center gap-2 text-blue-600 bg-blue-50 p-3 rounded-lg">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-            <span className="text-sm font-medium">Sending verification code...</span>
+            <span className="text-sm font-medium">{t('verifyOtp.status.sending')}</span>
           </div>
         );
 
@@ -24,9 +27,9 @@ export function OtpStatus({ status, error, email, resendTimeLeft }: OtpStatusPro
           <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
             <Mail className="h-4 w-4" />
             <div className="text-sm">
-              <p className="font-medium">Verification code sent!</p>
+              <p className="font-medium">{t('verifyOtp.status.sentTitle')}</p>
               {email && (
-                <p className="text-green-600/80">Check your email: {email}</p>
+                <p className="text-green-600/80">{t('verifyOtp.status.sentCheckEmail', { email })}</p>
               )}
             </div>
           </div>
@@ -36,7 +39,7 @@ export function OtpStatus({ status, error, email, resendTimeLeft }: OtpStatusPro
         return (
           <div className="flex items-center gap-2 text-blue-600 bg-blue-50 p-3 rounded-lg">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-            <span className="text-sm font-medium">Verifying code...</span>
+            <span className="text-sm font-medium">{t('verifyOtp.status.verifyingCode')}</span>
           </div>
         );
 
@@ -44,7 +47,7 @@ export function OtpStatus({ status, error, email, resendTimeLeft }: OtpStatusPro
         return (
           <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
             <CheckCircle className="h-4 w-4" />
-            <span className="text-sm font-medium">Email verified successfully!</span>
+            <span className="text-sm font-medium">{t('verifyOtp.status.successMessage')}</span>
           </div>
         );
 
@@ -53,7 +56,7 @@ export function OtpStatus({ status, error, email, resendTimeLeft }: OtpStatusPro
           <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-lg">
             <AlertCircle className="h-4 w-4" />
             <div className="text-sm">
-              <p className="font-medium">Verification failed</p>
+              <p className="font-medium">{t('verifyOtp.status.errorTitle')}</p>
               {error && <p className="text-red-600/80">{error}</p>}
             </div>
           </div>
@@ -71,7 +74,7 @@ export function OtpStatus({ status, error, email, resendTimeLeft }: OtpStatusPro
       <div className="flex items-center gap-2 text-orange-600 bg-orange-50 p-3 rounded-lg mt-3">
         <Clock className="h-4 w-4" />
         <span className="text-sm">
-          Resend available in {resendTimeLeft} seconds
+          {t('verifyOtp.status.resendAvailableIn', { time: resendTimeLeft })}
         </span>
       </div>
     );

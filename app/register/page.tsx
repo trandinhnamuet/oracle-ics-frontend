@@ -85,7 +85,12 @@ export default function RegisterPage() {
       router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`)
       
     } catch (error: any) {
-      setError(error.message)
+      const msg: string = error.message || ''
+      if (msg.includes('đã được đăng ký') || msg.includes('already registered') || msg.includes('already exists') || msg.includes('Conflict')) {
+        setError(t('register.errorEmailAlreadyExists'))
+      } else {
+        setError(msg || t('register.errorDefault'))
+      }
     } finally {
       setIsLoading(false)
     }
@@ -101,7 +106,7 @@ export default function RegisterPage() {
       setError(t('register.googleComingSoon'))
       
     } catch (error: any) {
-      setError(error.message)
+      setError(error.message || t('register.errorDefault'))
     } finally {
       setIsLoading(false)
     }

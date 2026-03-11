@@ -1279,7 +1279,12 @@
     "validationEmailRequired": "Please enter your email",
     "validationEmailInvalid": "Invalid email address",
     "validationPasswordRequired": "Please enter your password",
-    "validationPasswordMinLength": "Password must be at least {{length}} characters"
+    "validationPasswordMinLength": "Password must be at least {{length}} characters",
+    "successEmailVerified": "Email verified successfully! Please login.",
+    "successPasswordReset": "Password reset successfully! Please login with your new password.",
+    "errorInvalidCredentials": "Incorrect email or password. Please check your login information.",
+    "errorEmailAlreadyExists": "This email is already registered. Please use a different email or login.",
+    "errorDefault": "Login failed. Please try again."
   },
   "profile": {
     "title": "Profile Information",
@@ -1812,6 +1817,34 @@
       "passwordMaxLength": "Password cannot exceed 100 characters",
       "confirmPasswordRequired": "Please confirm your password",
       "passwordsMismatch": "Passwords do not match"
+    },
+    "errorEmailAlreadyExists": "This email is already registered. Please use a different email or login.",
+    "errorDefault": "Registration failed. Please try again."
+  },
+  "verifyOtp": {
+    "title": "Verify Email",
+    "unverifiedWarning": "⚠️ Account not verified",
+    "otpSentToEmail": "OTP has been sent to your email",
+    "pleaseEnterOtp": "Please enter OTP to verify your account",
+    "enterCodeSentTo": "Enter the 6-digit verification code sent to",
+    "codeInstruction": "Enter the 6-digit code from your email",
+    "verifyButton": "Verify Email",
+    "verifying": "Verifying...",
+    "didntReceiveCode": "Didn't receive the code?",
+    "sending": "Sending...",
+    "resendIn": "Resend in {{time}}s",
+    "resendCode": "Resend code",
+    "securityNote": "🔒 This code expires in 10 minutes. Don't share it with anyone.",
+    "errorInvalidOtp": "Invalid OTP code. Please check and try again.",
+    "errorIncomplete": "Please enter a complete 6-digit code",
+    "status": {
+      "sending": "Sending verification code...",
+      "sentTitle": "Verification code sent!",
+      "sentCheckEmail": "Check your email: {{email}}",
+      "verifyingCode": "Verifying code...",
+      "successMessage": "Email verified successfully!",
+      "errorTitle": "Verification failed",
+      "resendAvailableIn": "Resend available in {{time}} seconds"
     }
   },
   "forgotPassword": {

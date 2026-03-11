@@ -1278,7 +1278,12 @@
     "validationEmailRequired": "Vui lòng nhập email",
     "validationEmailInvalid": "Email không hợp lệ",
     "validationPasswordRequired": "Vui lòng nhập mật khẩu",
-    "validationPasswordMinLength": "Mật khẩu phải có ít nhất {{length}} ký tự"
+    "validationPasswordMinLength": "Mật khẩu phải có ít nhất {{length}} ký tự",
+    "successEmailVerified": "Email đã được xác thực thành công! Vui lòng đăng nhập.",
+    "successPasswordReset": "Đặt lại mật khẩu thành công! Vui lòng đăng nhập với mật khẩu mới.",
+    "errorInvalidCredentials": "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại thông tin đăng nhập.",
+    "errorEmailAlreadyExists": "Email này đã được đăng ký. Vui lòng sử dụng email khác hoặc đăng nhập.",
+    "errorDefault": "Đăng nhập thất bại. Vui lòng thử lại."
   },
   "profile": {
     "title": "Thông tin cá nhân",
@@ -1811,6 +1816,34 @@
       "passwordMaxLength": "Mật khẩu không được quá 100 ký tự",
       "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
       "passwordsMismatch": "Mật khẩu xác nhận không khớp"
+    },
+    "errorEmailAlreadyExists": "Email này đã được đăng ký. Vui lòng sử dụng email khác hoặc đăng nhập.",
+    "errorDefault": "Đăng ký thất bại. Vui lòng thử lại."
+  },
+  "verifyOtp": {
+    "title": "Xác thực Email",
+    "unverifiedWarning": "⚠️ Tài khoản chưa xác thực",
+    "otpSentToEmail": "OTP đã được gửi về email của bạn",
+    "pleaseEnterOtp": "Vui lòng nhập OTP để xác thực tài khoản",
+    "enterCodeSentTo": "Nhập mã xác thực 6 số đã được gửi đến",
+    "codeInstruction": "Nhập mã 6 số từ email của bạn",
+    "verifyButton": "Xác thực Email",
+    "verifying": "Đang xác thực...",
+    "didntReceiveCode": "Chưa nhận được mã?",
+    "sending": "Đang gửi...",
+    "resendIn": "Gửi lại sau {{time}}s",
+    "resendCode": "Gửi lại mã",
+    "securityNote": "🔒 Mã này có hiệu lực trong 10 phút. Không chia sẻ với bất kỳ ai.",
+    "errorInvalidOtp": "Mã OTP không đúng. Vui lòng kiểm tra lại.",
+    "errorIncomplete": "Vui lòng nhập đầy đủ mã 6 số",
+    "status": {
+      "sending": "Đang gửi mã xác thực...",
+      "sentTitle": "Đã gửi mã xác thực!",
+      "sentCheckEmail": "Kiểm tra email của bạn: {{email}}",
+      "verifyingCode": "Đang xác thực mã...",
+      "successMessage": "Xác thực email thành công!",
+      "errorTitle": "Xác thực thất bại",
+      "resendAvailableIn": "Có thể gửi lại sau {{time}} giây"
     }
   },
   "forgotPassword": {

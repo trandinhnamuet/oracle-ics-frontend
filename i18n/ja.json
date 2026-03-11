@@ -1278,7 +1278,12 @@
     "validationEmailRequired": "メールアドレスを入力してください",
     "validationEmailInvalid": "無効なメールアドレスです",
     "validationPasswordRequired": "パスワードを入力してください",
-    "validationPasswordMinLength": "パスワードは{{length}}文字以上で入力してください"
+    "validationPasswordMinLength": "パスワードは{{length}}文字以上で入力してください",
+    "successEmailVerified": "メールの確認が完了しました！ログインしてください。",
+    "successPasswordReset": "パスワードが正常にリセットされました！新しいパスワードでログインしてください。",
+    "errorInvalidCredentials": "メールアドレスまたはパスワードが正しくありません。ログイン情報を確認してください。",
+    "errorEmailAlreadyExists": "このメールアドレスはすでに登録されています。別のメールアドレスを使用するかログインしてください。",
+    "errorDefault": "ログインに失敗しました。もう一度お試しください。"
   },
   "profile": {
     "title": "プロフィール情報",
@@ -1811,6 +1816,34 @@
       "passwordMaxLength": "パスワードは100文字以下で入力してください",
       "confirmPasswordRequired": "パスワードを確認してください",
       "passwordsMismatch": "パスワードが一致しません"
+    },
+    "errorEmailAlreadyExists": "このメールアドレスはすでに登録されています。別のメールアドレスを使用するかログインしてください。",
+    "errorDefault": "登録に失敗しました。もう一度お試しください。"
+  },
+  "verifyOtp": {
+    "title": "メール認証",
+    "unverifiedWarning": "⚠️ アカウント未確認",
+    "otpSentToEmail": "OTPがメールアドレスに送信されました",
+    "pleaseEnterOtp": "アカウントを認証するためにOTPを入力してください",
+    "enterCodeSentTo": "次のアドレスに送信された6桁の確認コードを入力してください",
+    "codeInstruction": "メールから6桁のコードを入力してください",
+    "verifyButton": "メールを確認",
+    "verifying": "確認中...",
+    "didntReceiveCode": "コードを受け取っていませんか？",
+    "sending": "送信中...",
+    "resendIn": "{{time}}秒後に再送信",
+    "resendCode": "コードを再送信",
+    "securityNote": "🔒 このコードは10分後に期限切れになります。誰とも共有しないでください。",
+    "errorInvalidOtp": "無効なOTPコードです。もう一度確認してください。",
+    "errorIncomplete": "6桁のコードを完全に入力してください",
+    "status": {
+      "sending": "確認コードを送信中...",
+      "sentTitle": "確認コードを送信しました！",
+      "sentCheckEmail": "メールを確認してください: {{email}}",
+      "verifyingCode": "コードを確認中...",
+      "successMessage": "メール確認に成功しました！",
+      "errorTitle": "確認に失敗しました",
+      "resendAvailableIn": "{{time}}秒後に再送信可能"
     }
   },
   "forgotPassword": {

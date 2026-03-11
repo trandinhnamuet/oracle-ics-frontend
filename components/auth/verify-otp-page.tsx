@@ -9,6 +9,7 @@ import { OtpStatus } from '@/components/auth/otp-status';
 import { ArrowLeft } from 'lucide-react';
 import { authApi } from '@/api/auth.api';
 import { getClientIp } from '@/lib/ip-service';
+import { useTranslation } from 'react-i18next';
 
 interface VerifyOtpPageProps {
   email: string;
@@ -21,6 +22,7 @@ type OtpStatus = 'idle' | 'sending' | 'sent' | 'verifying' | 'success' | 'error'
 
 export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: VerifyOtpPageProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [otpCode, setOtpCode] = useState('');
   const [status, setStatus] = useState<OtpStatus>('idle');
   const [error, setError] = useState<string>('');
@@ -38,7 +40,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
 
   const verifyOtp = async () => {
     if (otpCode.length !== 6) {
-      setError('Please enter a complete 6-digit code');
+      setError(t('verifyOtp.errorIncomplete'));
       setStatus('error');
       return;
     }
@@ -71,7 +73,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
       }
     } catch (error: any) {
       console.error('OTP verification error:', error);
-      setError(error.message || 'Invalid verification code');
+      setError(t('verifyOtp.errorInvalidOtp'));
       setStatus('error');
       
       // Clear OTP on error
@@ -93,7 +95,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
       setOtpCode(''); // Clear current input
     } catch (error: any) {
       console.error('Resend OTP error:', error);
-      setError(error.message || 'Failed to resend code');
+      setError(t('verifyOtp.errorInvalidOtp'));
       setStatus('error');
     }
   };
@@ -131,26 +133,26 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
                 </Button>
               )}
               <div className="flex-1">
-                <CardTitle className="text-2xl font-bold">Verify Email</CardTitle>
+                <CardTitle className="text-2xl font-bold">{t('verifyOtp.title')}</CardTitle>
               </div>
             </div>
             <CardDescription className="text-center">
               {customMessage ? (
                 <>
                   <span className="text-orange-600 font-medium block mb-2">
-                    ⚠️ Tài khoản chưa xác thực
+                    {t('verifyOtp.unverifiedWarning')}
                   </span>
                   <span className="text-sm text-muted-foreground block mb-2">
-                    OTP đã được gửi về email của bạn
+                    {t('verifyOtp.otpSentToEmail')}
                   </span>
                   <span className="font-medium text-foreground">{email}</span>
                   <span className="text-sm text-muted-foreground block mt-2">
-                    Vui lòng nhập OTP để xác thực tài khoản
+                    {t('verifyOtp.pleaseEnterOtp')}
                   </span>
                 </>
               ) : (
                 <>
-                  Enter the 6-digit verification code sent to
+                  {t('verifyOtp.enterCodeSentTo')}
                   <br />
                   <span className="font-medium text-foreground">{email}</span>
                 </>
@@ -171,7 +173,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
                 
                 {/* Instructions */}
                 <p className="text-sm text-muted-foreground text-center">
-                  Enter the 6-digit code from your email
+                  {t('verifyOtp.codeInstruction')}
                 </p>
               </div>
 
@@ -193,16 +195,16 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
                   {status === 'verifying' ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Verifying...
+                      {t('verifyOtp.verifying')}
                     </>
                   ) : (
-                    'Verify Email'
+                    t('verifyOtp.verifyButton')
                   )}
                 </Button>
 
                 <div className="text-center">
                   <span className="text-sm text-muted-foreground">
-                    Didn't receive the code?{' '}
+                    {t('verifyOtp.didntReceiveCode')}{' '}
                   </span>
                   <Button
                     type="button"
@@ -212,10 +214,10 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
                     className="p-0 h-auto font-medium"
                   >
                     {status === 'sending'
-                      ? 'Sending...'
+                      ? t('verifyOtp.sending')
                       : resendTimeLeft > 0
-                      ? `Resend in ${resendTimeLeft}s`
-                      : 'Resend code'}
+                      ? t('verifyOtp.resendIn', { time: resendTimeLeft })
+                      : t('verifyOtp.resendCode')}
                   </Button>
                 </div>
               </div>
@@ -224,7 +226,7 @@ export function VerifyOtpPage({ email, customMessage, onBack, onSuccess }: Verif
             {/* Security Note */}
             <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
               <p className="text-xs text-blue-800 dark:text-blue-300 text-center">
-                🔒 This code expires in 10 minutes. Don't share it with anyone.
+                {t('verifyOtp.securityNote')}
               </p>
             </div>
           </CardContent>

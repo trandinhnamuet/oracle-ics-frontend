@@ -1279,7 +1279,12 @@
     "validationEmailRequired": "请输入邮箱",
     "validationEmailInvalid": "邮箱格式不正确",
     "validationPasswordRequired": "请输入密码",
-    "validationPasswordMinLength": "密码至少为{{length}}个字符"
+    "validationPasswordMinLength": "密码至少为{{length}}个字符",
+    "successEmailVerified": "邮件验证成功！请登录。",
+    "successPasswordReset": "密码重置成功！请使用新密码登录。",
+    "errorInvalidCredentials": "邮箱或密码不正确，请检查您的登录信息。",
+    "errorEmailAlreadyExists": "此邮箱已被注册，请使用其他邮箱或登录。",
+    "errorDefault": "登录失败，请重试。"
   },
   "profile": {
     "title": "个人资料",
@@ -1812,6 +1817,34 @@
       "passwordMaxLength": "密码不能超过100个字符",
       "confirmPasswordRequired": "请确认您的密码",
       "passwordsMismatch": "密码不一致"
+    },
+    "errorEmailAlreadyExists": "此邮箱已被注册，请使用其他邮箱或登录。",
+    "errorDefault": "注册失败，请重试。"
+  },
+  "verifyOtp": {
+    "title": "验证邮件",
+    "unverifiedWarning": "⚠️ 账户未验证",
+    "otpSentToEmail": "OTP 已发送至您的邮箱",
+    "pleaseEnterOtp": "请输入 OTP 以验证您的账户",
+    "enterCodeSentTo": "请输入发送至以下地址的6位验证码",
+    "codeInstruction": "请输入邮件中的6位验证码",
+    "verifyButton": "验证邮件",
+    "verifying": "验证中...",
+    "didntReceiveCode": "没有收到验证码？",
+    "sending": "发送中...",
+    "resendIn": "{{time}}秒后重新发送",
+    "resendCode": "重新发送验证码",
+    "securityNote": "🔒 此验证码 10 分钟后过期，请勿与任何人分享。",
+    "errorInvalidOtp": "OTP 验证码错误，请重新检查。",
+    "errorIncomplete": "请输入完整的6位验证码",
+    "status": {
+      "sending": "正在发送验证码...",
+      "sentTitle": "验证码已发送！",
+      "sentCheckEmail": "请检查您的邮件: {{email}}",
+      "verifyingCode": "正在验证...",
+      "successMessage": "邮件验证成功！",
+      "errorTitle": "验证失败",
+      "resendAvailableIn": "{{time}}秒后可重新发送"
     }
   },
   "forgotPassword": {
