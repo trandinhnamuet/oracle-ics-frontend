@@ -187,6 +187,12 @@ export default function PaymentHistoryPage() {
       .reduce((sum, p) => sum + Number(p.amount), 0)
   }
 
+  const getTotalDepositAmount = () => {
+    return filteredPayments
+      .filter(p => p.status === 'success' && p.payment_type === 'deposit')
+      .reduce((sum, p) => sum + Number(p.amount), 0)
+  }
+
   const getPaymentDescription = (payment: Payment) => {
     if (payment.payment_type === 'deposit') {
       return payment.description || t('paymentHistory.depositDescription')
@@ -400,6 +406,22 @@ export default function PaymentHistoryPage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Banknote className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Tổng đã nạp</p>
+                  <p className="text-lg font-bold text-blue-600">
+                    {formatPrice(getTotalDepositAmount())}₫
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
                 <div className="p-2 bg-green-100 rounded-lg">
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
@@ -416,12 +438,12 @@ export default function PaymentHistoryPage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Banknote className="h-5 w-5 text-blue-600" />
+                <div className="p-2 bg-orange-100 rounded-lg">
+                  <CreditCard className="h-5 w-5 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.depositCount')}</p>
-                  <p className="text-lg font-bold text-blue-600">
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần nạp tiền</p>
+                  <p className="text-lg font-bold text-orange-600">
                     {payments.filter(p => p.payment_type === 'deposit' && p.status === 'success').length}
                   </p>
                 </div>
@@ -436,25 +458,9 @@ export default function PaymentHistoryPage() {
                   <CreditCard className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.packagesBought')}</p>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần thanh toán</p>
                   <p className="text-lg font-bold text-purple-600">
                     {payments.filter(p => p.payment_type === 'subscription' && p.status === 'success').length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <Clock className="h-5 w-5 text-yellow-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.processing')}</p>
-                  <p className="text-lg font-bold text-yellow-600">
-                    {payments.filter(p => p.status === 'pending').length}
                   </p>
                 </div>
               </div>
