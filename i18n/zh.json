@@ -1482,6 +1482,14 @@
         "title": "确认删除订阅",
         "description": "此操作将永久删除Oracle Cloud上的订阅和虚拟机(VM)。所有相关数据将被删除且无法恢复。删除前请备份重要数据。"
       }
+    },
+    "vmNotConfigured": {
+      "message1": "VM尚未配置。请配置您的VM以查看服务器详情。",
+      "message2": "未配置VM。请先配置您的VM。",
+      "message3": "VM配置后图表可用",
+      "message4": "VM运行时图表可用",
+      "label": "VM尚未配置",
+      "deleteButton": "删除VM（保留订阅）"
     }
   },
   "support": {

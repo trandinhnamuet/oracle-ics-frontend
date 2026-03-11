@@ -1482,6 +1482,14 @@
         "title": "Confirm Delete Subscription",
         "description": "This action will PERMANENTLY DELETE the subscription and the virtual machine (VM) on Oracle Cloud. All related data will be deleted and CANNOT BE RECOVERED. Please backup important data before deleting."
       }
+    },
+    "vmNotConfigured": {
+      "message1": "VM not configured yet. Configure your VM to see server details.",
+      "message2": "No VM configured. Please configure your VM first.",
+      "message3": "Charts available after VM configuration",
+      "message4": "Charts available when VM is running",
+      "label": "VM not configured yet",
+      "deleteButton": "Delete VM (keep subscription)"
     }
   },
   "support": {

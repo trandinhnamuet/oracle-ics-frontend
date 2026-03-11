@@ -506,7 +506,7 @@ export default function PackageDetailPage() {
                 {!subscription?.vm_instance_id ? (
                   <div className="p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-900">
                     <p className="text-sm text-yellow-700 dark:text-yellow-400">
-                      VM not configured yet. Configure your VM to see server details.
+                      {t('packageDetail.vmNotConfigured.message1')}
                     </p>
                   </div>
                 ) : (
@@ -631,7 +631,7 @@ export default function PackageDetailPage() {
               ) : (
                 <div className="col-span-4">
                   <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4">
-                    No VM configured. Please configure your VM first.
+                    {t('packageDetail.vmNotConfigured.message2')}
                   </p>
                 </div>
               )}
@@ -905,8 +905,8 @@ export default function PackageDetailPage() {
               <div className="text-center py-8 text-gray-500 dark:text-muted-foreground">
                 <p>
                   {subscription?.vm_instance_id 
-                    ? 'Charts available when VM is running' 
-                    : 'Charts available after VM configuration'
+                    ? t('packageDetail.vmNotConfigured.message4')
+                    : t('packageDetail.vmNotConfigured.message3')
                   }
                 </p>
               </div>
@@ -1027,7 +1027,7 @@ export default function PackageDetailPage() {
             <CardContent className="space-y-3">
               {!subscription?.vm_instance_id ? (
                 <div className="space-y-3">
-                  <p className="text-sm text-yellow-600 dark:text-yellow-400 mb-3">VM not configured yet</p>
+                  <p className="text-sm text-yellow-600 dark:text-yellow-400 mb-3">{t('packageDetail.vmNotConfigured.label')}</p>
                   <Button 
                     className="w-full bg-blue-600 hover:bg-blue-700"
                     onClick={() => router.push(`/cloud/configuration/${subscriptionId}`)}
@@ -1123,7 +1123,7 @@ export default function PackageDetailPage() {
                     disabled={isLoading}
                   >
                     <Trash2 className="h-4 w-4 mr-2 text-orange-500" />
-                    <span className="text-orange-600">Xóa VM (giữ nguyên subscription)</span>
+                    <span className="text-orange-600">{t('packageDetail.vmNotConfigured.deleteButton')}</span>
                   </Button>
                 )}
                 <Button 

@@ -1481,6 +1481,14 @@
         "title": "Xác nhận xóa subscription",
         "description": "Hành động này sẽ XÓA HOÀN TOÀN subscription và máy ảo (VM) trên Oracle Cloud. Tất cả dữ liệu liên quan sẽ bị xóa và KHÔNG THỂ KHÔI PHỤC. Vui lòng backup dữ liệu quan trọng trước khi xóa."
       }
+    },
+    "vmNotConfigured": {
+      "message1": "VM chưa được cấu hình. Cấu hình VM của bạn để xem chi tiết máy chủ.",
+      "message2": "Chưa có VM được cấu hình. Vui lòng cấu hình VM trước.",
+      "message3": "Biểu đồ sẽ khả dụng sau khi cấu hình VM",
+      "message4": "Biểu đồ sẽ khả dụng khi VM đang chạy",
+      "label": "VM chưa được cấu hình",
+      "deleteButton": "Xóa VM (giữ nguyên subscription)"
     }
   },
   "support": {
