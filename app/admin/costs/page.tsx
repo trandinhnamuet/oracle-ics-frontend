@@ -84,12 +84,24 @@ export default function AdminCostsPage() {
   // ── Available years from transaction data ────────────────────
   const availableYears = useMemo(() => {
     const years = new Set<number>()
+    
+    // Collect years from transactions
     transactions.forEach(t => {
       const y = new Date(t.created_at).getFullYear()
       if (!isNaN(y)) years.add(y)
     })
+    
     const currentYear = new Date().getFullYear()
-    years.add(currentYear)
+    
+    // If no years found from transactions, use current year as reference
+    let minYear = years.size > 0 ? Math.min(...Array.from(years)) : currentYear
+    let maxYear = currentYear + 2
+    
+    // Generate range from min to max year
+    for (let y = minYear; y <= maxYear; y++) {
+      years.add(y)
+    }
+    
     return Array.from(years).sort((a, b) => b - a)
   }, [transactions])
 
