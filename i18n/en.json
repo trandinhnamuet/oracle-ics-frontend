@@ -736,6 +736,7 @@
         "phone": "Phone",
         "address": "Address",
         "content": "Request Content",
+        "attachments": "Attachments",
         "statusLabel": "Status",
         "priorityLabel": "Priority",
         "resolvedAt": "Resolved At",
@@ -1497,6 +1498,13 @@
     "subtitle": "Submit a technical support request and receive a quick response",
     "submit": "Submit Support Request",
     "submitting": "Submitting...",
+    "uploadingFiles": "Uploading files...",
+    "attachmentsLabel": "Attachments",
+    "files": {
+      "tooMany": "Maximum {{max}} files allowed",
+      "tooLarge": "File exceeds {{maxMB}}MB limit",
+      "limits": "Max {{max}} files · each ≤ {{maxMB}}MB · Images, PDF, Word, Text"
+    },
     "submitSuccess": "Request submitted successfully!",
     "submitSuccessDesc": "We will respond as soon as possible",
     "submitError": "Failed to submit request",
@@ -1515,7 +1523,9 @@
       "servicePlaceholder": "Select service",
       "content": "Content",
       "contentPlaceholder": "Describe the issue you are experiencing in detail...",
-      "attachment": "Attachment (URL)"
+      "attachments": "Attachments",
+      "attachmentsPlaceholder": "Drag & drop files here or",
+      "attachmentsBrowse": "browse from computer"
     },
     "services": {
       "cloud": "Cloud Server",

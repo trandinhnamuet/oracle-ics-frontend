@@ -736,6 +736,7 @@
         "phone": "電話",
         "address": "住所",
         "content": "リクエスト内容",
+        "attachments": "添付ファイル",
         "statusLabel": "ステータス",
         "priorityLabel": "優先度",
         "resolvedAt": "解決日時",
@@ -1496,6 +1497,13 @@
     "subtitle": "技術的なサポートリクエストを送信して、迅速な回答を受け取る",
     "submit": "サポートリクエストを送信",
     "submitting": "送信中...",
+    "uploadingFiles": "ファイルをアップロード中...",
+    "attachmentsLabel": "添付ファイル",
+    "files": {
+      "tooMany": "添付できるファイルは最大 {{max}} 個まで",
+      "tooLarge": "ファイルが {{maxMB}}MB の制限を超えています",
+      "limits": "最大 {{max}} ファイル · 各 ≤ {{maxMB}}MB · 画像、PDF、Word、テキスト"
+    },
     "submitSuccess": "リクエストが正常に送信されました！",
     "submitSuccessDesc": "できるだけ早く返答します",
     "submitError": "リクエストの送信に失敗しました",
@@ -1514,7 +1522,9 @@
       "servicePlaceholder": "サービスを選択",
       "content": "内容",
       "contentPlaceholder": "発生している問題を詳しく説明してください...",
-      "attachment": "添付ファイル (URL)"
+      "attachments": "添付ファイル",
+      "attachmentsPlaceholder": "ファイルをドラッグ＆ドロップまたは",
+      "attachmentsBrowse": "パソコンから選択"
     },
     "services": {
       "cloud": "クラウドサーバー",

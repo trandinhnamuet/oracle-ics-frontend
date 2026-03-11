@@ -2,6 +2,13 @@ import { fetchWithAuth } from '@/lib/fetch-wrapper';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
 
+export interface TicketAttachment {
+  url: string;
+  name: string;
+  mimeType: string;
+  size: number;
+}
+
 export interface SupportTicket {
   id: number;
   user_id?: number;
@@ -13,6 +20,7 @@ export interface SupportTicket {
   service?: string;
   content: string;
   attachment_url?: string;
+  attachments?: string; // JSON: TicketAttachment[]
   status: 'open' | 'in_progress' | 'resolved' | 'closed';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   admin_note?: string;
@@ -20,6 +28,15 @@ export interface SupportTicket {
   created_at: string;
   updated_at: string;
   user?: { id: number; email: string; fullName?: string };
+}
+
+export function parseAttachments(ticket: SupportTicket): TicketAttachment[] {
+  if (!ticket.attachments) return [];
+  try {
+    return JSON.parse(ticket.attachments) as TicketAttachment[];
+  } catch {
+    return [];
+  }
 }
 
 export interface CreateTicketPayload {
@@ -31,6 +48,24 @@ export interface CreateTicketPayload {
   service?: string;
   content: string;
   attachment_url?: string;
+  attachments?: string; // JSON stringified TicketAttachment[]
+}
+
+export async function uploadSupportFiles(
+  files: File[],
+): Promise<TicketAttachment[]> {
+  const form = new FormData();
+  for (const file of files) form.append('files', file);
+
+  const res = await fetchWithAuth('/support-tickets/upload-files', {
+    method: 'POST',
+    body: form,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Tải file thất bại');
+  }
+  return res.json();
 }
 
 export async function createSupportTicket(data: CreateTicketPayload): Promise<SupportTicket> {
@@ -82,3 +117,4 @@ export async function deleteTicket(id: number): Promise<void> {
   const res = await fetchWithAuth(`/support-tickets/${id}`, { method: 'DELETE' });
   if (!res.ok) throw new Error('Xóa thất bại');
 }
+

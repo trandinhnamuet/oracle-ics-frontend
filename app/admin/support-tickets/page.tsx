@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import {
   HeadphonesIcon, Search, RefreshCw, Trash2, CheckCircle2,
   XCircle, AlertCircle, Clock, ChevronDown, ChevronUp, Save,
+  Paperclip, FileText, Image as ImageIcon, Download,
 } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useToast } from '@/hooks/use-toast'
-import { getAllTickets, updateTicket, deleteTicket, SupportTicket } from '@/api/support-ticket.api'
+import { getAllTickets, updateTicket, deleteTicket, parseAttachments, SupportTicket, TicketAttachment } from '@/api/support-ticket.api'
 import { useTranslation } from 'react-i18next'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
@@ -34,6 +35,49 @@ const PRIORITY_CONFIG: Record<string, { className: string }> = {
 }
 
 const SERVICES: Record<string, string> = {}
+
+const API_BASE = (typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_URL : process.env.NEXT_PUBLIC_API_URL) || 'http://localhost:3003'
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function AdminAttachmentItem({ att }: { att: TicketAttachment }) {
+  const base = API_BASE.replace(/\/$/, '')
+  const isImage = att.mimeType.startsWith('image/')
+  const fullUrl = att.url.startsWith('http') ? att.url : `${base}${att.url}`
+
+  return (
+    <div className="flex items-center gap-3 bg-muted/40 border border-border rounded-lg px-3 py-2">
+      {isImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={fullUrl} alt={att.name} className="h-10 w-10 object-cover rounded shrink-0" />
+      ) : (
+        <FileText className="h-8 w-8 text-orange-500 shrink-0" />
+      )}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium truncate">{att.name}</p>
+        <p className="text-xs text-muted-foreground">{att.mimeType} · {formatBytes(att.size)}</p>
+      </div>
+      <div className="flex gap-1 shrink-0">
+        {isImage && (
+          <a href={fullUrl} target="_blank" rel="noopener noreferrer">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="View">
+              <ImageIcon className="h-4 w-4" />
+            </Button>
+          </a>
+        )}
+        <a href={fullUrl} target="_blank" rel="noopener noreferrer" download={att.name}>
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Download">
+            <Download className="h-4 w-4" />
+          </Button>
+        </a>
+      </div>
+    </div>
+  )
+}
 
 export default function AdminSupportTicketsPage() {
   const { toast } = useToast()
@@ -301,6 +345,24 @@ export default function AdminSupportTicketsPage() {
                                   <p className="text-xs font-medium text-muted-foreground mb-1">{t('admin.supportTickets.detail.content')}:</p>
                                   <p className="text-sm whitespace-pre-wrap bg-background border rounded-md p-3">{ticket.content}</p>
                                 </div>
+
+                                {/* Attachments */}
+                                {(() => {
+                                  const atts = parseAttachments(ticket)
+                                  return atts.length > 0 ? (
+                                    <div>
+                                      <p className="text-xs font-medium text-muted-foreground mb-2">
+                                        <Paperclip className="h-3 w-3 inline mr-1" />
+                                        {t('admin.supportTickets.detail.attachments')} ({atts.length})
+                                      </p>
+                                      <div className="space-y-2">
+                                        {atts.map((att, idx) => (
+                                          <AdminAttachmentItem key={idx} att={att} />
+                                        ))}
+                                      </div>
+                                    </div>
+                                  ) : null
+                                })()}
 
                                 {/* Admin actions */}
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t">

@@ -736,6 +736,7 @@
         "phone": "Điện thoại",
         "address": "Địa chỉ",
         "content": "Nội dung yêu cầu",
+        "attachments": "Tệp đính kèm",
         "statusLabel": "Trạng thái",
         "priorityLabel": "Mức độ ưu tiên",
         "resolvedAt": "Đã giải quyết lúc",
@@ -1496,6 +1497,13 @@
     "subtitle": "Gửi yêu cầu hỗ trợ kỹ thuật và nhận phản hồi nhanh chóng",
     "submit": "Gửi yêu cầu hỗ trợ",
     "submitting": "Đang gửi...",
+    "uploadingFiles": "Đang tải file...",
+    "attachmentsLabel": "Tệp đính kèm",
+    "files": {
+      "tooMany": "Chỉ được đính kèm tối đa {{max}} file",
+      "tooLarge": "File vượt quá {{maxMB}}MB cho phép",
+      "limits": "Tối đa {{max}} file · mỗi file ≤ {{maxMB}}MB · Ảnh, PDF, Word, Text"
+    },
     "submitSuccess": "Yêu cầu đã được gửi thành công!",
     "submitSuccessDesc": "Chúng tôi sẽ phản hồi trong thời gian sớm nhất",
     "submitError": "Gửi yêu cầu thất bại",
@@ -1514,7 +1522,9 @@
       "servicePlaceholder": "Chọn dịch vụ",
       "content": "Nội dung",
       "contentPlaceholder": "Mô tả chi tiết vấn đề bạn đang gặp phải...",
-      "attachment": "File đính kèm (URL)"
+      "attachments": "Tệp đính kèm",
+      "attachmentsPlaceholder": "Kéo thả file vào đây hoặc",
+      "attachmentsBrowse": "chọn file từ máy tính"
     },
     "services": {
       "cloud": "Cloud Server",

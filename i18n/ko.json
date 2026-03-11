@@ -736,6 +736,7 @@
         "phone": "전화",
         "address": "주소",
         "content": "요청 내용",
+        "attachments": "첸부 파일",
         "statusLabel": "상태",
         "priorityLabel": "우선순위",
         "resolvedAt": "해결 시간",
@@ -1496,6 +1497,13 @@
     "subtitle": "기술 지원 요청을 제출하고 빠른 응답을 받으세요",
     "submit": "지원 요청 제출",
     "submitting": "제출 중...",
+    "uploadingFiles": "파일 업로드 중...",
+    "attachmentsLabel": "첨부 파일",
+    "files": {
+      "tooMany": "최대 {{max}}개의 파일만 첨부할 수 있습니다",
+      "tooLarge": "파일이 {{maxMB}}MB 제한을 초과합니다",
+      "limits": "최대 {{max}}개 파일 · 각 ≤ {{maxMB}}MB · 이미지, PDF, Word, 텍스트"
+    },
     "submitSuccess": "요청이 성공적으로 제출되었습니다!",
     "submitSuccessDesc": "가능한 빨리 답변 드리겠습니다",
     "submitError": "요청 제출 실패",
@@ -1514,7 +1522,9 @@
       "servicePlaceholder": "서비스 선택",
       "content": "내용",
       "contentPlaceholder": "겪고 있는 문제를 자세히 설명해주세요...",
-      "attachment": "첨부파일 (URL)"
+      "attachments": "첨부 파일",
+      "attachmentsPlaceholder": "파일을 여기에 끌어 놓거나",
+      "attachmentsBrowse": "컴퓨터에서 찾아보기"
     },
     "services": {
       "cloud": "클라우드 서버",
