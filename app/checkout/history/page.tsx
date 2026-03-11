@@ -441,13 +441,13 @@ export default function PaymentHistoryPage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                <div className="p-2 bg-orange-100 rounded-lg">
+                  <CreditCard className="h-5 w-5 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.totalPaid')}</p>
-                  <p className="text-lg font-bold text-green-600">
-                    {formatPrice(getTotalAmount())}₫
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần nạp tiền</p>
+                  <p className="text-lg font-bold text-orange-600">
+                    {payments.filter(p => p.payment_type === 'deposit' && p.status === 'success').length}
                   </p>
                 </div>
               </div>
@@ -457,13 +457,13 @@ export default function PaymentHistoryPage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
-                <div className="p-2 bg-orange-100 rounded-lg">
-                  <CreditCard className="h-5 w-5 text-orange-600" />
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần nạp tiền</p>
-                  <p className="text-lg font-bold text-orange-600">
-                    {payments.filter(p => p.payment_type === 'deposit' && p.status === 'success').length}
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.totalPaid')}</p>
+                  <p className="text-lg font-bold text-green-600">
+                    {formatPrice(getTotalAmount())}₫
                   </p>
                 </div>
               </div>
