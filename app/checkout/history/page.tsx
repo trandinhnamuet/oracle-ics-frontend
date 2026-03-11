@@ -681,7 +681,7 @@ export default function PaymentHistoryPage() {
                 </div>
 
                 {/* Amount */}
-                <div className="bg-muted rounded-lg p-4 text-center">
+                <div className="bg-white dark:bg-muted rounded-lg p-4 text-center">
                   <p className="text-sm text-foreground mb-1">{t('paymentHistory.detail.amount')}</p>
                   <p className="text-3xl font-bold text-primary">
                     {formatPrice(Number(selectedPayment.amount))}₫
