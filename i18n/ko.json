@@ -1615,7 +1615,20 @@
     "excelSummary": "조계: {{count}}건의 거래",
     "showing": "{{total}}업무 중 {{count}}건 표시",
     "prevPage": "이전",
-    "nextPage": "다음"
+    "nextPage": "다음",
+    "detail": {
+      "title": "거래 상세 정보",
+      "amount": "금액",
+      "paymentId": "결제 ID",
+      "transactionCode": "거래 코드",
+      "paymentMethod": "결제 수단",
+      "description": "설명",
+      "package": "서비스 패키지",
+      "createdAt": "생성 시간",
+      "updatedAt": "마지막 업데이트",
+      "close": "닫기",
+      "copied": "복사됨"
+    }
   },
   "balanceDisplay": {
     "label": "잔액:",

@@ -7,6 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { 
   ArrowLeft, 
   Search, 
@@ -19,7 +25,12 @@ import {
   Clock,
   XCircle,
   Eye,
-  ChevronRight
+  ChevronRight,
+  Copy,
+  Package,
+  Hash,
+  CalendarDays,
+  RefreshCw,
 } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
@@ -110,6 +121,8 @@ export default function PaymentHistoryPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [typeFilter, setTypeFilter] = useState('all')
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
+  const [detailOpen, setDetailOpen] = useState(false)
 
   // Fetch payments from API
   useEffect(() => {
@@ -163,10 +176,16 @@ export default function PaymentHistoryPage() {
   }, [searchTerm, statusFilter, typeFilter, payments])
 
   const handleViewDetails = (payment: Payment) => {
+    setSelectedPayment(payment)
+    setDetailOpen(true)
+  }
+
+  const handleCopyText = (text: string, label: string) => {
+    navigator.clipboard.writeText(text)
     toast({
-      title: t('paymentHistory.viewDetail'),
-      description: t('paymentHistory.viewDetailDesc', { code: payment.transaction_code }),
-      variant: 'default'
+      title: t('paymentHistory.detail.copied'),
+      description: `${label}: ${text}`,
+      variant: 'default',
     })
   }
 
@@ -630,6 +649,143 @@ export default function PaymentHistoryPage() {
         </Card>
         </div>
       </div>
+
+      {/* Payment Detail Modal */}
+      <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5 text-primary" />
+              {t('paymentHistory.detail.title')}
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedPayment && (() => {
+            const statusConfig = STATUS_CONFIG[selectedPayment.status] ?? DEFAULT_STATUS_CONFIG
+            const typeConfig = TYPE_CONFIG[selectedPayment.payment_type] ?? DEFAULT_TYPE_CONFIG
+            const StatusIcon = statusConfig.icon
+            const TypeIcon = typeConfig.icon
+
+            return (
+              <div className="space-y-4 pt-2">
+                {/* Status + Type badges */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="outline" className={typeConfig.color}>
+                    <TypeIcon className="h-3 w-3 mr-1" />
+                    {typeConfig.label}
+                  </Badge>
+                  <Badge variant="outline" className={statusConfig.color}>
+                    <StatusIcon className="h-3 w-3 mr-1" />
+                    {statusConfig.label}
+                  </Badge>
+                </div>
+
+                {/* Amount */}
+                <div className="bg-muted rounded-lg p-4 text-center">
+                  <p className="text-sm text-foreground mb-1">{t('paymentHistory.detail.amount')}</p>
+                  <p className="text-3xl font-bold text-primary">
+                    {formatPrice(Number(selectedPayment.amount))}₫
+                  </p>
+                </div>
+
+                {/* Detail rows */}
+                <div className="divide-y divide-border rounded-lg border">
+                  {/* Payment ID */}
+                  <div className="flex items-start justify-between px-4 py-3 gap-3">
+                    <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
+                      <Hash className="h-4 w-4" />
+                      {t('paymentHistory.detail.paymentId')}
+                    </span>
+                    <div className="flex items-center gap-1 min-w-0">
+                      <span className="text-sm font-mono truncate">{selectedPayment.id}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopyText(selectedPayment.id, 'ID')}>
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Transaction code */}
+                  <div className="flex items-start justify-between px-4 py-3 gap-3">
+                    <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
+                      <Hash className="h-4 w-4" />
+                      {t('paymentHistory.detail.transactionCode')}
+                    </span>
+                    <div className="flex items-center gap-1 min-w-0">
+                      <span className="text-sm font-mono truncate">{selectedPayment.transaction_code}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopyText(selectedPayment.transaction_code, t('paymentHistory.detail.transactionCode'))}>
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Payment method */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CreditCard className="h-4 w-4" />
+                      {t('paymentHistory.detail.paymentMethod')}
+                    </span>
+                    <span className="text-sm font-medium">{getPaymentMethodLabel(selectedPayment.payment_method)}</span>
+                  </div>
+
+                  {/* Description */}
+                  {(selectedPayment.description || selectedPayment.payment_type) && (
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Banknote className="h-4 w-4" />
+                        {t('paymentHistory.detail.description')}
+                      </span>
+                      <span className="text-sm font-medium text-right max-w-[55%]">{getPaymentDescription(selectedPayment)}</span>
+                    </div>
+                  )}
+
+                  {/* Cloud package */}
+                  {selectedPayment.subscription?.cloudPackage && (
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Package className="h-4 w-4" />
+                        {t('paymentHistory.detail.package')}
+                      </span>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">{selectedPayment.subscription.cloudPackage.name}</p>
+                        {selectedPayment.subscription.cloudPackage.category && (
+                          <p className="text-xs text-muted-foreground">{selectedPayment.subscription.cloudPackage.category}</p>
+                        )}
+                        {selectedPayment.subscription.months_paid && selectedPayment.subscription.months_paid > 1 && (
+                          <p className="text-xs text-muted-foreground">{selectedPayment.subscription.months_paid} {t('paymentHistory.months')}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Created at */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CalendarDays className="h-4 w-4" />
+                      {t('paymentHistory.detail.createdAt')}
+                    </span>
+                    <span className="text-sm font-medium">{formatDate(selectedPayment.created_at)}</span>
+                  </div>
+
+                  {/* Updated at */}
+                  {selectedPayment.updated_at && selectedPayment.updated_at !== selectedPayment.created_at && (
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <RefreshCw className="h-4 w-4" />
+                        {t('paymentHistory.detail.updatedAt')}
+                      </span>
+                      <span className="text-sm font-medium">{formatDate(selectedPayment.updated_at)}</span>
+                    </div>
+                  )}
+                </div>
+
+                <Button variant="outline" className="w-full" onClick={() => setDetailOpen(false)}>
+                  {t('paymentHistory.detail.close')}
+                </Button>
+              </div>
+            )
+          })()}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

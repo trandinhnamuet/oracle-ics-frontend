@@ -1616,7 +1616,20 @@
     "excelSummary": "总计: {{count}} 笔交易",
     "showing": "显示 {{total}} 中的 {{count}} 笔交易",
     "prevPage": "上一页",
-    "nextPage": "下一页"
+    "nextPage": "下一页",
+    "detail": {
+      "title": "交易详情",
+      "amount": "金额",
+      "paymentId": "支付ID",
+      "transactionCode": "交易代码",
+      "paymentMethod": "支付方式",
+      "description": "描述",
+      "package": "服务套餐",
+      "createdAt": "创建时间",
+      "updatedAt": "最后更新",
+      "close": "关闭",
+      "copied": "已复制"
+    }
   },
   "balanceDisplay": {
     "label": "余额:",

@@ -1616,7 +1616,20 @@
     "excelSummary": "Total: {{count}} transactions",
     "showing": "Showing {{count}} of {{total}} transactions",
     "prevPage": "Previous",
-    "nextPage": "Next"
+    "nextPage": "Next",
+    "detail": {
+      "title": "Transaction Details",
+      "amount": "Amount",
+      "paymentId": "Payment ID",
+      "transactionCode": "Transaction Code",
+      "paymentMethod": "Payment Method",
+      "description": "Description",
+      "package": "Service Package",
+      "createdAt": "Created At",
+      "updatedAt": "Last Updated",
+      "close": "Close",
+      "copied": "Copied"
+    }
   },
   "balanceDisplay": {
     "label": "Balance:",

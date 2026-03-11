@@ -1615,7 +1615,20 @@
     "excelSummary": "Tổng cộng: {{count}} giao dịch",
     "showing": "Hiển thị {{count}} trong tổng số {{total}} giao dịch",
     "prevPage": "Trang trước",
-    "nextPage": "Trang sau"
+    "nextPage": "Trang sau",
+    "detail": {
+      "title": "Chi tiết giao dịch",
+      "amount": "Số tiền",
+      "paymentId": "Mã thanh toán",
+      "transactionCode": "Mã giao dịch",
+      "paymentMethod": "Phương thức thanh toán",
+      "description": "Mô tả",
+      "package": "Gói dịch vụ",
+      "createdAt": "Thời gian tạo",
+      "updatedAt": "Cập nhật lần cuối",
+      "close": "Đóng",
+      "copied": "Đã sao chép"
+    }
   },
   "balanceDisplay": {
     "label": "Số dư:",

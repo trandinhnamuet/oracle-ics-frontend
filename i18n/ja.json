@@ -1615,7 +1615,20 @@
     "excelSummary": "合計: {{count}}件の取引",
     "showing": "{{total}}件中{{count}}件表示",
     "prevPage": "前のページ",
-    "nextPage": "次のページ"
+    "nextPage": "次のページ",
+    "detail": {
+      "title": "取引詳細",
+      "amount": "金額",
+      "paymentId": "支払いID",
+      "transactionCode": "取引コード",
+      "paymentMethod": "支払い方法",
+      "description": "説明",
+      "package": "サービスプラン",
+      "createdAt": "作成日時",
+      "updatedAt": "最終更新",
+      "close": "閉じる",
+      "copied": "コピーしました"
+    }
   },
   "balanceDisplay": {
     "label": "残高:",
