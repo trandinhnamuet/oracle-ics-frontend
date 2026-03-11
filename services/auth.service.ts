@@ -1,4 +1,4 @@
-import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper';
+import { fetchWithAuth, fetchJsonWithAuth, getCurrentLang } from '@/lib/fetch-wrapper';
 import { getClientIp } from '@/lib/ip-service';
 import { clearAllAuthCookies, deleteCookie } from '@/lib/cookie-utils';
 
@@ -53,6 +53,7 @@ class AuthService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': getCurrentLang(),
       },
       credentials: 'include', // Important: send cookies
       body: JSON.stringify({ email, password, ipv4: ipData.ipv4, ipv6: ipData.ipv6 }),
@@ -88,6 +89,7 @@ class AuthService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': getCurrentLang(),
       },
       credentials: 'include',
     });

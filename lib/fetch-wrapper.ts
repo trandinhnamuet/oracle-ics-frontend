@@ -1,6 +1,29 @@
 import { authService } from '@/services/auth.service';
 
 /**
+ * Returns the currently selected UI language for the Accept-Language header.
+ * Reads from the `language` cookie (set by the i18n module) or localStorage fallback.
+ */
+export function getCurrentLang(): string {
+  if (typeof document !== 'undefined') {
+    const cookieLang = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('language='))
+      ?.split('=')[1];
+    if (cookieLang && ['vi', 'en', 'zh', 'ja', 'ko'].includes(cookieLang)) {
+      return cookieLang;
+    }
+  }
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('selectedLanguage');
+    if (stored && ['vi', 'en', 'zh', 'ja', 'ko'].includes(stored)) {
+      return stored;
+    }
+  }
+  return 'vi';
+}
+
+/**
  * Global fetch wrapper with automatic token refresh on 401
  * Handles authorization headers, token refresh, and redirects
  */
@@ -24,6 +47,7 @@ export async function fetchWithAuth(
   const headers: Record<string, string> = {
     // Don't set Content-Type for FormData — browser must set it with the multipart boundary
     ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+    'Accept-Language': getCurrentLang(),
     ...(options.headers as Record<string, string> || {}),
   };
 
@@ -60,6 +84,7 @@ export async function fetchWithAuth(
         const retryHeaders: Record<string, string> = {
           // Don't set Content-Type for FormData — browser must set it with the multipart boundary
           ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+          'Accept-Language': getCurrentLang(),
           ...(options.headers as Record<string, string> || {}),
           'Authorization': `Bearer ${newAccessToken}`,
         };
