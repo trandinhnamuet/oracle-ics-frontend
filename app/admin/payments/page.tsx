@@ -73,16 +73,32 @@ export default function PaymentManagementPage() {
 
   useEffect(() => { fetchPayments() }, [])
 
-  // Log totals to console: total amount and total amount for subscription payments
+  // Log totals to console: total amount (excluding expired) and total amount for subscription payments
   useEffect(() => {
-    const total = payments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
-    const totalSubscription = payments
+    // Bỏ qua status=expired
+    const validPayments = payments.filter(p => p.status !== 'expired')
+    const total = validPayments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
+    const totalSubscription = validPayments
       .filter(p => p.payment_type === 'subscription')
       .reduce((sum, p) => sum + Number(p.amount || 0), 0)
 
-    console.log('Admin payments - total amount:', total)
-    console.log('Admin payments - total amount (subscription only):', totalSubscription)
+    console.log('Admin payments - total amount (excluding expired):', total)
+    console.log('Admin payments - total amount (subscription only, excluding expired):', totalSubscription)
   }, [payments])
+
+  // Log filtered totals when search changes
+  useEffect(() => {
+    const validPayments = filteredSorted.filter(p => p.status !== 'expired')
+    const total = validPayments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
+    const totalSubscription = validPayments
+      .filter(p => p.payment_type === 'subscription')
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0)
+
+    if (searchTerm.trim()) {
+      console.log(`[Filtered Results] Total amount (excluding expired, search="${searchTerm}"):`, total)
+      console.log(`[Filtered Results] Total amount subscription (excluding expired, search="${searchTerm}"):`, totalSubscription)
+    }
+  }, [filteredSorted, searchTerm])
 
   // Reset to page 1 on search or sort change
   useEffect(() => { setPage(1) }, [searchTerm, sortKey, sortDir])
