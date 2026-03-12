@@ -73,6 +73,17 @@ export default function PaymentManagementPage() {
 
   useEffect(() => { fetchPayments() }, [])
 
+  // Log totals to console: total amount and total amount for subscription payments
+  useEffect(() => {
+    const total = payments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
+    const totalSubscription = payments
+      .filter(p => p.payment_type === 'subscription')
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0)
+
+    console.log('Admin payments - total amount:', total)
+    console.log('Admin payments - total amount (subscription only):', totalSubscription)
+  }, [payments])
+
   // Reset to page 1 on search or sort change
   useEffect(() => { setPage(1) }, [searchTerm, sortKey, sortDir])
 
