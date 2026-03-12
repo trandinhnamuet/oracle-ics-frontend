@@ -326,14 +326,12 @@ export default function WalletTransactionsAdminPage() {
                     </Button>
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       const start = Math.max(1, Math.min(page - 2, totalPages - 4))
-                      const num = start + i
-                      if (num > totalPages) return null
-                      return (
-                        <Button key={num} variant={num === page ? 'default' : 'outline'} size="sm" onClick={() => setPage(num)} className="w-9">
-                          {num}
-                        </Button>
-                      )
-                    })}
+                      return start + i
+                    }).map((num) => (
+                      <Button key={num} variant={num === page ? 'default' : 'outline'} size="sm" onClick={() => setPage(num)} className="w-9">
+                        {num}
+                      </Button>
+                    ))}
                     <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || loading}>
                       <ChevronRight className="h-4 w-4" />
                     </Button>
