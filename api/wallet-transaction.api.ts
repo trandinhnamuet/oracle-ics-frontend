@@ -29,6 +29,7 @@ export interface AdminWalletTransactionsResponse {
   page: number
   limit: number
   totalPages: number
+  totalAmount: number
 }
 
 export const walletTransactionApi = {
@@ -37,12 +38,14 @@ export const walletTransactionApi = {
     limit?: number
     userId?: number
     month?: string
+    amountFilter?: 'positive' | 'negative'
   }): Promise<AdminWalletTransactionsResponse> => {
     const query = new URLSearchParams()
     if (params.page) query.set('page', String(params.page))
     if (params.limit) query.set('limit', String(params.limit))
     if (params.userId) query.set('userId', String(params.userId))
     if (params.month) query.set('month', params.month)
+    if (params.amountFilter) query.set('amountFilter', params.amountFilter)
 
     return fetchJsonWithAuth<AdminWalletTransactionsResponse>(
       `${API_URL}/wallet-transactions/admin/all?${query.toString()}`,

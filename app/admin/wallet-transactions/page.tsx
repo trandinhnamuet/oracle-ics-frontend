@@ -62,7 +62,7 @@ export default function WalletTransactionsAdminPage() {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   })
   const [filterMonth, setFilterMonth] = useState(true) // bật filter tháng mặc định
-  const [amountType, setAmountType] = useState<'all' | 'positive' | 'negative'>('all')
+  const [amountFilter, setAmountFilter] = useState<'all' | 'positive' | 'negative'>('all')
 
   // User dropdown search
   const [users, setUsers] = useState<UserOption[]>([])
@@ -72,7 +72,7 @@ export default function WalletTransactionsAdminPage() {
 
   // Load users for dropdown
   useEffect(() => {
-    getAllUsers()
+    getAllUsers({ limit: 10000 })
       .then((data: any) => {
         const list = Array.isArray(data) ? data : (data?.data ?? [])
         setUsers(list)
@@ -98,54 +98,27 @@ export default function WalletTransactionsAdminPage() {
         limit: PAGE_SIZE,
         userId: selectedUserId,
         month: filterMonth ? selectedMonth : undefined,
+        amountFilter: amountFilter === 'all' ? undefined : amountFilter,
       })
       setTransactions(res.data)
       setTotal(res.total)
       setTotalPages(res.totalPages)
+      const totalAmount = res.totalAmount ?? 0
+      console.log(
+        `[Wallet Transactions] Tổng số tiền (tất cả ${res.total} bản ghi thỏa mãn filter):`,
+        totalAmount,
+        `(${formatCurrency(totalAmount)})`,
+      )
     } catch (err) {
       toast({ title: 'Lỗi tải dữ liệu', variant: 'destructive' })
     } finally {
       setLoading(false)
     }
-  }, [selectedUserId, selectedMonth, filterMonth])
-
-  // Fetch all records to calculate total sum for all pages
-  useEffect(() => {
-    const fetchAllForSum = async () => {
-      try {
-        const res = await walletTransactionApi.adminGetAll({
-          page: 1,
-          limit: 99999, // Fetch all records
-          userId: selectedUserId,
-          month: filterMonth ? selectedMonth : undefined,
-        })
-        
-        // Calculate total sum based on amountType filter
-        let sum = 0
-        for (const tx of res.data) {
-          const amount = Number(tx.change_amount)
-          if (amountType === 'positive' && amount > 0) sum += amount
-          else if (amountType === 'negative' && amount < 0) sum += amount
-          else if (amountType === 'all') sum += amount
-        }
-        
-        console.log(
-          `[Wallet Transactions] Tổng giá trị (tất cả trang): ${formatCurrency(sum)} ` +
-          `(${res.data.length} record, filter: ${amountType}, ` +
-          `user: ${selectedUserId ? 'ID ' + selectedUserId : 'tất cả'}, ` +
-          `month: ${filterMonth ? selectedMonth : 'tất cả'})`
-        )
-      } catch (err) {
-        console.error('Lỗi tính tổng:', err)
-      }
-    }
-
-    fetchAllForSum()
-  }, [selectedUserId, selectedMonth, filterMonth, amountType])
+  }, [selectedUserId, selectedMonth, filterMonth, amountFilter])
 
   useEffect(() => {
     setPage(1)
-  }, [selectedUserId, selectedMonth, filterMonth])
+  }, [selectedUserId, selectedMonth, filterMonth, amountFilter])
 
   useEffect(() => {
     fetchTransactions(page)
@@ -158,18 +131,8 @@ export default function WalletTransactionsAdminPage() {
     setUserSearch('')
   }
 
-  // Filter transactions by amount type
-  const filteredTransactions = useMemo(() => {
-    return transactions.filter(tx => {
-      const amount = Number(tx.change_amount)
-      if (amountType === 'positive') return amount > 0
-      if (amountType === 'negative') return amount < 0
-      return true
-    })
-  }, [transactions, amountType])
-
-  const totalIn = filteredTransactions.filter(t => Number(t.change_amount) > 0).reduce((s, t) => s + Number(t.change_amount), 0)
-  const totalOut = filteredTransactions.filter(t => Number(t.change_amount) < 0).reduce((s, t) => s + Number(t.change_amount), 0)
+  const totalIn = transactions.filter(t => Number(t.change_amount) > 0).reduce((s, t) => s + Number(t.change_amount), 0)
+  const totalOut = transactions.filter(t => Number(t.change_amount) < 0).reduce((s, t) => s + Number(t.change_amount), 0)
 
   return (
     <div className="p-6 space-y-6">
@@ -313,17 +276,17 @@ export default function WalletTransactionsAdminPage() {
               </div>
             </div>
 
-            {/* Amount type filter */}
+            {/* Amount filter */}
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-muted-foreground">Loại số tiền</label>
+              <label className="text-sm font-medium text-muted-foreground">Lọc theo chiều tiền</label>
               <select
-                value={amountType}
-                onChange={e => setAmountType(e.target.value as 'all' | 'positive' | 'negative')}
+                value={amountFilter}
+                onChange={e => setAmountFilter(e.target.value as any)}
                 className="border rounded-md px-3 py-2 text-sm bg-background"
               >
                 <option value="all">Tất cả</option>
-                <option value="positive">Chỉ tiền vào</option>
-                <option value="negative">Chỉ tiền ra</option>
+                <option value="positive">Chỉ tiền vào (+)</option>
+                <option value="negative">Chỉ tiền ra (−)</option>
               </select>
             </div>
           </div>
@@ -333,7 +296,7 @@ export default function WalletTransactionsAdminPage() {
       {/* Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Danh sách giao dịch ({filteredTransactions.length} bản ghi)</CardTitle>
+          <CardTitle>Danh sách giao dịch ({total} bản ghi)</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -341,7 +304,7 @@ export default function WalletTransactionsAdminPage() {
               <RefreshCw className="w-8 h-8 animate-spin mx-auto text-muted-foreground" />
               <p className="text-muted-foreground mt-2">Đang tải...</p>
             </div>
-          ) : filteredTransactions.length === 0 ? (
+          ) : transactions.length === 0 ? (
             <p className="text-center py-12 text-muted-foreground">Không có giao dịch nào</p>
           ) : (
             <>
@@ -358,7 +321,7 @@ export default function WalletTransactionsAdminPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredTransactions.map(tx => {
+                    {transactions.map(tx => {
                       const amount = Number(tx.change_amount)
                       const user = tx.wallet?.user
                       const isCredit = amount > 0
@@ -393,6 +356,33 @@ export default function WalletTransactionsAdminPage() {
                   </TableBody>
                 </Table>
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                  <span className="text-sm text-muted-foreground">
+                    Trang {page}/{totalPages} — {total} bản ghi
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1 || loading}>
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      const start = Math.max(1, Math.min(page - 2, totalPages - 4))
+                      const num = start + i
+                      if (num > totalPages) return null
+                      return (
+                        <Button key={num} variant={num === page ? 'default' : 'outline'} size="sm" onClick={() => setPage(num)} className="w-9">
+                          {num}
+                        </Button>
+                      )
+                    })}
+                    <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || loading}>
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </CardContent>

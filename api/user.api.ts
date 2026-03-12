@@ -34,9 +34,14 @@ export const getUserById = async (userId: number) => {
 }
 
 // Get all users
-export const getAllUsers = async () => {
+export const getAllUsers = async (params?: { limit?: number; page?: number; search?: string }) => {
   try {
-    const result = await fetchJsonWithAuth<any>(`${API_URL}/users`, {
+    const query = new URLSearchParams()
+    if (params?.limit) query.set('limit', String(params.limit))
+    if (params?.page) query.set('page', String(params.page))
+    if (params?.search) query.set('search', params.search)
+    const qs = query.toString()
+    const result = await fetchJsonWithAuth<any>(`${API_URL}/users${qs ? `?${qs}` : ''}`, {
       method: 'GET'
     })
     return result
