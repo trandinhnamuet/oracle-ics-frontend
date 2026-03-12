@@ -86,20 +86,6 @@ export default function PaymentManagementPage() {
     console.log('Admin payments - total amount (subscription only, excluding expired):', totalSubscription)
   }, [payments])
 
-  // Log filtered totals when search changes
-  useEffect(() => {
-    const validPayments = filteredSorted.filter(p => p.status !== 'expired')
-    const total = validPayments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
-    const totalSubscription = validPayments
-      .filter(p => p.payment_type === 'subscription')
-      .reduce((sum, p) => sum + Number(p.amount || 0), 0)
-
-    if (searchTerm.trim()) {
-      console.log(`[Filtered Results] Total amount (excluding expired, search="${searchTerm}"):`, total)
-      console.log(`[Filtered Results] Total amount subscription (excluding expired, search="${searchTerm}"):`, totalSubscription)
-    }
-  }, [filteredSorted, searchTerm])
-
   // Reset to page 1 on search or sort change
   useEffect(() => { setPage(1) }, [searchTerm, sortKey, sortDir])
 
@@ -145,6 +131,20 @@ export default function PaymentManagementPage() {
     })
     return list
   }, [payments, searchTerm, sortKey, sortDir])
+
+  // Log filtered totals when search changes
+  useEffect(() => {
+    const validPayments = filteredSorted.filter(p => p.status !== 'expired')
+    const total = validPayments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
+    const totalSubscription = validPayments
+      .filter(p => p.payment_type === 'subscription')
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0)
+
+    if (searchTerm.trim()) {
+      console.log(`[Filtered Results] Total amount (excluding expired, search="${searchTerm}"):`, total)
+      console.log(`[Filtered Results] Total amount subscription (excluding expired, search="${searchTerm}"):`, totalSubscription)
+    }
+  }, [filteredSorted, searchTerm])
 
   const totalPages = Math.max(1, Math.ceil(filteredSorted.length / PAGE_SIZE))
   const pagedPayments = filteredSorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
