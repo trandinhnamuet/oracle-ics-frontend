@@ -147,9 +147,6 @@ export default function WalletTransactionsAdminPage() {
 
       {/* Filters */}
       <Card>
-        <CardHeader>
-          <CardTitle>Bộ lọc</CardTitle>
-        </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4 items-end">
             {/* User dropdown search */}
