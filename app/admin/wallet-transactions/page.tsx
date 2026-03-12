@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
-  RefreshCw, ChevronLeft, ChevronRight, Wallet, TrendingUp, TrendingDown, Search, X,
+  RefreshCw, ChevronLeft, ChevronRight, Search, X,
 } from 'lucide-react'
 import {
   walletTransactionApi,
@@ -131,9 +131,6 @@ export default function WalletTransactionsAdminPage() {
     setUserSearch('')
   }
 
-  const totalIn = transactions.filter(t => Number(t.change_amount) > 0).reduce((s, t) => s + Number(t.change_amount), 0)
-  const totalOut = transactions.filter(t => Number(t.change_amount) < 0).reduce((s, t) => s + Number(t.change_amount), 0)
-
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -146,43 +143,6 @@ export default function WalletTransactionsAdminPage() {
           <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
           Làm mới
         </Button>
-      </div>
-
-      {/* Summary cards — tính trên trang hiện tại */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Tổng giao dịch (tìm kiếm)</p>
-                <p className="text-2xl font-bold">{total}</p>
-              </div>
-              <Wallet className="w-8 h-8 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Tiền vào (trang này)</p>
-                <p className="text-2xl font-bold text-green-500">{formatCurrency(totalIn)}</p>
-              </div>
-              <TrendingUp className="w-8 h-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Tiền ra (trang này)</p>
-                <p className="text-2xl font-bold text-red-500">{formatCurrency(Math.abs(totalOut))}</p>
-              </div>
-              <TrendingDown className="w-8 h-8 text-red-400" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Filters */}
