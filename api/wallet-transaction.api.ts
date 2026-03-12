@@ -1,0 +1,52 @@
+import { fetchJsonWithAuth } from '@/lib/fetch-wrapper'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+
+export interface WalletTransaction {
+  id: string
+  wallet_id: number
+  payment_id: string
+  change_amount: number
+  balance_after: number
+  type: string
+  created_at: string
+  wallet?: {
+    id: number
+    user_id: number
+    balance: number
+    user?: {
+      id: number
+      email: string
+      firstName: string
+      lastName: string
+    }
+  }
+}
+
+export interface AdminWalletTransactionsResponse {
+  data: WalletTransaction[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export const walletTransactionApi = {
+  adminGetAll: async (params: {
+    page?: number
+    limit?: number
+    userId?: number
+    month?: string
+  }): Promise<AdminWalletTransactionsResponse> => {
+    const query = new URLSearchParams()
+    if (params.page) query.set('page', String(params.page))
+    if (params.limit) query.set('limit', String(params.limit))
+    if (params.userId) query.set('userId', String(params.userId))
+    if (params.month) query.set('month', params.month)
+
+    return fetchJsonWithAuth<AdminWalletTransactionsResponse>(
+      `${API_URL}/wallet-transactions/admin/all?${query.toString()}`,
+      { method: 'GET' },
+    )
+  },
+}
