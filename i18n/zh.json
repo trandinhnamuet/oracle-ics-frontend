@@ -1362,7 +1362,8 @@
       "idCardInvalid": "身份证号码格式不正确",
       "currentPasswordRequired": "请输入当前密码",
       "newPasswordMin": "新密码必须至少6个字符",
-      "confirmPasswordRequired": "请确认新密码"
+      "confirmPasswordRequired": "请确认新密码",
+      "passwordSameAsCurrent": "新密码必须与当前密码不同"
     }
   },
   "packageDetail": {
@@ -1694,7 +1695,11 @@
     "backHome": "返回首页",
     "copiedTransferInfo": "已复制转账信息",
     "paymentSuccess": "支付成功！",
-    "subscriptionActivated": "订阅已激活。"
+    "subscriptionActivated": "订阅已激活。",
+    "qrReadyToast": "QR码准备就绪",
+    "qrReadyToastDesc": "请扫描二维码，或使用以下信息手动转账。",
+    "alreadyTransferredToast": "感谢您！",
+    "alreadyTransferredToastDesc": "我们已记录您的付款，收到转账后交易将自动确认。"
   },
   "cloudConfig": {
     "title": "配置VM实例",
@@ -1905,5 +1910,50 @@
         "otpRequired": "请输入完整的6位OTP验证码"
       }
     }
+  },
+  "addFundsPayment": {
+    "title": "账户充值",
+    "back": "返回",
+    "invalidInfo": "无效信息",
+    "invalidInfoDesc": "未找到支付信息，请重试。",
+    "backToAddFunds": "返回充值页面",
+    "transactionInfo": "交易信息",
+    "transactionType": "交易类型:",
+    "addFundsType": "充值",
+    "paymentMethodLabel": "支付方式:",
+    "bankTransfer": "银行转账",
+    "depositAmount": "充值金额:",
+    "timeLeft": "剩余时间:",
+    "expireWarning": "交易将在上述时间后过期，请在过期前完成付款。",
+    "transactionCode": "交易代码:",
+    "autoConfirm": "收到付款后，交易将自动确认。",
+    "benefit1": "充值将立即反映到您的账户",
+    "benefit2": "无手续费",
+    "benefit3": "7×24小时支持",
+    "benefit4": "加密安全交易",
+    "scanQR": "扫描二维码支付",
+    "loadingPaymentInfo": "加载支付信息中...",
+    "paymentSuccessRedirect": "\u2705 充值成功！正在跳转...",
+    "checkingPayment": "正在检查支付...",
+    "scanQRDesc": "使用银行APP扫描二维码进行支付",
+    "bankLabel": "银行:",
+    "accountNumberLabel": "账号:",
+    "accountHolderLabel": "账户名:",
+    "amountLabel": "金额:",
+    "contentLabel": "备注:",
+    "copyTransferInfo": "复制转账信息",
+    "importantNote": "重要提示:",
+    "importantNoteDesc": "请按照正确金额和转账内容进行转账，以便系统自动确认交易。",
+    "contactSupport": "联系支持",
+    "alreadyTransferred": "我已转账",
+    "alreadyTransferredToast": "感谢您！",
+    "alreadyTransferredToastDesc": "我们已记录您的付款，收到转账后交易将自动确认。",
+    "copiedTransferInfo": "转账信息已复制",
+    "paymentSuccess": "充值成功！",
+    "paymentSuccessDesc": "资金已添加到您的账户。",
+    "loading": "加载中...",
+    "qrReadyToast": "QR码准备就绪",
+    "qrReadyToastDesc": "请扫描二维码，或使用以下信息手动转账。",
+    "transferInfo": "银行: {{bank}}\n账号: {{account}}\n金额: {{amount}} VND\n备注: {{content}}"
   }
 }

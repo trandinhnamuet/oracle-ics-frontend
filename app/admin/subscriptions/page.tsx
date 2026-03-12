@@ -200,8 +200,7 @@ export default function AdminSubscriptionsPage() {
   }
 
   const handleViewSubscription = (subscriptionId: string) => {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
-    window.open(`${baseUrl}/package-management/${subscriptionId}`, '_blank')
+    router.push(`/package-management/${subscriptionId}`)
   }
 
   const handleEditSubscription = (subscriptionId: string) => {

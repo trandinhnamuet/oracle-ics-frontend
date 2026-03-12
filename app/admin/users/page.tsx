@@ -473,21 +473,23 @@ export default function UserManagementPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {new Date(user.createdAt).toLocaleDateString('vi-VN', {
+                        {new Date(user.createdAt).toLocaleString('vi-VN', {
                           year: 'numeric',
                           month: '2-digit',
                           day: '2-digit',
                           hour: '2-digit',
-                          minute: '2-digit'
+                          minute: '2-digit',
+                          timeZone: 'Asia/Ho_Chi_Minh'
                         })}
                       </TableCell>
                       <TableCell>
-                        {new Date(user.updatedAt).toLocaleDateString('vi-VN', {
+                        {new Date(user.updatedAt).toLocaleString('vi-VN', {
                           year: 'numeric',
                           month: '2-digit',
                           day: '2-digit',
                           hour: '2-digit',
-                          minute: '2-digit'
+                          minute: '2-digit',
+                          timeZone: 'Asia/Ho_Chi_Minh'
                         })}
                       </TableCell>
                       <TableCell>

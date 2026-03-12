@@ -1361,7 +1361,8 @@
       "idCardInvalid": "Số CCCD không hợp lệ (9 hoặc 12 số)",
       "currentPasswordRequired": "Vui lòng nhập mật khẩu hiện tại",
       "newPasswordMin": "Mật khẩu mới phải có ít nhất 6 ký tự",
-      "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu mới"
+      "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu mới",
+      "passwordSameAsCurrent": "Mật khẩu mới phải khác mật khẩu hiện tại"
     }
   },
   "packageDetail": {
@@ -1693,7 +1694,11 @@
     "backHome": "Quay lại trang chủ",
     "copiedTransferInfo": "Đã sao chép thông tin chuyển khoản",
     "paymentSuccess": "Thanh toán thành công!",
-    "subscriptionActivated": "Subscription đã được kích hoạt."
+    "subscriptionActivated": "Subscription đã được kích hoạt.",
+    "qrReadyToast": "QR sẵn sàng",
+    "qrReadyToastDesc": "Vui lòng quét mã QR hoặc chuyển khoản thủ công theo thông tin bên dưới.",
+    "alreadyTransferredToast": "Cảm ơn bạn!",
+    "alreadyTransferredToastDesc": "Chúng tôi đã ghi nhận thanh toán của bạn. Giao dịch sẽ được xác nhận tự động khi nhận được tiền chuyển khoản."
   },
   "cloudConfig": {
     "title": "Cấu hình VM Instance",
@@ -1904,5 +1909,50 @@
         "otpRequired": "Vui lòng nhập đầy đủ 6 số OTP"
       }
     }
+  },
+  "addFundsPayment": {
+    "title": "Nạp tiền vào tài khoản",
+    "back": "Quay lại",
+    "invalidInfo": "Thông tin không hợp lệ",
+    "invalidInfoDesc": "Không tìm thấy thông tin thanh toán. Vui lòng thử lại.",
+    "backToAddFunds": "Quay lại trang nạp tiền",
+    "transactionInfo": "Thông tin giao dịch",
+    "transactionType": "Loại giao dịch:",
+    "addFundsType": "Nạp tiền",
+    "paymentMethodLabel": "Phương thức:",
+    "bankTransfer": "Chuyển khoản ngân hàng",
+    "depositAmount": "Số tiền nạp:",
+    "timeLeft": "Thời gian còn lại:",
+    "expireWarning": "Giao dịch sẽ hết hạn sau thời gian trên. Vui lòng hoàn tất thanh toán trước khi hết hạn.",
+    "transactionCode": "Mã giao dịch:",
+    "autoConfirm": "Giao dịch sẽ được xác nhận tự động sau khi nhận được tiền.",
+    "benefit1": "Tiền nạp sẽ được cộng vào tài khoản ngay lập tức",
+    "benefit2": "Không có phí giao dịch",
+    "benefit3": "Hỗ trợ 24/7",
+    "benefit4": "Giao dịch được mã hóa bảo mật",
+    "scanQR": "Quét QR để thanh toán",
+    "loadingPaymentInfo": "Đang tải thông tin thanh toán...",
+    "paymentSuccessRedirect": "\u2705 Nạp tiền thành công! Đang chuyển hướng...",
+    "checkingPayment": "Đang kiểm tra thanh toán...",
+    "scanQRDesc": "Quét mã QR bằng app ngân hàng để thanh toán",
+    "bankLabel": "Ngân hàng:",
+    "accountNumberLabel": "Số tài khoản:",
+    "accountHolderLabel": "Chủ tài khoản:",
+    "amountLabel": "Số tiền:",
+    "contentLabel": "Nội dung:",
+    "copyTransferInfo": "Sao chép thông tin chuyển khoản",
+    "importantNote": "Lưu ý quan trọng:",
+    "importantNoteDesc": "Vui lòng chuyển khoản đúng số tiền và đúng nội dung để hệ thống có thể tự động xác nhận giao dịch.",
+    "contactSupport": "Liên hệ hỗ trợ",
+    "alreadyTransferred": "Tôi đã chuyển khoản",
+    "alreadyTransferredToast": "Cảm ơn bạn!",
+    "alreadyTransferredToastDesc": "Chúng tôi đã ghi nhận thanh toán của bạn. Giao dịch sẽ được xác nhận tự động khi nhận được tiền chuyển khoản.",
+    "copiedTransferInfo": "Đã sao chép thông tin chuyển khoản",
+    "paymentSuccess": "Nạp tiền thành công!",
+    "paymentSuccessDesc": "Tiền đã được cộng vào tài khoản của bạn.",
+    "loading": "Đang tải...",
+    "qrReadyToast": "QR sẵn sàng",
+    "qrReadyToastDesc": "Vui lòng quét mã QR hoặc chuyển khoản thủ công theo thông tin bên dưới.",
+    "transferInfo": "Ngân hàng: {{bank}}\nSố tài khoản: {{account}}\nSố tiền: {{amount}} VND\nNội dung: {{content}}"
   }
 }

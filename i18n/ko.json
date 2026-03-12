@@ -1361,7 +1361,8 @@
       "idCardInvalid": "신분증 번호 형식이 올바르지 않습니다",
       "currentPasswordRequired": "현재 비밀번호를 입력해주세요",
       "newPasswordMin": "새 비밀번호는 6자 이상이어야 합니다",
-      "confirmPasswordRequired": "새 비밀번호를 확인해주세요"
+      "confirmPasswordRequired": "새 비밀번호를 확인해주세요",
+      "passwordSameAsCurrent": "새 비밀번호는 현재 비밀번호와 달라야 합니다"
     }
   },
   "packageDetail": {
@@ -1693,7 +1694,11 @@
     "backHome": "홈으로 돌아가기",
     "copiedTransferInfo": "이체 정보가 복사되었습니다",
     "paymentSuccess": "결제 성공!",
-    "subscriptionActivated": "구독이 활성화되었습니다."
+    "subscriptionActivated": "구독이 활성화되었습니다.",
+    "qrReadyToast": "QR 코드 준비 완료",
+    "qrReadyToastDesc": "QR 코드를 스캔하거나 아래 정보로 수동 이체하세요.",
+    "alreadyTransferredToast": "감사합니다!",
+    "alreadyTransferredToastDesc": "결제를 접수했습니다. 이체 확인 후 거래가 자동으로 확인됩니다."
   },
   "cloudConfig": {
     "title": "VM 인스턴스 구성",
@@ -1904,5 +1909,50 @@
         "otpRequired": "6자리 OTP를 모두 입력해주세요"
       }
     }
+  },
+  "addFundsPayment": {
+    "title": "계정 충전",
+    "back": "뒤로",
+    "invalidInfo": "잘못된 정보",
+    "invalidInfoDesc": "결제 정보를 찾을 수 없습니다. 다시 시도하세요.",
+    "backToAddFunds": "충전 페이지로 돌아가기",
+    "transactionInfo": "거래 정보",
+    "transactionType": "거래 유형:",
+    "addFundsType": "충전",
+    "paymentMethodLabel": "결제 수단:",
+    "bankTransfer": "계좌이체",
+    "depositAmount": "충전 금액:",
+    "timeLeft": "남은 시간:",
+    "expireWarning": "거래는 위 시간 이후 만료됩니다. 만료 전에 결제를 완료하세요.",
+    "transactionCode": "거래 코드:",
+    "autoConfirm": "입금 확인 후 거래가 자동으로 확인됩니다.",
+    "benefit1": "충전금은 즉시 계정에 반영됩니다",
+    "benefit2": "거래 수수료 없음",
+    "benefit3": "24/7 지원",
+    "benefit4": "암호화된 보안 거래",
+    "scanQR": "QR 코드 스캔하여 결제",
+    "loadingPaymentInfo": "결제 정보 로딩 중...",
+    "paymentSuccessRedirect": "\u2705 충전 성공! 리다이렉트 중...",
+    "checkingPayment": "결제 확인 중...",
+    "scanQRDesc": "뱅킹 앱으로 QR 코드를 스캔하여 결제하세요",
+    "bankLabel": "은행:",
+    "accountNumberLabel": "계좌번호:",
+    "accountHolderLabel": "예금주:",
+    "amountLabel": "금액:",
+    "contentLabel": "내용:",
+    "copyTransferInfo": "이체 정보 복사",
+    "importantNote": "중요 안내:",
+    "importantNoteDesc": "시스템이 거래를 자동으로 확인할 수 있도록 정확한 금액과 이체 내용을 입력하세요.",
+    "contactSupport": "고객 지원 문의",
+    "alreadyTransferred": "이미 이체했습니다",
+    "alreadyTransferredToast": "감사합니다!",
+    "alreadyTransferredToastDesc": "결제를 접수했습니다. 이체 확인 후 거래가 자동으로 확인됩니다.",
+    "copiedTransferInfo": "이체 정보가 복사되었습니다",
+    "paymentSuccess": "충전 성공!",
+    "paymentSuccessDesc": "잔액이 계정에 추가되었습니다.",
+    "loading": "로딩 중...",
+    "qrReadyToast": "QR 준비 완료",
+    "qrReadyToastDesc": "QR 코드를 스캔하거나 아래 정보로 수동 이체하세요.",
+    "transferInfo": "은행: {{bank}}\n계좌번호: {{account}}\n금액: {{amount}} VND\n내용: {{content}}"
   }
 }

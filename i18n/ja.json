@@ -1361,7 +1361,8 @@
       "idCardInvalid": "身分証番号の形式が正しくありません",
       "currentPasswordRequired": "現在のパスワードを入力してください",
       "newPasswordMin": "新しいパスワードは6文字以上入力してください",
-      "confirmPasswordRequired": "新しいパスワードを確認してください"
+      "confirmPasswordRequired": "新しいパスワードを確認してください",
+      "passwordSameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります"
     }
   },
   "packageDetail": {
@@ -1693,7 +1694,11 @@
     "backHome": "ホームに戻る",
     "copiedTransferInfo": "振込情報をコピーしました",
     "paymentSuccess": "支払い成功！",
-    "subscriptionActivated": "サブスクリプションが有効になりました。"
+    "subscriptionActivated": "サブスクリプションが有効になりました。",
+    "qrReadyToast": "QR準備完了",
+    "qrReadyToastDesc": "QRコードをスキャンするか、以下の情報で手動振込してください。",
+    "alreadyTransferredToast": "ありがとうございます！",
+    "alreadyTransferredToastDesc": "お支払いを承りました。振込確認後、取引は自動的に確認されます。"
   },
   "cloudConfig": {
     "title": "VMインスタンスの設定",
@@ -1904,5 +1909,50 @@
         "otpRequired": "6桁のOTPをすべて入力してください"
       }
     }
+  },
+  "addFundsPayment": {
+    "title": "アカウントへのチャージ",
+    "back": "戻る",
+    "invalidInfo": "無効な情報",
+    "invalidInfoDesc": "決済情報が見つかりません。もう一度お試しください。",
+    "backToAddFunds": "チャージページに戻る",
+    "transactionInfo": "取引情報",
+    "transactionType": "取引種別:",
+    "addFundsType": "チャージ",
+    "paymentMethodLabel": "支払い方法:",
+    "bankTransfer": "銀行振込",
+    "depositAmount": "チャージ金額:",
+    "timeLeft": "残り時間:",
+    "expireWarning": "上記の時間後に取引は期限切れとなります。期限前に支払いを完了してください。",
+    "transactionCode": "取引コード:",
+    "autoConfirm": "入金確認後、取引は自動的に確認されます。",
+    "benefit1": "チャージはすぐにアカウントに反映されます",
+    "benefit2": "手数料無料",
+    "benefit3": "24時間サポート",
+    "benefit4": "暗号化されたセキュア取引",
+    "scanQR": "QRコードをスキャンして支払い",
+    "loadingPaymentInfo": "決済情報読み込み中...",
+    "paymentSuccessRedirect": "\u2705 チャージ成功！リダイレクト中...",
+    "checkingPayment": "決済確認中...",
+    "scanQRDesc": "バンキングアプリでQRコードをスキャンして支払ってください",
+    "bankLabel": "銀行:",
+    "accountNumberLabel": "口座番号:",
+    "accountHolderLabel": "口座名義:",
+    "amountLabel": "金額:",
+    "contentLabel": "内容:",
+    "copyTransferInfo": "振込情報をコピー",
+    "importantNote": "重要なお知らせ:",
+    "importantNoteDesc": "システムが自動的に取引を確認できるよう、正確な金額と振込内容を入力してください。",
+    "contactSupport": "サポートに連絡",
+    "alreadyTransferred": "振込済み",
+    "alreadyTransferredToast": "ありがとうございます！",
+    "alreadyTransferredToastDesc": "お支払いを承りました。振込確認後、取引は自動的に確認されます。",
+    "copiedTransferInfo": "振込情報をコピーしました",
+    "paymentSuccess": "チャージ成功！",
+    "paymentSuccessDesc": "残高がアカウントに追加されました。",
+    "loading": "読み込み中...",
+    "qrReadyToast": "QR準備完了",
+    "qrReadyToastDesc": "QRコードをスキャンするか、以下の情報で手動振込してください。",
+    "transferInfo": "銀行: {{bank}}\n口座番号: {{account}}\n金額: {{amount}} VND\n内容: {{content}}"
   }
 }

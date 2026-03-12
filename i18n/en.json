@@ -1362,7 +1362,8 @@
       "idCardInvalid": "Invalid ID card number (9 or 12 digits)",
       "currentPasswordRequired": "Current password is required",
       "newPasswordMin": "New password must be at least 6 characters",
-      "confirmPasswordRequired": "Please confirm your new password"
+      "confirmPasswordRequired": "Please confirm your new password",
+      "passwordSameAsCurrent": "New password must be different from your current password"
     }
   },
   "packageDetail": {
@@ -1694,7 +1695,11 @@
     "backHome": "Back to Home",
     "copiedTransferInfo": "Transfer information copied",
     "paymentSuccess": "Payment Successful!",
-    "subscriptionActivated": "Subscription has been activated."
+    "subscriptionActivated": "Subscription has been activated.",
+    "qrReadyToast": "QR Code Ready",
+    "qrReadyToastDesc": "Please scan the QR code or transfer manually using the information below.",
+    "alreadyTransferredToast": "Thank you!",
+    "alreadyTransferredToastDesc": "We have noted your payment. The transaction will be confirmed automatically once the transfer is received."
   },
   "cloudConfig": {
     "title": "Configure VM Instance",
@@ -1905,5 +1910,50 @@
         "otpRequired": "Please enter all 6 OTP digits"
       }
     }
+  },
+  "addFundsPayment": {
+    "title": "Add Funds to Account",
+    "back": "Back",
+    "invalidInfo": "Invalid Information",
+    "invalidInfoDesc": "Payment information not found. Please try again.",
+    "backToAddFunds": "Back to Add Funds",
+    "transactionInfo": "Transaction Information",
+    "transactionType": "Transaction Type:",
+    "addFundsType": "Add Funds",
+    "paymentMethodLabel": "Payment Method:",
+    "bankTransfer": "Bank Transfer",
+    "depositAmount": "Deposit Amount:",
+    "timeLeft": "Time Remaining:",
+    "expireWarning": "The transaction will expire after the time above. Please complete payment before expiration.",
+    "transactionCode": "Transaction Code:",
+    "autoConfirm": "The transaction will be automatically confirmed once payment is received.",
+    "benefit1": "Funds will be credited to your account immediately",
+    "benefit2": "No transaction fees",
+    "benefit3": "24/7 Support",
+    "benefit4": "Secure encrypted transactions",
+    "scanQR": "Scan QR to Pay",
+    "loadingPaymentInfo": "Loading payment information...",
+    "paymentSuccessRedirect": "\u2705 Deposit Successful! Redirecting...",
+    "checkingPayment": "Checking payment...",
+    "scanQRDesc": "Scan the QR code with your banking app to pay",
+    "bankLabel": "Bank:",
+    "accountNumberLabel": "Account Number:",
+    "accountHolderLabel": "Account Holder:",
+    "amountLabel": "Amount:",
+    "contentLabel": "Content:",
+    "copyTransferInfo": "Copy Transfer Information",
+    "importantNote": "Important Note:",
+    "importantNoteDesc": "Please transfer the exact amount with the exact transfer content so the system can automatically confirm the transaction.",
+    "contactSupport": "Contact Support",
+    "alreadyTransferred": "I already transferred",
+    "alreadyTransferredToast": "Thank you!",
+    "alreadyTransferredToastDesc": "We have noted your payment. The transaction will be confirmed automatically once the transfer is received.",
+    "copiedTransferInfo": "Transfer information copied",
+    "paymentSuccess": "Deposit Successful!",
+    "paymentSuccessDesc": "Funds have been added to your account.",
+    "loading": "Loading...",
+    "qrReadyToast": "QR Code Ready",
+    "qrReadyToastDesc": "Please scan the QR code or transfer manually using the information below.",
+    "transferInfo": "Bank: {{bank}}\nAccount: {{account}}\nAmount: {{amount}} VND\nContent: {{content}}"
   }
 }

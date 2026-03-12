@@ -174,6 +174,10 @@ function ProfilePage() {
       newPassword: z.string().min(6, t('profile.validation.newPasswordMin')),
       confirmNewPassword: z.string().min(1, t('profile.validation.confirmPasswordRequired')),
     })
+    .refine((data) => data.newPassword !== data.currentPassword, {
+      message: t('profile.validation.passwordSameAsCurrent'),
+      path: ['newPassword'],
+    })
     .refine((data) => data.newPassword === data.confirmNewPassword, {
       message: t('profile.passwordsNotMatch'),
       path: ['confirmNewPassword'],

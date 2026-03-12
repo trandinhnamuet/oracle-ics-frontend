@@ -5,35 +5,41 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, CreditCard, CheckCircle, Copy, Loader, Banknote, Clock, RefreshCw } from 'lucide-react'
+import { ArrowLeft, CheckCircle, Copy, Loader, Banknote, Clock, RefreshCw } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { paymentApi } from '@/api/payment.api'
+import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 
 function SubscriptionCheckoutContent() {
   const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
   const { toast } = useToast()
+  const { user, isLoading: authLoading } = useAuth()
 
   // States
-  const [qrUrl, setQrUrl] = useState<string>('')
   const [paymentData, setPaymentData] = useState<any>(null)
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed'>('pending')
   const [isLoading, setIsLoading] = useState(true)
-  const [countdown, setCountdown] = useState(900) // 15 phút
-  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null)
-  
-  // Lấy data từ query params
+  const [countdown, setCountdown] = useState(900)
+  const [qrNotified, setQrNotified] = useState(false)
+  const pollingRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Query params
   const paymentId = searchParams.get('paymentId')
   const subscriptionId = searchParams.get('subscriptionId')
   const amount = searchParams.get('amount') || '0'
-  const method = searchParams.get('method') || 'sepay_qr'
-  const type = searchParams.get('type') || 'subscription'
 
-  // Tạo URL QR Sepay 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace(`/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`)
+    }
+  }, [user, authLoading, router])
+
   const createQRUrl = (amount: string, transactionCode: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
     const params = new URLSearchParams({
@@ -45,64 +51,71 @@ function SubscriptionCheckoutContent() {
     return `${baseUrl}?${params.toString()}`
   }
 
-  // Fetch payment status từ API
   const fetchPaymentStatus = async () => {
     if (!paymentId) return
-    
+
     try {
       const response = await paymentApi.getPaymentStatus(paymentId)
       setPaymentData(response)
       setPaymentStatus(response.status)
-      
+
       if (response.status === 'success') {
-        // Dừng polling và chuyển trang
-        if (pollingInterval) {
-          clearInterval(pollingInterval)
-          setPollingInterval(null)
+        if (pollingRef.current) {
+          clearInterval(pollingRef.current)
+          pollingRef.current = null
         }
-        
         toast({
           title: t('subscriptionCheckout.paymentSuccess'),
           description: t('subscriptionCheckout.subscriptionActivated'),
           variant: 'default'
         })
-        
-        // Chờ 2 giây rồi chuyển trang
         setTimeout(() => {
           router.push(`/checkout/subscription/success?subscriptionId=${subscriptionId}`)
         }, 2000)
       }
-    } catch (error) {
+    } catch (error: any) {
+      const status = error?.status || error?.response?.status
+      if (status === 401) {
+        router.replace(`/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`)
+        return
+      }
+      if (status === 403) {
+        router.replace('/unauthorized')
+        return
+      }
       console.error('Error fetching payment status:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Setup polling khi component mount
   useEffect(() => {
-    if (!paymentId) {
-      router.push('/')
-      return
-    }
+    if (!paymentId || authLoading) return
+    if (!user) return
 
-    // Fetch ngay lần đầu
     fetchPaymentStatus()
 
-    // Setup polling mỗi 5 giây
     const interval = setInterval(() => {
       fetchPaymentStatus()
     }, 5000)
-    
-    setPollingInterval(interval)
+    pollingRef.current = interval
 
-    // Cleanup khi component unmount
     return () => {
-      if (interval) {
-        clearInterval(interval)
-      }
+      if (interval) clearInterval(interval)
     }
-  }, [paymentId, router])
+  }, [paymentId, user, authLoading])
+
+  // Show QR ready notification once paymentData is available
+  useEffect(() => {
+    if (paymentData && !qrNotified) {
+      setQrNotified(true)
+      toast({
+        title: t('subscriptionCheckout.qrReadyToast'),
+        description: t('subscriptionCheckout.qrReadyToastDesc'),
+        variant: 'default'
+      })
+    }
+  }, [paymentData, qrNotified, t, toast])
 
   // Countdown timer
   useEffect(() => {
@@ -114,16 +127,20 @@ function SubscriptionCheckoutContent() {
 
   const handleCopyTransferInfo = () => {
     if (!paymentData) return
-    
-    const transferInfo = `
-${t('subscriptionCheckout.bankLabel')} ${process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}
-${t('subscriptionCheckout.accountNumberLabel')} ${process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}
-${t('subscriptionCheckout.amountLabel')} ${formatPrice(parseInt(amount))} VND
-${t('subscriptionCheckout.contentLabel')} ${paymentData.transaction_code}
-    `.trim()
+    const bank = process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'
+    const account = process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'
+    const transferInfo = `${t('subscriptionCheckout.bankLabel')} ${bank}\n${t('subscriptionCheckout.accountNumberLabel')} ${account}\n${t('subscriptionCheckout.amountLabel')} ${formatPrice(parseInt(amount))} VND\n${t('subscriptionCheckout.contentLabel')} ${paymentData.transaction_code}`
     navigator.clipboard.writeText(transferInfo)
     toast({
       title: t('subscriptionCheckout.copiedTransferInfo'),
+      variant: 'default'
+    })
+  }
+
+  const handleAlreadyTransferred = () => {
+    toast({
+      title: t('subscriptionCheckout.alreadyTransferredToast'),
+      description: t('subscriptionCheckout.alreadyTransferredToastDesc'),
       variant: 'default'
     })
   }
@@ -133,6 +150,16 @@ ${t('subscriptionCheckout.contentLabel')} ${paymentData.transaction_code}
     const secs = seconds % 60
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (!user) return null
 
   if (!paymentId || !amount || parseInt(amount) < 1) {
     return (
@@ -337,10 +364,10 @@ ${t('subscriptionCheckout.contentLabel')} ${paymentData.transaction_code}
               </div>
 
               <div className="space-y-2">
-                <Button className="w-full bg-[#E60000] hover:bg-red-700" size="lg">
+                <Button className="w-full bg-[#E60000] hover:bg-red-700" size="lg" onClick={() => window.open('https://oraclecloud.vn/contact-info', '_blank')}>
                   {t('subscriptionCheckout.contactSupport')}
                 </Button>
-                <Button variant="outline" className="w-full" size="lg">
+                <Button variant="outline" className="w-full" size="lg" onClick={handleAlreadyTransferred}>
                   {t('subscriptionCheckout.alreadyTransferred')}
                 </Button>
               </div>
@@ -358,7 +385,7 @@ export default function SubscriptionCheckoutPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Đang tải...</p>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
         </div>
       </div>
     }>

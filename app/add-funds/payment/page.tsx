@@ -5,34 +5,40 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, CreditCard, CheckCircle, Copy, Loader, Banknote, Clock, RefreshCw } from 'lucide-react'
+import { ArrowLeft, CheckCircle, Copy, Loader, Banknote, Clock, RefreshCw } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { paymentApi } from '@/api/payment.api'
+import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 
 function AddFundsPaymentContent() {
   const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
   const { toast } = useToast()
+  const { user, isLoading: authLoading } = useAuth()
 
   // States
-  const [qrUrl, setQrUrl] = useState<string>('')
   const [paymentData, setPaymentData] = useState<any>(null)
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed'>('pending')
   const [isLoading, setIsLoading] = useState(true)
-  const [countdown, setCountdown] = useState(900) // 15 phút
-  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null)
-  
-  // Lấy data từ query params
+  const [countdown, setCountdown] = useState(900)
+  const [qrNotified, setQrNotified] = useState(false)
+  const pollingRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Query params
   const paymentId = searchParams.get('paymentId')
   const amount = searchParams.get('amount') || '0'
-  const method = searchParams.get('method') || 'bank_transfer'
-  const type = searchParams.get('type') || 'add_funds'
 
-  // Tạo URL QR Sepay 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace(`/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`)
+    }
+  }, [user, authLoading, router])
+
   const createQRUrl = (amount: string, transactionCode: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
     const params = new URLSearchParams({
@@ -44,64 +50,72 @@ function AddFundsPaymentContent() {
     return `${baseUrl}?${params.toString()}`
   }
 
-  // Fetch payment status từ API
   const fetchPaymentStatus = async () => {
     if (!paymentId) return
-    
+
     try {
       const response = await paymentApi.getPaymentStatus(paymentId)
       setPaymentData(response)
       setPaymentStatus(response.status)
-      
+
       if (response.status === 'success') {
-        // Dừng polling và chuyển trang
-        if (pollingInterval) {
-          clearInterval(pollingInterval)
-          setPollingInterval(null)
+        if (pollingRef.current) {
+          clearInterval(pollingRef.current)
+          pollingRef.current = null
         }
-        
         toast({
-          title: 'Nạp tiền thành công!',
-          description: 'Tiền đã được cộng vào tài khoản của bạn.',
+          title: t('addFundsPayment.paymentSuccess'),
+          description: t('addFundsPayment.paymentSuccessDesc'),
           variant: 'default'
         })
-        
-        // Chờ 2 giây rồi chuyển trang
         setTimeout(() => {
           router.push('/add-funds/payment/success')
         }, 2000)
       }
-    } catch (error) {
+    } catch (error: any) {
+      // If unauthorized or forbidden, redirect to login
+      const status = error?.status || error?.response?.status
+      if (status === 401) {
+        router.replace(`/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`)
+        return
+      }
+      if (status === 403) {
+        router.replace('/unauthorized')
+        return
+      }
       console.error('Error fetching payment status:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Setup polling khi component mount
   useEffect(() => {
-    if (!paymentId) {
-      router.push('/add-funds')
-      return
-    }
+    if (!paymentId || authLoading) return
+    if (!user) return
 
-    // Fetch ngay lần đầu
     fetchPaymentStatus()
 
-    // Setup polling mỗi 5 giây
     const interval = setInterval(() => {
       fetchPaymentStatus()
     }, 5000)
-    
-    setPollingInterval(interval)
+    pollingRef.current = interval
 
-    // Cleanup khi component unmount
     return () => {
-      if (interval) {
-        clearInterval(interval)
-      }
+      if (interval) clearInterval(interval)
     }
-  }, [paymentId, router])
+  }, [paymentId, user, authLoading])
+
+  // Show QR ready notification once paymentData is available
+  useEffect(() => {
+    if (paymentData && !qrNotified) {
+      setQrNotified(true)
+      toast({
+        title: t('addFundsPayment.qrReadyToast'),
+        description: t('addFundsPayment.qrReadyToastDesc'),
+        variant: 'default'
+      })
+    }
+  }, [paymentData, qrNotified, t, toast])
 
   // Countdown timer
   useEffect(() => {
@@ -113,16 +127,20 @@ function AddFundsPaymentContent() {
 
   const handleCopyTransferInfo = () => {
     if (!paymentData) return
-    
-    const transferInfo = `
-Ngân hàng: ${process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}
-Số tài khoản: ${process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}
-Số tiền: ${formatPrice(parseInt(amount))} VND
-Nội dung: ${paymentData.transaction_code}
-    `.trim()
+    const bank = process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'
+    const account = process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'
+    const transferInfo = `${t('addFundsPayment.bankLabel')} ${bank}\n${t('addFundsPayment.accountNumberLabel')} ${account}\n${t('addFundsPayment.amountLabel')} ${formatPrice(parseInt(amount))} VND\n${t('addFundsPayment.contentLabel')} ${paymentData.transaction_code}`
     navigator.clipboard.writeText(transferInfo)
     toast({
-      title: 'Đã sao chép thông tin chuyển khoản',
+      title: t('addFundsPayment.copiedTransferInfo'),
+      variant: 'default'
+    })
+  }
+
+  const handleAlreadyTransferred = () => {
+    toast({
+      title: t('addFundsPayment.alreadyTransferredToast'),
+      description: t('addFundsPayment.alreadyTransferredToastDesc'),
       variant: 'default'
     })
   }
@@ -133,17 +151,27 @@ Nội dung: ${paymentData.transaction_code}
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (!user) return null
+
   if (!paymentId || !amount || parseInt(amount) < 10000) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold mb-2">Thông tin không hợp lệ</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('addFundsPayment.invalidInfo')}</h2>
             <p className="text-muted-foreground mb-4">
-              Không tìm thấy thông tin thanh toán. Vui lòng thử lại.
+              {t('addFundsPayment.invalidInfoDesc')}
             </p>
             <Button onClick={() => router.push('/add-funds')}>
-              Quay lại trang nạp tiền
+              {t('addFundsPayment.backToAddFunds')}
             </Button>
           </CardContent>
         </Card>
@@ -163,81 +191,81 @@ Nội dung: ${paymentData.transaction_code}
             className="mr-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Quay lại
+            {t('addFundsPayment.back')}
           </Button>
-          <h1 className="text-3xl font-bold text-foreground">Nạp tiền vào tài khoản</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t('addFundsPayment.title')}</h1>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Thông tin giao dịch */}
+          {/* Transaction Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Banknote className="h-5 w-5 mr-2 text-[#E60000]" />
-                Thông tin giao dịch
+                {t('addFundsPayment.transactionInfo')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Loại giao dịch:</span>
+                <span className="text-sm text-muted-foreground">{t('addFundsPayment.transactionType')}</span>
                 <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                  Nạp tiền
+                  {t('addFundsPayment.addFundsType')}
                 </Badge>
               </div>
-              
+
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Phương thức:</span>
-                <Badge variant="secondary">Chuyển khoản ngân hàng</Badge>
+                <span className="text-sm text-muted-foreground">{t('addFundsPayment.paymentMethodLabel')}</span>
+                <Badge variant="secondary">{t('addFundsPayment.bankTransfer')}</Badge>
               </div>
 
               <div className="border-t pt-4">
                 <div className="flex items-center justify-between text-lg font-semibold">
-                  <span>Số tiền nạp:</span>
+                  <span>{t('addFundsPayment.depositAmount')}</span>
                   <span className="text-[#E60000]">
                     {formatPrice(parseInt(amount))} VND
                   </span>
                 </div>
               </div>
 
-              <div className="bg-muted p-4 rounded-lg">
+              <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900 p-4 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
                   <Clock className="h-4 w-4 text-orange-500" />
-                  <span className="text-sm font-medium">Thời gian còn lại:</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-foreground">{t('addFundsPayment.timeLeft')}</span>
                   <span className="text-lg font-bold text-orange-600">
                     {formatTime(countdown)}
                   </span>
                 </div>
-                <p className="text-sm text-foreground">
-                  Giao dịch sẽ hết hạn sau thời gian trên. Vui lòng hoàn tất thanh toán trước khi hết hạn.
+                <p className="text-sm text-gray-600 dark:text-muted-foreground">
+                  {t('addFundsPayment.expireWarning')}
                 </p>
               </div>
 
               {paymentData && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-sm text-blue-800">
-                    <strong>Mã giao dịch:</strong> {paymentData.transaction_code}<br/>
-                    Giao dịch sẽ được xác nhận tự động sau khi nhận được tiền.
+                    <strong>{t('addFundsPayment.transactionCode')}</strong> {paymentData.transaction_code}<br/>
+                    {t('addFundsPayment.autoConfirm')}
                   </p>
                 </div>
               )}
 
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <p className="text-sm text-green-800">
-                  ✓ Tiền nạp sẽ được cộng vào tài khoản ngay lập tức<br/>
-                  ✓ Không có phí giao dịch<br/>
-                  ✓ Hỗ trợ 24/7<br/>
-                  ✓ Giao dịch được mã hóa bảo mật
+                  ✓ {t('addFundsPayment.benefit1')}<br/>
+                  ✓ {t('addFundsPayment.benefit2')}<br/>
+                  ✓ {t('addFundsPayment.benefit3')}<br/>
+                  ✓ {t('addFundsPayment.benefit4')}
                 </p>
               </div>
             </CardContent>
           </Card>
 
-          {/* QR Thanh toán */}
+          {/* QR Payment */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <CheckCircle className="h-5 w-5 mr-2" />
-                Quét QR để thanh toán
+                {t('addFundsPayment.scanQR')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -252,7 +280,7 @@ Nội dung: ${paymentData.transaction_code}
                   <div className="bg-white dark:bg-white p-4 rounded-lg inline-block shadow-sm border">
                     <Image
                       src={createQRUrl(amount, paymentData.transaction_code)}
-                      alt="QR Code nạp tiền"
+                      alt={t('addFundsPayment.scanQR')}
                       width={200}
                       height={200}
                       className="mx-auto"
@@ -261,23 +289,23 @@ Nội dung: ${paymentData.transaction_code}
                 ) : (
                   <div className="bg-white dark:bg-card p-4 rounded-lg inline-block shadow-sm border">
                     <div className="w-[200px] h-[200px] flex items-center justify-center text-gray-400 dark:text-muted-foreground">
-                      Đang tải thông tin thanh toán...
+                      {t('addFundsPayment.loadingPaymentInfo')}
                     </div>
                   </div>
                 )}
-                
+
                 {paymentStatus === 'success' ? (
                   <p className="text-sm text-green-600 mt-2 font-medium">
-                    ✅ Nạp tiền thành công! Đang chuyển hướng...
+                    {t('addFundsPayment.paymentSuccessRedirect')}
                   </p>
                 ) : paymentStatus === 'pending' ? (
                   <p className="text-sm text-blue-600 mt-2 flex items-center justify-center">
                     <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-                    Đang kiểm tra thanh toán...
+                    {t('addFundsPayment.checkingPayment')}
                   </p>
                 ) : (
                   <p className="text-sm text-muted-foreground mt-2">
-                    Quét mã QR bằng app ngân hàng để thanh toán
+                    {t('addFundsPayment.scanQRDesc')}
                   </p>
                 )}
               </div>
@@ -285,26 +313,26 @@ Nội dung: ${paymentData.transaction_code}
               <div className="space-y-3">
                 <div className="bg-card border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Ngân hàng:</span>
+                    <span className="text-sm text-muted-foreground">{t('addFundsPayment.bankLabel')}</span>
                     <span className="text-sm font-medium">{process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Số tài khoản:</span>
+                    <span className="text-sm text-muted-foreground">{t('addFundsPayment.accountNumberLabel')}</span>
                     <span className="text-sm font-medium font-mono">{process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Chủ tài khoản:</span>
+                    <span className="text-sm text-muted-foreground">{t('addFundsPayment.accountHolderLabel')}</span>
                     <span className="text-sm font-medium">{process.env.NEXT_PUBLIC_BANK_ACCOUNT_HOLDER || 'ICS COMPANY'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Số tiền:</span>
+                    <span className="text-sm text-muted-foreground">{t('addFundsPayment.amountLabel')}</span>
                     <span className="text-sm font-medium text-[#E60000]">
                       {formatPrice(parseInt(amount))} VND
                     </span>
                   </div>
                   {paymentData && (
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Nội dung:</span>
+                      <span className="text-sm text-muted-foreground">{t('addFundsPayment.contentLabel')}</span>
                       <span className="text-sm font-medium">{paymentData.transaction_code}</span>
                     </div>
                   )}
@@ -317,23 +345,23 @@ Nội dung: ${paymentData.transaction_code}
                   onClick={handleCopyTransferInfo}
                 >
                   <Copy className="h-4 w-4 mr-2" />
-                  Sao chép thông tin chuyển khoản
+                  {t('addFundsPayment.copyTransferInfo')}
                 </Button>
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800">
-                  <strong>Lưu ý quan trọng:</strong><br/>
-                  Vui lòng chuyển khoản <strong>đúng số tiền</strong> và <strong>đúng nội dung</strong> để hệ thống có thể tự động xác nhận giao dịch.
+                  <strong>{t('addFundsPayment.importantNote')}</strong><br/>
+                  {t('addFundsPayment.importantNoteDesc')}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Button className="w-full bg-[#E60000] hover:bg-red-700" size="lg">
-                  Liên hệ hỗ trợ
+                <Button className="w-full bg-[#E60000] hover:bg-red-700" size="lg" onClick={() => window.open('https://oraclecloud.vn/contact-info', '_blank')}>
+                  {t('addFundsPayment.contactSupport')}
                 </Button>
-                <Button variant="outline" className="w-full" size="lg">
-                  Đã chuyển khoản
+                <Button variant="outline" className="w-full" size="lg" onClick={handleAlreadyTransferred}>
+                  {t('addFundsPayment.alreadyTransferred')}
                 </Button>
               </div>
             </CardContent>
@@ -350,7 +378,7 @@ export default function AddFundsPaymentPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Đang tải...</p>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
         </div>
       </div>
     }>
