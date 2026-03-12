@@ -1,6 +1,7 @@
 ﻿'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ElementType } from 'react'
+import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -12,110 +13,220 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Search,
-  Download,
-  Banknote,
-  CreditCard,
+import { 
+  ArrowLeft, 
+  Search, 
+  Filter, 
+  Download, 
+  Banknote, 
+  CreditCard, 
   Calendar,
+  CheckCircle,
   Clock,
+  XCircle,
   Eye,
   ChevronRight,
   Copy,
+  Package,
   Hash,
   CalendarDays,
-  TrendingUp,
-  TrendingDown,
+  RefreshCw,
 } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
-import { walletTransactionApi, WalletTransaction } from '@/api/wallet-transaction.api'
+import { paymentApi } from '@/api/payment.api'
 import WalletSidebar from '@/components/wallet/wallet-sidebar'
 
-const TYPE_CONFIG: Record<string, { label: string; color: string; iconColor: string }> = {
-  deposit: {
-    label: 'Náº¡p tiá»n',
-    color: 'bg-blue-50 text-blue-700 border-blue-200',
-    iconColor: 'text-blue-500',
-  },
-  subscription_payment: {
-    label: 'Thanh toÃ¡n gÃ³i',
-    color: 'bg-purple-50 text-purple-700 border-purple-200',
-    iconColor: 'text-purple-500',
-  },
-  auto_renewal: {
-    label: 'Gia háº¡n tá»± Ä‘á»™ng',
-    color: 'bg-green-50 text-green-700 border-green-200',
-    iconColor: 'text-green-500',
-  },
-  manual_renewal: {
-    label: 'Gia háº¡n thá»§ cÃ´ng',
-    color: 'bg-orange-50 text-orange-700 border-orange-200',
-    iconColor: 'text-orange-500',
-  },
-}
-
-const DEFAULT_TYPE_CONFIG = {
-  label: 'Giao dá»‹ch',
-  color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
-  iconColor: 'text-gray-500 dark:text-muted-foreground',
+interface Payment {
+  id: string
+  user_id: number
+  subscription_id?: string
+  amount: number
+  status: 'pending' | 'success' | 'failed'
+  payment_type: 'subscription' | 'deposit'
+  payment_method: string
+  transaction_code: string
+  created_at: string
+  updated_at: string
+  description?: string
+  subscription?: {
+    id: string
+    cloudPackage?: {
+      id: number
+      name: string
+      category: string
+    }
+    months_paid?: number
+  }
 }
 
 export default function PaymentHistoryPage() {
   const { t } = useTranslation()
+  const router = useRouter()
   const { toast } = useToast()
 
-  const [transactions, setTransactions] = useState<WalletTransaction[]>([])
-  const [filtered, setFiltered] = useState<WalletTransaction[]>([])
+  const STATUS_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
+    success: {
+      label: t('paymentHistory.statusSuccess'),
+      color: 'bg-green-50 text-green-700 border-green-200',
+      icon: CheckCircle,
+      iconColor: 'text-green-500'
+    },
+    pending: {
+      label: t('paymentHistory.statusPending'),
+      color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+      icon: Clock,
+      iconColor: 'text-yellow-500'
+    },
+    failed: {
+      label: t('paymentHistory.statusFailed'),
+      color: 'bg-red-50 text-red-700 border-red-200',
+      icon: XCircle,
+      iconColor: 'text-red-500'
+    }
+  }
+
+  const DEFAULT_STATUS_CONFIG = {
+    label: t('paymentHistory.unknown') || 'Unknown',
+    color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
+    icon: Clock,
+    iconColor: 'text-gray-500 dark:text-muted-foreground'
+  }
+
+  const TYPE_CONFIG: Record<string, { label: string; color: string; icon: ElementType; iconColor: string }> = {
+    deposit: {
+      label: t('paymentHistory.deposit'),
+      color: 'bg-blue-50 text-blue-700 border-blue-200',
+      icon: Banknote,
+      iconColor: 'text-blue-500'
+    },
+    subscription: {
+      label: t('paymentHistory.subscriptionPayment'),
+      color: 'bg-purple-50 text-purple-700 border-purple-200',
+      icon: CreditCard,
+      iconColor: 'text-purple-500'
+    }
+  }
+
+  const DEFAULT_TYPE_CONFIG = {
+    label: t('paymentHistory.transaction'),
+    color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
+    icon: CreditCard,
+    iconColor: 'text-gray-500 dark:text-muted-foreground'
+  }
+  
+  const [payments, setPayments] = useState<Payment[]>([])
+  const [filteredPayments, setFilteredPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
   const [typeFilter, setTypeFilter] = useState('all')
-  const [amountFilter, setAmountFilter] = useState<'all' | 'positive' | 'negative'>('all')
-  const [selected, setSelected] = useState<WalletTransaction | null>(null)
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
 
+  // Fetch payments from API
   useEffect(() => {
-    walletTransactionApi.getMyTransactions()
-      .then(data => {
-        setTransactions(data)
-        setFiltered(data)
-      })
-      .catch(() => {
-        toast({ title: t('paymentHistory.loadError'), description: t('paymentHistory.loadErrorDesc'), variant: 'destructive' })
-      })
-      .finally(() => setLoading(false))
+    const fetchPayments = async () => {
+      try {
+        setLoading(true)
+        const data = await paymentApi.getMyPayments()
+        setPayments(data)
+        setFilteredPayments(data)
+      } catch (error) {
+        console.error('Error fetching payments:', error)
+        toast({
+          title: t('paymentHistory.loadError'),
+          description: t('paymentHistory.loadErrorDesc'),
+          variant: 'destructive'
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPayments()
   }, [])
 
+  // Filter payments based on search and filters
   useEffect(() => {
-    let result = transactions
-    if (searchTerm.trim()) {
+    let filtered = payments
+
+    // Search filter
+    if (searchTerm.trim() !== '') {
       const term = searchTerm.toLowerCase()
-      result = result.filter(tx =>
-        tx.id.toLowerCase().includes(term) ||
-        tx.payment_id?.toLowerCase().includes(term) ||
-        (TYPE_CONFIG[tx.type]?.label ?? tx.type).toLowerCase().includes(term)
+      filtered = filtered.filter(
+        (payment) =>
+          payment.transaction_code?.toLowerCase().includes(term) ||
+          payment.id.toLowerCase().includes(term) ||
+          payment.description?.toLowerCase().includes(term)
       )
     }
-    if (typeFilter !== 'all') result = result.filter(tx => tx.type === typeFilter)
-    if (amountFilter === 'positive') result = result.filter(tx => Number(tx.change_amount) > 0)
-    if (amountFilter === 'negative') result = result.filter(tx => Number(tx.change_amount) < 0)
-    setFiltered(result)
-  }, [searchTerm, typeFilter, amountFilter, transactions])
 
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString('vi-VN', {
-      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
-    })
+    // Status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter((payment) => payment.status === statusFilter)
+    }
+
+    // Type filter
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter((payment) => payment.payment_type === typeFilter)
+    }
+
+    setFilteredPayments(filtered)
+  }, [searchTerm, statusFilter, typeFilter, payments])
+
+  const handleViewDetails = (payment: Payment) => {
+    setSelectedPayment(payment)
+    setDetailOpen(true)
+  }
 
   const handleCopyText = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
-    toast({ title: t('paymentHistory.detail.copied'), description: `${label}: ${text}`, variant: 'default' })
+    toast({
+      title: t('paymentHistory.detail.copied'),
+      description: `${label}: ${text}`,
+      variant: 'default',
+    })
   }
 
-  const totalIn = transactions.filter(tx => Number(tx.change_amount) > 0).reduce((s, tx) => s + Number(tx.change_amount), 0)
-  const totalOut = Math.abs(transactions.filter(tx => Number(tx.change_amount) < 0).reduce((s, tx) => s + Number(tx.change_amount), 0))
-  const countDeposits = transactions.filter(tx => tx.type === 'deposit').length
-  const countPayments = transactions.filter(tx => tx.type !== 'deposit').length
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  const getTotalAmount = () => {
+    return filteredPayments
+      .filter(p => p.status === 'success' && p.payment_type === 'subscription')
+      .reduce((sum, p) => sum + Number(p.amount), 0)
+  }
+
+  const getTotalDepositAmount = () => {
+    return filteredPayments
+      .filter(p => p.status === 'success' && p.payment_type === 'deposit')
+      .reduce((sum, p) => sum + Number(p.amount), 0)
+  }
+
+  const getPaymentDescription = (payment: Payment) => {
+    if (payment.payment_type === 'deposit') {
+      return payment.description || t('paymentHistory.depositDescription')
+    }
+    if (payment.payment_type === 'subscription' && payment.subscription?.cloudPackage) {
+      return `${t('paymentHistory.subscriptionPayment')} ${payment.subscription.cloudPackage.name}`
+    }
+    return payment.description || t('paymentHistory.payment')
+  }
+
+  const getPaymentMethodLabel = (method: string) => {
+    if (method === 'sepay_qr') return t('paymentHistory.qrCode')
+    if (method === 'account_balance') return t('paymentHistory.accountBalance')
+    return t('paymentHistory.bankTransfer')
+  }
 
   const exportToExcel = async () => {
     try {
@@ -124,22 +235,31 @@ export default function PaymentHistoryPage() {
       workbook.creator = 'Oracle Cloud Management'
       workbook.created = new Date()
 
-      const worksheet = workbook.addWorksheet('Lá»‹ch sá»­ giao dá»‹ch', {
+      const worksheet = workbook.addWorksheet('Lịch sử giao dịch', {
         views: [{ state: 'frozen', ySplit: 1 }],
       })
 
+      // Define columns
       worksheet.columns = [
         { header: 'STT', key: 'stt', width: 6 },
-        { header: 'Loáº¡i giao dá»‹ch', key: 'type', width: 22 },
-        { header: 'Sá»‘ tiá»n (VNÄ)', key: 'amount', width: 20 },
-        { header: 'Sá»‘ dÆ° sau GD (VNÄ)', key: 'balance_after', width: 22 },
-        { header: 'Payment ID', key: 'payment_id', width: 36 },
-        { header: 'Thá»i gian', key: 'created_at', width: 22 },
+        { header: 'Mã giao dịch', key: 'transaction_code', width: 28 },
+        { header: 'Mô tả', key: 'description', width: 42 },
+        { header: 'Loại giao dịch', key: 'type', width: 20 },
+        { header: 'Trạng thái', key: 'status', width: 16 },
+        { header: 'Số tiền (VNĐ)', key: 'amount', width: 18 },
+        { header: 'Phương thức', key: 'method', width: 20 },
+        { header: 'Gói dịch vụ', key: 'package', width: 22 },
+        { header: 'Thời gian', key: 'created_at', width: 22 },
       ]
 
+      // Style header row
       const headerRow = worksheet.getRow(1)
       headerRow.eachCell((cell) => {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } }
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF1E3A5F' },
+        }
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 }
         cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
         cell.border = {
@@ -151,18 +271,39 @@ export default function PaymentHistoryPage() {
       })
       headerRow.height = 28
 
-      filtered.forEach((tx, index) => {
-        const amount = Number(tx.change_amount)
+      const statusLabelMap: Record<string, string> = {
+        success: t('paymentHistory.statusSuccess'),
+        pending: t('paymentHistory.statusPending'),
+        failed: t('paymentHistory.statusFailed'),
+      }
+      const statusColorMap: Record<string, string> = {
+        success: 'FFD4EDDA',
+        pending: 'FFFFF3CD',
+        failed: 'FFF8D7DA',
+      }
+      const typeLabelMap: Record<string, string> = {
+        deposit: t('paymentHistory.deposit'),
+        subscription: t('paymentHistory.subscriptionPayment'),
+      }
+
+      // Add data rows
+      filteredPayments.forEach((payment, index) => {
         const row = worksheet.addRow({
           stt: index + 1,
-          type: TYPE_CONFIG[tx.type]?.label ?? tx.type,
-          amount,
-          balance_after: tx.balance_after != null ? Number(tx.balance_after) : '',
-          payment_id: tx.payment_id || '',
-          created_at: new Date(tx.created_at),
+          transaction_code: payment.transaction_code || payment.id,
+          description: getPaymentDescription(payment),
+          type: typeLabelMap[payment.payment_type] || payment.payment_type,
+          status: statusLabelMap[payment.status] || payment.status,
+          amount: Number(payment.amount),
+          method: getPaymentMethodLabel(payment.payment_method),
+          package: payment.subscription?.cloudPackage?.name || '',
+          created_at: new Date(payment.created_at),
         })
 
+        // Row background: alternating
         const rowFill = index % 2 === 0 ? 'FFFFFFFF' : 'FFF8F9FA'
+        const statusFill = statusColorMap[payment.status] || rowFill
+
         row.eachCell((cell, colNumber) => {
           cell.alignment = { vertical: 'middle', wrapText: false }
           cell.border = {
@@ -171,41 +312,68 @@ export default function PaymentHistoryPage() {
             bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
             right: { style: 'thin', color: { argb: 'FFE0E0E0' } },
           }
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowFill } }
+          // STT: center
           if (colNumber === 1) cell.alignment = { ...cell.alignment, horizontal: 'center' }
-          if (colNumber === 3) {
-            cell.numFmt = '#,##0'
+          // Amount: right-aligned, number format
+          if (colNumber === 6) {
             cell.alignment = { ...cell.alignment, horizontal: 'right' }
-            cell.font = { color: { argb: amount >= 0 ? 'FF28A745' : 'FFDC3545' } }
+            cell.numFmt = '#,##0'
           }
-          if (colNumber === 4) { cell.numFmt = '#,##0'; cell.alignment = { ...cell.alignment, horizontal: 'right' } }
-          if (colNumber === 6) { cell.numFmt = 'DD/MM/YYYY HH:MM:SS'; cell.alignment = { ...cell.alignment, horizontal: 'center' } }
+          // Status cell: colored background
+          if (colNumber === 5) {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: statusFill } }
+            cell.alignment = { ...cell.alignment, horizontal: 'center' }
+          } else {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowFill } }
+          }
+          // Date: format
+          if (colNumber === 9) {
+            cell.numFmt = 'DD/MM/YYYY HH:MM:SS'
+            cell.alignment = { ...cell.alignment, horizontal: 'center' }
+          }
         })
         row.height = 22
       })
 
+      // Add summary row
+      const totalSuccess = filteredPayments
+        .filter((p) => p.status === 'success')
+        .reduce((sum, p) => sum + Number(p.amount), 0)
+
       worksheet.addRow({})
       const summaryRow = worksheet.addRow({
         stt: '',
-        type: `Tá»•ng ${filtered.length} giao dá»‹ch`,
-        amount: filtered.reduce((s, tx) => s + Number(tx.change_amount), 0),
-        balance_after: '',
-        payment_id: '',
+        transaction_code: '',
+        description: `${t('paymentHistory.excelSummary', { count: filteredPayments.length })}`,
+        type: '',
+        status: '',
+        amount: totalSuccess,
+        method: '',
+        package: '',
         created_at: '',
       })
       summaryRow.eachCell((cell, colNumber) => {
         cell.font = { bold: true }
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEBF5EB' } }
-        if (colNumber === 3) { cell.numFmt = '#,##0'; cell.alignment = { horizontal: 'right' } }
+        if (colNumber === 3) cell.alignment = { horizontal: 'right' }
+        if (colNumber === 6) {
+          cell.numFmt = '#,##0'
+          cell.alignment = { horizontal: 'right' }
+          cell.font = { bold: true, color: { argb: 'FF28A745' } }
+        }
       })
       summaryRow.height = 24
 
+      // Export file
       const buffer = await workbook.xlsx.writeBuffer()
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
+      const dateStr = new Date().toISOString().slice(0, 10)
       a.href = url
-      a.download = `lich-su-giao-dich-vi-${new Date().toISOString().slice(0, 10)}.xlsx`
+      a.download = `lich-su-thanh-toan-${dateStr}.xlsx`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -213,12 +381,16 @@ export default function PaymentHistoryPage() {
 
       toast({
         title: t('paymentHistory.exportSuccess'),
-        description: t('paymentHistory.exportSuccessDesc', { count: filtered.length }),
+        description: t('paymentHistory.exportSuccessDesc', { count: filteredPayments.length }),
         variant: 'default',
       })
     } catch (error) {
       console.error('Error exporting to Excel:', error)
-      toast({ title: t('paymentHistory.exportError'), description: t('paymentHistory.exportErrorDesc'), variant: 'destructive' })
+      toast({
+        title: t('paymentHistory.exportError'),
+        description: t('paymentHistory.exportErrorDesc'),
+        variant: 'destructive',
+      })
     }
   }
 
@@ -250,262 +422,337 @@ export default function PaymentHistoryPage() {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <TrendingUp className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-muted-foreground">Tá»•ng Ä‘Ã£ náº¡p</p>
-                    <p className="text-lg font-bold text-blue-600">{formatPrice(totalIn)}â‚«</p>
-                  </div>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Banknote className="h-5 w-5 text-blue-600" />
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <Banknote className="h-5 w-5 text-orange-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-muted-foreground">Sá»‘ láº§n náº¡p tiá»n</p>
-                    <p className="text-lg font-bold text-orange-600">{countDeposits}</p>
-                  </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Tổng đã nạp</p>
+                  <p className="text-lg font-bold text-blue-600">
+                    {formatPrice(getTotalDepositAmount())}₫
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <TrendingDown className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.totalPaid')}</p>
-                    <p className="text-lg font-bold text-green-600">{formatPrice(totalOut)}â‚«</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <CreditCard className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-muted-foreground">Sá»‘ láº§n thanh toÃ¡n</p>
-                    <p className="text-lg font-bold text-purple-600">{countPayments}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Filters */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>{t('paymentHistory.filterTitle')}</span>
-                <Button variant="outline" size="sm" onClick={exportToExcel}>
-                  <Download className="h-4 w-4 mr-2" />
-                  {t('paymentHistory.exportExcel')}
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-muted-foreground" />
-                  <Input
-                    placeholder="TÃ¬m theo ID, loáº¡i giao dá»‹ch..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-
-                <select
-                  value={typeFilter}
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-background dark:border-border dark:text-foreground"
-                >
-                  <option value="all">{t('paymentHistory.allTypes')}</option>
-                  <option value="deposit">Náº¡p tiá»n</option>
-                  <option value="subscription_payment">Thanh toÃ¡n gÃ³i</option>
-                  <option value="auto_renewal">Gia háº¡n tá»± Ä‘á»™ng</option>
-                  <option value="manual_renewal">Gia háº¡n thá»§ cÃ´ng</option>
-                </select>
-
-                <select
-                  value={amountFilter}
-                  onChange={(e) => setAmountFilter(e.target.value as any)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-background dark:border-border dark:text-foreground"
-                >
-                  <option value="all">Táº¥t cáº£ chiá»u tiá»n</option>
-                  <option value="positive">Chá»‰ tiá»n vÃ o (+)</option>
-                  <option value="negative">Chá»‰ tiá»n ra (âˆ’)</option>
-                </select>
               </div>
             </CardContent>
           </Card>
 
-          {/* Transaction List */}
           <Card>
-            <CardHeader>
-              <CardTitle>
-                {t('paymentHistory.transactionHistory', { count: filtered.length })}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {filtered.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Calendar className="h-12 w-12 text-gray-400 dark:text-muted-foreground mx-auto mb-4" />
-                    <p className="text-gray-500 dark:text-muted-foreground">{t('paymentHistory.noTransactions')}</p>
-                  </div>
-                ) : (
-                  filtered.map((tx) => {
-                    const amount = Number(tx.change_amount)
-                    const isCredit = amount > 0
-                    const typeCfg = TYPE_CONFIG[tx.type] ?? DEFAULT_TYPE_CONFIG
-                    const Icon = isCredit ? TrendingUp : TrendingDown
-
-                    return (
-                      <div
-                        key={tx.id}
-                        className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className={`p-2 rounded-lg ${isCredit ? 'bg-green-100' : 'bg-red-100'}`}>
-                              <Icon className={`h-5 w-5 ${isCredit ? 'text-green-600' : 'text-red-600'}`} />
-                            </div>
-
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <Badge variant="outline" className={typeCfg.color}>
-                                  {typeCfg.label}
-                                </Badge>
-                              </div>
-                              <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-muted-foreground">
-                                <span>ID: {tx.id.substring(0, 8)}â€¦</span>
-                                <span>â€¢</span>
-                                <span>{formatDate(tx.created_at)}</span>
-                                {tx.balance_after != null && (
-                                  <>
-                                    <span>â€¢</span>
-                                    <span>Sá»‘ dÆ° sau: {formatPrice(Number(tx.balance_after))}â‚«</span>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center space-x-4">
-                            <div className="text-right">
-                              <p className={`text-lg font-bold ${isCredit ? 'text-green-600' : 'text-red-600'}`}>
-                                {isCredit ? '+' : ''}{formatPrice(amount)}â‚«
-                              </p>
-                            </div>
-
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => { setSelected(tx); setDetailOpen(true) }}
-                            >
-                              <Eye className="h-4 w-4 mr-1" />
-                              {t('paymentHistory.viewDetail')}
-                              <ChevronRight className="h-4 w-4 ml-1" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })
-                )}
-              </div>
-
-              {filtered.length > 0 && (
-                <div className="flex items-center justify-between mt-6 pt-4 border-t">
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">
-                    {t('paymentHistory.showing', { count: filtered.length, total: transactions.length })}
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <div className="p-2 bg-orange-100 rounded-lg">
+                  <CreditCard className="h-5 w-5 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần nạp tiền</p>
+                  <p className="text-lg font-bold text-orange-600">
+                    {payments.filter(p => p.payment_type === 'deposit' && p.status === 'success').length}
                   </p>
                 </div>
-              )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.totalPaid')}</p>
+                  <p className="text-lg font-bold text-green-600">
+                    {formatPrice(getTotalAmount())}₫
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <CreditCard className="h-5 w-5 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần thanh toán</p>
+                  <p className="text-lg font-bold text-purple-600">
+                    {payments.filter(p => p.payment_type === 'subscription' && p.status === 'success').length}
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* Filters and Search */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>{t('paymentHistory.filterTitle')}</span>
+              <Button variant="outline" size="sm" onClick={exportToExcel}>
+                <Download className="h-4 w-4 mr-2" />
+                {t('paymentHistory.exportExcel')}
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-muted-foreground" />
+                <Input
+                  placeholder={t('paymentHistory.searchPlaceholder')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-background dark:border-border dark:text-foreground"
+              >
+                <option value="all">{t('paymentHistory.allStatus')}</option>
+                <option value="success">{t('paymentHistory.statusSuccess')}</option>
+                <option value="pending">{t('paymentHistory.statusPending')}</option>
+                <option value="failed">{t('paymentHistory.statusFailed')}</option>
+              </select>
+
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-background dark:border-border dark:text-foreground"
+              >
+                <option value="all">{t('paymentHistory.allTypes')}</option>
+                <option value="deposit">{t('paymentHistory.deposit')}</option>
+                <option value="subscription">{t('paymentHistory.subscriptionPayment')}</option>
+              </select>
+
+              <Button variant="outline">
+                <Filter className="h-4 w-4 mr-2" />
+                {t('paymentHistory.advancedFilter')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Transaction List */}
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {t('paymentHistory.transactionHistory', { count: filteredPayments.length })}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {filteredPayments.length === 0 ? (
+                <div className="text-center py-8">
+                  <Calendar className="h-12 w-12 text-gray-400 dark:text-muted-foreground mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-muted-foreground">{t('paymentHistory.noTransactions')}</p>
+                </div>
+              ) : (
+                filteredPayments.map((payment) => {
+                  const statusConfig = STATUS_CONFIG[payment.status] ?? DEFAULT_STATUS_CONFIG
+                  const typeConfig = TYPE_CONFIG[payment.payment_type] ?? DEFAULT_TYPE_CONFIG
+                  const StatusIcon = statusConfig.icon
+                  const TypeIcon = typeConfig.icon
+
+                  return (
+                    <div
+                      key={payment.id}
+                      className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className={`p-2 rounded-lg ${typeConfig.iconColor.replace('text-', 'bg-').replace('500', '100')}`}>
+                            <TypeIcon className={`h-5 w-5 ${typeConfig.iconColor}`} />
+                          </div>
+                          
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="font-medium text-gray-900 dark:text-foreground">{getPaymentDescription(payment)}</h3>
+                              <Badge variant="outline" className={typeConfig.color}>
+                                {typeConfig.label}
+                              </Badge>
+                              <Badge variant="outline" className={statusConfig.color}>
+                                <StatusIcon className="h-3 w-3 mr-1" />
+                                {statusConfig.label}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-muted-foreground">
+                              <span>ID: {payment.id.substring(0, 8)}...</span>
+                              <span>•</span>
+                              <span>{formatDate(payment.created_at)}</span>
+                              <span>•</span>
+                              <span>{getPaymentMethodLabel(payment.payment_method)}</span>
+                              {payment.subscription?.cloudPackage && (
+                                <>
+                                  <span>•</span>
+                                  <span>{payment.subscription.cloudPackage.name}</span>
+                                  {payment.subscription.months_paid && payment.subscription.months_paid > 1 && (
+                                    <span>({payment.subscription.months_paid} {t('paymentHistory.months')})</span>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-4">
+                          <div className="text-right">
+                            <p className="text-lg font-bold text-gray-900 dark:text-foreground">
+                              {formatPrice(Number(payment.amount))}₫
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-muted-foreground">
+                              {payment.transaction_code}
+                            </p>
+                          </div>
+                          
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewDetails(payment)}
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            {t('paymentHistory.viewDetail')}
+                            <ChevronRight className="h-4 w-4 ml-1" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+
+            {/* Pagination */}
+            {filteredPayments.length > 0 && (
+              <div className="flex items-center justify-between mt-6 pt-4 border-t">
+                <p className="text-sm text-gray-600 dark:text-muted-foreground">
+                  {t('paymentHistory.showing', { count: filteredPayments.length, total: payments.length })}
+                </p>
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm" disabled>
+                    {t('paymentHistory.prevPage')}
+                  </Button>
+                  <Button variant="outline" size="sm" disabled>
+                    {t('paymentHistory.nextPage')}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+        </div>
       </div>
 
-      {/* Detail Modal */}
+      {/* Payment Detail Modal */}
       <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Eye className="h-5 w-5 text-primary" />
-              Chi tiáº¿t giao dá»‹ch
+              {t('paymentHistory.detail.title')}
             </DialogTitle>
           </DialogHeader>
 
-          {selected && (() => {
-            const amount = Number(selected.change_amount)
-            const isCredit = amount > 0
-            const typeCfg = TYPE_CONFIG[selected.type] ?? DEFAULT_TYPE_CONFIG
+          {selectedPayment && (() => {
+            const statusConfig = STATUS_CONFIG[selectedPayment.status] ?? DEFAULT_STATUS_CONFIG
+            const typeConfig = TYPE_CONFIG[selectedPayment.payment_type] ?? DEFAULT_TYPE_CONFIG
+            const StatusIcon = statusConfig.icon
+            const TypeIcon = typeConfig.icon
 
             return (
               <div className="space-y-4 pt-2">
+                {/* Status + Type badges */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge variant="outline" className={typeCfg.color}>
-                    {typeCfg.label}
+                  <Badge variant="outline" className={typeConfig.color}>
+                    <TypeIcon className="h-3 w-3 mr-1" />
+                    {typeConfig.label}
+                  </Badge>
+                  <Badge variant="outline" className={statusConfig.color}>
+                    <StatusIcon className="h-3 w-3 mr-1" />
+                    {statusConfig.label}
                   </Badge>
                 </div>
 
                 {/* Amount */}
                 <div className="bg-white dark:bg-muted rounded-lg p-4 text-center">
                   <p className="text-sm text-foreground mb-1">{t('paymentHistory.detail.amount')}</p>
-                  <p className={`text-3xl font-bold ${isCredit ? 'text-green-600' : 'text-red-600'}`}>
-                    {isCredit ? '+' : ''}{formatPrice(amount)}â‚«
+                  <p className="text-3xl font-bold text-primary">
+                    {formatPrice(Number(selectedPayment.amount))}₫
                   </p>
-                  {selected.balance_after != null && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Sá»‘ dÆ° sau giao dá»‹ch: {formatPrice(Number(selected.balance_after))}â‚«
-                    </p>
-                  )}
                 </div>
 
+                {/* Detail rows */}
                 <div className="divide-y divide-border rounded-lg border">
-                  {/* Transaction ID */}
+                  {/* Payment ID */}
                   <div className="flex items-start justify-between px-4 py-3 gap-3">
                     <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
                       <Hash className="h-4 w-4" />
                       {t('paymentHistory.detail.paymentId')}
                     </span>
                     <div className="flex items-center gap-1 min-w-0">
-                      <span className="text-sm font-mono truncate">{selected.id}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopyText(selected.id, 'ID')}>
+                      <span className="text-sm font-mono truncate">{selectedPayment.id}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopyText(selectedPayment.id, 'ID')}>
                         <Copy className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
 
-                  {/* Payment ID */}
-                  {selected.payment_id && (
-                    <div className="flex items-start justify-between px-4 py-3 gap-3">
-                      <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
-                        <Hash className="h-4 w-4" />
-                        Payment ID
+                  {/* Transaction code */}
+                  <div className="flex items-start justify-between px-4 py-3 gap-3">
+                    <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
+                      <Hash className="h-4 w-4" />
+                      {t('paymentHistory.detail.transactionCode')}
+                    </span>
+                    <div className="flex items-center gap-1 min-w-0">
+                      <span className="text-sm font-mono truncate">{selectedPayment.transaction_code}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopyText(selectedPayment.transaction_code, t('paymentHistory.detail.transactionCode'))}>
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Payment method */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CreditCard className="h-4 w-4" />
+                      {t('paymentHistory.detail.paymentMethod')}
+                    </span>
+                    <span className="text-sm font-medium">{getPaymentMethodLabel(selectedPayment.payment_method)}</span>
+                  </div>
+
+                  {/* Description */}
+                  {(selectedPayment.description || selectedPayment.payment_type) && (
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Banknote className="h-4 w-4" />
+                        {t('paymentHistory.detail.description')}
                       </span>
-                      <div className="flex items-center gap-1 min-w-0">
-                        <span className="text-sm font-mono truncate">{selected.payment_id}</span>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopyText(selected.payment_id, 'Payment ID')}>
-                          <Copy className="h-3 w-3" />
-                        </Button>
+                      <span className="text-sm font-medium text-right max-w-[55%]">{getPaymentDescription(selectedPayment)}</span>
+                    </div>
+                  )}
+
+                  {/* Cloud package */}
+                  {selectedPayment.subscription?.cloudPackage && (
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Package className="h-4 w-4" />
+                        {t('paymentHistory.detail.package')}
+                      </span>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">{selectedPayment.subscription.cloudPackage.name}</p>
+                        {selectedPayment.subscription.cloudPackage.category && (
+                          <p className="text-xs text-muted-foreground">{selectedPayment.subscription.cloudPackage.category}</p>
+                        )}
+                        {selectedPayment.subscription.months_paid && selectedPayment.subscription.months_paid > 1 && (
+                          <p className="text-xs text-muted-foreground">{selectedPayment.subscription.months_paid} {t('paymentHistory.months')}</p>
+                        )}
                       </div>
                     </div>
                   )}
@@ -516,8 +763,19 @@ export default function PaymentHistoryPage() {
                       <CalendarDays className="h-4 w-4" />
                       {t('paymentHistory.detail.createdAt')}
                     </span>
-                    <span className="text-sm font-medium">{formatDate(selected.created_at)}</span>
+                    <span className="text-sm font-medium">{formatDate(selectedPayment.created_at)}</span>
                   </div>
+
+                  {/* Updated at */}
+                  {selectedPayment.updated_at && selectedPayment.updated_at !== selectedPayment.created_at && (
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <RefreshCw className="h-4 w-4" />
+                        {t('paymentHistory.detail.updatedAt')}
+                      </span>
+                      <span className="text-sm font-medium">{formatDate(selectedPayment.updated_at)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <Button variant="outline" className="w-full" onClick={() => setDetailOpen(false)}>
