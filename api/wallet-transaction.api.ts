@@ -33,6 +33,13 @@ export interface AdminWalletTransactionsResponse {
 }
 
 export const walletTransactionApi = {
+  getMyTransactions: async (): Promise<WalletTransaction[]> => {
+    return fetchJsonWithAuth<WalletTransaction[]>(
+      `${API_URL}/wallet-transactions/my-transactions`,
+      { method: 'GET' },
+    )
+  },
+
   adminGetAll: async (params: {
     page?: number
     limit?: number
