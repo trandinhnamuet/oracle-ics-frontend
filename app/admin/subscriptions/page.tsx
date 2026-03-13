@@ -470,13 +470,6 @@ export default function AdminSubscriptionsPage() {
                       {t('admin.subscriptions.table.status')} {getSortIcon('status')}
                     </TableHead>
                     <TableHead className="whitespace-nowrap">{t('admin.subscriptions.table.autoRenew')}</TableHead>
-                    <TableHead className="whitespace-nowrap">{t('admin.subscriptions.table.price')}</TableHead>
-                    <TableHead 
-                      onClick={() => handleSort('created_at')}
-                      className="cursor-pointer hover:bg-gray-50 whitespace-nowrap"
-                    >
-                      {t('admin.subscriptions.table.createdAt')} {getSortIcon('created_at')}
-                    </TableHead>
                     <TableHead className="whitespace-nowrap">{t('admin.subscriptions.table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -559,15 +552,6 @@ export default function AdminSubscriptionsPage() {
                         <Badge variant={subscription.auto_renew ? 'default' : 'outline'}>
                           {subscription.auto_renew ? t('admin.subscriptions.table.yes') : t('admin.subscriptions.table.no')}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-xs whitespace-nowrap">
-                        {subscription.cloudPackage?.cost_vnd ? 
-                          formatCurrency(parseFloat(subscription.cloudPackage.cost_vnd)) : 
-                          'N/A'
-                        }
-                      </TableCell>
-                      <TableCell className="text-xs whitespace-nowrap">
-                        {formatDate(subscription.created_at)}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-1 flex-wrap">
