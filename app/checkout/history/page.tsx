@@ -428,7 +428,7 @@ export default function PaymentHistoryPage() {
                               )}
                             </div>
 
-                            {tx.payment_id && (
+                            {tx.payment_id && ['deposit', 'qr_payment_received', 'qr_subscription_payment'].includes(tx.type) && (
                               <Button
                                 variant="ghost"
                                 size="sm"
