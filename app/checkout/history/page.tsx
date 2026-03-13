@@ -27,10 +27,12 @@ import {
   TrendingUp,
   TrendingDown,
   Clock,
+  Loader2,
 } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { walletTransactionApi, WalletTransaction } from '@/api/wallet-transaction.api'
+import { paymentApi, Payment } from '@/api/payment.api'
 import WalletSidebar from '@/components/wallet/wallet-sidebar'
 
 const DEFAULT_TYPE_CONFIG = {
@@ -92,6 +94,9 @@ export default function PaymentHistoryPage() {
 
   const [selected, setSelected] = useState<WalletTransaction | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
+  const [paymentDetail, setPaymentDetail] = useState<Payment | null>(null)
+  const [paymentDetailOpen, setPaymentDetailOpen] = useState(false)
+  const [fetchingPaymentId, setFetchingPaymentId] = useState<string | null>(null)
 
   useEffect(() => {
     walletTransactionApi.getMyTransactions()
@@ -423,15 +428,32 @@ export default function PaymentHistoryPage() {
                               )}
                             </div>
 
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => { setSelected(tx); setDetailOpen(true) }}
-                            >
-                              <Eye className="h-4 w-4 mr-1" />
-                              {t('paymentHistory.viewDetail')}
-                              <ChevronRight className="h-4 w-4 ml-1" />
-                            </Button>
+                            {tx.payment_id && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                disabled={fetchingPaymentId === tx.payment_id}
+                                onClick={async () => {
+                                  setFetchingPaymentId(tx.payment_id!)
+                                  try {
+                                    const p = await paymentApi.getById(tx.payment_id!)
+                                    setPaymentDetail(p)
+                                    setPaymentDetailOpen(true)
+                                  } catch {
+                                    toast({ title: t('paymentHistory.paymentDetailError'), variant: 'destructive' })
+                                  } finally {
+                                    setFetchingPaymentId(null)
+                                  }
+                                }}
+                              >
+                                {fetchingPaymentId === tx.payment_id
+                                  ? <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                                  : <Eye className="h-4 w-4 mr-1" />
+                                }
+                                {t('paymentHistory.viewPaymentDetail')}
+                                <ChevronRight className="h-4 w-4 ml-1" />
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -452,68 +474,85 @@ export default function PaymentHistoryPage() {
         </div>
       </div>
 
-      {/* Detail Modal */}
-      <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+      {/* Payment Detail Modal */}
+      <Dialog open={paymentDetailOpen} onOpenChange={setPaymentDetailOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Eye className="h-5 w-5 text-primary" />
-              {t('paymentHistory.detail.title')}
+              <CreditCard className="h-5 w-5 text-primary" />
+              {t('paymentHistory.paymentDetail.title')}
             </DialogTitle>
           </DialogHeader>
 
-          {selected && (() => {
-            const cfg = typeConfig[selected.type] ?? { ...DEFAULT_TYPE_CONFIG, label: t('paymentHistory.types.default') }
-            const TypeIcon = cfg.icon
-            const amount = Number(selected.change_amount)
-            const isCredit = amount > 0
+          {paymentDetail && (() => {
+            const statusColor: Record<string, string> = {
+              success: 'bg-green-50 text-green-700 border-green-200',
+              pending: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+              failed: 'bg-red-50 text-red-700 border-red-200',
+              expired: 'bg-gray-50 text-gray-600 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
+            }
+            const methodLabel: Record<string, string> = {
+              sepay_qr: t('paymentHistory.paymentDetail.methods.sepayQr'),
+              account_balance: t('paymentHistory.paymentDetail.methods.accountBalance'),
+              bank_transfer: t('paymentHistory.paymentDetail.methods.bankTransfer'),
+            }
+            const typeLabel: Record<string, string> = {
+              deposit: t('paymentHistory.paymentDetail.types.deposit'),
+              subscription: t('paymentHistory.paymentDetail.types.subscription'),
+            }
 
             return (
               <div className="space-y-4 pt-2">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className={cfg.color}>
-                    <TypeIcon className="h-3 w-3 mr-1" />
-                    {cfg.label}
+                  <Badge variant="outline" className={statusColor[paymentDetail.status] ?? 'bg-gray-50 text-gray-600 border-gray-200'}>
+                    {t(`paymentHistory.paymentDetail.statuses.${paymentDetail.status}`)}
                   </Badge>
                 </div>
 
                 <div className="bg-white dark:bg-muted rounded-lg p-4 text-center">
-                  <p className="text-sm text-muted-foreground mb-1">{t('paymentHistory.detail.amount')}</p>
-                  <p className={`text-3xl font-bold ${isCredit ? 'text-green-600' : 'text-red-600'}`}>
-                    {isCredit ? '+' : ''}{formatPrice(amount)}₫
+                  <p className="text-sm text-muted-foreground mb-1">{t('paymentHistory.paymentDetail.amount')}</p>
+                  <p className="text-3xl font-bold text-primary">
+                    {formatPrice(Number(paymentDetail.amount))}₫
                   </p>
-                  {selected.balance_after != null && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {t('paymentHistory.detail.balanceAfter')}: {formatPrice(Number(selected.balance_after))}₫
-                    </p>
-                  )}
                 </div>
 
-                <div className="divide-y divide-border rounded-lg border">
-                  {selected.subscription_id && (
+                <div className="divide-y divide-border rounded-lg border text-sm">
+                  <div className="flex items-start justify-between px-4 py-3 gap-3">
+                    <span className="text-muted-foreground shrink-0">{t('paymentHistory.paymentDetail.type')}</span>
+                    <span className="font-medium">{typeLabel[paymentDetail.payment_type] ?? paymentDetail.payment_type}</span>
+                  </div>
+
+                  <div className="flex items-start justify-between px-4 py-3 gap-3">
+                    <span className="text-muted-foreground shrink-0">{t('paymentHistory.paymentDetail.method')}</span>
+                    <span className="font-medium">{methodLabel[paymentDetail.payment_method] ?? paymentDetail.payment_method}</span>
+                  </div>
+
+                  {paymentDetail.transaction_code && (
                     <div className="flex items-start justify-between px-4 py-3 gap-3">
-                      <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
-                        <Hash className="h-4 w-4" />
-                        {t('paymentHistory.detail.subscriptionId')}
+                      <span className="text-muted-foreground shrink-0 flex items-center gap-1">
+                        <Hash className="h-3.5 w-3.5" />
+                        {t('paymentHistory.paymentDetail.transactionCode')}
                       </span>
                       <div className="flex items-center gap-1 min-w-0">
-                        <span className="text-sm font-mono truncate">{selected.subscription_id}</span>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopy(selected.subscription_id!, t('paymentHistory.detail.subscriptionId'))}>
+                        <span className="font-mono truncate">{paymentDetail.transaction_code}</span>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0"
+                          onClick={() => handleCopy(paymentDetail.transaction_code!, t('paymentHistory.paymentDetail.transactionCode'))}>
                           <Copy className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
                   )}
 
-                  {selected.payment_id && (
+                  {paymentDetail.subscription_id && (
                     <div className="flex items-start justify-between px-4 py-3 gap-3">
-                      <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
-                        <Hash className="h-4 w-4" />
-                        {t('paymentHistory.detail.transactionCode')}
+                      <span className="text-muted-foreground shrink-0 flex items-center gap-1">
+                        <Hash className="h-3.5 w-3.5" />
+                        {t('paymentHistory.paymentDetail.subscriptionId')}
                       </span>
                       <div className="flex items-center gap-1 min-w-0">
-                        <span className="text-sm font-mono truncate">{selected.payment_id}</span>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopy(selected.payment_id!, t('paymentHistory.labels.ref'))}>
+                        <span className="font-mono truncate">{paymentDetail.subscription_id}</span>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0"
+                          onClick={() => handleCopy(paymentDetail.subscription_id!, t('paymentHistory.paymentDetail.subscriptionId'))}>
                           <Copy className="h-3 w-3" />
                         </Button>
                       </div>
@@ -521,16 +560,24 @@ export default function PaymentHistoryPage() {
                   )}
 
                   <div className="flex items-center justify-between px-4 py-3">
-                    <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <CalendarDays className="h-4 w-4" />
-                      {t('paymentHistory.detail.createdAt')}
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <CalendarDays className="h-3.5 w-3.5" />
+                      {t('paymentHistory.paymentDetail.createdAt')}
                     </span>
-                    <span className="text-sm font-medium">{formatDate(selected.created_at)}</span>
+                    <span className="font-medium">{formatDate(paymentDetail.created_at)}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <CalendarDays className="h-3.5 w-3.5" />
+                      {t('paymentHistory.paymentDetail.updatedAt')}
+                    </span>
+                    <span className="font-medium">{formatDate(paymentDetail.updated_at)}</span>
                   </div>
                 </div>
 
-                <Button variant="outline" className="w-full" onClick={() => setDetailOpen(false)}>
-                  {t('paymentHistory.detail.close')}
+                <Button variant="outline" className="w-full" onClick={() => setPaymentDetailOpen(false)}>
+                  {t('paymentHistory.paymentDetail.close')}
                 </Button>
               </div>
             )

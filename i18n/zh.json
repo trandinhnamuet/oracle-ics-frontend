@@ -1621,6 +1621,8 @@
     "months": "个月",
     "viewDetail": "查看详情",
     "viewDetailDesc": "交易详情 {{code}}",
+    "viewPaymentDetail": "查看支付详情",
+    "paymentDetailError": "无法加载支付信息",
     "exportSuccess": "Excel导出成功",
     "exportSuccessDesc": "已导出 {{count}} 笔交易",
     "exportError": "Excel导出错误",
@@ -1676,6 +1678,32 @@
       "updatedAt": "最后更新",
       "close": "关闭",
       "copied": "已复制"
+    },
+    "paymentDetail": {
+      "title": "支付详情",
+      "amount": "金额",
+      "type": "支付类型",
+      "method": "支付方式",
+      "transactionCode": "交易代码",
+      "subscriptionId": "订阅ID",
+      "createdAt": "创建时间",
+      "updatedAt": "更新时间",
+      "close": "关闭",
+      "statuses": {
+        "pending": "待处理",
+        "success": "成功",
+        "failed": "失败",
+        "expired": "已过期"
+      },
+      "methods": {
+        "sepayQr": "SePay QR",
+        "accountBalance": "账户余额",
+        "bankTransfer": "银行转账"
+      },
+      "types": {
+        "deposit": "充値",
+        "subscription": "订阅套餐"
+      }
     }
   },
   "balanceDisplay": {

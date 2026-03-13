@@ -1621,6 +1621,8 @@
     "months": "month(s)",
     "viewDetail": "View Details",
     "viewDetailDesc": "Transaction details {{code}}",
+    "viewPaymentDetail": "View Payment Detail",
+    "paymentDetailError": "Failed to load payment information",
     "exportSuccess": "Excel Export Successful",
     "exportSuccessDesc": "Exported {{count}} transactions",
     "exportError": "Excel Export Error",
@@ -1676,6 +1678,32 @@
       "updatedAt": "Last Updated",
       "close": "Close",
       "copied": "Copied"
+    },
+    "paymentDetail": {
+      "title": "Payment Detail",
+      "amount": "Amount",
+      "type": "Payment Type",
+      "method": "Method",
+      "transactionCode": "Transaction Code",
+      "subscriptionId": "Subscription ID",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "close": "Close",
+      "statuses": {
+        "pending": "Pending",
+        "success": "Success",
+        "failed": "Failed",
+        "expired": "Expired"
+      },
+      "methods": {
+        "sepayQr": "SePay QR",
+        "accountBalance": "Account Balance",
+        "bankTransfer": "Bank Transfer"
+      },
+      "types": {
+        "deposit": "Deposit",
+        "subscription": "Subscription"
+      }
     }
   },
   "balanceDisplay": {

@@ -1620,6 +1620,8 @@
     "months": "tháng",
     "viewDetail": "Xem chi tiết",
     "viewDetailDesc": "Chi tiết giao dịch {{code}}",
+    "viewPaymentDetail": "Xem chi tiết thanh toán",
+    "paymentDetailError": "Không thể tải thông tin thanh toán",
     "exportSuccess": "Xuất Excel thành công",
     "exportSuccessDesc": "Đã xuất {{count}} giao dịch",
     "exportError": "Lỗi xuất Excel",
@@ -1675,6 +1677,32 @@
       "updatedAt": "Cập nhật lần cuối",
       "close": "Đóng",
       "copied": "Đã sao chép"
+    },
+    "paymentDetail": {
+      "title": "Chi tiết thanh toán",
+      "amount": "Số tiền",
+      "type": "Loại thanh toán",
+      "method": "Phương thức",
+      "transactionCode": "Mã giao dịch",
+      "subscriptionId": "Mã đăng ký",
+      "createdAt": "Ngày tạo",
+      "updatedAt": "Cập nhật",
+      "close": "Đóng",
+      "statuses": {
+        "pending": "Chờ xử lý",
+        "success": "Thành công",
+        "failed": "Thất bại",
+        "expired": "Hết hạn"
+      },
+      "methods": {
+        "sepayQr": "QR SePay",
+        "accountBalance": "Số dư tài khoản",
+        "bankTransfer": "Chuyển khoản"
+      },
+      "types": {
+        "deposit": "Nạp tiền",
+        "subscription": "Đăng ký gói"
+      }
     }
   },
   "balanceDisplay": {

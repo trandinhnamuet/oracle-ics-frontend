@@ -2,6 +2,21 @@ import { fetchWithAuth, fetchJsonWithAuth } from '@/lib/fetch-wrapper'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
+export interface Payment {
+  id: string
+  user_id: number
+  subscription_id: string | null
+  cloud_package_id: number | null
+  payment_method: string
+  payment_type: string
+  amount: number
+  status: 'pending' | 'success' | 'failed' | 'expired'
+  transaction_code: string | null
+  description: string | null
+  created_at: string
+  updated_at: string
+}
+
 export interface CreatePaymentRequest {
   userId?: number
   packageId?: number
@@ -119,6 +134,10 @@ export const paymentApi = {
       console.error('Error fetching all payments:', error)
       throw error
     }
+  },
+
+  getById: async (paymentId: string): Promise<Payment> => {
+    return fetchJsonWithAuth<Payment>(`${API_BASE_URL}/payments/${paymentId}`, { method: 'GET' })
   },
 
   acceptPayment: async (paymentId: string): Promise<any> => {

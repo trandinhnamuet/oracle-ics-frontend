@@ -1620,6 +1620,8 @@
     "months": "ヶ月",
     "viewDetail": "詳細を見る",
     "viewDetailDesc": "取引詳細 {{code}}",
+    "viewPaymentDetail": "支払い詳細を見る",
+    "paymentDetailError": "支払い情報を読み込めませんでした",
     "exportSuccess": "Excelエクスポート成功",
     "exportSuccessDesc": "{{count}}件の取引をエクスポートしました",
     "exportError": "Excelエクスポートエラー",
@@ -1675,6 +1677,32 @@
       "updatedAt": "最終更新",
       "close": "閉じる",
       "copied": "コピーしました"
+    },
+    "paymentDetail": {
+      "title": "支払い詳細",
+      "amount": "金額",
+      "type": "支払い種別",
+      "method": "支払い方法",
+      "transactionCode": "取引コード",
+      "subscriptionId": "サブスクリプションID",
+      "createdAt": "作成日時",
+      "updatedAt": "更新日時",
+      "close": "閉じる",
+      "statuses": {
+        "pending": "処理中",
+        "success": "成功",
+        "failed": "失敗",
+        "expired": "期限切れ"
+      },
+      "methods": {
+        "sepayQr": "SePay QR",
+        "accountBalance": "口座残高",
+        "bankTransfer": "銀行振込"
+      },
+      "types": {
+        "deposit": "チャージ",
+        "subscription": "プラン登録"
+      }
     }
   },
   "balanceDisplay": {
