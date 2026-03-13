@@ -1641,7 +1641,7 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "余额"
+      "balance": "交易后余额"
     },
     "types": {
       "deposit": "充值",

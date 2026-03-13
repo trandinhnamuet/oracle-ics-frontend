@@ -1641,7 +1641,7 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "Balance"
+      "balance": "Balance after"
     },
     "types": {
       "deposit": "Deposit",

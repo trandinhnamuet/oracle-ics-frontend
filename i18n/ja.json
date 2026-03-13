@@ -1640,7 +1640,7 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "残高"
+      "balance": "取引後の残高"
     },
     "types": {
       "deposit": "チャージ",

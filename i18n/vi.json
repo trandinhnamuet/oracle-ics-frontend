@@ -1640,7 +1640,7 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "Số dư"
+      "balance": "Số dư sau giao dịch"
     },
     "types": {
       "deposit": "Nạp tiền",

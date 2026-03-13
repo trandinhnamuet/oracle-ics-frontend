@@ -1640,7 +1640,7 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "잔액"
+      "balance": "거래 후 잔액"
     },
     "types": {
       "deposit": "충전",
