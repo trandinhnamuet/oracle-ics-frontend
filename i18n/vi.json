@@ -1640,7 +1640,8 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "Số dư sau giao dịch"
+      "balance": "Số dư sau giao dịch",
+      "subscriptionId": "Sub ID"
     },
     "types": {
       "deposit": "Nạp tiền",
@@ -1665,6 +1666,7 @@
       "amount": "Số tiền",
       "balanceAfter": "Số dư sau giao dịch",
       "paymentId": "Mã thanh toán",
+      "subscriptionId": "Mã đăng ký",
       "transactionCode": "Mã giao dịch",
       "paymentMethod": "Phương thức thanh toán",
       "description": "Mô tả",

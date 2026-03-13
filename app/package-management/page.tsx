@@ -447,6 +447,7 @@ export default function PackageManagementPage() {
               <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Sub ID</TableHead>
                   <TableHead>{t('packageManagement.table.packageName')}</TableHead>
                   <TableHead>{t('packageManagement.table.type')}</TableHead>
                   <TableHead>VM Name</TableHead>
@@ -460,7 +461,7 @@ export default function PackageManagementPage() {
               <TableBody>
                 {filteredSubscriptions.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                       {searchTerm || statusFilter !== 'all' || typeFilter !== 'all' 
                         ? t('packageManagement.table.noMatch')
                         : t('packageManagement.table.noPackage')
@@ -476,6 +477,9 @@ export default function PackageManagementPage() {
                     
                     return (
                       <TableRow key={sub.id}>
+                        <TableCell className="font-mono text-xs text-muted-foreground">
+                          {sub.id.substring(0, 6)}
+                        </TableCell>
                         <TableCell className="font-medium">
                           <span
                             className="text-blue-600 hover:underline cursor-pointer"

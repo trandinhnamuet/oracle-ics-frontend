@@ -5,7 +5,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 export interface WalletTransaction {
   id: string
   wallet_id: number
-  payment_id: string
+  payment_id: string | null
+  subscription_id: string | null
   change_amount: number
   balance_after: number
   type: string

@@ -1641,7 +1641,8 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "Balance after"
+      "balance": "Balance after",
+      "subscriptionId": "Sub ID"
     },
     "types": {
       "deposit": "Deposit",
@@ -1666,6 +1667,7 @@
       "amount": "Amount",
       "balanceAfter": "Balance after transaction",
       "paymentId": "Payment ID",
+      "subscriptionId": "Subscription ID",
       "transactionCode": "Transaction Code",
       "paymentMethod": "Payment Method",
       "description": "Description",

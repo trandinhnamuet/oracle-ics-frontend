@@ -1641,7 +1641,8 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "交易后余额"
+      "balance": "交易后余额",
+      "subscriptionId": "订阅 ID"
     },
     "types": {
       "deposit": "充值",
@@ -1666,6 +1667,7 @@
       "amount": "金额",
       "balanceAfter": "交易后余额",
       "paymentId": "支付ID",
+      "subscriptionId": "订阅ID",
       "transactionCode": "交易代码",
       "paymentMethod": "支付方式",
       "description": "描述",

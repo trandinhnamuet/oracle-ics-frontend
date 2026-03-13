@@ -400,13 +400,11 @@ export default function PaymentHistoryPage() {
                                 </Badge>
                               </div>
                               <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-muted-foreground">
-                                <span>{t('paymentHistory.labels.id')}: {tx.id.substring(0, 8)}...</span>
-                                <span>*</span>
                                 <span>{formatDate(tx.created_at)}</span>
-                                {tx.payment_id && (
+                                {tx.subscription_id && (
                                   <>
                                     <span>*</span>
-                                    <span className="font-mono text-xs truncate max-w-[180px]">{t('paymentHistory.labels.ref')}: {tx.payment_id.substring(0, 12)}...</span>
+                                    <span className="font-mono text-xs">{t('paymentHistory.labels.subscriptionId')}: {tx.subscription_id.substring(0, 6)}</span>
                                   </>
                                 )}
                               </div>
@@ -492,18 +490,20 @@ export default function PaymentHistoryPage() {
                 </div>
 
                 <div className="divide-y divide-border rounded-lg border">
-                  <div className="flex items-start justify-between px-4 py-3 gap-3">
-                    <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
-                      <Hash className="h-4 w-4" />
-                      {t('paymentHistory.detail.paymentId')}
-                    </span>
-                    <div className="flex items-center gap-1 min-w-0">
-                      <span className="text-sm font-mono truncate">{selected.id}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopy(selected.id, t('paymentHistory.labels.id'))}>
-                        <Copy className="h-3 w-3" />
-                      </Button>
+                  {selected.subscription_id && (
+                    <div className="flex items-start justify-between px-4 py-3 gap-3">
+                      <span className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
+                        <Hash className="h-4 w-4" />
+                        {t('paymentHistory.detail.subscriptionId')}
+                      </span>
+                      <div className="flex items-center gap-1 min-w-0">
+                        <span className="text-sm font-mono truncate">{selected.subscription_id}</span>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopy(selected.subscription_id!, t('paymentHistory.detail.subscriptionId'))}>
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {selected.payment_id && (
                     <div className="flex items-start justify-between px-4 py-3 gap-3">

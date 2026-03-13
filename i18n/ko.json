@@ -1640,7 +1640,8 @@
     "labels": {
       "id": "ID",
       "ref": "Ref",
-      "balance": "거래 후 잔액"
+      "balance": "거래 후 잔액",
+      "subscriptionId": "구독 ID"
     },
     "types": {
       "deposit": "충전",
@@ -1665,6 +1666,7 @@
       "amount": "금액",
       "balanceAfter": "거래 후 잔액",
       "paymentId": "결제 ID",
+      "subscriptionId": "구독 ID",
       "transactionCode": "거래 코드",
       "paymentMethod": "결제 수단",
       "description": "설명",
