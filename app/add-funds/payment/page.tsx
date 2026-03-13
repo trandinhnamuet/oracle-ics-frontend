@@ -65,7 +65,7 @@ function AddFundsPaymentContent() {
         }
         toast({
           title: t('addFundsPayment.paymentSuccess'),
-          description: t('addFundsPayment.paymentSuccessDesc'),
+          description: `${t('addFundsPayment.paymentSuccessDesc')} ${formatPrice(parseInt(amount))} VND`,
           variant: 'default'
         })
         setTimeout(() => {
