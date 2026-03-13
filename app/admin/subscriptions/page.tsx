@@ -433,97 +433,97 @@ export default function AdminSubscriptionsPage() {
               {t('admin.subscriptions.table.noData')}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
+            <div className="w-full">
+              <Table className="text-xs w-full">
                 <TableHeader>
                   <TableRow>
                     <TableHead 
                       onClick={() => handleSort('id')}
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-gray-50 w-20 whitespace-nowrap"
                     >
                       {t('admin.subscriptions.table.id')} {getSortIcon('id')}
                     </TableHead>
                     <TableHead 
                       onClick={() => handleSort('user_id')}
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-gray-50 min-w-[140px]"
                     >
                       {t('admin.subscriptions.table.user')} {getSortIcon('user_id')}
                     </TableHead>
-                    <TableHead>{t('admin.subscriptions.table.package')}</TableHead>
-                    <TableHead>{t('admin.subscriptions.table.vmInfo')}</TableHead>
+                    <TableHead className="min-w-[120px]">{t('admin.subscriptions.table.package')}</TableHead>
+                    <TableHead className="min-w-[130px]">{t('admin.subscriptions.table.vmInfo')}</TableHead>
                     <TableHead 
                       onClick={() => handleSort('start_date')}
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-gray-50 whitespace-nowrap"
                     >
                       {t('admin.subscriptions.table.startDate')} {getSortIcon('start_date')}
                     </TableHead>
                     <TableHead 
                       onClick={() => handleSort('end_date')}
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-gray-50 whitespace-nowrap"
                     >
                       {t('admin.subscriptions.table.endDate')} {getSortIcon('end_date')}
                     </TableHead>
                     <TableHead 
                       onClick={() => handleSort('status')}
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-gray-50 whitespace-nowrap"
                     >
                       {t('admin.subscriptions.table.status')} {getSortIcon('status')}
                     </TableHead>
-                    <TableHead>{t('admin.subscriptions.table.autoRenew')}</TableHead>
-                    <TableHead>{t('admin.subscriptions.table.price')}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t('admin.subscriptions.table.autoRenew')}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t('admin.subscriptions.table.price')}</TableHead>
                     <TableHead 
                       onClick={() => handleSort('created_at')}
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-gray-50 whitespace-nowrap"
                     >
                       {t('admin.subscriptions.table.createdAt')} {getSortIcon('created_at')}
                     </TableHead>
-                    <TableHead>{t('admin.subscriptions.table.actions')}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t('admin.subscriptions.table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {subscriptions.map((subscription) => (
                     <TableRow key={subscription.id}>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-xs">
                         #{subscription.id.substring(0, 8)}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-xs">
                         <div>
-                          <div className="font-medium">
+                          <div className="font-medium truncate max-w-[130px]">
                             {subscription.user?.firstName && subscription.user?.lastName ? 
                               `${subscription.user.firstName} ${subscription.user.lastName}` : 
                               'N/A'
                             } #{subscription.user_id}
                           </div>
                           {subscription.user?.email && (
-                            <div className="text-xs text-gray-400">
+                            <div className="text-xs text-gray-400 truncate max-w-[130px]">
                               {subscription.user.email}
                             </div>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-xs">
                         <div>
-                          <div className="font-medium">
+                          <div className="font-medium truncate max-w-[110px]">
                             {subscription.cloudPackage?.name || 'N/A'}
                           </div>
                           {subscription.cloudPackage && (
-                            <div className="text-xs text-gray-400 mt-1">
+                            <div className="text-xs text-gray-400 mt-1 truncate max-w-[110px]">
                               {subscription.cloudPackage.cpu} • {subscription.cloudPackage.ram} • {subscription.cloudPackage.memory}
                             </div>
                           )}
                         </div>
                       </TableCell>
                       {/* VM Information Column */}
-                      <TableCell>
+                      <TableCell className="text-xs">
                         {subscription.vmInstance ? (
-                          <div className="text-sm">
-                            <div className="font-medium flex items-center gap-1">
-                              <Server className="h-3 w-3 text-blue-500" />
-                              {subscription.vmInstance.instance_name}
+                          <div className="text-xs">
+                            <div className="font-medium flex items-center gap-1 truncate max-w-[120px]">
+                              <Server className="h-3 w-3 text-blue-500 flex-shrink-0" />
+                              <span className="truncate">{subscription.vmInstance.instance_name}</span>
                             </div>
                             <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                              <Globe className="h-3 w-3" />
-                              {subscription.vmInstance.public_ip || t('admin.subscriptions.table.noPublicIp')}
+                              <Globe className="h-3 w-3 flex-shrink-0" />
+                              <span className="truncate max-w-[100px]">{subscription.vmInstance.public_ip || t('admin.subscriptions.table.noPublicIp')}</span>
                             </div>
                             <Badge 
                               variant="outline" 
@@ -544,42 +544,42 @@ export default function AdminSubscriptionsPage() {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">
                         {formatDate(subscription.start_date)}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">
                         {formatDate(subscription.end_date)}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-xs">
                         <Badge variant={getStatusBadgeVariant(subscription.status)}>
                           {getStatusLabel(subscription.status)}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-xs">
                         <Badge variant={subscription.auto_renew ? 'default' : 'outline'}>
                           {subscription.auto_renew ? t('admin.subscriptions.table.yes') : t('admin.subscriptions.table.no')}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">
                         {subscription.cloudPackage?.cost_vnd ? 
                           formatCurrency(parseFloat(subscription.cloudPackage.cost_vnd)) : 
                           'N/A'
                         }
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">
                         {formatDate(subscription.created_at)}
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-2 flex-wrap">
+                        <div className="flex gap-1 flex-wrap">
                           {/* View Button */}
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleViewSubscription(subscription.id)}
-                            className="h-8 w-8 p-0"
+                            className="h-7 w-7 p-0"
                             title="View details"
                           >
-                            <Eye className="h-4 w-4 text-blue-600" />
+                            <Eye className="h-3 w-3 text-blue-600" />
                           </Button>
                           
                           {/* Stop VM Button - Only show if VM exists and is RUNNING */}
@@ -589,10 +589,10 @@ export default function AdminSubscriptionsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleStopVm(subscription.id)}
-                              className="h-8 w-8 p-0 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                              className="h-7 w-7 p-0 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
                               title="Stop VM"
                             >
-                              <PowerOff className="h-4 w-4" />
+                              <PowerOff className="h-3 w-3" />
                             </Button>
                           )}
                           
@@ -603,10 +603,10 @@ export default function AdminSubscriptionsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleStartVm(subscription.id)}
-                              className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                              className="h-7 w-7 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
                               title="Start VM"
                             >
-                              <Play className="h-4 w-4" />
+                              <Play className="h-3 w-3" />
                             </Button>
                           )}
                           
@@ -616,10 +616,10 @@ export default function AdminSubscriptionsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleDeleteVmOnly(subscription.id)}
-                              className="h-8 w-8 p-0 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                              className="h-7 w-7 p-0 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
                               title="Delete VM only (keep subscription)"
                             >
-                              <Trash className="h-4 w-4" />
+                              <Trash className="h-3 w-3" />
                             </Button>
                           )}
                           
@@ -628,10 +628,10 @@ export default function AdminSubscriptionsPage() {
                             variant="outline"
                             size="sm"
                             onClick={() => handleDeleteSubscriptionWithVm(subscription.id)}
-                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
                             title="Delete subscription and VM"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3 w-3" />
                           </Button>
                         </div>
                       </TableCell>
