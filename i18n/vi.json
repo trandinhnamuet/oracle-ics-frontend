@@ -1598,8 +1598,10 @@
   "paymentHistory": {
     "title": "Lịch sử thanh toán",
     "loading": "Đang tải lịch sử thanh toán...",
+    "totalDeposit": "Tổng đã nạp",
     "totalPaid": "Tổng đã thanh toán",
     "depositCount": "Số lần nạp tiền",
+    "paymentCount": "Số lần thanh toán",
     "packagesBought": "Gói đã mua",
     "processing": "Đang xử lý",
     "filterTitle": "Bộ lọc và tìm kiếm",
@@ -1635,9 +1637,33 @@
     "showing": "Hiển thị {{count}} trong tổng số {{total}} giao dịch",
     "prevPage": "Trang trước",
     "nextPage": "Trang sau",
+    "labels": {
+      "id": "ID",
+      "ref": "Ref",
+      "balance": "Số dư"
+    },
+    "types": {
+      "deposit": "Nạp tiền",
+      "subscriptionPayment": "Thanh toán gói",
+      "autoRenewal": "Gia hạn tự động",
+      "manualRenewal": "Gia hạn thủ công",
+      "default": "Giao dịch"
+    },
+    "excel": {
+      "sheetName": "Lịch sử giao dịch ví",
+      "filePrefix": "lich-su-giao-dich",
+      "no": "STT",
+      "transactionType": "Loại giao dịch",
+      "amountVnd": "Số tiền (VND)",
+      "balanceAfterVnd": "Số dư sau GD (VND)",
+      "referenceCode": "Mã thanh toán tham chiếu",
+      "transactionId": "ID giao dịch",
+      "time": "Thời gian"
+    },
     "detail": {
       "title": "Chi tiết giao dịch",
       "amount": "Số tiền",
+      "balanceAfter": "Số dư sau giao dịch",
       "paymentId": "Mã thanh toán",
       "transactionCode": "Mã giao dịch",
       "paymentMethod": "Phương thức thanh toán",
@@ -1804,6 +1830,7 @@
     "directPayment": "Thanh toán trực tiếp",
     "directPaymentDesc": "Thanh toán qua chuyển khoản ngân hàng hoặc QR code",
     "monthsLabel": "Số tháng đăng ký",
+    "totalDeduction": "Tổng trừ từ ví",
     "totalPayment": "Tổng thanh toán",
     "perMonthCalc": "{{price}} × {{months}} tháng",
     "termsPrefix": "Tôi đã đọc và đồng ý với",
@@ -1814,7 +1841,7 @@
     "processing": "Đang xử lý...",
     "errorTitle": "Lỗi",
     "errorSelectMethod": "Vui lòng chọn phương thức thanh toán",
-    "errorMonths": "Số tháng phải lớn hơn 0",
+    "errorMonths": "Số tháng phải từ 1 đến 24",
     "insufficientBalanceTitle": "Số dư không đủ",
     "insufficientBalanceDesc": "Số dư của bạn không đủ, hãy nạp thêm.",
     "successTitle": "Đăng ký thành công!",

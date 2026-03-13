@@ -1599,8 +1599,10 @@
   "paymentHistory": {
     "title": "交易历史",
     "loading": "正在加载交易历史...",
+    "totalDeposit": "累计充值",
     "totalPaid": "总付款金额",
     "depositCount": "充値次数",
+    "paymentCount": "支付次数",
     "packagesBought": "已购套餐",
     "processing": "处理中",
     "filterTitle": "筛选和搜索",
@@ -1636,9 +1638,33 @@
     "showing": "显示 {{total}} 中的 {{count}} 笔交易",
     "prevPage": "上一页",
     "nextPage": "下一页",
+    "labels": {
+      "id": "ID",
+      "ref": "Ref",
+      "balance": "余额"
+    },
+    "types": {
+      "deposit": "充值",
+      "subscriptionPayment": "套餐付款",
+      "autoRenewal": "自动续费",
+      "manualRenewal": "手动续费",
+      "default": "交易"
+    },
+    "excel": {
+      "sheetName": "钱包交易历史",
+      "filePrefix": "wallet-transaction-history",
+      "no": "序号",
+      "transactionType": "交易类型",
+      "amountVnd": "金额 (VND)",
+      "balanceAfterVnd": "交易后余额 (VND)",
+      "referenceCode": "参考支付码",
+      "transactionId": "交易 ID",
+      "time": "时间"
+    },
     "detail": {
       "title": "交易详情",
       "amount": "金额",
+      "balanceAfter": "交易后余额",
       "paymentId": "支付ID",
       "transactionCode": "交易代码",
       "paymentMethod": "支付方式",
@@ -1805,6 +1831,7 @@
     "directPayment": "直接付款",
     "directPaymentDesc": "通过银行转账或QR码支付",
     "monthsLabel": "订阅月数",
+    "totalDeduction": "钱包扣款总额",
     "totalPayment": "总支付金额",
     "perMonthCalc": "{{price}} × {{months}} 个月",
     "termsPrefix": "我已阅读并同意",
@@ -1815,7 +1842,7 @@
     "processing": "处理中...",
     "errorTitle": "错误",
     "errorSelectMethod": "请选择支付方式",
-    "errorMonths": "月数必须大于0",
+    "errorMonths": "月数必须在 1 到 24 之间",
     "insufficientBalanceTitle": "余额不足",
     "insufficientBalanceDesc": "您的余额不足，请充值。",
     "successTitle": "注册成功！",

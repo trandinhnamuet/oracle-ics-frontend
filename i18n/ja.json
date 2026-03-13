@@ -1598,8 +1598,10 @@
   "paymentHistory": {
     "title": "取引履歴",
     "loading": "取引履歴を読み込み中...",
+    "totalDeposit": "累計チャージ額",
     "totalPaid": "合計支払金額",
     "depositCount": "チャージ回数",
+    "paymentCount": "支払い回数",
     "packagesBought": "購入済みパッケージ",
     "processing": "処理中",
     "filterTitle": "フィルターと検索",
@@ -1635,9 +1637,33 @@
     "showing": "{{total}}件中{{count}}件表示",
     "prevPage": "前のページ",
     "nextPage": "次のページ",
+    "labels": {
+      "id": "ID",
+      "ref": "Ref",
+      "balance": "残高"
+    },
+    "types": {
+      "deposit": "チャージ",
+      "subscriptionPayment": "パッケージ支払い",
+      "autoRenewal": "自動更新",
+      "manualRenewal": "手動更新",
+      "default": "取引"
+    },
+    "excel": {
+      "sheetName": "ウォレット取引履歴",
+      "filePrefix": "wallet-transaction-history",
+      "no": "No.",
+      "transactionType": "取引タイプ",
+      "amountVnd": "金額 (VND)",
+      "balanceAfterVnd": "取引後残高 (VND)",
+      "referenceCode": "参照支払いコード",
+      "transactionId": "取引ID",
+      "time": "時間"
+    },
     "detail": {
       "title": "取引詳細",
       "amount": "金額",
+      "balanceAfter": "取引後残高",
       "paymentId": "支払いID",
       "transactionCode": "取引コード",
       "paymentMethod": "支払い方法",
@@ -1804,6 +1830,7 @@
     "directPayment": "直接支払い",
     "directPaymentDesc": "銀行振込またはQRコードで支払い",
     "monthsLabel": "サブスクリプション月数",
+    "totalDeduction": "ウォレットからの合計引き落とし",
     "totalPayment": "合計支払額",
     "perMonthCalc": "{{price}} × {{months}} ヶ月",
     "termsPrefix": "私は",
@@ -1814,7 +1841,7 @@
     "processing": "処理中...",
     "errorTitle": "エラー",
     "errorSelectMethod": "お支払い方法を選択してください",
-    "errorMonths": "月数は0より大きくなければなりません",
+    "errorMonths": "月数は 1 から 24 の間で指定してください",
     "insufficientBalanceTitle": "残高不足",
     "insufficientBalanceDesc": "残高が不足しています。チャージしてください。",
     "successTitle": "登録成功！",

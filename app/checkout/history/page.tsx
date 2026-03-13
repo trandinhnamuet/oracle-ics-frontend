@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -33,38 +33,8 @@ import { useToast } from '@/hooks/use-toast'
 import { walletTransactionApi, WalletTransaction } from '@/api/wallet-transaction.api'
 import WalletSidebar from '@/components/wallet/wallet-sidebar'
 
-// ─────────────────────────────────────────────
-// Loại giao dịch
-// ─────────────────────────────────────────────
-const TYPE_CONFIG: Record<string, { label: string; color: string; iconColor: string; icon: any }> = {
-  deposit: {
-    label: 'Nạp tiền',
-    color: 'bg-blue-50 text-blue-700 border-blue-200',
-    iconColor: 'text-blue-500',
-    icon: TrendingUp,
-  },
-  subscription_payment: {
-    label: 'Thanh toán gói',
-    color: 'bg-purple-50 text-purple-700 border-purple-200',
-    iconColor: 'text-purple-500',
-    icon: CreditCard,
-  },
-  auto_renewal: {
-    label: 'Gia hạn tự động',
-    color: 'bg-green-50 text-green-700 border-green-200',
-    iconColor: 'text-green-500',
-    icon: RefreshCw,
-  },
-  manual_renewal: {
-    label: 'Gia hạn thủ công',
-    color: 'bg-orange-50 text-orange-700 border-orange-200',
-    iconColor: 'text-orange-500',
-    icon: RefreshCw,
-  },
-}
-
 const DEFAULT_TYPE_CONFIG = {
-  label: 'Giao dịch',
+  label: '',
   color: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-muted dark:text-muted-foreground dark:border-border',
   iconColor: 'text-gray-500 dark:text-muted-foreground',
   icon: Banknote,
@@ -72,19 +42,46 @@ const DEFAULT_TYPE_CONFIG = {
 
 const SUBSCRIPTION_TYPES = ['subscription_payment', 'auto_renewal', 'manual_renewal']
 
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('vi-VN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
-
 export default function PaymentHistoryPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { toast } = useToast()
+
+  const typeConfig = useMemo<Record<string, { label: string; color: string; iconColor: string; icon: any }>>(() => ({
+    deposit: {
+      label: t('paymentHistory.types.deposit'),
+      color: 'bg-blue-50 text-blue-700 border-blue-200',
+      iconColor: 'text-blue-500',
+      icon: TrendingUp,
+    },
+    subscription_payment: {
+      label: t('paymentHistory.types.subscriptionPayment'),
+      color: 'bg-purple-50 text-purple-700 border-purple-200',
+      iconColor: 'text-purple-500',
+      icon: CreditCard,
+    },
+    auto_renewal: {
+      label: t('paymentHistory.types.autoRenewal'),
+      color: 'bg-green-50 text-green-700 border-green-200',
+      iconColor: 'text-green-500',
+      icon: RefreshCw,
+    },
+    manual_renewal: {
+      label: t('paymentHistory.types.manualRenewal'),
+      color: 'bg-orange-50 text-orange-700 border-orange-200',
+      iconColor: 'text-orange-500',
+      icon: RefreshCw,
+    },
+  }), [t])
+
+  const formatDate = (dateString: string) => {
+    return new Intl.DateTimeFormat(i18n.language || 'vi', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(dateString))
+  }
 
   const [transactions, setTransactions] = useState<WalletTransaction[]>([])
   const [filtered, setFiltered] = useState<WalletTransaction[]>([])
@@ -155,18 +152,18 @@ export default function PaymentHistoryPage() {
     try {
       const ExcelJS = (await import('exceljs')).default
       const workbook = new ExcelJS.Workbook()
-      const worksheet = workbook.addWorksheet('Lich su giao dich vi', {
+      const worksheet = workbook.addWorksheet(t('paymentHistory.excel.sheetName'), {
         views: [{ state: 'frozen', ySplit: 1 }],
       })
 
       worksheet.columns = [
-        { header: 'STT', key: 'stt', width: 6 },
-        { header: 'Loại giao dịch', key: 'type', width: 22 },
-        { header: 'Số tiền (VNĐ)', key: 'amount', width: 18 },
-        { header: 'Số dư sau GD (VNĐ)', key: 'balance_after', width: 20 },
-        { header: 'Mã thanh toán tham chiếu', key: 'payment_id', width: 38 },
-        { header: 'ID giao dịch', key: 'id', width: 38 },
-        { header: 'Thời gian', key: 'created_at', width: 22 },
+        { header: t('paymentHistory.excel.no'), key: 'stt', width: 6 },
+        { header: t('paymentHistory.excel.transactionType'), key: 'type', width: 22 },
+        { header: t('paymentHistory.excel.amountVnd'), key: 'amount', width: 18 },
+        { header: t('paymentHistory.excel.balanceAfterVnd'), key: 'balance_after', width: 20 },
+        { header: t('paymentHistory.excel.referenceCode'), key: 'payment_id', width: 38 },
+        { header: t('paymentHistory.excel.transactionId'), key: 'id', width: 38 },
+        { header: t('paymentHistory.excel.time'), key: 'created_at', width: 22 },
       ]
 
       const headerRow = worksheet.getRow(1)
@@ -184,7 +181,7 @@ export default function PaymentHistoryPage() {
       headerRow.height = 28
 
       filtered.forEach((tx, index) => {
-        const typeLabel = TYPE_CONFIG[tx.type]?.label ?? tx.type
+        const typeLabel = typeConfig[tx.type]?.label ?? t('paymentHistory.types.default')
         const row = worksheet.addRow({
           stt: index + 1,
           type: typeLabel,
@@ -228,7 +225,7 @@ export default function PaymentHistoryPage() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `lich-su-giao-dich-vi-${new Date().toISOString().slice(0, 10)}.xlsx`
+      a.download = `${t('paymentHistory.excel.filePrefix')}-${new Date().toISOString().slice(0, 10)}.xlsx`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -278,7 +275,7 @@ export default function PaymentHistoryPage() {
                     <Banknote className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-muted-foreground">Tổng đã nạp</p>
+                    <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.totalDeposit')}</p>
                     <p className="text-lg font-bold text-blue-600">{formatPrice(totalDeposit)}₫</p>
                   </div>
                 </div>
@@ -292,7 +289,7 @@ export default function PaymentHistoryPage() {
                     <CreditCard className="h-5 w-5 text-orange-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần nạp tiền</p>
+                    <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.depositCount')}</p>
                     <p className="text-lg font-bold text-orange-600">{depositCount}</p>
                   </div>
                 </div>
@@ -320,7 +317,7 @@ export default function PaymentHistoryPage() {
                     <CreditCard className="h-5 w-5 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-muted-foreground">Số lần thanh toán</p>
+                    <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('paymentHistory.paymentCount')}</p>
                     <p className="text-lg font-bold text-purple-600">{spentCount}</p>
                   </div>
                 </div>
@@ -344,7 +341,7 @@ export default function PaymentHistoryPage() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-muted-foreground" />
                   <Input
-                    placeholder="Tìm theo ID giao dịch hoặc mã thanh toán..."
+                    placeholder={t('paymentHistory.searchPlaceholder')}
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -380,7 +377,7 @@ export default function PaymentHistoryPage() {
                   </div>
                 ) : (
                   filtered.map(tx => {
-                    const cfg = TYPE_CONFIG[tx.type] ?? DEFAULT_TYPE_CONFIG
+                    const cfg = typeConfig[tx.type] ?? { ...DEFAULT_TYPE_CONFIG, label: t('paymentHistory.types.default') }
                     const TypeIcon = cfg.icon
                     const amount = Number(tx.change_amount)
                     const isCredit = amount > 0
@@ -403,13 +400,13 @@ export default function PaymentHistoryPage() {
                                 </Badge>
                               </div>
                               <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-muted-foreground">
-                                <span>ID: {tx.id.substring(0, 8)}...</span>
+                                <span>{t('paymentHistory.labels.id')}: {tx.id.substring(0, 8)}...</span>
                                 <span>*</span>
                                 <span>{formatDate(tx.created_at)}</span>
                                 {tx.payment_id && (
                                   <>
                                     <span>*</span>
-                                    <span className="font-mono text-xs truncate max-w-[180px]">Ref: {tx.payment_id.substring(0, 12)}...</span>
+                                    <span className="font-mono text-xs truncate max-w-[180px]">{t('paymentHistory.labels.ref')}: {tx.payment_id.substring(0, 12)}...</span>
                                   </>
                                 )}
                               </div>
@@ -423,7 +420,7 @@ export default function PaymentHistoryPage() {
                               </p>
                               {tx.balance_after != null && (
                                 <p className="text-xs text-gray-500 dark:text-muted-foreground">
-                                  Số dư: {formatPrice(Number(tx.balance_after))}₫
+                                  {t('paymentHistory.labels.balance')}: {formatPrice(Number(tx.balance_after))}₫
                                 </p>
                               )}
                             </div>
@@ -468,7 +465,7 @@ export default function PaymentHistoryPage() {
           </DialogHeader>
 
           {selected && (() => {
-            const cfg = TYPE_CONFIG[selected.type] ?? DEFAULT_TYPE_CONFIG
+            const cfg = typeConfig[selected.type] ?? { ...DEFAULT_TYPE_CONFIG, label: t('paymentHistory.types.default') }
             const TypeIcon = cfg.icon
             const amount = Number(selected.change_amount)
             const isCredit = amount > 0
@@ -489,7 +486,7 @@ export default function PaymentHistoryPage() {
                   </p>
                   {selected.balance_after != null && (
                     <p className="text-sm text-muted-foreground mt-1">
-                      Số dư sau giao dịch: {formatPrice(Number(selected.balance_after))}₫
+                      {t('paymentHistory.detail.balanceAfter')}: {formatPrice(Number(selected.balance_after))}₫
                     </p>
                   )}
                 </div>
@@ -502,7 +499,7 @@ export default function PaymentHistoryPage() {
                     </span>
                     <div className="flex items-center gap-1 min-w-0">
                       <span className="text-sm font-mono truncate">{selected.id}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopy(selected.id, 'ID')}>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopy(selected.id, t('paymentHistory.labels.id'))}>
                         <Copy className="h-3 w-3" />
                       </Button>
                     </div>
@@ -516,7 +513,7 @@ export default function PaymentHistoryPage() {
                       </span>
                       <div className="flex items-center gap-1 min-w-0">
                         <span className="text-sm font-mono truncate">{selected.payment_id}</span>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopy(selected.payment_id!, 'Ma tham chieu')}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleCopy(selected.payment_id!, t('paymentHistory.labels.ref'))}>
                           <Copy className="h-3 w-3" />
                         </Button>
                       </div>

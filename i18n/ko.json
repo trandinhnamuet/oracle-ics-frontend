@@ -1598,8 +1598,10 @@
   "paymentHistory": {
     "title": "거래 내역",
     "loading": "거래 내역을 불러오는 중...",
+    "totalDeposit": "총 충전 금액",
     "totalPaid": "조 결제 금액",
     "depositCount": "충전 횟수",
+    "paymentCount": "결제 횟수",
     "packagesBought": "구매한 패키지",
     "processing": "처리 중",
     "filterTitle": "필터 및 검색",
@@ -1635,9 +1637,33 @@
     "showing": "{{total}}업무 중 {{count}}건 표시",
     "prevPage": "이전",
     "nextPage": "다음",
+    "labels": {
+      "id": "ID",
+      "ref": "Ref",
+      "balance": "잔액"
+    },
+    "types": {
+      "deposit": "충전",
+      "subscriptionPayment": "패키지 결제",
+      "autoRenewal": "자동 갱신",
+      "manualRenewal": "수동 갱신",
+      "default": "거래"
+    },
+    "excel": {
+      "sheetName": "지갑 거래 내역",
+      "filePrefix": "wallet-transaction-history",
+      "no": "번호",
+      "transactionType": "거래 유형",
+      "amountVnd": "금액 (VND)",
+      "balanceAfterVnd": "거래 후 잔액 (VND)",
+      "referenceCode": "참조 결제 코드",
+      "transactionId": "거래 ID",
+      "time": "시간"
+    },
     "detail": {
       "title": "거래 상세 정보",
       "amount": "금액",
+      "balanceAfter": "거래 후 잔액",
       "paymentId": "결제 ID",
       "transactionCode": "거래 코드",
       "paymentMethod": "결제 수단",
@@ -1804,6 +1830,7 @@
     "directPayment": "직접 결제",
     "directPaymentDesc": "은행 이체 또는 QR 코드로 결제",
     "monthsLabel": "구독 개월 수",
+    "totalDeduction": "지갑에서 차감될 총액",
     "totalPayment": "총 결제 금액",
     "perMonthCalc": "{{price}} × {{months}} 개월",
     "termsPrefix": "나는",
@@ -1814,7 +1841,7 @@
     "processing": "처리 중...",
     "errorTitle": "오류",
     "errorSelectMethod": "결제 방법을 선택해 주세요",
-    "errorMonths": "개월 수는 0보다 커야 합니다",
+    "errorMonths": "개월 수는 1~24 사이여야 합니다",
     "insufficientBalanceTitle": "잔액 부족",
     "insufficientBalanceDesc": "잔액이 부족합니다. 충전해 주세요.",
     "successTitle": "등록 성공!",

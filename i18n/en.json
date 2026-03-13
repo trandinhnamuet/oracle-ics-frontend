@@ -1599,8 +1599,10 @@
   "paymentHistory": {
     "title": "Payment History",
     "loading": "Loading payment history...",
+    "totalDeposit": "Total Deposits",
     "totalPaid": "Total Paid",
     "depositCount": "Deposit Count",
+    "paymentCount": "Payment Count",
     "packagesBought": "Packages Bought",
     "processing": "Processing",
     "filterTitle": "Filter and Search",
@@ -1636,9 +1638,33 @@
     "showing": "Showing {{count}} of {{total}} transactions",
     "prevPage": "Previous",
     "nextPage": "Next",
+    "labels": {
+      "id": "ID",
+      "ref": "Ref",
+      "balance": "Balance"
+    },
+    "types": {
+      "deposit": "Deposit",
+      "subscriptionPayment": "Package Payment",
+      "autoRenewal": "Auto Renewal",
+      "manualRenewal": "Manual Renewal",
+      "default": "Transaction"
+    },
+    "excel": {
+      "sheetName": "Wallet Transaction History",
+      "filePrefix": "wallet-transaction-history",
+      "no": "No.",
+      "transactionType": "Transaction Type",
+      "amountVnd": "Amount (VND)",
+      "balanceAfterVnd": "Balance After (VND)",
+      "referenceCode": "Reference Payment Code",
+      "transactionId": "Transaction ID",
+      "time": "Time"
+    },
     "detail": {
       "title": "Transaction Details",
       "amount": "Amount",
+      "balanceAfter": "Balance after transaction",
       "paymentId": "Payment ID",
       "transactionCode": "Transaction Code",
       "paymentMethod": "Payment Method",
@@ -1805,6 +1831,7 @@
     "directPayment": "Direct Payment",
     "directPaymentDesc": "Pay via bank transfer or QR code",
     "monthsLabel": "Subscription months",
+    "totalDeduction": "Total deducted from wallet",
     "totalPayment": "Total payment",
     "perMonthCalc": "{{price}} × {{months}} months",
     "termsPrefix": "I have read and agree to the",
@@ -1815,7 +1842,7 @@
     "processing": "Processing...",
     "errorTitle": "Error",
     "errorSelectMethod": "Please select a payment method",
-    "errorMonths": "Months must be greater than 0",
+    "errorMonths": "Months must be between 1 and 24",
     "insufficientBalanceTitle": "Insufficient balance",
     "insufficientBalanceDesc": "Your balance is insufficient, please top up.",
     "successTitle": "Registration successful!",

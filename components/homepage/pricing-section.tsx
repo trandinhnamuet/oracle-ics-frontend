@@ -196,12 +196,22 @@ export function PricingSection() {
         return
       }
 
+      if (monthsCount < 1 || monthsCount > 24) {
+        toast({
+          title: t('pricingModal.errorTitle'),
+          description: t('pricingModal.errorMonths'),
+          variant: 'destructive'
+        })
+        return
+      }
+
       if (selectedPaymentMethod === 'account_balance') {
         // Phương thức 1: Trừ tiền tài khoản
         const currentBalance = parseFloat(String(userBalance)) // Current balance in VND
         const planPriceVND = parseFloat(String(selectedPlan.priceVnd))
+        const totalAmount = planPriceVND * monthsCount
         
-        if (planPriceVND > currentBalance) {
+        if (totalAmount > currentBalance) {
           toast({
             title: t('pricingModal.insufficientBalanceTitle'),
             description: t('pricingModal.insufficientBalanceDesc'),
@@ -214,6 +224,7 @@ export function PricingSection() {
         // Call API to subscribe with balance
         await subscribeWithBalance({
           cloudPackageId: selectedPlan.id,
+          monthsCount: monthsCount,
           autoRenew: false
         })
         console.log(`[PAY-DEBUG] subscribeWithBalance API call SUCCESS`)
@@ -232,15 +243,6 @@ export function PricingSection() {
 
       } else if (selectedPaymentMethod === 'direct_payment') {
         // Phương thức 2: Thanh toán trực tiếp
-        if (monthsCount < 1) {
-          toast({
-            title: t('pricingModal.errorTitle'),
-            description: t('pricingModal.errorMonths'),
-            variant: 'destructive'
-          })
-          return
-        }
-
         console.log(`[PAY-DEBUG] Calling subscribeWithPayment API...`)
         // Call API to create subscription with payment
         const result = await subscribeWithPayment({
@@ -714,7 +716,35 @@ export function PricingSection() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="text-center">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1 block">
+                      {t('pricingModal.monthsLabel')}
+                    </label>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="24"
+                      value={monthsCount}
+                      onChange={(e) => setMonthsCount(parseInt(e.target.value) || 1)}
+                      className="text-center font-semibold"
+                      disabled={selectedPaymentMethod !== 'account_balance'}
+                    />
+                  </div>
+
+                  {selectedPlan && (
+                    <div className="text-center">
+                      <div className="text-sm text-foreground/70">{t('pricingModal.totalDeduction')}</div>
+                      <div className="text-lg font-bold text-[#E60000]">
+                        {formatPrice(selectedPlan.priceVnd * monthsCount)} VND
+                      </div>
+                      <div className="text-xs text-foreground/60">
+                        {t('pricingModal.perMonthCalc', { price: formatPrice(selectedPlan.priceVnd), months: monthsCount })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="text-center">
                   <div className="text-sm text-foreground/70">{t('pricingModal.currentBalance')}</div>
                   <div className="text-lg font-bold text-[#E60000]">{formatPrice(userBalance)} đ</div>
                   <Button 
@@ -732,6 +762,7 @@ export function PricingSection() {
                     ✓ {t('pricingModal.instantPayment')}<br/>
                     ✓ {t('pricingModal.noFees')}
                   </div>
+                </div>
                 </div>
               </CardContent>
             </Card>

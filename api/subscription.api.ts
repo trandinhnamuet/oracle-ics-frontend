@@ -77,6 +77,7 @@ export interface GetSubscriptionsResponse {
 
 export interface CreateSubscriptionRequest {
   cloudPackageId: number
+  monthsCount?: number
   autoRenew?: boolean
 }
 
@@ -93,6 +94,7 @@ export const subscribeWithBalance = async (data: CreateSubscriptionRequest): Pro
       method: 'POST',
       body: JSON.stringify({
         cloudPackageId: data.cloudPackageId,
+        monthsCount: data.monthsCount || 1,
         autoRenew: data.autoRenew || false
       })
     })
