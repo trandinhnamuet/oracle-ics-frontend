@@ -22,10 +22,12 @@ export interface CreatePaymentResponse {
 
 export interface PaymentStatus {
   id: string | number
-  status: 'pending' | 'success' | 'failed'
+  status: 'pending' | 'success' | 'failed' | 'expired'
   amount: number
   payment_type: string
   transaction_code: string
+  created_at?: string
+  updated_at?: string
 }
 
 export const paymentApi = {

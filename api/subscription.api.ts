@@ -6,6 +6,8 @@ export interface Subscription {
   id: string
   user_id: number
   cloud_package_id: number
+  amount_paid?: number
+  months_paid?: number
   start_date: string
   end_date: string
   status: 'active' | 'inactive' | 'pending' | 'expired' | 'suspended' | 'cancelled'

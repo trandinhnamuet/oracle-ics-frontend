@@ -9,9 +9,13 @@ import { ArrowLeft, CheckCircle, Copy, Loader, Banknote, Clock, RefreshCw } from
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { paymentApi } from '@/api/payment.api'
+import { getSubscriptionById, subscribeWithPayment } from '@/api/subscription.api'
 import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
 import { Suspense, useEffect, useRef, useState } from 'react'
+
+const PAYMENT_EXPIRE_SECONDS = 15 * 60
+const PAYMENT_EXPIRE_MS = PAYMENT_EXPIRE_SECONDS * 1000
 
 function SubscriptionCheckoutContent() {
   const { t } = useTranslation()
@@ -22,16 +26,21 @@ function SubscriptionCheckoutContent() {
 
   // States
   const [paymentData, setPaymentData] = useState<any>(null)
-  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed'>('pending')
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed' | 'expired'>('pending')
   const [isLoading, setIsLoading] = useState(true)
-  const [countdown, setCountdown] = useState(900)
+  const [countdown, setCountdown] = useState(PAYMENT_EXPIRE_SECONDS)
+  const [expiresAt, setExpiresAt] = useState<number | null>(null)
   const [qrNotified, setQrNotified] = useState(false)
+  const [expiredNotified, setExpiredNotified] = useState(false)
+  const [isRegeneratingPayment, setIsRegeneratingPayment] = useState(false)
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
 
   // Query params
   const paymentId = searchParams.get('paymentId')
   const subscriptionId = searchParams.get('subscriptionId')
   const amount = searchParams.get('amount') || '0'
+
+  const isExpired = paymentStatus === 'expired' || countdown <= 0
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -51,6 +60,33 @@ function SubscriptionCheckoutContent() {
     return `${baseUrl}?${params.toString()}`
   }
 
+  const getPaymentCreatedAtMs = (response: any): number => {
+    const storageKey = `payment-created-at:${paymentId}`
+    const createdAtFromApi = response?.created_at ? new Date(response.created_at).getTime() : NaN
+
+    if (Number.isFinite(createdAtFromApi)) {
+      localStorage.setItem(storageKey, String(createdAtFromApi))
+      return createdAtFromApi
+    }
+
+    const stored = localStorage.getItem(storageKey)
+    if (stored) {
+      const parsed = Number(stored)
+      if (Number.isFinite(parsed)) return parsed
+    }
+
+    const fallback = Date.now()
+    localStorage.setItem(storageKey, String(fallback))
+    return fallback
+  }
+
+  const stopPolling = () => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current)
+      pollingRef.current = null
+    }
+  }
+
   const fetchPaymentStatus = async () => {
     if (!paymentId) return
 
@@ -59,11 +95,16 @@ function SubscriptionCheckoutContent() {
       setPaymentData(response)
       setPaymentStatus(response.status)
 
+      if (response.status === 'pending') {
+        const createdAtMs = getPaymentCreatedAtMs(response)
+        setExpiresAt(createdAtMs + PAYMENT_EXPIRE_MS)
+      } else if (response.status === 'expired' || response.status === 'failed') {
+        setCountdown(0)
+        stopPolling()
+      }
+
       if (response.status === 'success') {
-        if (pollingRef.current) {
-          clearInterval(pollingRef.current)
-          pollingRef.current = null
-        }
+        stopPolling()
         toast({
           title: t('subscriptionCheckout.paymentSuccess'),
           description: t('subscriptionCheckout.subscriptionActivated'),
@@ -117,13 +158,33 @@ function SubscriptionCheckoutContent() {
     }
   }, [paymentData, qrNotified, t, toast])
 
-  // Countdown timer
+  // Countdown timer based on payment creation time (persisted across reload)
   useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
-      return () => clearTimeout(timer)
+    if (!expiresAt || paymentStatus !== 'pending') return
+
+    const updateCountdown = () => {
+      const remaining = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000))
+      setCountdown(remaining)
+
+      if (remaining <= 0) {
+        setPaymentStatus('expired')
+        stopPolling()
+
+        if (!expiredNotified) {
+          setExpiredNotified(true)
+          toast({
+            title: t('subscriptionCheckout.invalidInfo'),
+            description: t('subscriptionCheckout.expireWarning'),
+            variant: 'default'
+          })
+        }
+      }
     }
-  }, [countdown])
+
+    updateCountdown()
+    const timer = setInterval(updateCountdown, 1000)
+    return () => clearInterval(timer)
+  }, [expiresAt, paymentStatus, expiredNotified, t, toast])
 
   const handleCopyTransferInfo = () => {
     if (!paymentData) return
@@ -149,6 +210,54 @@ function SubscriptionCheckoutContent() {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+
+  const handleRegeneratePayment = async () => {
+    if (!subscriptionId) {
+      toast({
+        title: t('subscriptionCheckout.invalidInfo'),
+        description: t('subscriptionCheckout.invalidInfoDesc'),
+        variant: 'destructive'
+      })
+      return
+    }
+
+    setIsRegeneratingPayment(true)
+
+    try {
+      const currentSubscription = await getSubscriptionById(subscriptionId)
+      const monthsCount = Math.max(1, Number(currentSubscription.months_paid || 1))
+
+      const result = await subscribeWithPayment({
+        cloudPackageId: currentSubscription.cloud_package_id,
+        monthsCount,
+        autoRenew: currentSubscription.auto_renew,
+      })
+
+      const nextParams = new URLSearchParams({
+        paymentId: String(result.payment.id),
+        subscriptionId: String(result.subscription.id),
+        amount: String(result.payment.amount),
+        method: 'sepay_qr',
+        type: 'subscription'
+      })
+
+      toast({
+        title: 'Đã tạo mã thanh toán mới',
+        description: 'Đang chuyển sang phiên thanh toán mới (15 phút).',
+        variant: 'default'
+      })
+
+      router.replace(`/checkout/subscription?${nextParams.toString()}`)
+    } catch (error: any) {
+      toast({
+        title: t('subscriptionCheckout.invalidInfo'),
+        description: error?.response?.data?.message || 'Không thể tạo lại mã thanh toán. Vui lòng thử lại.',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsRegeneratingPayment(false)
+    }
   }
 
   if (authLoading) {
@@ -239,15 +348,17 @@ function SubscriptionCheckoutContent() {
                   <Clock className="h-4 w-4 text-orange-500" />
                   <span className="text-sm font-medium text-gray-700 dark:text-foreground">{t('subscriptionCheckout.timeLeft')}</span>
                   <span className="text-lg font-bold text-orange-600">
-                    {formatTime(countdown)}
+                    {isExpired ? '00:00' : formatTime(countdown)}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600 dark:text-muted-foreground">
-                  {t('subscriptionCheckout.expireWarning')}
+                  {isExpired
+                    ? 'Giao dịch đã hết hạn. Vui lòng tạo giao dịch thanh toán mới.'
+                    : t('subscriptionCheckout.expireWarning')}
                 </p>
               </div>
 
-              {paymentData && (
+              {paymentData && !isExpired && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-sm text-blue-800">
                     <strong>{t('subscriptionCheckout.transactionCode')}</strong> {paymentData.transaction_code}<br/>
@@ -283,7 +394,7 @@ function SubscriptionCheckoutContent() {
                         <Loader className="h-8 w-8 animate-spin text-primary" />
                       </div>
                   </div>
-                ) : paymentData ? (
+                ) : paymentData && !isExpired ? (
                   <div className="bg-white dark:bg-white p-4 rounded-lg inline-block shadow-sm border">
                     <Image
                       src={createQRUrl(amount, paymentData.transaction_code)}
@@ -304,6 +415,10 @@ function SubscriptionCheckoutContent() {
                 {paymentStatus === 'success' ? (
                   <p className="text-sm text-green-600 mt-2 font-medium">
                     {t('subscriptionCheckout.paymentSuccessRedirect')}
+                  </p>
+                ) : isExpired ? (
+                  <p className="text-sm text-red-600 mt-2 font-medium">
+                    Giao dịch đã hết hạn. Vui lòng tạo mã QR mới để tiếp tục.
                   </p>
                 ) : paymentStatus === 'pending' ? (
                   <p className="text-sm text-blue-600 mt-2 flex items-center justify-center">
@@ -337,7 +452,7 @@ function SubscriptionCheckoutContent() {
                       {formatPrice(parseInt(amount))} VND
                     </span>
                   </div>
-                  {paymentData && (
+                  {paymentData && !isExpired && (
                     <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.contentLabel')}</span>
                       <span className="text-sm font-medium">{paymentData.transaction_code}</span>
@@ -350,10 +465,26 @@ function SubscriptionCheckoutContent() {
                   size="sm"
                   className="w-full"
                   onClick={handleCopyTransferInfo}
+                  disabled={isExpired || !paymentData}
                 >
                   <Copy className="h-4 w-4 mr-2" />
                   {t('subscriptionCheckout.copyTransferInfo')}
                 </Button>
+
+                {isExpired && (
+                  <>
+                    <Button
+                      className="w-full bg-[#E60000] hover:bg-red-700"
+                      onClick={handleRegeneratePayment}
+                      disabled={isRegeneratingPayment}
+                    >
+                      {isRegeneratingPayment ? 'Đang tạo mã mới...' : 'Tạo lại mã thanh toán'}
+                    </Button>
+                    <Button variant="outline" className="w-full" onClick={() => router.push('/')}>
+                      {t('subscriptionCheckout.backHome')}
+                    </Button>
+                  </>
+                )}
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
