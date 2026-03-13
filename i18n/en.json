@@ -1686,8 +1686,9 @@
       "method": "Method",
       "transactionCode": "Transaction Code",
       "subscriptionId": "Subscription ID",
-      "createdAt": "Created At",
-      "updatedAt": "Updated At",
+      "package": "Package",
+      "description": "Description",
+      "time": "Time",
       "close": "Close",
       "statuses": {
         "pending": "Pending",

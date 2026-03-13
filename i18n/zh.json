@@ -1686,8 +1686,9 @@
       "method": "支付方式",
       "transactionCode": "交易代码",
       "subscriptionId": "订阅ID",
-      "createdAt": "创建时间",
-      "updatedAt": "更新时间",
+      "package": "服务套餐",
+      "description": "内容",
+      "time": "时间",
       "close": "关闭",
       "statuses": {
         "pending": "待处理",

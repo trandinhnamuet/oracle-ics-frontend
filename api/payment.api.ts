@@ -15,6 +15,11 @@ export interface Payment {
   description: string | null
   created_at: string
   updated_at: string
+  cloudPackage?: {
+    id: number
+    name: string
+    type: string
+  } | null
 }
 
 export interface CreatePaymentRequest {

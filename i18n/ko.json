@@ -1685,8 +1685,9 @@
       "method": "결제 수단",
       "transactionCode": "거래 코드",
       "subscriptionId": "구독 ID",
-      "createdAt": "생성 시간",
-      "updatedAt": "업데이트",
+      "package": "서비스 패키지",
+      "description": "내용",
+      "time": "시간",
       "close": "닫기",
       "statuses": {
         "pending": "대기 중",

@@ -1685,8 +1685,9 @@
       "method": "Phương thức",
       "transactionCode": "Mã giao dịch",
       "subscriptionId": "Mã đăng ký",
-      "createdAt": "Ngày tạo",
-      "updatedAt": "Cập nhật",
+      "package": "Gói dịch vụ",
+      "description": "Nội dung",
+      "time": "Thời gian",
       "close": "Đóng",
       "statuses": {
         "pending": "Chờ xử lý",

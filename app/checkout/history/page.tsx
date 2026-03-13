@@ -527,6 +527,20 @@ export default function PaymentHistoryPage() {
                     <span className="font-medium">{methodLabel[paymentDetail.payment_method] ?? paymentDetail.payment_method}</span>
                   </div>
 
+                  {paymentDetail.cloudPackage && (
+                    <div className="flex items-start justify-between px-4 py-3 gap-3">
+                      <span className="text-muted-foreground shrink-0">{t('paymentHistory.paymentDetail.package')}</span>
+                      <span className="font-medium">{paymentDetail.cloudPackage.name}</span>
+                    </div>
+                  )}
+
+                  {paymentDetail.description && (
+                    <div className="flex items-start justify-between px-4 py-3 gap-3">
+                      <span className="text-muted-foreground shrink-0">{t('paymentHistory.paymentDetail.description')}</span>
+                      <span className="font-medium text-right">{paymentDetail.description}</span>
+                    </div>
+                  )}
+
                   {paymentDetail.transaction_code && (
                     <div className="flex items-start justify-between px-4 py-3 gap-3">
                       <span className="text-muted-foreground shrink-0 flex items-center gap-1">
@@ -562,15 +576,7 @@ export default function PaymentHistoryPage() {
                   <div className="flex items-center justify-between px-4 py-3">
                     <span className="text-muted-foreground flex items-center gap-1">
                       <CalendarDays className="h-3.5 w-3.5" />
-                      {t('paymentHistory.paymentDetail.createdAt')}
-                    </span>
-                    <span className="font-medium">{formatDate(paymentDetail.created_at)}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <span className="text-muted-foreground flex items-center gap-1">
-                      <CalendarDays className="h-3.5 w-3.5" />
-                      {t('paymentHistory.paymentDetail.updatedAt')}
+                      {t('paymentHistory.paymentDetail.time')}
                     </span>
                     <span className="font-medium">{formatDate(paymentDetail.updated_at)}</span>
                   </div>
