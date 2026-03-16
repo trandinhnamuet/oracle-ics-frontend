@@ -2,19 +2,19 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Activity,
-  AlertTriangle,
   ArrowUpDown,
-  CheckCircle,
   Database,
-  Filter,
+  Download,
   Info,
   RefreshCw,
+  Search,
   Server,
-  TrendingUp,
+  Upload,
   Users,
 } from 'lucide-react'
 import { getAllVmsBandwidth } from '@/api/bandwidth.api'
@@ -23,12 +23,6 @@ import { useTranslation } from 'react-i18next'
 interface BandwidthData {
   egressTB: number
   ingressTB: number
-  usagePercentage: number
-  remainingTB: number
-  exceededTB: number
-  limitTB: number
-  isOverLimit: boolean
-  isNearLimit: boolean
   bytesIn: number
   bytesOut: number
   dataSource: 'oci' | 'archived' | 'none' | 'error'
@@ -55,10 +49,9 @@ interface VmBandwidth {
 
 interface BandwidthSummary {
   totalVMs: number
-  overLimitVMs: number
-  nearLimitVMs: number
+  vmsWithData: number
   totalEgressTB: number
-  averageUsagePercentage: number
+  totalIngressTB: number
 }
 
 interface BandwidthResponse {
@@ -69,8 +62,19 @@ interface BandwidthResponse {
 export default function BandwidthManagementPage() {
   const { t } = useTranslation()
 
-  // Generate last 6 months (current + 5 previous)
-  const monthOptions = useMemo(() => {
+  // monthOptions is computed client-side only to avoid hydration mismatch
+  // (new Date() + toLocaleDateString differ between SSR and client)
+  const [monthOptions, setMonthOptions] = useState<{ value: string; label: string }[]>([])
+
+  const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+  const [data, setData] = useState<BandwidthResponse | null>(null)
+  const [month, setMonth] = useState('')
+  const [filterText, setFilterText] = useState('')
+  const [sortBy, setSortBy] = useState<'usage' | 'name' | 'user'>('usage')
+
+  // Build month options and initial month selection on client only
+  useEffect(() => {
     const options: { value: string; label: string }[] = []
     const now = new Date()
     for (let i = 0; i < 6; i++) {
@@ -82,21 +86,12 @@ export default function BandwidthManagementPage() {
         label: i === 0 ? `${label} ${t('admin.bandwidth.month.current')}` : label,
       })
     }
-    return options
+    setMonthOptions(options)
+    setMonth(options[0].value)
   }, [t])
 
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
-  const [data, setData] = useState<BandwidthResponse | null>(null)
-  const [month, setMonth] = useState(() => {
-    const now = new Date()
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-  })
-  const [filterStatus, setFilterStatus] = useState<'all' | 'over' | 'near' | 'normal'>('all')
-  const [sortBy, setSortBy] = useState<'usage' | 'name' | 'user'>('usage')
-
   useEffect(() => {
-    fetchBandwidthData()
+    if (month) fetchBandwidthData()
   }, [month])
 
   const fetchBandwidthData = async () => {
@@ -127,50 +122,41 @@ export default function BandwidthManagementPage() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
-  const getStatusBadge = (bandwidth: BandwidthData) => {
-    if (bandwidth.dataSource === 'error') {
+  const getStatusBadge = (dataSource: string) => {
+    if (dataSource === 'error') {
       return <Badge variant="secondary">{t('admin.bandwidth.status.error')}</Badge>
     }
-    if (bandwidth.isOverLimit) {
-      return <Badge variant="destructive" className="animate-pulse">{t('admin.bandwidth.status.overLimit')}</Badge>
+    if (dataSource === 'oci') {
+      return <Badge variant="default" className="bg-green-500">{t('admin.bandwidth.status.live')}</Badge>
     }
-    if (bandwidth.isNearLimit) {
-      return <Badge variant="default" className="bg-orange-500">{t('admin.bandwidth.status.warning')}</Badge>
+    if (dataSource === 'archived') {
+      return <Badge variant="outline" className="text-blue-600 border-blue-500">{t('admin.bandwidth.status.archived')}</Badge>
     }
-    return <Badge variant="default" className="bg-green-500">{t('admin.bandwidth.status.normal')}</Badge>
+    return <Badge variant="outline" className="text-gray-400">{t('admin.bandwidth.status.noData')}</Badge>
   }
 
-  const getSourceBadge = (source: string) => {
-    if (source === 'oci') {
-      return <Badge variant="outline" className="text-green-600 border-green-500">{t('admin.bandwidth.source.oci')}</Badge>
-    }
-    if (source === 'archived') {
-      return <Badge variant="outline" className="text-blue-600 border-blue-500">{t('admin.bandwidth.source.archived')}</Badge>
-    }
-    return <Badge variant="outline" className="text-gray-500">{t('admin.bandwidth.source.none')}</Badge>
-  }
 
-  const getProgressBarColor = (percentage: number) => {
-    if (percentage >= 100) return 'bg-red-500'
-    if (percentage >= 80) return 'bg-orange-500'
-    if (percentage >= 60) return 'bg-yellow-500'
-    return 'bg-green-500'
-  }
+  const filteredVMs = useMemo(() => {
+    const q = filterText.trim().toLowerCase()
+    return (data?.vms ?? []).filter(vm => {
+      if (!q) return true
+      return (
+        vm.instanceName?.toLowerCase().includes(q) ||
+        vm.userEmail?.toLowerCase().includes(q) ||
+        vm.userName?.toLowerCase().includes(q) ||
+        vm.publicIp?.toLowerCase().includes(q)
+      )
+    })
+  }, [data, filterText])
 
-  const filteredVMs = data?.vms.filter(vm => {
-    if (filterStatus === 'all') return true
-    if (filterStatus === 'over') return vm.bandwidth.isOverLimit
-    if (filterStatus === 'near') return vm.bandwidth.isNearLimit
-    if (filterStatus === 'normal') return !vm.bandwidth.isOverLimit && !vm.bandwidth.isNearLimit
-    return true
-  }) || []
-
-  const sortedVMs = [...filteredVMs].sort((a, b) => {
-    if (sortBy === 'usage') return (b.bandwidth.usagePercentage || 0) - (a.bandwidth.usagePercentage || 0)
+  const sortedVMs = useMemo(() => [
+    ...filteredVMs
+  ].sort((a, b) => {
+    if (sortBy === 'usage') return (b.bandwidth.egressTB || 0) - (a.bandwidth.egressTB || 0)
     if (sortBy === 'name') return a.instanceName.localeCompare(b.instanceName)
     if (sortBy === 'user') return a.userName.localeCompare(b.userName)
     return 0
-  })
+  }), [filteredVMs, sortBy])
 
   if (loading) {
     return (
@@ -221,7 +207,7 @@ export default function BandwidthManagementPage() {
 
       {/* Summary Cards */}
       {data && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -234,14 +220,14 @@ export default function BandwidthManagementPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white">
+          <Card className="bg-gradient-to-br from-teal-500 to-teal-600 text-white">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.overLimit')}</p>
-                  <p className="text-3xl font-bold">{data.summary.overLimitVMs}</p>
+                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.vmsWithData')}</p>
+                  <p className="text-3xl font-bold">{data.summary.vmsWithData}</p>
                 </div>
-                <AlertTriangle className="h-12 w-12 opacity-80" />
+                <Activity className="h-12 w-12 opacity-80" />
               </div>
             </CardContent>
           </Card>
@@ -250,10 +236,10 @@ export default function BandwidthManagementPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.nearLimit')}</p>
-                  <p className="text-3xl font-bold">{data.summary.nearLimitVMs}</p>
+                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.totalEgress')}</p>
+                  <p className="text-3xl font-bold">{(data.summary.totalEgressTB ?? 0).toFixed(4)} TB</p>
                 </div>
-                <Activity className="h-12 w-12 opacity-80" />
+                <Upload className="h-12 w-12 opacity-80" />
               </div>
             </CardContent>
           </Card>
@@ -262,69 +248,37 @@ export default function BandwidthManagementPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.totalEgress')}</p>
-                  <p className="text-3xl font-bold">{data.summary.totalEgressTB.toFixed(2)} TB</p>
+                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.totalIngress')}</p>
+                  <p className="text-3xl font-bold">{(data.summary.totalIngressTB ?? 0).toFixed(4)} TB</p>
                 </div>
-                <Database className="h-12 w-12 opacity-80" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">{t('admin.bandwidth.summary.average')}</p>
-                  <p className="text-3xl font-bold">{data.summary.averageUsagePercentage.toFixed(1)}%</p>
-                </div>
-                <TrendingUp className="h-12 w-12 opacity-80" />
+                <Download className="h-12 w-12 opacity-80" />
               </div>
             </CardContent>
           </Card>
         </div>
       )}
 
-      {/* Filters */}
+      {/* Search & Sort */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              <span className="font-medium">{t('admin.bandwidth.filter.label')}</span>
+            <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+              <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <Input
+                placeholder={t('admin.bandwidth.filter.searchPlaceholder')}
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+                className="max-w-sm"
+              />
+              {filterText && (
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                  {filteredVMs.length} / {data?.vms.length || 0} VMs
+                </span>
+              )}
             </div>
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant={filterStatus === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterStatus('all')}
-              >
-                {t('admin.bandwidth.filter.all')} ({data?.vms.length || 0})
-              </Button>
-              <Button
-                variant={filterStatus === 'over' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterStatus('over')}
-              >
-                {t('admin.bandwidth.filter.over')} ({data?.summary.overLimitVMs || 0})
-              </Button>
-              <Button
-                variant={filterStatus === 'near' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterStatus('near')}
-              >
-                {t('admin.bandwidth.filter.near')} ({data?.summary.nearLimitVMs || 0})
-              </Button>
-              <Button
-                variant={filterStatus === 'normal' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterStatus('normal')}
-              >
-                {t('admin.bandwidth.filter.normal')}
-              </Button>
-            </div>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-auto">
               <ArrowUpDown className="h-4 w-4" />
-              <span className="font-medium">{t('admin.bandwidth.sort.label')}</span>
+              <span className="font-medium text-sm">{t('admin.bandwidth.sort.label')}</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'usage' | 'name' | 'user')}
@@ -342,13 +296,7 @@ export default function BandwidthManagementPage() {
       {/* VM List */}
       <div className="space-y-4">
         {sortedVMs.map((vm) => (
-          <Card
-            key={vm.vmId}
-            className={
-              vm.bandwidth.isOverLimit ? 'border-red-500 border-2' :
-              vm.bandwidth.isNearLimit ? 'border-orange-500 border-2' : ''
-            }
-          >
+          <Card key={vm.vmId}>
             <CardContent className="pt-6">
               <div className="space-y-4">
                 {/* VM Header */}
@@ -356,9 +304,8 @@ export default function BandwidthManagementPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <h3 className="text-xl font-bold">{vm.instanceName}</h3>
-                      {getStatusBadge(vm.bandwidth)}
+                      {getStatusBadge(vm.bandwidth.dataSource)}
                       <Badge variant="outline">{vm.lifecycleState}</Badge>
-                      {getSourceBadge(vm.bandwidth.dataSource)}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
@@ -373,91 +320,35 @@ export default function BandwidthManagementPage() {
                   </div>
                 </div>
 
-                {/* Egress Usage Bar */}
-                {vm.bandwidth.dataSource !== 'error' && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium">
-                        {t('admin.bandwidth.details.egress')}: {(vm.bandwidth.egressTB ?? 0).toFixed(4)} TB / {vm.bandwidth.limitTB} TB
-                      </span>
-                      <span className="font-bold text-lg">
-                        {(vm.bandwidth.usagePercentage ?? 0).toFixed(2)}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
-                      <div
-                        className={`h-full ${getProgressBarColor(vm.bandwidth.usagePercentage || 0)} transition-all duration-500 flex items-center justify-center text-white text-xs font-bold`}
-                        style={{ width: `${Math.min(vm.bandwidth.usagePercentage || 0, 100)}%` }}
-                      >
-                        {(vm.bandwidth.usagePercentage || 0) >= 10 && `${(vm.bandwidth.usagePercentage || 0).toFixed(1)}%`}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 {/* Bandwidth Details */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.ingress')}</p>
-                    <p className="text-lg font-bold">{formatBytes(vm.bandwidth.bytesIn || 0)}</p>
-                  </div>
-                  <div className="bg-orange-50 dark:bg-orange-950 p-3 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.egress')}</p>
-                    <p className="text-lg font-bold">{formatBytes(vm.bandwidth.bytesOut || 0)}</p>
-                  </div>
-                  <div className="bg-purple-50 dark:bg-purple-950 p-3 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.remaining')}</p>
-                    <p className="text-lg font-bold">
-                      {(vm.bandwidth.remainingTB || 0) > 0 ? `${(vm.bandwidth.remainingTB || 0).toFixed(4)} TB` : '0 TB'}
-                    </p>
-                  </div>
-                  {vm.bandwidth.isOverLimit ? (
-                    <div className="bg-red-50 dark:bg-red-950 p-3 rounded-lg border-2 border-red-500">
-                      <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.exceeded')}</p>
-                      <p className="text-lg font-bold text-red-600 dark:text-red-400">
-                        +{(vm.bandwidth.exceededTB || 0).toFixed(4)} TB
+                {vm.bandwidth.dataSource !== 'error' ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="bg-orange-50 dark:bg-orange-950 p-4 rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <Upload className="h-3 w-3" />
+                        {t('admin.bandwidth.details.egress')}
                       </p>
+                      <p className="text-2xl font-bold">{formatBytes(vm.bandwidth.bytesOut || 0)}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{(vm.bandwidth.egressTB ?? 0).toFixed(6)} TB</p>
                     </div>
-                  ) : (
-                    <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg">
+                    <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <Download className="h-3 w-3" />
+                        {t('admin.bandwidth.details.ingress')}
+                      </p>
+                      <p className="text-2xl font-bold">{formatBytes(vm.bandwidth.bytesIn || 0)}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{(vm.bandwidth.ingressTB ?? 0).toFixed(6)} TB</p>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                       <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.dataSource')}</p>
-                      <p className="text-sm font-medium">
+                      <p className="text-sm font-medium mt-2">
                         {vm.bandwidth.dataSource === 'oci' ? t('admin.bandwidth.source.oci') :
                          vm.bandwidth.dataSource === 'archived' ? t('admin.bandwidth.source.archived') :
                          t('admin.bandwidth.source.none')}
                       </p>
                     </div>
-                  )}
-                </div>
-
-                {/* Warning Messages */}
-                {vm.bandwidth.isOverLimit && (
-                  <div className="bg-red-50 dark:bg-red-950 border border-red-500 rounded-lg p-4 flex items-start gap-3">
-                    <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-bold text-red-700 dark:text-red-400">
-                        {t('admin.bandwidth.warning.overLimitTitle')}
-                      </p>
-                      <p className="text-sm text-red-600 dark:text-red-300">
-                        {t('admin.bandwidth.warning.overLimitMessage', { exceeded: (vm.bandwidth.exceededTB || 0).toFixed(4) })}
-                      </p>
-                    </div>
                   </div>
-                )}
-                {vm.bandwidth.isNearLimit && !vm.bandwidth.isOverLimit && (
-                  <div className="bg-orange-50 dark:bg-orange-950 border border-orange-500 rounded-lg p-4 flex items-start gap-3">
-                    <Activity className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-bold text-orange-700 dark:text-orange-400">
-                        {t('admin.bandwidth.warning.nearLimitTitle')}
-                      </p>
-                      <p className="text-sm text-orange-600 dark:text-orange-300">
-                        {t('admin.bandwidth.warning.nearLimitMessage', { usage: (vm.bandwidth.usagePercentage || 0).toFixed(2), remaining: (vm.bandwidth.remainingTB || 0).toFixed(4) })}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {vm.bandwidth.dataSource === 'error' && (
+                ) : (
                   <div className="bg-gray-50 dark:bg-gray-900 border border-gray-300 rounded-lg p-4">
                     <p className="text-sm text-muted-foreground">
                       {t('admin.bandwidth.warning.errorMessage', { error: vm.bandwidth.error })}
@@ -472,7 +363,7 @@ export default function BandwidthManagementPage() {
         {sortedVMs.length === 0 && (
           <Card>
             <CardContent className="py-12 text-center">
-              <CheckCircle className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+              <Database className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
               <p className="text-lg text-muted-foreground">{t('admin.bandwidth.noVms')}</p>
             </CardContent>
           </Card>
