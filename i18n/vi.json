@@ -429,7 +429,7 @@
     },
     "bandwidth": {
       "title": "Giám sát Băng thông",
-      "subtitle": "Theo dõi lưu lượng egress (VnicBytesOut) hàng tháng của từng VM — 10 TB/tháng miễn phí theo gói partner",
+      "subtitle": "Theo dõi lưu lượng egress (VnicBytesOut) và ingress (VnicBytesIn) hàng tháng của từng VM",
       "loading": "Đang tải dữ liệu băng thông...",
       "refresh": "Làm mới",
       "month": {
@@ -438,28 +438,23 @@
       },
       "summary": {
         "totalVMs": "Tổng số VM",
-        "overLimit": "Vượt giới hạn",
-        "nearLimit": "Gần giới hạn",
+        "vmsWithData": "VM có dữ liệu",
         "totalEgress": "Tổng Egress",
-        "average": "Trung bình"
+        "totalIngress": "Tổng Ingress"
       },
       "filter": {
-        "label": "Lọc:",
-        "all": "Tất cả",
-        "over": "Vượt giới hạn",
-        "near": "Cảnh báo",
-        "normal": "Bình thường"
+        "searchPlaceholder": "Tìm theo tên VM, email, hoặc địa chỉ IP..."
       },
       "sort": {
         "label": "Sắp xếp:",
-        "usage": "Mức sử dụng",
+        "usage": "Egress",
         "name": "Tên VM",
         "user": "Người dùng"
       },
       "status": {
-        "overLimit": "Vượt giới hạn",
-        "warning": "Cảnh báo",
-        "normal": "Bình thường",
+        "live": "Trực tiếp (OCI)",
+        "archived": "Lưu trữ",
+        "noData": "Không có dữ liệu",
         "error": "Lỗi"
       },
       "source": {
@@ -468,22 +463,16 @@
         "none": "Không có dữ liệu"
       },
       "info": {
-        "text": "Theo dõi VnicBytesOut (namespace oci_vcn) — lưu lượng gửi ra từ VNIC của từng VM. Gói partner OCI bao gồm 10 TB egress/tháng miễn phí."
+        "text": "Theo dõi VnicBytesOut (egress) và VnicBytesIn (ingress) từ namespace oci_vcn của từng VNIC. Dữ liệu được lấy trực tiếp từ OCI Monitoring."
       },
       "details": {
-        "egress": "Egress (Tính phí)",
-        "ingress": "Ingress (Miễn phí)",
-        "remaining": "Còn lại",
-        "exceeded": "Vượt quá",
+        "egress": "Egress",
+        "ingress": "Ingress",
         "package": "Gói dịch vụ",
         "company": "Công ty",
         "dataSource": "Nguồn dữ liệu"
       },
       "warning": {
-        "overLimitTitle": "Cảnh báo: Đã vượt giới hạn egress!",
-        "overLimitMessage": "VM này đã vượt {{exceeded}} TB so với giới hạn egress miễn phí 10 TB. Có thể phát sinh chi phí thêm.",
-        "nearLimitTitle": "Cảnh báo: Sắp đạt giới hạn egress!",
-        "nearLimitMessage": "VM này đã dùng {{usage}}% băng thông egress. Còn {{remaining}} TB trước khi đạt giới hạn.",
         "errorMessage": "Không thể lấy dữ liệu băng thông: {{error}}"
       },
       "noVms": "Không có VM nào phù hợp với bộ lọc hiện tại"
