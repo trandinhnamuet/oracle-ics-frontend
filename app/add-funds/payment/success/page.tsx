@@ -4,10 +4,15 @@ import { useEffect, useState } from 'react'
 import { CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
+import { formatPrice } from '@/lib/utils'
 
 export default function CheckoutSuccessPage() {
   const { t } = useTranslation()
+  const searchParams = useSearchParams()
+  const amount = Number(searchParams.get('amount') || '0')
+  const formattedAmount = amount > 0 ? `${formatPrice(amount)} VND` : ''
   const [showAnimation, setShowAnimation] = useState(false)
   const [showCheckmark, setShowCheckmark] = useState(false)
   const [showContent, setShowContent] = useState(false)
@@ -90,10 +95,12 @@ export default function CheckoutSuccessPage() {
             : 'translate-y-4 opacity-0'
         }`}>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground mb-4">
-            {t('checkout.success.title')}
+            {t('addFundsPayment.paymentSuccess')}
           </h1>
           <p className="text-gray-600 dark:text-muted-foreground mb-8 leading-relaxed">
-            {t('checkout.success.desc')}
+            {formattedAmount
+              ? t('addFundsPayment.successWithAmount', { amount: formattedAmount })
+              : t('addFundsPayment.paymentSuccessDesc')}
           </p>
         </div>
 
@@ -122,7 +129,7 @@ export default function CheckoutSuccessPage() {
             : 'translate-y-4 opacity-0'
         }`}>
           <p className="text-sm text-gray-600 dark:text-muted-foreground">
-            <strong>{t('checkout.success.note').split(':')[0]}:</strong> {t('checkout.success.note').split(':').slice(1).join(':').trim()}
+            <strong>{t('addFundsPayment.importantNote').split(':')[0]}:</strong> {t('addFundsPayment.importantNoteDesc')}
           </p>
         </div>
 

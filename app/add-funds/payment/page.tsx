@@ -108,7 +108,7 @@ function AddFundsPaymentContent() {
           variant: 'default'
         })
         setTimeout(() => {
-          router.push('/add-funds/payment/success')
+          router.push(`/add-funds/payment/success?amount=${encodeURIComponent(amount)}`)
         }, 2000)
       }
     } catch (error: any) {

@@ -2015,6 +2015,7 @@
     "copiedTransferInfo": "Transfer information copied",
     "paymentSuccess": "Deposit Successful!",
     "paymentSuccessDesc": "Funds have been added to your account.",
+    "successWithAmount": "Funds of {{amount}} have been successfully added to your account.",
     "loading": "Loading...",
     "qrReadyToast": "QR Code Ready",
     "qrReadyToastDesc": "Please scan the QR code or transfer manually using the information below.",

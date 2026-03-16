@@ -2014,6 +2014,7 @@
     "copiedTransferInfo": "Đã sao chép thông tin chuyển khoản",
     "paymentSuccess": "Nạp tiền thành công!",
     "paymentSuccessDesc": "Tiền đã được cộng vào tài khoản của bạn.",
+    "successWithAmount": "Đã nạp tiền vào tài khoản số tiền {{amount}} thành công.",
     "loading": "Đang tải...",
     "qrReadyToast": "QR sẵn sàng",
     "qrReadyToastDesc": "Vui lòng quét mã QR hoặc chuyển khoản thủ công theo thông tin bên dưới.",

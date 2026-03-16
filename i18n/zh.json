@@ -2015,6 +2015,7 @@
     "copiedTransferInfo": "转账信息已复制",
     "paymentSuccess": "充值成功！",
     "paymentSuccessDesc": "资金已添加到您的账户。",
+    "successWithAmount": "已成功向您的账户充值 {{amount}}。",
     "loading": "加载中...",
     "qrReadyToast": "QR码准备就绪",
     "qrReadyToastDesc": "请扫描二维码，或使用以下信息手动转账。",

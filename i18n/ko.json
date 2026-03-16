@@ -2014,6 +2014,7 @@
     "copiedTransferInfo": "이체 정보가 복사되었습니다",
     "paymentSuccess": "충전 성공!",
     "paymentSuccessDesc": "잔액이 계정에 추가되었습니다.",
+    "successWithAmount": "{{amount}}이(가) 계정에 성공적으로 충전되었습니다.",
     "loading": "로딩 중...",
     "qrReadyToast": "QR 준비 완료",
     "qrReadyToastDesc": "QR 코드를 스캔하거나 아래 정보로 수동 이체하세요.",
