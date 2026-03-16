@@ -429,20 +429,18 @@
     },
     "bandwidth": {
       "title": "대역폭 모니터",
-      "subtitle": "모든 가상 머신의 대역폭을 추적 및 모니터링",
+      "subtitle": "VM별 월간 에그레스 (VnicBytesOut) 추적 — Partner 플랜에 월 10 TB 무료 포함",
       "loading": "대역폭 데이터 로딩 중...",
       "refresh": "새로고침",
-      "timeRange": {
-        "24h": "24시간",
-        "7d": "7일",
-        "30d": "30일",
-        "90d": "90일"
+      "month": {
+        "label": "월:",
+        "current": "(현재)"
       },
       "summary": {
         "totalVMs": "총 VM",
         "overLimit": "한도 초과",
         "nearLimit": "한도 근접",
-        "totalBandwidth": "총 대역폭",
+        "totalEgress": "총 에그레스",
         "average": "평균"
       },
       "filter": {
@@ -464,20 +462,28 @@
         "normal": "정상",
         "error": "오류"
       },
+      "source": {
+        "oci": "실시간 (OCI)",
+        "archived": "보관됨",
+        "none": "데이터 없음"
+      },
+      "info": {
+        "text": "VnicBytesOut (oci_vcn 네임스페이스) 추적 — 각 VM의 VNIC에서 송신된 바이트 수. OCI Partner 플랜에는 월 10 TB 무료 에그레스가 포함됩니다."
+      },
       "details": {
-        "download": "다운로드",
-        "upload": "업로드",
+        "egress": "에그레스 (과금)",
+        "ingress": "인그레스 (무료)",
         "remaining": "남은 용량",
         "exceeded": "초과",
-        "bandwidth": "대역폭",
         "package": "패키지",
-        "company": "회사"
+        "company": "회사",
+        "dataSource": "데이터 소스"
       },
       "warning": {
-        "overLimitTitle": "경고: 대역폭 한도 초과!",
-        "overLimitMessage": "이 VM은 허용 한도(10 TB)를 {{exceeded}} TB 초과했습니다. 처리를 위해 사용자에게 연락하세요.",
-        "nearLimitTitle": "경고: 대역폭 한도 근접!",
-        "nearLimitMessage": "이 VM은 대역폭의 {{usage}}%를 사용했습니다. 한도에 도달하기까지 {{remaining}} TB 남았습니다.",
+        "overLimitTitle": "경고: 에그레스 한도 초과!",
+        "overLimitMessage": "이 VM은 10 TB 무료 에그레스 한도를 {{exceeded}} TB 초과했습니다. 추가 요금이 발생할 수 있습니다.",
+        "nearLimitTitle": "경고: 에그레스 한도 근접!",
+        "nearLimitMessage": "이 VM은 에그레스 대역폭의 {{usage}}%를 사용했습니다. 한도까지 {{remaining}} TB 남았습니다.",
         "errorMessage": "대역폭 데이터를 가져올 수 없습니다: {{error}}"
       },
       "noVms": "현재 필터와 일치하는 VM이 없습니다"

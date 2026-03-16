@@ -429,20 +429,18 @@
     },
     "bandwidth": {
       "title": "带宽监控",
-      "subtitle": "跟踪和监控所有虚拟机的带宽",
+      "subtitle": "按月跟踪每台VM的出口流量 (VnicBytesOut) — Partner计划每月免费包含10 TB",
       "loading": "加载带宽数据中...",
       "refresh": "刷新",
-      "timeRange": {
-        "24h": "24小时",
-        "7d": "7天",
-        "30d": "30天",
-        "90d": "90天"
+      "month": {
+        "label": "月份:",
+        "current": "(当前)"
       },
       "summary": {
         "totalVMs": "VM总数",
         "overLimit": "超出限制",
         "nearLimit": "接近限制",
-        "totalBandwidth": "总带宽",
+        "totalEgress": "总出口流量",
         "average": "平均值"
       },
       "filter": {
@@ -464,20 +462,28 @@
         "normal": "正常",
         "error": "错误"
       },
+      "source": {
+        "oci": "实时 (OCI)",
+        "archived": "已归档",
+        "none": "无数据"
+      },
+      "info": {
+        "text": "跟踪 VnicBytesOut (oci_vcn 命名空间) — 每台VM的VNIC出站字节数。OCI Partner计划每月包含10 TB免费出口流量。"
+      },
       "details": {
-        "download": "下载",
-        "upload": "上传",
+        "egress": "出口流量 (计费)",
+        "ingress": "入口流量 (免费)",
         "remaining": "剩余",
         "exceeded": "超出",
-        "bandwidth": "带宽",
         "package": "套餐",
-        "company": "公司"
+        "company": "公司",
+        "dataSource": "数据来源"
       },
       "warning": {
-        "overLimitTitle": "警告：带宽限制已超出！",
-        "overLimitMessage": "此VM已超出允许限制(10 TB) {{exceeded}} TB。请联系用户进行处理。",
-        "nearLimitTitle": "警告：带宽即将达到限制！",
-        "nearLimitMessage": "此VM已使用{{usage}}%带宽。距限制还有{{remaining}} TB。",
+        "overLimitTitle": "警告：出口流量限制已超出！",
+        "overLimitMessage": "此VM已超出10 TB免费出口流量限制 {{exceeded}} TB，可能产生额外费用。",
+        "nearLimitTitle": "警告：出口流量即将达到限制！",
+        "nearLimitMessage": "此VM已使用{{usage}}%出口带宽。距限制还有{{remaining}} TB。",
         "errorMessage": "无法获取带宽数据: {{error}}"
       },
       "noVms": "没有VM符合当前筛选条件"

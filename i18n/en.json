@@ -429,20 +429,18 @@
     },
     "bandwidth": {
       "title": "Bandwidth Monitor",
-      "subtitle": "Track and monitor bandwidth of all virtual machines",
+      "subtitle": "Track monthly egress (VnicBytesOut) per VM — 10 TB/month included free in partner plan",
       "loading": "Loading bandwidth data...",
       "refresh": "Refresh",
-      "timeRange": {
-        "24h": "24 hours",
-        "7d": "7 days",
-        "30d": "30 days",
-        "90d": "90 days"
+      "month": {
+        "label": "Month:",
+        "current": "(Current)"
       },
       "summary": {
         "totalVMs": "Total VMs",
         "overLimit": "Over Limit",
         "nearLimit": "Near Limit",
-        "totalBandwidth": "Total Bandwidth",
+        "totalEgress": "Total Egress",
         "average": "Average"
       },
       "filter": {
@@ -464,20 +462,28 @@
         "normal": "Normal",
         "error": "Error"
       },
+      "source": {
+        "oci": "Live (OCI)",
+        "archived": "Archived",
+        "none": "No data"
+      },
+      "info": {
+        "text": "Tracking VnicBytesOut (oci_vcn namespace) — outbound bytes from each VM's VNIC. OCI partner plan includes 10 TB/month egress free."
+      },
       "details": {
-        "download": "Download",
-        "upload": "Upload",
+        "egress": "Egress (Billed)",
+        "ingress": "Ingress (Free)",
         "remaining": "Remaining",
         "exceeded": "Exceeded",
-        "bandwidth": "Bandwidth",
         "package": "Package",
-        "company": "Company"
+        "company": "Company",
+        "dataSource": "Source"
       },
       "warning": {
-        "overLimitTitle": "Warning: Bandwidth limit exceeded!",
-        "overLimitMessage": "This VM has used {{exceeded}} TB over the allowed limit (10 TB). Please contact the user to handle.",
-        "nearLimitTitle": "Warning: Approaching bandwidth limit!",
-        "nearLimitMessage": "This VM has used {{usage}}% bandwidth. {{remaining}} TB remaining before reaching the limit.",
+        "overLimitTitle": "Warning: Egress limit exceeded!",
+        "overLimitMessage": "This VM has used {{exceeded}} TB over the 10 TB free egress limit. Additional charges may apply.",
+        "nearLimitTitle": "Warning: Approaching egress limit!",
+        "nearLimitMessage": "This VM has used {{usage}}% of egress bandwidth. {{remaining}} TB remaining before reaching the limit.",
         "errorMessage": "Cannot retrieve bandwidth data: {{error}}"
       },
       "noVms": "No VMs match the current filter"
