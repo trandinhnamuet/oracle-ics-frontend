@@ -115,12 +115,8 @@ export default function BandwidthManagementPage() {
       const response = await getAllVmsBandwidth(month)
       if (response.success) {
         setData(response.data)
-        // Auto-expand all compartments on fresh load
-        if (response.data?.compartments) {
-          setExpandedCompartments(
-            new Set(response.data.compartments.map((c: CompartmentGroup) => c.compartmentId))
-          )
-        }
+        // Compartments collapsed by default
+        setExpandedCompartments(new Set())
       }
     } catch (error) {
       console.error('Error fetching bandwidth data:', error)
