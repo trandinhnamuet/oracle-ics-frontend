@@ -472,6 +472,10 @@
         "company": "Công ty",
         "dataSource": "Nguồn dữ liệu"
       },
+      "compartment": {
+        "vms": "VM",
+        "withData": "có dữ liệu"
+      },
       "warning": {
         "errorMessage": "Không thể lấy dữ liệu băng thông: {{error}}"
       },

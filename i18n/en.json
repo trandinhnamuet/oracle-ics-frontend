@@ -472,6 +472,10 @@
         "company": "Company",
         "dataSource": "Source"
       },
+      "compartment": {
+        "vms": "VMs",
+        "withData": "with data"
+      },
       "warning": {
         "errorMessage": "Cannot retrieve bandwidth data: {{error}}"
       },

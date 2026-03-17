@@ -8,8 +8,11 @@ import { Input } from '@/components/ui/input'
 import {
   Activity,
   ArrowUpDown,
+  ChevronDown,
+  ChevronRight,
   Database,
   Download,
+  FolderOpen,
   Info,
   RefreshCw,
   Search,
@@ -35,6 +38,7 @@ interface VmBandwidth {
   instanceName: string
   publicIp: string
   lifecycleState: string
+  compartmentId: string
   userId: number
   userEmail: string
   userName: string
@@ -47,6 +51,16 @@ interface VmBandwidth {
   month: string
 }
 
+interface CompartmentGroup {
+  compartmentId: string
+  compartmentName: string
+  vmCount: number
+  vmsWithData: number
+  egressTB: number
+  ingressTB: number
+  vms: VmBandwidth[]
+}
+
 interface BandwidthSummary {
   totalVMs: number
   vmsWithData: number
@@ -56,6 +70,7 @@ interface BandwidthSummary {
 
 interface BandwidthResponse {
   summary: BandwidthSummary
+  compartments: CompartmentGroup[]
   vms: VmBandwidth[]
 }
 
@@ -71,6 +86,7 @@ export default function BandwidthManagementPage() {
   const [month, setMonth] = useState('')
   const [filterText, setFilterText] = useState('')
   const [sortBy, setSortBy] = useState<'usage' | 'name' | 'user'>('usage')
+  const [expandedCompartments, setExpandedCompartments] = useState<Set<string>>(new Set())
 
   // Build month options and initial selection on client only
   useEffect(() => {
@@ -99,6 +115,12 @@ export default function BandwidthManagementPage() {
       const response = await getAllVmsBandwidth(month)
       if (response.success) {
         setData(response.data)
+        // Auto-expand all compartments on fresh load
+        if (response.data?.compartments) {
+          setExpandedCompartments(
+            new Set(response.data.compartments.map((c: CompartmentGroup) => c.compartmentId))
+          )
+        }
       }
     } catch (error) {
       console.error('Error fetching bandwidth data:', error)
@@ -111,6 +133,15 @@ export default function BandwidthManagementPage() {
     setRefreshing(true)
     await fetchBandwidthData()
     setRefreshing(false)
+  }
+
+  const toggleCompartment = (id: string) => {
+    setExpandedCompartments(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
   }
 
   const formatBytes = (bytes: number): string => {
@@ -134,25 +165,35 @@ export default function BandwidthManagementPage() {
     return <Badge variant="outline" className="text-gray-400">{t('admin.bandwidth.status.noData')}</Badge>
   }
 
-  const filteredVMs = useMemo(() => {
+  // Filter + sort VMs within each compartment; hide compartments with no matching VMs
+  const filteredCompartments = useMemo(() => {
     const q = filterText.trim().toLowerCase()
-    return (data?.vms ?? []).filter(vm => {
-      if (!q) return true
-      return (
-        vm.instanceName?.toLowerCase().includes(q) ||
-        vm.userEmail?.toLowerCase().includes(q) ||
-        vm.userName?.toLowerCase().includes(q) ||
-        vm.publicIp?.toLowerCase().includes(q)
-      )
-    })
-  }, [data, filterText])
+    return (data?.compartments ?? [])
+      .map(compartment => {
+        const filteredVms = compartment.vms.filter(vm => {
+          if (!q) return true
+          return (
+            vm.instanceName?.toLowerCase().includes(q) ||
+            vm.userEmail?.toLowerCase().includes(q) ||
+            vm.userName?.toLowerCase().includes(q) ||
+            vm.publicIp?.toLowerCase().includes(q)
+          )
+        })
+        const sortedVms = [...filteredVms].sort((a, b) => {
+          if (sortBy === 'usage') return (b.bandwidth?.egressTB ?? 0) - (a.bandwidth?.egressTB ?? 0)
+          if (sortBy === 'name') return (a.instanceName ?? '').localeCompare(b.instanceName ?? '')
+          if (sortBy === 'user') return (a.userName ?? '').localeCompare(b.userName ?? '')
+          return 0
+        })
+        return { ...compartment, vms: sortedVms }
+      })
+      .filter(c => c.vms.length > 0)
+  }, [data, filterText, sortBy])
 
-  const sortedVMs = useMemo(() => [...filteredVMs].sort((a, b) => {
-    if (sortBy === 'usage') return (b.bandwidth?.egressTB ?? 0) - (a.bandwidth?.egressTB ?? 0)
-    if (sortBy === 'name') return (a.instanceName ?? '').localeCompare(b.instanceName ?? '')
-    if (sortBy === 'user') return (a.userName ?? '').localeCompare(b.userName ?? '')
-    return 0
-  }), [filteredVMs, sortBy])
+  const totalFilteredVMs = useMemo(
+    () => filteredCompartments.reduce((s, c) => s + c.vms.length, 0),
+    [filteredCompartments]
+  )
 
   if (loading) {
     return (
@@ -257,7 +298,7 @@ export default function BandwidthManagementPage() {
               />
               {filterText && (
                 <span className="text-sm text-muted-foreground whitespace-nowrap">
-                  {filteredVMs.length} / {data?.vms.length ?? 0} VMs
+                  {totalFilteredVMs} / {data?.summary?.totalVMs ?? 0} VMs
                 </span>
               )}
             </div>
@@ -278,70 +319,124 @@ export default function BandwidthManagementPage() {
         </CardContent>
       </Card>
 
-      {/* VM List */}
+      {/* Compartment List */}
       <div className="space-y-4">
-        {sortedVMs.map((vm) => (
-          <Card key={vm.vmId}>
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <h3 className="text-xl font-bold">{vm.instanceName}</h3>
-                      {getStatusBadge(vm.bandwidth?.dataSource ?? 'none')}
-                      <Badge variant="outline">{vm.lifecycleState}</Badge>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        <span>{vm.userName}</span>
+        {filteredCompartments.map((compartment) => {
+          const isExpanded = expandedCompartments.has(compartment.compartmentId)
+          // Show a short label: if name differs from OCID, use name; else trim the OCID
+          const displayName = compartment.compartmentName !== compartment.compartmentId
+            ? compartment.compartmentName
+            : compartment.compartmentId.split('.').slice(-1)[0]?.substring(0, 20) ?? compartment.compartmentId
+
+          return (
+            <Card key={compartment.compartmentId} className="overflow-hidden">
+              {/* Compartment Header */}
+              <button
+                type="button"
+                className="w-full text-left"
+                onClick={() => toggleCompartment(compartment.compartmentId)}
+              >
+                <div className="flex items-center justify-between px-6 py-4 bg-muted/40 hover:bg-muted/60 transition-colors">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <FolderOpen className="h-5 w-5 text-primary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-base truncate">{displayName}</span>
+                        <Badge variant="outline" className="text-xs flex-shrink-0">
+                          {compartment.vmCount} {t('admin.bandwidth.compartment.vms')}
+                        </Badge>
+                        <Badge variant="secondary" className="text-xs flex-shrink-0">
+                          {compartment.vmsWithData} {t('admin.bandwidth.compartment.withData')}
+                        </Badge>
                       </div>
-                      <div>Email: {vm.userEmail}</div>
-                      <div>IP: {vm.publicIp || 'N/A'}</div>
-                      <div>{t('admin.bandwidth.details.package')}: {vm.packageName}</div>
-                      {vm.companyName && <div>{t('admin.bandwidth.details.company')}: {vm.companyName}</div>}
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{compartment.compartmentId}</p>
                     </div>
+                  </div>
+                  <div className="flex items-center gap-6 flex-shrink-0 ml-4">
+                    <div className="text-right hidden sm:block">
+                      <p className="text-xs text-muted-foreground">{t('admin.bandwidth.details.egress')}</p>
+                      <p className="font-bold text-orange-600">{compartment.egressTB.toFixed(4)} TB</p>
+                    </div>
+                    <div className="text-right hidden sm:block">
+                      <p className="text-xs text-muted-foreground">{t('admin.bandwidth.details.ingress')}</p>
+                      <p className="font-bold text-blue-600">{compartment.ingressTB.toFixed(4)} TB</p>
+                    </div>
+                    {isExpanded
+                      ? <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                      : <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                    }
                   </div>
                 </div>
+              </button>
 
-                {vm.bandwidth?.dataSource !== 'error' ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="bg-orange-50 dark:bg-orange-950 p-4 rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
-                        <Upload className="h-3 w-3" />{t('admin.bandwidth.details.egress')}
-                      </p>
-                      <p className="text-2xl font-bold">{formatBytes(vm.bandwidth?.bytesOut ?? 0)}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{(vm.bandwidth?.egressTB ?? 0).toFixed(6)} TB</p>
-                    </div>
-                    <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
-                        <Download className="h-3 w-3" />{t('admin.bandwidth.details.ingress')}
-                      </p>
-                      <p className="text-2xl font-bold">{formatBytes(vm.bandwidth?.bytesIn ?? 0)}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{(vm.bandwidth?.ingressTB ?? 0).toFixed(6)} TB</p>
-                    </div>
-                    <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.dataSource')}</p>
-                      <p className="text-sm font-medium mt-2">
-                        {vm.bandwidth?.dataSource === 'oci' ? t('admin.bandwidth.source.oci') :
-                         vm.bandwidth?.dataSource === 'archived' ? t('admin.bandwidth.source.archived') :
-                         t('admin.bandwidth.source.none')}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-gray-50 dark:bg-gray-900 border border-gray-300 rounded-lg p-4">
-                    <p className="text-sm text-muted-foreground">
-                      {t('admin.bandwidth.warning.errorMessage', { error: vm.bandwidth?.error })}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              {/* VM List within compartment */}
+              {isExpanded && (
+                <div className="divide-y">
+                  {compartment.vms.map((vm) => (
+                    <div key={vm.vmId} className="px-6 py-4">
+                      <div className="space-y-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2 flex-wrap">
+                              <h3 className="text-lg font-bold">{vm.instanceName}</h3>
+                              {getStatusBadge(vm.bandwidth?.dataSource ?? 'none')}
+                              <Badge variant="outline">{vm.lifecycleState}</Badge>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-muted-foreground">
+                              <div className="flex items-center gap-2">
+                                <Users className="h-4 w-4" />
+                                <span>{vm.userName}</span>
+                              </div>
+                              <div>Email: {vm.userEmail}</div>
+                              <div>IP: {vm.publicIp || 'N/A'}</div>
+                              <div>{t('admin.bandwidth.details.package')}: {vm.packageName}</div>
+                              {vm.companyName && <div>{t('admin.bandwidth.details.company')}: {vm.companyName}</div>}
+                            </div>
+                          </div>
+                        </div>
 
-        {sortedVMs.length === 0 && (
+                        {vm.bandwidth?.dataSource !== 'error' ? (
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div className="bg-orange-50 dark:bg-orange-950 p-4 rounded-lg">
+                              <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                                <Upload className="h-3 w-3" />{t('admin.bandwidth.details.egress')}
+                              </p>
+                              <p className="text-2xl font-bold">{formatBytes(vm.bandwidth?.bytesOut ?? 0)}</p>
+                              <p className="text-xs text-muted-foreground mt-1">{(vm.bandwidth?.egressTB ?? 0).toFixed(6)} TB</p>
+                            </div>
+                            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+                              <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                                <Download className="h-3 w-3" />{t('admin.bandwidth.details.ingress')}
+                              </p>
+                              <p className="text-2xl font-bold">{formatBytes(vm.bandwidth?.bytesIn ?? 0)}</p>
+                              <p className="text-xs text-muted-foreground mt-1">{(vm.bandwidth?.ingressTB ?? 0).toFixed(6)} TB</p>
+                            </div>
+                            <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                              <p className="text-xs text-muted-foreground mb-1">{t('admin.bandwidth.details.dataSource')}</p>
+                              <p className="text-sm font-medium mt-2">
+                                {vm.bandwidth?.dataSource === 'oci' ? t('admin.bandwidth.source.oci') :
+                                 vm.bandwidth?.dataSource === 'archived' ? t('admin.bandwidth.source.archived') :
+                                 t('admin.bandwidth.source.none')}
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-gray-50 dark:bg-gray-900 border border-gray-300 rounded-lg p-4">
+                            <p className="text-sm text-muted-foreground">
+                              {t('admin.bandwidth.warning.errorMessage', { error: vm.bandwidth?.error })}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          )
+        })}
+
+        {filteredCompartments.length === 0 && (
           <Card>
             <CardContent className="py-12 text-center">
               <Database className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
