@@ -682,17 +682,17 @@ export function PricingSection() {
 
       {/* Payment Method Selection Popup */}
       <Dialog open={showPaymentMethodPopup} onOpenChange={setShowPaymentMethodPopup}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        <DialogContent className="max-w-3xl gap-2 p-2.5 sm:p-3 md:p-4">
           <DialogHeader>
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-center">
+            <DialogTitle className="text-lg sm:text-xl font-bold text-center leading-tight">
               {t('pricingModal.title')}
             </DialogTitle>
-            <DialogDescription className="text-center text-xs sm:text-sm text-muted-foreground">
+            <DialogDescription className="text-center text-[11px] sm:text-xs text-muted-foreground leading-snug">
               {t('pricingModal.subtitle', { planName: selectedPlan?.name })}
             </DialogDescription>
           </DialogHeader>
           
-          <div className="grid md:grid-cols-2 gap-3 sm:gap-4 my-4 sm:my-6">
+          <div className="grid md:grid-cols-2 gap-2 sm:gap-3 my-3 sm:my-4">
             {/* Phương thức 1: Trừ tiền tài khoản */}
             <Card 
               className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
@@ -702,23 +702,23 @@ export function PricingSection() {
               }`}
               onClick={() => setSelectedPaymentMethod('account_balance')}
             >
-              <CardHeader className="text-center pb-3 sm:pb-4">
-                <div className={`mx-auto mb-2 sm:mb-3 p-2.5 sm:p-3 rounded-2xl w-fit ${
+              <CardHeader className="text-center p-2.5 sm:p-3 pb-1.5 sm:pb-2">
+                <div className={`mx-auto mb-1.5 sm:mb-2 p-2 sm:p-2.5 rounded-xl w-fit ${
                   selectedPaymentMethod === 'account_balance' 
                     ? 'bg-[#E60000] text-white' 
                     : 'bg-muted text-foreground/60'
                 }`}>
-                  <Wallet className="h-7 w-7 sm:h-8 sm:w-8" />
+                  <Wallet className="h-6 w-6 sm:h-7 sm:w-7" />
                 </div>
-                <CardTitle className="text-base sm:text-lg">{t('pricingModal.accountBalance')}</CardTitle>
-                <CardDescription className="text-xs sm:text-sm">
+                <CardTitle className="text-sm sm:text-base leading-tight">{t('pricingModal.accountBalance')}</CardTitle>
+                <CardDescription className="hidden md:block text-xs">
                   {t('pricingModal.accountBalanceDesc')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-2.5 sm:space-y-3">
+              <CardContent className="p-2.5 sm:p-3 pt-0">
+                <div className="space-y-2">
                   <div>
-                    <label className="text-xs sm:text-sm font-medium text-foreground mb-1 block">
+                    <label className="text-[11px] sm:text-xs font-medium text-foreground mb-1 block">
                       {t('pricingModal.monthsLabel')}
                     </label>
                     <Input
@@ -727,30 +727,31 @@ export function PricingSection() {
                       max="24"
                       value={monthsCount}
                       onChange={(e) => setMonthsCount(parseInt(e.target.value) || 1)}
-                      className="text-center font-semibold"
+                      className="h-8 text-center text-sm font-semibold"
                       disabled={selectedPaymentMethod !== 'account_balance'}
                     />
                   </div>
 
-                  {selectedPlan && (
+                  {selectedPaymentMethod === 'account_balance' && selectedPlan && (
                     <div className="text-center">
-                      <div className="text-xs sm:text-sm text-foreground/70">{t('pricingModal.totalDeduction')}</div>
-                      <div className="text-base sm:text-lg font-bold text-[#E60000]">
+                      <div className="text-[11px] sm:text-xs text-foreground/70">{t('pricingModal.totalDeduction')}</div>
+                      <div className="text-sm sm:text-base font-bold text-[#E60000] leading-tight">
                         {formatPrice(selectedPlan.priceVnd * monthsCount)} VND
                       </div>
-                      <div className="text-xs text-foreground/60">
+                      <div className="hidden sm:block text-xs text-foreground/60">
                         {t('pricingModal.perMonthCalc', { price: formatPrice(selectedPlan.priceVnd), months: monthsCount })}
                       </div>
                     </div>
                   )}
 
+                  {selectedPaymentMethod === 'account_balance' && (
                   <div className="text-center">
-                  <div className="text-xs sm:text-sm text-foreground/70">{t('pricingModal.currentBalance')}</div>
-                  <div className="text-base sm:text-lg font-bold text-[#E60000]">{formatPrice(userBalance)} đ</div>
+                  <div className="text-[11px] sm:text-xs text-foreground/70">{t('pricingModal.currentBalance')}</div>
+                  <div className="text-sm sm:text-base font-bold text-[#E60000] leading-tight">{formatPrice(userBalance)} đ</div>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="mt-2 mb-2 text-xs"
+                    className="mt-1.5 mb-1 h-7 text-[11px]"
                     onClick={(e) => {
                       e.stopPropagation()
                       router.push('/add-funds')
@@ -758,11 +759,12 @@ export function PricingSection() {
                   >
                     {t('pricingModal.addFundsBtn')}
                   </Button>
-                  <div className="text-xs sm:text-sm text-foreground/70 mt-2">
+                  <div className="hidden sm:block text-xs sm:text-sm text-foreground/70 mt-2">
                     ✓ {t('pricingModal.instantPayment')}<br/>
                     ✓ {t('pricingModal.noFees')}
                   </div>
                 </div>
+                )}
                 </div>
               </CardContent>
             </Card>
@@ -776,23 +778,23 @@ export function PricingSection() {
               }`}
               onClick={() => setSelectedPaymentMethod('direct_payment')}
             >
-              <CardHeader className="text-center pb-3 sm:pb-4">
-                <div className={`mx-auto mb-2 sm:mb-3 p-2.5 sm:p-3 rounded-2xl w-fit ${
+              <CardHeader className="text-center p-2.5 sm:p-3 pb-1.5 sm:pb-2">
+                <div className={`mx-auto mb-1.5 sm:mb-2 p-2 sm:p-2.5 rounded-xl w-fit ${
                   selectedPaymentMethod === 'direct_payment' 
                     ? 'bg-[#E60000] text-white' 
                     : 'bg-muted text-foreground/60'
                 }`}>
-                  <CreditCard className="h-7 w-7 sm:h-8 sm:w-8" />
+                  <CreditCard className="h-6 w-6 sm:h-7 sm:w-7" />
                 </div>
-                <CardTitle className="text-base sm:text-lg">{t('pricingModal.directPayment')}</CardTitle>
-                <CardDescription className="text-xs sm:text-sm">
+                <CardTitle className="text-sm sm:text-base leading-tight">{t('pricingModal.directPayment')}</CardTitle>
+                <CardDescription className="hidden md:block text-xs">
                   {t('pricingModal.directPaymentDesc')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-2.5 sm:space-y-3">
+              <CardContent className="p-2.5 sm:p-3 pt-0">
+                <div className="space-y-2">
                   <div>
-                    <label className="text-xs sm:text-sm font-medium text-foreground mb-1 block">
+                    <label className="text-[11px] sm:text-xs font-medium text-foreground mb-1 block">
                       {t('pricingModal.monthsLabel')}
                     </label>
                     <Input
@@ -801,17 +803,17 @@ export function PricingSection() {
                       max="24"
                       value={monthsCount}
                       onChange={(e) => setMonthsCount(parseInt(e.target.value) || 1)}
-                      className="text-center font-semibold"
+                      className="h-8 text-center text-sm font-semibold"
                       disabled={selectedPaymentMethod !== 'direct_payment'}
                     />
                   </div>
                   {selectedPaymentMethod === 'direct_payment' && selectedPlan && (
                     <div className="text-center">
-                      <div className="text-xs sm:text-sm text-foreground/70">{t('pricingModal.totalPayment')}</div>
-                      <div className="text-base sm:text-lg font-bold text-[#E60000]">
+                      <div className="text-[11px] sm:text-xs text-foreground/70">{t('pricingModal.totalPayment')}</div>
+                      <div className="text-sm sm:text-base font-bold text-[#E60000] leading-tight">
                         {formatPrice(selectedPlan.priceVnd * monthsCount)} VND
                       </div>
-                      <div className="text-xs text-foreground/60">
+                      <div className="hidden sm:block text-xs text-foreground/60">
                         {t('pricingModal.perMonthCalc', { price: formatPrice(selectedPlan.priceVnd), months: monthsCount })}
                       </div>
                     </div>
@@ -822,15 +824,15 @@ export function PricingSection() {
           </div>
 
           {/* Terms agreement checkbox */}
-          <div className="flex items-start gap-2 my-3 sm:my-4 p-2.5 sm:p-3 bg-muted/50 rounded-lg border border-border">
+          <div className="flex items-start gap-1.5 my-1.5 sm:my-2 p-1.5 sm:p-2 bg-muted/50 rounded-lg border border-border">
             <input
               id="terms-checkbox"
               type="checkbox"
               checked={agreedToTerms}
               onChange={(e) => setAgreedToTerms(e.target.checked)}
-              className="mt-0.5 h-4 w-4 cursor-pointer accent-[#E60000] shrink-0"
+              className="mt-0.5 h-3.5 w-3.5 cursor-pointer accent-[#E60000] shrink-0"
             />
-            <label htmlFor="terms-checkbox" className="text-xs sm:text-sm text-foreground cursor-pointer leading-relaxed select-none">
+            <label htmlFor="terms-checkbox" className="text-[10px] sm:text-[11px] md:text-xs text-foreground cursor-pointer leading-snug select-none">
               {t('pricingModal.termsPrefix')}{' '}
               <a
                 href="/terms"
@@ -846,15 +848,18 @@ export function PricingSection() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-2 sm:gap-3 justify-end">
+          <div className="flex gap-1.5 justify-end">
             <Button 
               variant="outline" 
+              size="sm"
+              className="h-8 px-3 text-xs"
               onClick={() => setShowPaymentMethodPopup(false)}
             >
               {t('pricingModal.closeBtn')}
             </Button>
             <Button 
-              className="bg-[#E60000] hover:bg-red-700"
+              size="sm"
+              className="h-8 px-3 text-xs bg-[#E60000] hover:bg-red-700"
               onClick={handleConfirmPaymentMethod}
               disabled={!selectedPaymentMethod || !agreedToTerms || isConfirming}
             >
