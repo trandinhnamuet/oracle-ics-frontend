@@ -28,6 +28,7 @@ export interface VmDetails {
     vcnId?: string
     subnetId?: string
     sshPublicKey?: string
+    windowsInitialPassword?: string
     createdAt: string
     startedAt?: string
     updatedAt: string
@@ -53,7 +54,24 @@ export interface VmActionDto {
 export interface ConfigureVmResponse {
   success: boolean
   message: string
-  data: {
+  vm?: {
+    instanceName: string
+    instanceId: string
+    operatingSystem?: string
+    publicIp?: string
+    lifecycleState: string
+    windowsInitialPassword?: string
+  }
+  sshKey?: {
+    publicKey: string
+    privateKey: string
+    fingerprint: string
+  }
+  subscription?: {
+    id: string
+    status: string
+  }
+  data?: {
     vmInstanceId: string
     instanceOcid: string
     displayName: string
@@ -121,6 +139,7 @@ export const requestNewSshKey = async (
   message: string
   sshKey?: {
     publicKey: string
+    privateKey: string
     fingerprint: string
   }
   keysInfo?: {
@@ -133,6 +152,7 @@ export const requestNewSshKey = async (
     message: string
     sshKey?: {
       publicKey: string
+      privateKey: string
       fingerprint: string
     }
     keysInfo?: {

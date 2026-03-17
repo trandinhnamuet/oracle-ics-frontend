@@ -22,7 +22,11 @@ import {
   Check,
   Loader2,
   Mail,
-  AlertCircle
+  AlertCircle,
+  Copy,
+  Download,
+  Key,
+  CheckCircle,
 } from 'lucide-react'
 import {
   AlertDialog,
@@ -114,6 +118,34 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [subscription, setSubscription] = useState<any>(null)
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+
+  // Credential dialog state (shown once after VM creation)
+  const [vmCredentials, setVmCredentials] = useState<{
+    type: 'linux' | 'windows' | 'windows-pending'
+    instanceName: string
+    publicIp?: string
+    privateKey?: string
+    username?: string
+    password?: string
+  } | null>(null)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
+
+  const copyToClipboard = (text: string, field: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedField(field)
+      setTimeout(() => setCopiedField(null), 2000)
+    })
+  }
+
+  const downloadFile = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   // Load compute images
   useEffect(() => {
@@ -232,19 +264,44 @@ export default function CloudConfigurationBySubscriptionPage() {
         notificationEmail: user?.email || ''
       })
 
-      // Use message from backend response, or fallback to default
-      const successMessage = response.message || 'Máy ảo đã tạo thành công! Thông tin truy cập đã được gửi đến email của bạn.'
+      const isWindows = response.vm?.operatingSystem?.toLowerCase().includes('windows')
+      const instanceName = response.vm?.instanceName || 'VM'
+      const publicIp = response.vm?.publicIp
 
-      toast({
-        title: t('cloudConfig.configSuccess'),
-        description: successMessage,
-        variant: 'default'
-      })
-
-      // Redirect to subscription detail page after 2 seconds
-      setTimeout(() => {
-        router.push(`/package-management/${subscriptionId}`)
-      }, 2000)
+      if (isWindows && response.vm?.windowsInitialPassword) {
+        // Windows - password available immediately
+        setVmCredentials({
+          type: 'windows',
+          instanceName,
+          publicIp,
+          username: 'opc',
+          password: response.vm.windowsInitialPassword,
+        })
+      } else if (isWindows) {
+        // Windows - password pending async retrieval
+        setVmCredentials({
+          type: 'windows-pending',
+          instanceName,
+          publicIp,
+          username: 'opc',
+        })
+      } else if (response.sshKey?.privateKey) {
+        // Linux - SSH key available
+        setVmCredentials({
+          type: 'linux',
+          instanceName,
+          publicIp,
+          privateKey: response.sshKey.privateKey,
+        })
+      } else {
+        // Fallback: just redirect
+        toast({
+          title: t('cloudConfig.configSuccess'),
+          description: response.message,
+          variant: 'default'
+        })
+        setTimeout(() => router.push(`/package-management/${subscriptionId}`), 2000)
+      }
 
     } catch (error: any) {
       console.error('Error configuring VM:', error)
@@ -769,6 +826,134 @@ export default function CloudConfigurationBySubscriptionPage() {
               className="bg-blue-600 hover:bg-blue-700"
             >
               {t('cloudConfig.confirmOk')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* One-time Credential Dialog */}
+      <AlertDialog open={!!vmCredentials} onOpenChange={() => {}}>
+        <AlertDialogContent className="max-w-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-xl">
+              <CheckCircle className="h-6 w-6 text-green-500" />
+              Máy ảo đã tạo thành công!
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4 text-left pt-2">
+
+                {/* Warning: one-time display */}
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                  <p className="font-semibold text-red-900 text-sm">
+                    ⚠️ Thông tin này chỉ hiển thị 1 lần duy nhất
+                  </p>
+                  <p className="text-red-800 text-sm mt-1">
+                    Vui lòng lưu lại ngay bây giờ. Sau khi đóng cửa sổ này, bạn sẽ không thể xem lại.
+                  </p>
+                </div>
+
+                {/* VM Info */}
+                <div className="bg-blue-50 border border-blue-200 p-3 rounded text-sm">
+                  <p><strong>VM:</strong> {vmCredentials?.instanceName}</p>
+                  {vmCredentials?.publicIp && <p><strong>IP:</strong> {vmCredentials.publicIp}</p>}
+                </div>
+
+                {/* Linux SSH Key */}
+                {vmCredentials?.type === 'linux' && vmCredentials.privateKey && (
+                  <div className="space-y-2">
+                    <p className="font-semibold flex items-center gap-2">
+                      <Key className="h-4 w-4" /> SSH Private Key
+                    </p>
+                    <div className="relative">
+                      <textarea
+                        readOnly
+                        value={vmCredentials.privateKey}
+                        className="w-full h-40 font-mono text-xs p-3 bg-gray-900 text-green-400 rounded border resize-none"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => copyToClipboard(vmCredentials.privateKey!, 'key')}
+                        className="flex-1"
+                      >
+                        {copiedField === 'key' ? <Check className="h-4 w-4 mr-1 text-green-500" /> : <Copy className="h-4 w-4 mr-1" />}
+                        {copiedField === 'key' ? 'Đã sao chép!' : 'Sao chép key'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => downloadFile(vmCredentials.privateKey!, `${vmCredentials.instanceName}-key.pem`)}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700"
+                      >
+                        <Download className="h-4 w-4 mr-1" />
+                        Tải về (.pem)
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Kết nối: <code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem opc@{vmCredentials.publicIp || 'YOUR_IP'}</code>
+                    </p>
+                  </div>
+                )}
+
+                {/* Windows Password (available immediately) */}
+                {vmCredentials?.type === 'windows' && vmCredentials.password && (
+                  <div className="space-y-2">
+                    <p className="font-semibold">🪟 Windows RDP Credentials</p>
+                    <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded space-y-2 text-sm font-mono">
+                      <div className="flex items-center justify-between">
+                        <span><strong>Username:</strong> {vmCredentials.username}</span>
+                        <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmCredentials.username!, 'user')}>
+                          {copiedField === 'user' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                        </Button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span><strong>Password:</strong> {vmCredentials.password}</span>
+                        <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmCredentials.password!, 'pass')}>
+                          {copiedField === 'pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                        </Button>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => downloadFile(
+                        `VM: ${vmCredentials.instanceName}\nIP: ${vmCredentials.publicIp || ''}\nUsername: ${vmCredentials.username}\nPassword: ${vmCredentials.password}`,
+                        `${vmCredentials.instanceName}-rdp-credentials.txt`
+                      )}
+                      className="w-full bg-blue-600 hover:bg-blue-700"
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      Tải về thông tin đăng nhập (.txt)
+                    </Button>
+                  </div>
+                )}
+
+                {/* Windows Password Pending */}
+                {vmCredentials?.type === 'windows-pending' && (
+                  <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
+                    <p className="font-semibold text-yellow-900">⏳ Mật khẩu Windows đang được tạo</p>
+                    <p className="text-yellow-800 text-sm mt-1">
+                      Mật khẩu ban đầu sẽ sẵn sàng trong <strong>5–10 phút</strong>.
+                      Sau khi đóng màn hình này, hãy vào trang <strong>Quản lý VM</strong> để xem mật khẩu.
+                    </p>
+                    <p className="text-yellow-800 text-sm mt-1">
+                      <strong>Username:</strong> {vmCredentials.username}
+                    </p>
+                  </div>
+                )}
+
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction
+              onClick={() => {
+                setVmCredentials(null)
+                router.push(`/package-management/${subscriptionId}`)
+              }}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              Đã lưu — Đến trang quản lý VM
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

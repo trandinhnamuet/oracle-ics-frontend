@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp } from 'lucide-react'
+import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp, Copy, Key, Check, CheckCircle } from 'lucide-react'
 import { ConfirmSshKeyRequestDialog } from '@/components/dialogs/confirm-ssh-key-request-dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
@@ -97,12 +97,30 @@ export default function PackageDetailPage() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
   const [showSshKeyConfirm, setShowSshKeyConfirm] = useState(false)
   const [isRequestingSshKey, setIsRequestingSshKey] = useState(false)
+  const [newSshKey, setNewSshKey] = useState<{ privateKey: string; instanceName: string } | null>(null)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean
     title: string
     description: string
     onConfirm: () => Promise<void>
   }>({ open: false, title: '', description: '', onConfirm: async () => {} })
+
+  const copyToClipboard = (text: string, field: string) => {
+    navigator.clipboard.writeText(text)
+    setCopiedField(field)
+    setTimeout(() => setCopiedField(null), 2000)
+  }
+
+  const downloadFile = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   // Fetch subscription data
   useEffect(() => {
@@ -304,24 +322,21 @@ export default function PackageDetailPage() {
       
       // Close dialog
       setShowSshKeyConfirm(false)
-      
-      // Show success with detailed info
-      toast({
-        title: 'SSH Key Created Successfully',
-        description: (
-          <div className="space-y-1 text-sm">
-            <p>{result.message}</p>
-            {result.keysInfo && (
-              <p className="text-xs text-gray-600 mt-2">
-                Total active keys: {result.keysInfo.totalKeys}/3
-                {result.keysInfo.removedOldest && ' (oldest key removed)'}
-              </p>
-            )}
-          </div>
-        ),
-        variant: 'default',
-        duration: 10000,
-      })
+
+      // Show the private key in a one-time display dialog
+      if (result.sshKey?.privateKey) {
+        setNewSshKey({
+          privateKey: result.sshKey.privateKey,
+          instanceName: vmDetails?.vm?.instanceName || 'VM',
+        })
+      } else {
+        toast({
+          title: 'SSH Key Created',
+          description: result.message,
+          variant: 'default',
+          duration: 8000,
+        })
+      }
     } catch (error: any) {
       console.error('Error requesting new SSH key:', error)
       
@@ -577,11 +592,41 @@ export default function PackageDetailPage() {
                     )}
                   </div>
                 )}
+
+                {/* Windows Password Section */}
+                {vmDetails?.vm?.operatingSystem?.toLowerCase().includes('windows') && (
+                  <div className="mt-4 border-t pt-4">
+                    <p className="text-sm font-semibold mb-2 flex items-center gap-2">
+                      🪟 Windows RDP Credentials
+                    </p>
+                    {vmDetails.vm.windowsInitialPassword ? (
+                      <div className="bg-gray-50 dark:bg-muted p-3 rounded space-y-2 text-sm font-mono">
+                        <div className="flex items-center justify-between">
+                          <span><strong>Username:</strong> opc</span>
+                          <Button size="sm" variant="ghost" onClick={() => copyToClipboard('opc', 'win-user')}>
+                            {copiedField === 'win-user' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                          </Button>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span><strong>Password:</strong> {vmDetails.vm.windowsInitialPassword}</span>
+                          <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmDetails.vm!.windowsInitialPassword!, 'win-pass')}>
+                            {copiedField === 'win-pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 p-3 rounded text-sm">
+                        <p className="text-yellow-800 dark:text-yellow-400">
+                          ⏳ Mật khẩu đang được tạo (5–10 phút sau khi VM khởi động).
+                          Hãy làm mới trang sau vài phút.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
-
-        {/* Control Panel */}
         <Card>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -1198,6 +1243,71 @@ export default function PackageDetailPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>{t('packageDetail.confirmDialog.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={() => confirmDialog.onConfirm()} className="bg-destructive hover:bg-destructive/90">{t('packageDetail.confirmDialog.confirm')}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* One-time SSH Key Display Dialog */}
+      <AlertDialog open={!!newSshKey} onOpenChange={() => {}}>
+        <AlertDialogContent className="max-w-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-xl">
+              <CheckCircle className="h-6 w-6 text-green-500" />
+              SSH Key mới đã tạo thành công!
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4 text-left pt-2">
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                  <p className="font-semibold text-red-900 text-sm">
+                    ⚠️ Thông tin này chỉ hiển thị 1 lần duy nhất
+                  </p>
+                  <p className="text-red-800 text-sm mt-1">
+                    Vui lòng lưu lại ngay bây giờ. Sau khi đóng cửa sổ này, bạn sẽ không thể xem lại private key.
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-semibold mb-2 flex items-center gap-2 text-sm">
+                    <Key className="h-4 w-4" /> SSH Private Key — {newSshKey?.instanceName}
+                  </p>
+                  <div className="relative">
+                    <textarea
+                      readOnly
+                      value={newSshKey?.privateKey || ''}
+                      className="w-full h-40 font-mono text-xs p-3 bg-gray-900 text-green-400 rounded border resize-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => copyToClipboard(newSshKey!.privateKey, 'newkey')}
+                    className="flex-1"
+                  >
+                    {copiedField === 'newkey' ? <Check className="h-4 w-4 mr-1 text-green-500" /> : <Copy className="h-4 w-4 mr-1" />}
+                    {copiedField === 'newkey' ? 'Đã sao chép!' : 'Sao chép key'}
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => downloadFile(newSshKey!.privateKey, `${newSshKey?.instanceName || 'vm'}-new-key.pem`)}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Download className="h-4 w-4 mr-1" />
+                    Tải về (.pem)
+                  </Button>
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction
+              onClick={() => setNewSshKey(null)}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              Đã lưu — Đóng
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

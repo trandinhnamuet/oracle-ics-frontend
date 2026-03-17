@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { AlertTriangle, Key, Mail, Shield } from 'lucide-react'
+import { AlertTriangle, Key, Monitor, Shield } from 'lucide-react'
 
 interface ConfirmSshKeyRequestDialogProps {
   isOpen: boolean
@@ -71,9 +71,9 @@ export function ConfirmSshKeyRequestDialog({
                   </p>
                 )}
                 <div className="flex items-center gap-2 ml-6">
-                  <Mail className="h-4 w-4 text-blue-600" />
+                  <Monitor className="h-4 w-4 text-blue-600" />
                   <span className="text-blue-800">
-                    Private key sẽ được gửi đến: <strong>{email}</strong>
+                    Private key sẽ <strong>hiển thị trực tiếp trên màn hình</strong> để bạn tải về
                   </span>
                 </div>
               </div>
@@ -87,7 +87,7 @@ export function ConfirmSshKeyRequestDialog({
               <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
                 <li>Hệ thống tạo cặp SSH key RSA 4096-bit mới</li>
                 <li>Public key được thêm vào VM metadata</li>
-                <li>Private key được gửi qua email (chỉ lần này duy nhất)</li>
+                <li>Private key hiển thị trực tiếp trên màn hình để bạn tải về (chỉ lần này duy nhất)</li>
                 <li>Key cũ vẫn hoạt động, tự động xóa khi vượt giới hạn</li>
               </ol>
             </div>
@@ -95,9 +95,9 @@ export function ConfirmSshKeyRequestDialog({
             {/* Final Warning */}
             <div className="bg-yellow-50 border border-yellow-200 p-3 rounded">
               <p className="text-sm text-yellow-900">
-                ⚠️ <strong>Quan trọng:</strong> Bạn sẽ nhận được private key qua email{' '}
+                ⚠️ <strong>Quan trọng:</strong> Private key sẽ hiển thị{' '}
                 <strong className="underline">CHỈ MỘT LẦN DUY NHẤT</strong>. 
-                Hãy lưu trữ an toàn ngay sau khi nhận được.
+                Hãy lưu lại ngay sau khi tạo xong.
               </p>
             </div>
           </AlertDialogDescription>
