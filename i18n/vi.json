@@ -134,6 +134,9 @@
     "subscriptionsTitle": "Quản lý đăng ký dịch vụ",
     "subscriptionsDesc": "Xem và quản lý các gói người dùng đã đăng ký (subscription)",
     "subscriptionsStats": "Xem và quản lý các gói người dùng đã đăng ký (subscription)",
+    "walletTransactionsTitle": "Quản lý Wallet Transactions",
+    "walletTransactionsDesc": "Xem lịch sử giao dịch ví của người dùng",
+    "walletTransactionsStats": "Tất cả giao dịch",
     "user": {
       "title": "Quản lý người dùng",
       "subtitle": "Quản lý tài khoản người dùng trong hệ thống",
@@ -443,7 +446,8 @@
         "totalIngress": "Tổng Ingress"
       },
       "filter": {
-        "searchPlaceholder": "Tìm theo tên VM, email hoặc IP..."
+        "searchPlaceholder": "Tìm theo tên VM, email hoặc IP...",
+        "matchingCount": "{{matched}} / {{total}} VM"
       },
       "sort": {
         "label": "Sắp xếp:",
@@ -470,7 +474,19 @@
         "ingress": "Ingress (Miễn phí)",
         "package": "Gói dịch vụ",
         "company": "Công ty",
-        "dataSource": "Nguồn dữ liệu"
+        "dataSource": "Nguồn dữ liệu",
+        "email": "Email",
+        "ip": "IP",
+        "notAvailable": "N/A"
+      },
+      "lifecycle": {
+        "RUNNING": "Đang chạy",
+        "STOPPED": "Đã dừng",
+        "STARTING": "Đang khởi động",
+        "STOPPING": "Đang dừng",
+        "PROVISIONING": "Đang cấp phát",
+        "TERMINATED": "Đã hủy",
+        "UNKNOWN": "Không xác định"
       },
       "compartment": {
         "vms": "VM",
@@ -480,6 +496,52 @@
         "errorMessage": "Không thể lấy dữ liệu băng thông: {{error}}"
       },
       "noVms": "Không có VM nào phù hợp với bộ lọc hiện tại"
+    },
+    "walletTransactions": {
+      "title": "Quản lý Wallet Transactions",
+      "subtitle": "Xem lịch sử giao dịch ví của tất cả người dùng",
+      "refresh": "Làm mới",
+      "loading": "Đang tải...",
+      "empty": "Không có giao dịch nào",
+      "walletFallback": "Ví #{{id}}",
+      "log": {
+        "totalAmount": "Tổng số tiền của {{total}} bản ghi thỏa mãn bộ lọc"
+      },
+      "toast": {
+        "loadError": "Lỗi tải dữ liệu"
+      },
+      "filters": {
+        "user": "Lọc theo người dùng",
+        "allUsers": "Tất cả người dùng",
+        "searchPlaceholder": "Tìm email, tên...",
+        "noUserFound": "Không tìm thấy",
+        "month": "Lọc theo tháng",
+        "enabled": "Bật",
+        "amountDirection": "Lọc theo chiều tiền",
+        "amountAll": "Tất cả",
+        "amountPositive": "Chỉ tiền vào (+)",
+        "amountNegative": "Chỉ tiền ra (-)"
+      },
+      "table": {
+        "title": "Danh sách giao dịch ({{total}} bản ghi)"
+      },
+      "columns": {
+        "user": "Người dùng",
+        "type": "Loại giao dịch",
+        "amount": "Số tiền",
+        "balanceAfter": "Số dư sau GD",
+        "paymentId": "Payment ID",
+        "time": "Thời gian"
+      },
+      "type": {
+        "deposit": "Nạp tiền",
+        "subscription_payment": "Thanh toán gói",
+        "auto_renewal": "Gia hạn tự động",
+        "manual_renewal": "Gia hạn thủ công"
+      },
+      "pagination": {
+        "summary": "Trang {{page}}/{{totalPages}} - {{total}} bản ghi"
+      }
     },
     "compartment": {
       "title": "Quản lý Compartments",

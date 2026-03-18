@@ -77,6 +77,11 @@ interface BandwidthResponse {
 export default function BandwidthManagementPage() {
   const { t } = useTranslation()
 
+  const getLifecycleLabel = (state: string) => {
+    if (!state) return t('admin.bandwidth.details.notAvailable')
+    return t(`admin.bandwidth.lifecycle.${state}`, { defaultValue: state })
+  }
+
   // monthOptions computed client-only to avoid SSR hydration mismatch
   // (new Date() + toLocaleDateString are locale/timezone sensitive)
   const [monthOptions, setMonthOptions] = useState<{ value: string; label: string }[]>([])
@@ -294,7 +299,10 @@ export default function BandwidthManagementPage() {
               />
               {filterText && (
                 <span className="text-sm text-muted-foreground whitespace-nowrap">
-                  {totalFilteredVMs} / {data?.summary?.totalVMs ?? 0} VMs
+                  {t('admin.bandwidth.filter.matchingCount', {
+                    matched: totalFilteredVMs,
+                    total: data?.summary?.totalVMs ?? 0,
+                  })}
                 </span>
               )}
             </div>
@@ -376,15 +384,15 @@ export default function BandwidthManagementPage() {
                             <div className="flex items-center gap-3 mb-2 flex-wrap">
                               <h3 className="text-lg font-bold">{vm.instanceName}</h3>
                               {getStatusBadge(vm.bandwidth?.dataSource ?? 'none')}
-                              <Badge variant="outline">{vm.lifecycleState}</Badge>
+                              <Badge variant="outline">{getLifecycleLabel(vm.lifecycleState)}</Badge>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-muted-foreground">
                               <div className="flex items-center gap-2">
                                 <Users className="h-4 w-4" />
                                 <span>{vm.userName}</span>
                               </div>
-                              <div>Email: {vm.userEmail}</div>
-                              <div>IP: {vm.publicIp || 'N/A'}</div>
+                              <div>{t('admin.bandwidth.details.email')}: {vm.userEmail}</div>
+                              <div>{t('admin.bandwidth.details.ip')}: {vm.publicIp || t('admin.bandwidth.details.notAvailable')}</div>
                               <div>{t('admin.bandwidth.details.package')}: {vm.packageName}</div>
                               {vm.companyName && <div>{t('admin.bandwidth.details.company')}: {vm.companyName}</div>}
                             </div>

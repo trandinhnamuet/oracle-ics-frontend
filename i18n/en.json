@@ -134,6 +134,9 @@
     "subscriptionsTitle": "Manage Service Subscriptions",
     "subscriptionsDesc": "View and manage user-subscribed service packages (subscriptions)",
     "subscriptionsStats": "View and manage subscribed user plans (subscriptions)",
+    "walletTransactionsTitle": "Wallet Transactions Management",
+    "walletTransactionsDesc": "View wallet transaction history of users",
+    "walletTransactionsStats": "All transactions",
     "user": {
       "title": "User Management",
       "subtitle": "Manage user accounts in the system",
@@ -443,7 +446,8 @@
         "totalIngress": "Total Ingress"
       },
       "filter": {
-        "searchPlaceholder": "Search by VM name, email, or IP..."
+        "searchPlaceholder": "Search by VM name, email, or IP...",
+        "matchingCount": "{{matched}} / {{total}} VMs"
       },
       "sort": {
         "label": "Sort:",
@@ -470,7 +474,19 @@
         "ingress": "Ingress (Free)",
         "package": "Package",
         "company": "Company",
-        "dataSource": "Source"
+        "dataSource": "Source",
+        "email": "Email",
+        "ip": "IP",
+        "notAvailable": "N/A"
+      },
+      "lifecycle": {
+        "RUNNING": "Running",
+        "STOPPED": "Stopped",
+        "STARTING": "Starting",
+        "STOPPING": "Stopping",
+        "PROVISIONING": "Provisioning",
+        "TERMINATED": "Terminated",
+        "UNKNOWN": "Unknown"
       },
       "compartment": {
         "vms": "VMs",
@@ -480,6 +496,52 @@
         "errorMessage": "Cannot retrieve bandwidth data: {{error}}"
       },
       "noVms": "No VMs match the current filter"
+    },
+    "walletTransactions": {
+      "title": "Wallet Transactions Management",
+      "subtitle": "View wallet transaction history for all users",
+      "refresh": "Refresh",
+      "loading": "Loading...",
+      "empty": "No transactions found",
+      "walletFallback": "Wallet #{{id}}",
+      "log": {
+        "totalAmount": "Total amount for all {{total}} filtered records"
+      },
+      "toast": {
+        "loadError": "Failed to load data"
+      },
+      "filters": {
+        "user": "Filter by user",
+        "allUsers": "All users",
+        "searchPlaceholder": "Search by email, name...",
+        "noUserFound": "No users found",
+        "month": "Filter by month",
+        "enabled": "Enabled",
+        "amountDirection": "Filter by money flow",
+        "amountAll": "All",
+        "amountPositive": "Incoming only (+)",
+        "amountNegative": "Outgoing only (-)"
+      },
+      "table": {
+        "title": "Transactions ({{total}} records)"
+      },
+      "columns": {
+        "user": "User",
+        "type": "Transaction Type",
+        "amount": "Amount",
+        "balanceAfter": "Balance After",
+        "paymentId": "Payment ID",
+        "time": "Time"
+      },
+      "type": {
+        "deposit": "Deposit",
+        "subscription_payment": "Subscription Payment",
+        "auto_renewal": "Auto Renewal",
+        "manual_renewal": "Manual Renewal"
+      },
+      "pagination": {
+        "summary": "Page {{page}}/{{totalPages}} - {{total}} records"
+      }
     },
     "compartment": {
       "title": "Compartment Management",

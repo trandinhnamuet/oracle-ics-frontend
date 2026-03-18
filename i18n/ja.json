@@ -134,6 +134,9 @@
     "subscriptionsTitle": "サービスサブスクリプション管理",
     "subscriptionsDesc": "ユーザーがサブスクライブしたサービスパッケージ（サブスクリプション）の表示と管理",
     "subscriptionsStats": "ユーザーがサブスクライブしたサービスパッケージ（サブスクリプション）の表示と管理",
+    "walletTransactionsTitle": "ウォレット取引管理",
+    "walletTransactionsDesc": "ユーザーのウォレット取引履歴を表示",
+    "walletTransactionsStats": "すべての取引",
     "user": {
       "title": "ユーザー管理",
       "subtitle": "システム内のユーザーアカウントを管理",
@@ -438,12 +441,16 @@
       },
       "summary": {
         "totalVMs": "総VM数",
+        "vmsWithData": "データありVM",
         "overLimit": "制限超過",
         "nearLimit": "制限近傍",
         "totalEgress": "総エグレス",
+        "totalIngress": "総イングレス",
         "average": "平均"
       },
       "filter": {
+        "searchPlaceholder": "VM名、メール、IPで検索...",
+        "matchingCount": "{{matched}} / {{total}} VM",
         "label": "フィルター:",
         "all": "すべて",
         "over": "制限超過",
@@ -457,6 +464,9 @@
         "user": "ユーザー"
       },
       "status": {
+        "live": "ライブ",
+        "archived": "アーカイブ",
+        "noData": "データなし",
         "overLimit": "制限超過",
         "warning": "警告",
         "normal": "正常",
@@ -477,7 +487,23 @@
         "exceeded": "超過",
         "package": "パッケージ",
         "company": "会社",
-        "dataSource": "データソース"
+        "dataSource": "データソース",
+        "email": "メール",
+        "ip": "IP",
+        "notAvailable": "N/A"
+      },
+      "lifecycle": {
+        "RUNNING": "実行中",
+        "STOPPED": "停止中",
+        "STARTING": "起動中",
+        "STOPPING": "停止処理中",
+        "PROVISIONING": "プロビジョニング中",
+        "TERMINATED": "終了済み",
+        "UNKNOWN": "不明"
+      },
+      "compartment": {
+        "vms": "VM",
+        "withData": "データあり"
       },
       "warning": {
         "overLimitTitle": "警告: エグレス制限超過！",
@@ -487,6 +513,52 @@
         "errorMessage": "帯域幅データを取得できません: {{error}}"
       },
       "noVms": "現在のフィルターに一致するVMがありません"
+    },
+    "walletTransactions": {
+      "title": "ウォレット取引管理",
+      "subtitle": "すべてのユーザーのウォレット取引履歴を表示",
+      "refresh": "更新",
+      "loading": "読み込み中...",
+      "empty": "取引がありません",
+      "walletFallback": "ウォレット #{{id}}",
+      "log": {
+        "totalAmount": "フィルター後 {{total}} 件の合計金額"
+      },
+      "toast": {
+        "loadError": "データの読み込みに失敗しました"
+      },
+      "filters": {
+        "user": "ユーザーで絞り込み",
+        "allUsers": "すべてのユーザー",
+        "searchPlaceholder": "メール、名前で検索...",
+        "noUserFound": "見つかりません",
+        "month": "月で絞り込み",
+        "enabled": "有効",
+        "amountDirection": "金額方向で絞り込み",
+        "amountAll": "すべて",
+        "amountPositive": "入金のみ (+)",
+        "amountNegative": "出金のみ (-)"
+      },
+      "table": {
+        "title": "取引一覧（{{total}} 件）"
+      },
+      "columns": {
+        "user": "ユーザー",
+        "type": "取引種別",
+        "amount": "金額",
+        "balanceAfter": "取引後残高",
+        "paymentId": "Payment ID",
+        "time": "日時"
+      },
+      "type": {
+        "deposit": "チャージ",
+        "subscription_payment": "プラン支払い",
+        "auto_renewal": "自動更新",
+        "manual_renewal": "手動更新"
+      },
+      "pagination": {
+        "summary": "{{page}} / {{totalPages}} ページ - {{total}} 件"
+      }
     },
     "compartment": {
       "title": "コンパートメント管理",

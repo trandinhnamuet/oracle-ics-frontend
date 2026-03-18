@@ -134,6 +134,9 @@
     "subscriptionsTitle": "서비스 구독 관리",
     "subscriptionsDesc": "사용자가 구독한 서비스 패키지(구독) 보기 및 관리",
     "subscriptionsStats": "사용자가 구독한 서비스 패키지(구독) 보기 및 관리",
+    "walletTransactionsTitle": "지갑 거래 관리",
+    "walletTransactionsDesc": "사용자의 지갑 거래 내역 보기",
+    "walletTransactionsStats": "전체 거래",
     "user": {
       "title": "사용자 관리",
       "subtitle": "시스템 내 사용자 계정 관리",
@@ -438,12 +441,16 @@
       },
       "summary": {
         "totalVMs": "총 VM",
+        "vmsWithData": "데이터 있는 VM",
         "overLimit": "한도 초과",
         "nearLimit": "한도 근접",
         "totalEgress": "총 에그레스",
+        "totalIngress": "총 인그레스",
         "average": "평균"
       },
       "filter": {
+        "searchPlaceholder": "VM 이름, 이메일, IP로 검색...",
+        "matchingCount": "{{matched}} / {{total}} VM",
         "label": "필터:",
         "all": "전체",
         "over": "한도 초과",
@@ -457,6 +464,9 @@
         "user": "사용자"
       },
       "status": {
+        "live": "실시간",
+        "archived": "보관됨",
+        "noData": "데이터 없음",
         "overLimit": "한도 초과",
         "warning": "경고",
         "normal": "정상",
@@ -477,7 +487,23 @@
         "exceeded": "초과",
         "package": "패키지",
         "company": "회사",
-        "dataSource": "데이터 소스"
+        "dataSource": "데이터 소스",
+        "email": "이메일",
+        "ip": "IP",
+        "notAvailable": "N/A"
+      },
+      "lifecycle": {
+        "RUNNING": "실행 중",
+        "STOPPED": "중지됨",
+        "STARTING": "시작 중",
+        "STOPPING": "중지 중",
+        "PROVISIONING": "프로비저닝 중",
+        "TERMINATED": "종료됨",
+        "UNKNOWN": "알 수 없음"
+      },
+      "compartment": {
+        "vms": "VM",
+        "withData": "데이터 있음"
       },
       "warning": {
         "overLimitTitle": "경고: 에그레스 한도 초과!",
@@ -487,6 +513,52 @@
         "errorMessage": "대역폭 데이터를 가져올 수 없습니다: {{error}}"
       },
       "noVms": "현재 필터와 일치하는 VM이 없습니다"
+    },
+    "walletTransactions": {
+      "title": "지갑 거래 관리",
+      "subtitle": "모든 사용자의 지갑 거래 내역 조회",
+      "refresh": "새로고침",
+      "loading": "로딩 중...",
+      "empty": "거래 내역이 없습니다",
+      "walletFallback": "지갑 #{{id}}",
+      "log": {
+        "totalAmount": "필터된 {{total}}건의 총 금액"
+      },
+      "toast": {
+        "loadError": "데이터를 불러오지 못했습니다"
+      },
+      "filters": {
+        "user": "사용자별 필터",
+        "allUsers": "모든 사용자",
+        "searchPlaceholder": "이메일, 이름 검색...",
+        "noUserFound": "검색 결과 없음",
+        "month": "월별 필터",
+        "enabled": "활성화",
+        "amountDirection": "금액 방향 필터",
+        "amountAll": "전체",
+        "amountPositive": "입금만 (+)",
+        "amountNegative": "출금만 (-)"
+      },
+      "table": {
+        "title": "거래 목록 ({{total}}건)"
+      },
+      "columns": {
+        "user": "사용자",
+        "type": "거래 유형",
+        "amount": "금액",
+        "balanceAfter": "거래 후 잔액",
+        "paymentId": "Payment ID",
+        "time": "시간"
+      },
+      "type": {
+        "deposit": "충전",
+        "subscription_payment": "구독 결제",
+        "auto_renewal": "자동 갱신",
+        "manual_renewal": "수동 갱신"
+      },
+      "pagination": {
+        "summary": "{{page}}/{{totalPages}} 페이지 - {{total}}건"
+      }
     },
     "compartment": {
       "title": "컴파트먼트 관리",

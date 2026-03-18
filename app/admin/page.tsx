@@ -97,12 +97,12 @@ const adminLinks = (t: any) => [
 		stats: t('admin.costsStats'),
 	},
 	{
-		title: 'Quản lý Wallet Transactions',
-		description: 'Xem lịch sử giao dịch ví của người dùng',
+		title: t('admin.walletTransactionsTitle'),
+		description: t('admin.walletTransactionsDesc'),
 		href: '/admin/wallet-transactions',
 		icon: Wallet,
 		color: 'bg-amber-500',
-		stats: 'Tất cả giao dịch',
+		stats: t('admin.walletTransactionsStats'),
 	},
 ]
 

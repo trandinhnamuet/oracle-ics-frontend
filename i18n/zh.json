@@ -134,6 +134,9 @@
     "subscriptionsTitle": "管理服务订阅",
     "subscriptionsDesc": "查看和管理用户订阅的服务包（订阅）",
     "subscriptionsStats": "查看和管理用户订阅的服务包（订阅）",
+    "walletTransactionsTitle": "钱包交易管理",
+    "walletTransactionsDesc": "查看用户的钱包交易历史",
+    "walletTransactionsStats": "所有交易",
     "user": {
       "title": "用户管理",
       "subtitle": "管理系统中的用户账户",
@@ -438,12 +441,16 @@
       },
       "summary": {
         "totalVMs": "VM总数",
+        "vmsWithData": "有数据的VM",
         "overLimit": "超出限制",
         "nearLimit": "接近限制",
         "totalEgress": "总出口流量",
+        "totalIngress": "总入口流量",
         "average": "平均值"
       },
       "filter": {
+        "searchPlaceholder": "按VM名称、邮箱或IP搜索...",
+        "matchingCount": "{{matched}} / {{total}} 台VM",
         "label": "筛选:",
         "all": "全部",
         "over": "超出限制",
@@ -457,6 +464,9 @@
         "user": "用户"
       },
       "status": {
+        "live": "实时",
+        "archived": "归档",
+        "noData": "无数据",
         "overLimit": "超出限制",
         "warning": "警告",
         "normal": "正常",
@@ -477,7 +487,23 @@
         "exceeded": "超出",
         "package": "套餐",
         "company": "公司",
-        "dataSource": "数据来源"
+        "dataSource": "数据来源",
+        "email": "邮箱",
+        "ip": "IP",
+        "notAvailable": "N/A"
+      },
+      "lifecycle": {
+        "RUNNING": "运行中",
+        "STOPPED": "已停止",
+        "STARTING": "启动中",
+        "STOPPING": "停止中",
+        "PROVISIONING": "配置中",
+        "TERMINATED": "已终止",
+        "UNKNOWN": "未知"
+      },
+      "compartment": {
+        "vms": "VM",
+        "withData": "有数据"
       },
       "warning": {
         "overLimitTitle": "警告：出口流量限制已超出！",
@@ -487,6 +513,52 @@
         "errorMessage": "无法获取带宽数据: {{error}}"
       },
       "noVms": "没有VM符合当前筛选条件"
+    },
+    "walletTransactions": {
+      "title": "钱包交易管理",
+      "subtitle": "查看所有用户的钱包交易历史",
+      "refresh": "刷新",
+      "loading": "加载中...",
+      "empty": "暂无交易记录",
+      "walletFallback": "钱包 #{{id}}",
+      "log": {
+        "totalAmount": "筛选后共 {{total}} 条记录的总金额"
+      },
+      "toast": {
+        "loadError": "加载数据失败"
+      },
+      "filters": {
+        "user": "按用户筛选",
+        "allUsers": "所有用户",
+        "searchPlaceholder": "搜索邮箱、姓名...",
+        "noUserFound": "未找到用户",
+        "month": "按月份筛选",
+        "enabled": "启用",
+        "amountDirection": "按资金方向筛选",
+        "amountAll": "全部",
+        "amountPositive": "仅入账 (+)",
+        "amountNegative": "仅出账 (-)"
+      },
+      "table": {
+        "title": "交易列表（{{total}} 条）"
+      },
+      "columns": {
+        "user": "用户",
+        "type": "交易类型",
+        "amount": "金额",
+        "balanceAfter": "交易后余额",
+        "paymentId": "Payment ID",
+        "time": "时间"
+      },
+      "type": {
+        "deposit": "充值",
+        "subscription_payment": "套餐支付",
+        "auto_renewal": "自动续费",
+        "manual_renewal": "手动续费"
+      },
+      "pagination": {
+        "summary": "第 {{page}}/{{totalPages}} 页 - 共 {{total}} 条"
+      }
     },
     "compartment": {
       "title": "分区管理",
