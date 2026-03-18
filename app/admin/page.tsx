@@ -104,6 +104,14 @@ const adminLinks = (t: any) => [
 		color: 'bg-amber-500',
 		stats: t('admin.walletTransactionsStats'),
 	},
+	{
+		title: t('admin.termsTitle'),
+		description: t('admin.termsDesc'),
+		href: '/admin/terms',
+		icon: FileText,
+		color: 'bg-slate-500',
+		stats: t('admin.termsStats'),
+	},
 ]
 
 export default function AdminDashboard() {

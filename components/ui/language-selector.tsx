@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
 interface Language {
@@ -20,6 +21,7 @@ const languages: Language[] = [
 
 export function LanguageSelector() {
   const { i18n } = useTranslation()
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [currentLang, setCurrentLang] = useState(i18n.language)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -28,13 +30,20 @@ export function LanguageSelector() {
   const currentLanguage = languages.find(lang => lang.code === currentLang) || languages[0]
 
   const handleLanguageChange = (languageCode: string) => {
-    // Lưu ngôn ngữ vào localStorage trước khi thay đổi
     if (typeof window !== 'undefined') {
       localStorage.setItem('selectedLanguage', languageCode)
+
+      const expires = new Date()
+      expires.setFullYear(expires.getFullYear() + 1)
+      document.cookie = `language=${languageCode}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`
     }
+
     i18n.changeLanguage(languageCode)
     setCurrentLang(languageCode)
     setIsOpen(false)
+
+    // Force server components (e.g., /terms) to re-render with the new language cookie.
+    router.refresh()
   }
 
   // Theo dõi thay đổi ngôn ngữ từ i18n

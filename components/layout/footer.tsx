@@ -5,9 +5,21 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Cloud, Mail, Phone, MapPin, Facebook, Linkedin, Youtube } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { useI18nReady } from "@/hooks/use-i18n-ready"
 
 export function Footer() {
   const { t } = useTranslation()
+  const isI18nReady = useI18nReady()
+
+  if (!isI18nReady) {
+    return (
+      <footer className="bg-gray-900 text-white">
+        <div className="container mx-auto px-4 py-16">
+          <div className="h-6 w-56 bg-white/10 rounded animate-pulse" />
+        </div>
+      </footer>
+    )
+  }
 
 //
   return (
