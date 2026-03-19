@@ -1880,7 +1880,7 @@
     "vmNameNote": "Tên VM sẽ được tự động tạo dựa trên địa chỉ email của bạn theo định dạng:",
     "notificationSettings": "Cài đặt thông báo",
     "emailLabel": "Địa chỉ Email * (Khóa SSH sẽ được gửi đến đây)",
-    "emailNote": "Khóa SSH riêng tư của bạn sẽ được gửi đến địa chỉ email này. Hãy giữ bí mật.",
+    "emailNote": "",
     "vmShape": "VM Shape *",
     "vmShapeNote": "Chọn VM shape trước - Tùy chọn OS sẽ được lọc theo tương thích",
     "recommended": "Được đề xuất",

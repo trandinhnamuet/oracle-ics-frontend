@@ -1897,7 +1897,7 @@
     "vmNameNote": "VM名はメールアドレスに基づいて自動生成されます。形式：",
     "notificationSettings": "通知設定",
     "emailLabel": "メールアドレス * (SSHキーはこちらに送信されます)",
-    "emailNote": "SSHプライベートキーがこのメールアドレスに送信されます。大切に保管してください。",
+    "emailNote": "",
     "vmShape": "VMシェイプ *",
     "vmShapeNote": "まずVMシェイプを選択してください - OSオプションは互換性に応じてフィルタリングされます",
     "recommended": "推奨",

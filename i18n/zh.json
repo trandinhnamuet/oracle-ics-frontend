@@ -1898,7 +1898,7 @@
     "vmNameNote": "VM名称将根据您的电子邮件地址自动生成，格式为：",
     "notificationSettings": "通知设置",
     "emailLabel": "电子邮件地址 * (SSH密钥将发送至此)",
-    "emailNote": "您的SSH私钥将发送到此电子邮件地址。请妥善保管。",
+    "emailNote": "",
     "vmShape": "VM规格 *",
     "vmShapeNote": "首先选择VM规格 - OS选项将根据兼容性进行过滤",
     "recommended": "推荐",

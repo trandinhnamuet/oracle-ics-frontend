@@ -1881,7 +1881,7 @@
     "vmNameNote": "VM name will be auto-generated based on your email address in format:",
     "notificationSettings": "Notification Settings",
     "emailLabel": "Email Address * (SSH keys will be sent here)",
-    "emailNote": "Your SSH private key will be sent to this email address. Please keep it secure.",
+    "emailNote": "",
     "vmShape": "VM Shape *",
     "vmShapeNote": "Select VM shape first - OS options will be filtered by compatibility",
     "recommended": "Recommended",
