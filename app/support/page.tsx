@@ -477,7 +477,7 @@ export default function SupportPage() {
                               )}
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              #{ticket.id} â€¢ {t('support.ticketSubmittedOn')} {formatDate(ticket.created_at)}
+                              #{ticket.id} {t('support.ticketSubmittedOn')} {formatDate(ticket.created_at)}
                               {attachments.length > 0 && (
                                 <span className="ml-2">
                                   <Paperclip className="h-3 w-3 inline" /> {attachments.length}
@@ -603,7 +603,7 @@ function AttachmentItem({ att }: { att: TicketAttachment }) {
       <FileText className="h-8 w-8 text-orange-500 shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">{att.name}</p>
-        <p className="text-xs text-muted-foreground">{att.mimeType} â€¢ {formatBytes(att.size)}</p>
+        <p className="text-xs text-muted-foreground">{att.mimeType} {formatBytes(att.size)}</p>
       </div>
       <a href={fullUrl} target="_blank" rel="noopener noreferrer" download={att.name}>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
