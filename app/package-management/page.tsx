@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Search, Package, Calendar, Banknote, Settings, Play, Pause, Trash2, Eye, Loader2, RefreshCw } from 'lucide-react'
+import { Search, Package, Calendar, Clock, AlertTriangle, Settings, Play, Pause, Trash2, Eye, Loader2, RefreshCw } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import BalanceDisplay from '@/components/wallet/balance-display'
@@ -315,10 +315,8 @@ export default function PackageManagementPage() {
   const stats = {
     total: subscriptions.length,
     active: subscriptions.filter(s => s.status === 'active').length,
-    inactive: subscriptions.filter(s => ['pending', 'suspended', 'cancelled', 'expired'].includes(s.status)).length,
-    totalRevenue: subscriptions
-      .filter(s => s.status === 'active')
-      .reduce((sum, s) => sum + parseFloat(String(s.cloudPackage?.cost_vnd || 0)), 0)
+    pending: subscriptions.filter(s => s.status === 'pending').length,
+    suspended: subscriptions.filter(s => ['suspended', 'cancelled', 'expired'].includes(s.status)).length,
   }
 
   return (
@@ -408,23 +406,21 @@ export default function PackageManagementPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('packageManagement.stats.inactive')}</CardTitle>
-            <Pause className="h-4 w-4 text-orange-600" />
+            <CardTitle className="text-sm font-medium">{t('packageManagement.stats.pending')}</CardTitle>
+            <Clock className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{stats.inactive}</div>
+            <div className="text-2xl font-bold text-orange-600">{stats.pending}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('packageManagement.stats.revenue')}</CardTitle>
-            <Banknote className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium">{t('packageManagement.stats.suspended')}</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-lg font-bold text-blue-600">
-              {formatPrice(stats.totalRevenue)}
-            </div>
+            <div className="text-2xl font-bold text-red-600">{stats.suspended}</div>
           </CardContent>
         </Card>
       </div>

@@ -13,8 +13,8 @@
     "stats": {
       "total": "总套餐数",
       "active": "活跃",
-      "inactive": "非活跃",
-      "revenue": "月收入"
+      "pending": "待付款",
+      "suspended": "已过期/暂停"
     },
     "table": {
       "title": "订阅套餐列表 ({{count}})",

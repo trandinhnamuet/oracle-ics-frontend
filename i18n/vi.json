@@ -13,8 +13,8 @@
     "stats": {
       "total": "Tổng số gói",
       "active": "Đang hoạt động",
-      "inactive": "Không hoạt động",
-      "revenue": "Doanh thu/tháng"
+      "pending": "Đang chờ thanh toán",
+      "suspended": "Đã hết hạn/tạm dừng"
     },
     "table": {
       "title": "Danh sách gói đăng ký ({{count}})",

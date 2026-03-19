@@ -13,8 +13,8 @@
     "stats": {
       "total": "총 패키지 수",
       "active": "활성",
-      "inactive": "비활성",
-      "revenue": "월 수익"
+      "pending": "결제 대기",
+      "suspended": "만료/일시정지"
     },
     "table": {
       "title": "구독 패키지 목록 ({{count}})",

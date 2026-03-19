@@ -13,8 +13,8 @@
     "stats": {
       "total": "Total Packages",
       "active": "Active",
-      "inactive": "Inactive",
-      "revenue": "Revenue/Month"
+      "pending": "Pending Payment",
+      "suspended": "Expired/Suspended"
     },
     "table": {
       "title": "List of Subscription Packages ({{count}})",

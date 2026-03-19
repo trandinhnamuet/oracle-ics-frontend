@@ -13,8 +13,8 @@
     "stats": {
       "total": "パッケージ総数",
       "active": "アクティブ",
-      "inactive": "非アクティブ",
-      "revenue": "月間収益"
+      "pending": "支払い待ち",
+      "suspended": "期限切れ/停止"
     },
     "table": {
       "title": "サブスクリプションパッケージ一覧 ({{count}})",
