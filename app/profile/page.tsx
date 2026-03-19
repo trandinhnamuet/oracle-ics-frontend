@@ -149,9 +149,12 @@ function ProfilePage() {
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
   })
+
+  const watchedGender = watch('gender')
 
   useEffect(() => {
     if (user) {
@@ -412,7 +415,24 @@ function ProfilePage() {
                 </div>
 
                 {/* Edit Button */}
-                <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                <Dialog
+                  open={isEditOpen}
+                  onOpenChange={(open) => {
+                    if (!open && user) {
+                      reset({
+                        firstName: user.firstName || '',
+                        lastName: user.lastName || '',
+                        phoneNumber: user.phoneNumber || '',
+                        company: user.company || '',
+                        gender: user.gender || '',
+                        idCard: user.idCard || '',
+                        backupEmail: user.backupEmail || '',
+                        address: user.address || '',
+                      })
+                    }
+                    setIsEditOpen(open)
+                  }}
+                >
                   <DialogTrigger asChild>
                     <Button
                       size="lg"
@@ -476,7 +496,7 @@ function ProfilePage() {
                               {t('profile.gender')}
                             </Label>
                             <Select
-                              defaultValue={user.gender || ''}
+                              value={watchedGender || ''}
                               onValueChange={(val) => setValue('gender', val)}
                             >
                               <SelectTrigger id="e-gender" className="transition-all duration-200">
