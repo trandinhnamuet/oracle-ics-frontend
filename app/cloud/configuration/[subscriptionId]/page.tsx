@@ -837,7 +837,7 @@ export default function CloudConfigurationBySubscriptionPage() {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-xl">
               <CheckCircle className="h-6 w-6 text-green-500" />
-              Máy ảo đã tạo thành công!
+              {t('cloudConfig.vmCreated.title')}
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-4 text-left pt-2">
@@ -845,10 +845,10 @@ export default function CloudConfigurationBySubscriptionPage() {
                 {/* Warning: one-time display */}
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
                   <p className="font-semibold text-red-900 text-sm">
-                    ⚠️ Thông tin này chỉ hiển thị 1 lần duy nhất
+                    {t('cloudConfig.vmCreated.warningTitle')}
                   </p>
                   <p className="text-red-800 text-sm mt-1">
-                    Vui lòng lưu lại ngay bây giờ. Sau khi đóng cửa sổ này, bạn sẽ không thể xem lại.
+                    {t('cloudConfig.vmCreated.warningDesc')}
                   </p>
                 </div>
 
@@ -862,7 +862,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                 {vmCredentials?.type === 'linux' && vmCredentials.privateKey && (
                   <div className="space-y-2">
                     <p className="font-semibold flex items-center gap-2">
-                      <Key className="h-4 w-4" /> SSH Private Key
+                      <Key className="h-4 w-4" /> {t('cloudConfig.vmCreated.sshKeyLabel')}
                     </p>
                     <div className="relative">
                       <textarea
@@ -879,7 +879,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                         className="flex-1"
                       >
                         {copiedField === 'key' ? <Check className="h-4 w-4 mr-1 text-green-500" /> : <Copy className="h-4 w-4 mr-1" />}
-                        {copiedField === 'key' ? 'Đã sao chép!' : 'Sao chép key'}
+                        {copiedField === 'key' ? t('cloudConfig.vmCreated.copied') : t('cloudConfig.vmCreated.copyKey')}
                       </Button>
                       <Button
                         size="sm"
@@ -887,11 +887,11 @@ export default function CloudConfigurationBySubscriptionPage() {
                         className="flex-1 bg-blue-600 hover:bg-blue-700"
                       >
                         <Download className="h-4 w-4 mr-1" />
-                        Tải về (.pem)
+                        {t('cloudConfig.vmCreated.downloadPem')}
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Kết nối: <code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem opc@{vmCredentials.publicIp || 'YOUR_IP'}</code>
+                      {t('cloudConfig.vmCreated.connectLabel')}<code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem opc@{vmCredentials.publicIp || 'YOUR_IP'}</code>
                     </p>
                   </div>
                 )}
@@ -923,7 +923,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                       className="w-full bg-blue-600 hover:bg-blue-700"
                     >
                       <Download className="h-4 w-4 mr-1" />
-                      Tải về thông tin đăng nhập (.txt)
+                      {t('cloudConfig.vmCreated.downloadCredentials')}
                     </Button>
                   </div>
                 )}
@@ -931,10 +931,12 @@ export default function CloudConfigurationBySubscriptionPage() {
                 {/* Windows Password Pending */}
                 {vmCredentials?.type === 'windows-pending' && (
                   <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
-                    <p className="font-semibold text-yellow-900">⏳ Mật khẩu Windows đang được tạo</p>
+                    <p className="font-semibold text-yellow-900">{t('cloudConfig.vmCreated.windowsPendingTitle')}</p>
                     <p className="text-yellow-800 text-sm mt-1">
-                      Mật khẩu ban đầu sẽ sẵn sàng trong <strong>5–10 phút</strong>.
-                      Sau khi đóng màn hình này, hãy vào trang <strong>Quản lý VM</strong> để xem mật khẩu.
+                      {t('cloudConfig.vmCreated.windowsPendingDesc1')}
+                    </p>
+                    <p className="text-yellow-800 text-sm mt-1">
+                      {t('cloudConfig.vmCreated.windowsPendingDesc2')}
                     </p>
                     <p className="text-yellow-800 text-sm mt-1">
                       <strong>Username:</strong> {vmCredentials.username}
@@ -953,7 +955,7 @@ export default function CloudConfigurationBySubscriptionPage() {
               }}
               className="bg-green-600 hover:bg-green-700"
             >
-              Đã lưu — Đến trang quản lý VM
+              {t('cloudConfig.vmCreated.savedGotoVM')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

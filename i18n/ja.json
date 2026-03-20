@@ -1948,7 +1948,22 @@
     "configSuccess": "成功",
     "armCapacityUnavailable": "ARM容量は利用できません",
     "capacityUnavailable": "容量は利用できません",
-    "configFailed": "設定に失敗しました"
+    "configFailed": "設定に失敗しました",
+    "vmCreated": {
+      "title": "VMが正常に作成されました！",
+      "warningTitle": "⚠️ この情報は一度しか表示されません",
+      "warningDesc": "今すぐ保存してください。このウィンドウを閉じると、再度確認できません。",
+      "sshKeyLabel": "SSH秘密鍵",
+      "copyKey": "キーをコピー",
+      "copied": "コピーしました！",
+      "downloadPem": "ダウンロード (.pem)",
+      "connectLabel": "接続: ",
+      "downloadCredentials": "認証情報をダウンロード (.txt)",
+      "windowsPendingTitle": "⏳ Windowsパスワードを生成中",
+      "windowsPendingDesc1": "初期パスワードは5〜10分以内に利用可能になります。",
+      "windowsPendingDesc2": "この画面を閉じた後、VM管理ページでパスワードを確認してください。",
+      "savedGotoVM": "保存済み — VM管理ページへ"
+    }
   },
   "addFunds": {
     "title": "アカウントにチャージ",

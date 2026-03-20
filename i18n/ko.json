@@ -1948,7 +1948,22 @@
     "configSuccess": "성공",
     "armCapacityUnavailable": "ARM 용량을 사용할 수 없습니다",
     "capacityUnavailable": "용량을 사용할 수 없습니다",
-    "configFailed": "구성 실패"
+    "configFailed": "구성 실패",
+    "vmCreated": {
+      "title": "VM이 성공적으로 생성되었습니다!",
+      "warningTitle": "⚠️ 이 정보는 한 번만 표시됩니다",
+      "warningDesc": "지금 바로 저장해 주세요. 이 창을 닫으면 다시 볼 수 없습니다.",
+      "sshKeyLabel": "SSH 개인 키",
+      "copyKey": "키 복사",
+      "copied": "복사됨!",
+      "downloadPem": "다운로드 (.pem)",
+      "connectLabel": "연결: ",
+      "downloadCredentials": "인증 정보 다운로드 (.txt)",
+      "windowsPendingTitle": "⏳ Windows 비밀번호 생성 중",
+      "windowsPendingDesc1": "초기 비밀번호는 5~10분 내에 준비됩니다.",
+      "windowsPendingDesc2": "이 화면을 닫은 후 VM 관리 페이지에서 비밀번호를 확인하세요.",
+      "savedGotoVM": "저장됨 — VM 관리 페이지로 이동"
+    }
   },
   "addFunds": {
     "title": "계정에 충전",

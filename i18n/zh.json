@@ -1949,7 +1949,22 @@
     "configSuccess": "成功",
     "armCapacityUnavailable": "ARM容量不可用",
     "capacityUnavailable": "容量不可用",
-    "configFailed": "配置失败"
+    "configFailed": "配置失败",
+    "vmCreated": {
+      "title": "虚拟机创建成功！",
+      "warningTitle": "⚠️ 此信息仅显示一次",
+      "warningDesc": "请立即保存。关闭此窗口后，您将无法再次查看。",
+      "sshKeyLabel": "SSH 私钥",
+      "copyKey": "复制密钥",
+      "copied": "已复制！",
+      "downloadPem": "下载 (.pem)",
+      "connectLabel": "连接: ",
+      "downloadCredentials": "下载登录信息 (.txt)",
+      "windowsPendingTitle": "⏳ Windows 密码正在生成",
+      "windowsPendingDesc1": "初始密码将在 5–10 分钟内准备好。",
+      "windowsPendingDesc2": "关闭此屏幕后，请转到 VM 管理页面查看密码。",
+      "savedGotoVM": "已保存 — 前往 VM 管理页面"
+    }
   },
   "addFunds": {
     "title": "充値到账户",

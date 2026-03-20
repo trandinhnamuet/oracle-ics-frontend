@@ -1931,7 +1931,22 @@
     "configSuccess": "Thành công",
     "armCapacityUnavailable": "Không có năng lực ARM",
     "capacityUnavailable": "Không có năng lực",
-    "configFailed": "Cấu hình thất bại"
+    "configFailed": "Cấu hình thất bại",
+    "vmCreated": {
+      "title": "Máy ảo đã tạo thành công!",
+      "warningTitle": "⚠️ Thông tin này chỉ hiển thị 1 lần duy nhất",
+      "warningDesc": "Vui lòng lưu lại ngay bây giờ. Sau khi đóng cửa sổ này, bạn sẽ không thể xem lại.",
+      "sshKeyLabel": "SSH Private Key",
+      "copyKey": "Sao chép key",
+      "copied": "Đã sao chép!",
+      "downloadPem": "Tải về (.pem)",
+      "connectLabel": "Kết nối: ",
+      "downloadCredentials": "Tải về thông tin đăng nhập (.txt)",
+      "windowsPendingTitle": "⏳ Mật khẩu Windows đang được tạo",
+      "windowsPendingDesc1": "Mật khẩu ban đầu sẽ sẵn sàng trong 5–10 phút.",
+      "windowsPendingDesc2": "Sau khi đóng màn hình này, hãy vào trang Quản lý VM để xem mật khẩu.",
+      "savedGotoVM": "Đã lưu — Đến trang quản lý VM"
+    }
   },
   "addFunds": {
     "title": "Nạp tiền vào tài khoản",

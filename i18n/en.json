@@ -1932,7 +1932,22 @@
     "configSuccess": "Success",
     "armCapacityUnavailable": "ARM Capacity Unavailable",
     "capacityUnavailable": "Capacity Unavailable",
-    "configFailed": "Configuration Failed"
+    "configFailed": "Configuration Failed",
+    "vmCreated": {
+      "title": "VM created successfully!",
+      "warningTitle": "⚠️ This information is shown only once",
+      "warningDesc": "Please save it now. Once you close this window, you will not be able to view it again.",
+      "sshKeyLabel": "SSH Private Key",
+      "copyKey": "Copy key",
+      "copied": "Copied!",
+      "downloadPem": "Download (.pem)",
+      "connectLabel": "Connect: ",
+      "downloadCredentials": "Download credentials (.txt)",
+      "windowsPendingTitle": "⏳ Windows password is being generated",
+      "windowsPendingDesc1": "The initial password will be ready in 5–10 minutes.",
+      "windowsPendingDesc2": "After closing this screen, go to the VM Management page to view the password.",
+      "savedGotoVM": "Saved — Go to VM Management"
+    }
   },
   "addFunds": {
     "title": "Add Funds to Account",
