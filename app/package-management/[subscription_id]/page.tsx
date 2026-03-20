@@ -35,7 +35,19 @@ import { getSubscriptionById, deleteSubscription, Subscription } from '@/api/sub
 import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
-import { formatDateOnly, formatDateTime } from '@/lib/utils'
+import { formatDateOnly, formatDateTime, parseAsUtc } from '@/lib/utils'
+
+// Converts ISO timestamp from metrics API → HH:MM in browser's local timezone
+function formatMetricTime(isoStr: string): string {
+  try {
+    return parseAsUtc(isoStr).toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  } catch {
+    return isoStr
+  }
+}
 
 // Demo data for charts
 const cpuData = [
@@ -751,7 +763,8 @@ export default function PackageDetailPage() {
                         <AreaChart data={metrics.cpu}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
-                            dataKey="time" 
+                            dataKey="time"
+                            tickFormatter={formatMetricTime}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -799,7 +812,8 @@ export default function PackageDetailPage() {
                         <AreaChart data={metrics.memory}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
-                            dataKey="time" 
+                            dataKey="time"
+                            tickFormatter={formatMetricTime}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -847,7 +861,8 @@ export default function PackageDetailPage() {
                         <AreaChart data={getNetworkData()}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
-                            dataKey="time" 
+                            dataKey="time"
+                            tickFormatter={formatMetricTime}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -905,7 +920,8 @@ export default function PackageDetailPage() {
                         <AreaChart data={getDiskData()}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
-                            dataKey="time" 
+                            dataKey="time"
+                            tickFormatter={formatMetricTime}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
