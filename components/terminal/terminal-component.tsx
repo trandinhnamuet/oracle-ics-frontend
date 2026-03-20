@@ -231,7 +231,7 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
               variant="ghost"
               size="sm"
               onClick={handleReconnect}
-              className="h-7 px-2"
+              className="h-7 px-2 text-gray-300 hover:text-white hover:bg-gray-600"
             >
               <RefreshCw className="w-4 h-4" />
             </Button>
@@ -240,7 +240,7 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
             variant="ghost"
             size="sm"
             onClick={toggleFullscreen}
-            className="h-7 px-2"
+            className="h-7 px-2 text-gray-300 hover:text-white hover:bg-gray-600"
           >
             {isFullscreen ? (
               <Minimize2 className="w-4 h-4" />
@@ -252,7 +252,7 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="h-7 px-2"
+            className="h-7 px-2 text-gray-300 hover:text-white hover:bg-red-600/70"
           >
             <X className="w-4 h-4" />
           </Button>
