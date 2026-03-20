@@ -13,7 +13,7 @@ export function cn(...inputs: ClassValue[]) {
  * Nếu không có timezone info → append 'Z' để browser parse đúng là UTC,
  * sau đó tự động convert sang múi giờ của browser khi hiển thị.
  */
-function parseAsUtc(dateStr: string | Date): Date {
+export function parseAsUtc(dateStr: string | Date): Date {
   if (dateStr instanceof Date) return dateStr
   const s = dateStr.trim()
   // Đã có timezone info (Z, +HH:MM, -HH:MM) → parse trực tiếp

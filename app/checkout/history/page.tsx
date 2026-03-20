@@ -29,7 +29,7 @@ import {
   Clock,
   Loader2,
 } from 'lucide-react'
-import { formatPrice, formatDateTime } from '@/lib/utils'
+import { formatPrice, formatDateTime, parseAsUtc } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { walletTransactionApi, WalletTransaction } from '@/api/wallet-transaction.api'
 import { paymentApi, Payment } from '@/api/payment.api'
@@ -186,7 +186,7 @@ export default function PaymentHistoryPage() {
           balance_after: tx.balance_after != null ? Number(tx.balance_after) : '',
           payment_id: tx.payment_id ?? '',
           id: tx.id,
-          created_at: new Date(tx.created_at),
+          created_at: parseAsUtc(tx.created_at),
         })
 
         const isCredit = Number(tx.change_amount) > 0
