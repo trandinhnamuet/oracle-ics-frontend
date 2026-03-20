@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
 import {
   Dialog,
   DialogContent,
@@ -414,7 +414,17 @@ function ProfilePage() {
                   </div>
                 </div>
 
-                {/* Edit Button */}
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => setIsChangePwOpen(true)}
+                    className="gap-2 border-orange-500/30 text-orange-600 px-6 shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg hover:bg-orange-50 hover:border-orange-500 dark:hover:bg-orange-950/20"
+                  >
+                    <Lock className="h-4 w-4" />
+                    {t('profile.changePasswordButton')}
+                  </Button>
                 <Dialog
                   open={isEditOpen}
                   onOpenChange={(open) => {
@@ -614,32 +624,14 @@ function ProfilePage() {
                     </form>
                   </DialogContent>
                 </Dialog>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Tabs Section */}
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="mb-6 grid w-full grid-cols-2 bg-white/50 p-1 backdrop-blur-sm dark:bg-slate-900/50 lg:w-auto lg:grid-cols-2">
-            <TabsTrigger
-              value="profile"
-              className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-rose-600 data-[state=active]:text-white data-[state=active]:shadow-md"
-            >
-              <UserCircle className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('profile.tabs.profile')}</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="security"
-              className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-md"
-            >
-              <Shield className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('profile.tabs.security')}</span>
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Profile Tab Content */}
-          <TabsContent value="profile" className="space-y-6 animate-fadeIn">
+        {/* Profile Content */}
+        <div className="space-y-6 animate-fadeIn">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {/* Left Sidebar - Account Meta */}
               <div className="space-y-6">
@@ -662,6 +654,16 @@ function ProfilePage() {
                       icon={CalendarDays}
                       label={t('profile.updatedAt')}
                       value={formatDate(user.updatedAt)}
+                    />
+                    <InfoRow
+                      icon={CheckCircle2}
+                      label={t('profile.accountStatus')}
+                      value={user.isActive ? t('profile.accountActive') : t('profile.accountInactive')}
+                    />
+                    <InfoRow
+                      icon={Shield}
+                      label="Role"
+                      value={user.role === 'admin' ? t('profile.adminBadge') : t('profile.userBadge')}
                     />
                   </CardContent>
                 </Card>
@@ -740,208 +742,132 @@ function ProfilePage() {
                 </Card>
               </div>
             </div>
-          </TabsContent>
+        </div>
 
-          {/* Security Tab Content */}
-          <TabsContent value="security" className="animate-fadeIn">
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* Password Card */}
-              <Card className="overflow-hidden border-none bg-white/80 shadow-lg backdrop-blur-xl transition-all duration-300 hover:shadow-xl dark:bg-slate-900/80">
-                <div className="h-1.5 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500" />
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Lock className="h-5 w-5 text-orange-600" />
-                    {t('profile.changePassword')}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {t('profile.changePasswordDescription')}
-                  </p>
-                </CardHeader>
-              <CardContent>
-                  <Dialog open={isChangePwOpen} onOpenChange={(open) => { setIsChangePwOpen(open); if (!open) resetPw(); }}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="gap-2 border-orange-500/30 text-orange-600 transition-all duration-200 hover:scale-105 hover:bg-orange-50 hover:border-orange-500 dark:hover:bg-orange-950/20"
-                      >
-                        <Lock className="h-4 w-4" />
-                        {t('profile.changePasswordButton')}
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2 text-xl">
-                          <Lock className="h-5 w-5 text-orange-600" />
-                          {t('profile.changePasswordDialogTitle')}
-                        </DialogTitle>
-                        <DialogDescription>
-                          {t('profile.changePasswordDialogDesc')}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <form onSubmit={handleSubmitPw(onSubmitChangePw)} className="mt-4 space-y-4">
-                        {/* Current Password */}
-                        <div className="space-y-2">
-                          <Label htmlFor="cp-current" className="text-sm font-medium">
-                            {t('profile.currentPassword')}
-                          </Label>
-                          <div className="relative">
-                            <Input
-                              id="cp-current"
-                              type={showCurrentPw ? 'text' : 'password'}
-                              {...registerPw('currentPassword')}
-                              placeholder="••••••••"
-                              className={`pr-10 transition-all duration-200 ${pwErrors.currentPassword ? 'border-destructive ring-destructive/20' : 'focus:ring-orange-500/20'}`}
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowCurrentPw((v) => !v)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-                              tabIndex={-1}
-                            >
-                              {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            </button>
-                          </div>
-                          {pwErrors.currentPassword && (
-                            <p className="text-xs text-destructive">{pwErrors.currentPassword.message}</p>
-                          )}
-                        </div>
+        {/* Change Password Dialog */}
+        <Dialog open={isChangePwOpen} onOpenChange={(open) => { setIsChangePwOpen(open); if (!open) resetPw(); }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-xl">
+                <Lock className="h-5 w-5 text-orange-600" />
+                {t('profile.changePasswordDialogTitle')}
+              </DialogTitle>
+              <DialogDescription>
+                {t('profile.changePasswordDialogDesc')}
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmitPw(onSubmitChangePw)} className="mt-4 space-y-4">
+              {/* Current Password */}
+              <div className="space-y-2">
+                <Label htmlFor="cp-current" className="text-sm font-medium">
+                  {t('profile.currentPassword')}
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="cp-current"
+                    type={showCurrentPw ? 'text' : 'password'}
+                    {...registerPw('currentPassword')}
+                    placeholder="••••••••"
+                    className={`pr-10 transition-all duration-200 ${pwErrors.currentPassword ? 'border-destructive ring-destructive/20' : 'focus:ring-orange-500/20'}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    tabIndex={-1}
+                  >
+                    {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                {pwErrors.currentPassword && (
+                  <p className="text-xs text-destructive">{pwErrors.currentPassword.message}</p>
+                )}
+              </div>
 
-                        {/* New Password */}
-                        <div className="space-y-2">
-                          <Label htmlFor="cp-new" className="text-sm font-medium">
-                            {t('profile.newPassword')}
-                          </Label>
-                          <div className="relative">
-                            <Input
-                              id="cp-new"
-                              type={showNewPw ? 'text' : 'password'}
-                              {...registerPw('newPassword')}
-                              placeholder="••••••••"
-                              className={`pr-10 transition-all duration-200 ${pwErrors.newPassword ? 'border-destructive ring-destructive/20' : 'focus:ring-orange-500/20'}`}
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowNewPw((v) => !v)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-                              tabIndex={-1}
-                            >
-                              {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            </button>
-                          </div>
-                          {pwErrors.newPassword && (
-                            <p className="text-xs text-destructive">{pwErrors.newPassword.message}</p>
-                          )}
-                        </div>
+              {/* New Password */}
+              <div className="space-y-2">
+                <Label htmlFor="cp-new" className="text-sm font-medium">
+                  {t('profile.newPassword')}
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="cp-new"
+                    type={showNewPw ? 'text' : 'password'}
+                    {...registerPw('newPassword')}
+                    placeholder="••••••••"
+                    className={`pr-10 transition-all duration-200 ${pwErrors.newPassword ? 'border-destructive ring-destructive/20' : 'focus:ring-orange-500/20'}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    tabIndex={-1}
+                  >
+                    {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                {pwErrors.newPassword && (
+                  <p className="text-xs text-destructive">{pwErrors.newPassword.message}</p>
+                )}
+              </div>
 
-                        {/* Confirm New Password */}
-                        <div className="space-y-2">
-                          <Label htmlFor="cp-confirm" className="text-sm font-medium">
-                            {t('profile.confirmNewPassword')}
-                          </Label>
-                          <div className="relative">
-                            <Input
-                              id="cp-confirm"
-                              type={showConfirmPw ? 'text' : 'password'}
-                              {...registerPw('confirmNewPassword')}
-                              placeholder="••••••••"
-                              className={`pr-10 transition-all duration-200 ${pwErrors.confirmNewPassword ? 'border-destructive ring-destructive/20' : 'focus:ring-orange-500/20'}`}
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowConfirmPw((v) => !v)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-                              tabIndex={-1}
-                            >
-                              {showConfirmPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            </button>
-                          </div>
-                          {pwErrors.confirmNewPassword && (
-                            <p className="text-xs text-destructive">{pwErrors.confirmNewPassword.message}</p>
-                          )}
-                        </div>
+              {/* Confirm New Password */}
+              <div className="space-y-2">
+                <Label htmlFor="cp-confirm" className="text-sm font-medium">
+                  {t('profile.confirmNewPassword')}
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="cp-confirm"
+                    type={showConfirmPw ? 'text' : 'password'}
+                    {...registerPw('confirmNewPassword')}
+                    placeholder="••••••••"
+                    className={`pr-10 transition-all duration-200 ${pwErrors.confirmNewPassword ? 'border-destructive ring-destructive/20' : 'focus:ring-orange-500/20'}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    tabIndex={-1}
+                  >
+                    {showConfirmPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                {pwErrors.confirmNewPassword && (
+                  <p className="text-xs text-destructive">{pwErrors.confirmNewPassword.message}</p>
+                )}
+              </div>
 
-                        <div className="flex justify-end gap-3 pt-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => { setIsChangePwOpen(false); resetPw(); }}
-                            disabled={isChangingPw}
-                          >
-                            {t('profile.cancel')}
-                          </Button>
-                          <Button
-                            type="submit"
-                            disabled={isChangingPw}
-                            className="min-w-[140px] gap-2 bg-gradient-to-r from-orange-500 to-red-600 transition-all duration-200 hover:scale-105"
-                          >
-                            {isChangingPw ? (
-                              <>
-                                <Upload className="h-4 w-4 animate-spin" />
-                                {t('profile.changingPassword')}
-                              </>
-                            ) : (
-                              <>
-                                <Lock className="h-4 w-4" />
-                                {t('profile.changePasswordButton')}
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-
-              {/* Account Status Card */}
-              <Card className="overflow-hidden border-none bg-white/80 shadow-lg backdrop-blur-xl transition-all duration-300 hover:shadow-xl dark:bg-slate-900/80">
-                <div className="h-1.5 bg-gradient-to-r from-red-500 via-rose-500 to-pink-500" />
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Shield className="h-5 w-5 text-red-600" />
-                    {t('profile.accountStatus')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between rounded-xl border border-border/50 bg-gradient-to-r from-transparent to-primary/5 px-4 py-3.5 transition-all duration-200 hover:shadow-md">
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`h-2.5 w-2.5 rounded-full ${user.isActive ? 'bg-emerald-500 shadow-lg shadow-emerald-500/50' : 'bg-gray-400'}`}
-                      />
-                      <span className="text-sm font-medium">
-                        {user.isActive ? t('profile.accountActive') : t('profile.accountInactive')}
-                      </span>
-                    </div>
-                    <Badge
-                      className={`gap-1.5 text-xs transition-all duration-200 hover:scale-105 ${
-                        user.isActive
-                          ? 'border-0 bg-gradient-to-r from-emerald-500 to-green-600 text-white'
-                          : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
-                      }`}
-                    >
-                      {user.isActive ? (
-                        <CheckCircle2 className="h-3 w-3" />
-                      ) : (
-                        <XCircle className="h-3 w-3" />
-                      )}
-                      {user.isActive ? t('profile.accountActive') : t('profile.accountInactive')}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between rounded-xl border border-border/50 bg-gradient-to-r from-transparent to-primary/5 px-4 py-3.5 transition-all duration-200 hover:shadow-md">
-                    <span className="text-sm font-medium">Role</span>
-                    <Badge
-                      variant="outline"
-                      className="gap-1.5 border-primary/20 bg-primary/5 text-xs capitalize text-primary transition-all duration-200 hover:scale-105 hover:bg-primary/10"
-                    >
-                      <Shield className="h-3 w-3" />
-                      {user.role === 'admin' ? t('profile.adminBadge') : t('profile.userBadge')}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
+              <div className="flex justify-end gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => { setIsChangePwOpen(false); resetPw(); }}
+                  disabled={isChangingPw}
+                >
+                  {t('profile.cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isChangingPw}
+                  className="min-w-[140px] gap-2 bg-gradient-to-r from-orange-500 to-red-600 transition-all duration-200 hover:scale-105"
+                >
+                  {isChangingPw ? (
+                    <>
+                      <Upload className="h-4 w-4 animate-spin" />
+                      {t('profile.changingPassword')}
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="h-4 w-4" />
+                      {t('profile.changePasswordButton')}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <style jsx global>{`
