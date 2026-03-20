@@ -1534,8 +1534,8 @@
     "charts": {
       "cpuUsage": "Sử dụng CPU (%)",
       "memoryUsage": "Sử dụng bộ nhớ (%)",
-      "cpuTitle": "CPU Utilization (%)",
-      "memoryTitle": "Memory Utilization (%)",
+      "cpuTitle": "Mức sử dụng CPU (%)",
+      "memoryTitle": "Mức sử dụng bộ nhớ (%)",
       "networkTraffic": "Lưu lượng mạng (MB/s)",
       "diskIO": "Disk I/O (MB/s)",
       "noData": "Không có dữ liệu"

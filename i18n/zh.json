@@ -1552,8 +1552,8 @@
     "charts": {
       "cpuUsage": "CPU使用率 (%)",
       "memoryUsage": "内存使用率 (%)",
-      "cpuTitle": "CPU Utilization (%)",
-      "memoryTitle": "Memory Utilization (%)",
+      "cpuTitle": "CPU使用率 (%)",
+      "memoryTitle": "内存使用率 (%)",
       "networkTraffic": "网络流量 (MB/s)",
       "diskIO": "磁盘I/O (MB/s)",
       "noData": "暂无数据"

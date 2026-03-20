@@ -1551,8 +1551,8 @@
     "charts": {
       "cpuUsage": "CPU 사용률 (%)",
       "memoryUsage": "메모리 사용률 (%)",
-      "cpuTitle": "CPU Utilization (%)",
-      "memoryTitle": "Memory Utilization (%)",
+      "cpuTitle": "CPU 사용률 (%)",
+      "memoryTitle": "메모리 사용률 (%)",
       "networkTraffic": "네트워크 트래픽 (MB/s)",
       "diskIO": "디스크 I/O (MB/s)",
       "noData": "데이터 없음"
