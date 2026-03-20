@@ -1528,12 +1528,15 @@
       "password": "密码",
       "ip": "IP地址",
       "uptime": "运行时间",
-      "days": "天"
+      "days": "天",
+      "vmState": "VM状态",
+      "publicIp": "公网IP"
     },
     "controls": {
       "vmName": "虚拟机名称：",
       "time": "时间：",
       "theme": "主题：",
+      "timeRange": "时间范围：",
       "showPerformance": "显示性能使用情况",
       "timeOptions": {
         "oneHour": "1小时前",
@@ -1548,7 +1551,12 @@
     },
     "charts": {
       "cpuUsage": "CPU使用率 (%)",
-      "memoryUsage": "内存使用率 (%)"
+      "memoryUsage": "内存使用率 (%)",
+      "cpuTitle": "CPU Utilization (%)",
+      "memoryTitle": "Memory Utilization (%)",
+      "networkTraffic": "网络流量 (MB/s)",
+      "diskIO": "磁盘I/O (MB/s)",
+      "noData": "暂无数据"
     },
     "packageInfo": {
       "title": "包信息",
@@ -1578,7 +1586,10 @@
       "console": "控制台",
       "changeOS": "更改/重装操作系统",
       "deletePackage": "删除包",
-      "configurateVM": "配置虚拟机"
+      "configurateVM": "配置虚拟机",
+      "requestSshKey": "申请新 SSH 密钥",
+      "generating": "正在生成...",
+      "openTerminal": "打开终端"
     },
     "billing": {
       "title": "账单信息",

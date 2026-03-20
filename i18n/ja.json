@@ -1527,12 +1527,15 @@
       "password": "パスワード",
       "ip": "IPアドレス",
       "uptime": "稼働時間",
-      "days": "日"
+      "days": "日",
+      "vmState": "VM状態",
+      "publicIp": "パブリックIP"
     },
     "controls": {
       "vmName": "VM名：",
       "time": "時間：",
       "theme": "テーマ：",
+      "timeRange": "時間範囲：",
       "showPerformance": "パフォーマンス使用状況を表示",
       "timeOptions": {
         "oneHour": "1時間前",
@@ -1547,7 +1550,12 @@
     },
     "charts": {
       "cpuUsage": "CPU使用率 (%)",
-      "memoryUsage": "メモリ使用率 (%)"
+      "memoryUsage": "メモリ使用率 (%)",
+      "cpuTitle": "CPU Utilization (%)",
+      "memoryTitle": "Memory Utilization (%)",
+      "networkTraffic": "ネットワークトラフィック (MB/s)",
+      "diskIO": "ディスクI/O (MB/s)",
+      "noData": "データなし"
     },
     "packageInfo": {
       "title": "パッケージ情報",
@@ -1577,7 +1585,10 @@
       "console": "コンソール",
       "changeOS": "OS変更/再インストール",
       "deletePackage": "パッケージ削除",
-      "configurateVM": "VM設定"
+      "configurateVM": "VM設定",
+      "requestSshKey": "新しいSSHキーをリクエスト",
+      "generating": "生成中...",
+      "openTerminal": "ターミナルを開く"
     },
     "billing": {
       "title": "請求情報",

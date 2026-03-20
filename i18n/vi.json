@@ -1510,12 +1510,15 @@
       "password": "Mật khẩu",
       "ip": "IP",
       "uptime": "Uptime",
-      "days": "Ngày"
+      "days": "Ngày",
+      "vmState": "Trạng thái VM",
+      "publicIp": "IP công khai"
     },
     "controls": {
       "vmName": "Tên VM:",
       "time": "Thời gian:",
       "theme": "Giao diện:",
+      "timeRange": "Khoảng thời gian:",
       "showPerformance": "Hiển thị sử dụng hiệu suất",
       "timeOptions": {
         "oneHour": "1 tiếng trước",
@@ -1530,7 +1533,12 @@
     },
     "charts": {
       "cpuUsage": "Sử dụng CPU (%)",
-      "memoryUsage": "Sử dụng bộ nhớ (%)"
+      "memoryUsage": "Sử dụng bộ nhớ (%)",
+      "cpuTitle": "CPU Utilization (%)",
+      "memoryTitle": "Memory Utilization (%)",
+      "networkTraffic": "Lưu lượng mạng (MB/s)",
+      "diskIO": "Disk I/O (MB/s)",
+      "noData": "Không có dữ liệu"
     },
     "packageInfo": {
       "title": "Thông tin gói",
@@ -1560,7 +1568,10 @@
       "console": "Console",
       "changeOS": "Thay đổi/Cài đặt lại OS",
       "deletePackage": "Xóa gói",
-      "configurateVM": "Cấu hình VM"
+      "configurateVM": "Cấu hình VM",
+      "requestSshKey": "Yêu cầu SSH Key mới",
+      "generating": "Đang tạo...",
+      "openTerminal": "Mở Terminal"
     },
     "billing": {
       "title": "Thông tin thanh toán",

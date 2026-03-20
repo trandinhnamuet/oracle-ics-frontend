@@ -1527,12 +1527,15 @@
       "password": "비밀번호",
       "ip": "IP 주소",
       "uptime": "가동 시간",
-      "days": "일"
+      "days": "일",
+      "vmState": "VM 상태",
+      "publicIp": "공용 IP"
     },
     "controls": {
       "vmName": "VM 이름:",
       "time": "시간:",
       "theme": "테마:",
+      "timeRange": "시간 범위:",
       "showPerformance": "성능 사용량 표시",
       "timeOptions": {
         "oneHour": "1시간 전",
@@ -1547,7 +1550,12 @@
     },
     "charts": {
       "cpuUsage": "CPU 사용률 (%)",
-      "memoryUsage": "메모리 사용률 (%)"
+      "memoryUsage": "메모리 사용률 (%)",
+      "cpuTitle": "CPU Utilization (%)",
+      "memoryTitle": "Memory Utilization (%)",
+      "networkTraffic": "네트워크 트래픽 (MB/s)",
+      "diskIO": "디스크 I/O (MB/s)",
+      "noData": "데이터 없음"
     },
     "packageInfo": {
       "title": "패키지 정보",
@@ -1577,7 +1585,10 @@
       "console": "콘솔",
       "changeOS": "OS 변경/재설치",
       "deletePackage": "패키지 삭제",
-      "configurateVM": "VM 구성"
+      "configurateVM": "VM 구성",
+      "requestSshKey": "새 SSH 키 요청",
+      "generating": "생성 중...",
+      "openTerminal": "터미널 열기"
     },
     "billing": {
       "title": "청구 정보",

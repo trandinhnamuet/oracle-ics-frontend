@@ -692,7 +692,7 @@ export default function PackageDetailPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">Time Range:</span>
+                    <span className="text-sm font-medium">{t('packageDetail.controls.timeRange')}</span>
                     <div className="flex gap-2">
                       {(['1h', '6h', '24h', '7d'] as const).map((range) => (
                         <Button
@@ -734,7 +734,7 @@ export default function PackageDetailPage() {
               {/* CPU Usage Chart */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">CPU Utilization (%)</CardTitle>
+                  <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.cpuTitle')}</CardTitle>
                   <Button variant="ghost" size="sm">
                     <Download className="h-4 w-4" />
                   </Button>
@@ -782,7 +782,7 @@ export default function PackageDetailPage() {
               {/* Memory Usage Chart */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">Memory Utilization (%)</CardTitle>
+                  <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.memoryTitle')}</CardTitle>
                   <Button variant="ghost" size="sm">
                     <Download className="h-4 w-4" />
                   </Button>
@@ -830,7 +830,7 @@ export default function PackageDetailPage() {
               {/* Network Traffic Chart */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">Network Traffic (MB/s)</CardTitle>
+                  <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.networkTraffic')}</CardTitle>
                   <Button variant="ghost" size="sm">
                     <Download className="h-4 w-4" />
                   </Button>
@@ -888,7 +888,7 @@ export default function PackageDetailPage() {
               {/* Disk I/O Chart */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">Disk I/O (MB/s)</CardTitle>
+                  <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.diskIO')}</CardTitle>
                   <Button variant="ghost" size="sm">
                     <Download className="h-4 w-4" />
                   </Button>
@@ -1086,11 +1086,11 @@ export default function PackageDetailPage() {
                     {vmDetails && vmDetails.vm && (
                       <>
                         <p className="text-sm text-gray-600 dark:text-muted-foreground">
-                          <strong>VM State:</strong> {vmDetails.vm.lifecycleState}
+                          <strong>{t('packageDetail.serverDetails.vmState')}:</strong> {vmDetails.vm.lifecycleState}
                         </p>
                         {vmDetails.vm.publicIp && (
                           <p className="text-sm text-gray-600 dark:text-muted-foreground">
-                            <strong>Public IP:</strong> {vmDetails.vm.publicIp}
+                            <strong>{t('packageDetail.serverDetails.publicIp')}:</strong> {vmDetails.vm.publicIp}
                           </p>
                         )}
                       </>
@@ -1134,7 +1134,7 @@ export default function PackageDetailPage() {
                     disabled={isLoading || isRequestingSshKey}
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    {isRequestingSshKey ? 'Generating...' : 'Request New SSH Key'}
+                    {isRequestingSshKey ? t('packageDetail.actions.generating') : t('packageDetail.actions.requestSshKey')}
                   </Button>
 
                   <Button 
@@ -1143,7 +1143,7 @@ export default function PackageDetailPage() {
                     disabled={isLoading || vmDetails?.vm?.lifecycleState !== 'RUNNING'}
                   >
                     <Terminal className="h-4 w-4 mr-2" />
-                    Open Terminal
+                    {t('packageDetail.actions.openTerminal')}
                   </Button>
                 </>
               )}

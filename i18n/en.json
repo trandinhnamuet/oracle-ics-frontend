@@ -1511,12 +1511,15 @@
       "password": "Password",
       "ip": "IP",
       "uptime": "Uptime",
-      "days": "Days"
+      "days": "Days",
+      "vmState": "VM State",
+      "publicIp": "Public IP"
     },
     "controls": {
       "vmName": "VM Name:",
       "time": "Time:",
       "theme": "Theme:",
+      "timeRange": "Time Range:",
       "showPerformance": "Show Performance Usage",
       "timeOptions": {
         "oneHour": "1 hour ago",
@@ -1531,7 +1534,12 @@
     },
     "charts": {
       "cpuUsage": "CPU Usage (%)",
-      "memoryUsage": "Memory Usage (%)"
+      "memoryUsage": "Memory Usage (%)",
+      "cpuTitle": "CPU Utilization (%)",
+      "memoryTitle": "Memory Utilization (%)",
+      "networkTraffic": "Network Traffic (MB/s)",
+      "diskIO": "Disk I/O (MB/s)",
+      "noData": "No data available"
     },
     "packageInfo": {
       "title": "Package Information",
@@ -1556,12 +1564,15 @@
       "title": "Manage Package",
       "startVM": "Start VM",
       "pauseVM": "Pause VM",
-      "restartVM": "Restart VM", 
+      "restartVM": "Restart VM",
       "createBackup": "Create Backup",
       "console": "Console",
       "changeOS": "Change/Reinstall OS",
       "deletePackage": "Delete Package",
-      "configurateVM": "Configurate VM"
+      "configurateVM": "Configurate VM",
+      "requestSshKey": "Request New SSH Key",
+      "generating": "Generating...",
+      "openTerminal": "Open Terminal"
     },
     "billing": {
       "title": "Billing Information",
