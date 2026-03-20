@@ -231,7 +231,7 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
               type="button"
               onClick={handleReconnect}
               title="Reconnect"
-              className="flex items-center justify-center h-7 w-7 rounded text-gray-300 hover:text-white hover:bg-gray-600 transition-colors"
+              className="flex items-center justify-center h-7 w-7 rounded border border-gray-300 text-gray-300 hover:text-white hover:border-white hover:bg-gray-600 transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -240,7 +240,7 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
             type="button"
             onClick={toggleFullscreen}
             title={isFullscreen ? "Minimize" : "Maximize"}
-            className="flex items-center justify-center h-7 w-7 rounded text-gray-300 hover:text-white hover:bg-gray-600 transition-colors"
+            className="flex items-center justify-center h-7 w-7 rounded border border-gray-300 text-gray-300 hover:text-white hover:border-white hover:bg-gray-600 transition-colors"
           >
             {isFullscreen ? (
               <Minimize2 className="w-4 h-4" />
@@ -252,7 +252,7 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
             type="button"
             onClick={onClose}
             title="Close"
-            className="flex items-center justify-center h-7 w-7 rounded text-gray-300 hover:text-white hover:bg-red-600 transition-colors"
+            className="flex items-center justify-center h-7 w-7 rounded border border-gray-300 text-gray-300 hover:text-white hover:border-white hover:bg-red-600 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
