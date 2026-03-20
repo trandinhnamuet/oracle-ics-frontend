@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Search, Package, Calendar, Clock, AlertTriangle, Settings, Play, Pause, Trash2, Eye, Loader2, RefreshCw } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { formatDateOnly } from '@/lib/utils'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import BalanceDisplay from '@/components/wallet/balance-display'
 import WalletSidebar from '@/components/wallet/wallet-sidebar'
@@ -496,10 +497,10 @@ export default function PackageManagementPage() {
                           {vmIpv4 || <span className="text-muted-foreground">-</span>}
                         </TableCell>
                         <TableCell>
-                          {new Date(sub.created_at).toLocaleDateString('vi-VN')}
+                          {formatDateOnly(sub.created_at)}
                         </TableCell>
                         <TableCell>
-                          {new Date(sub.end_date).toLocaleDateString('vi-VN')}
+                          {formatDateOnly(sub.end_date)}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">

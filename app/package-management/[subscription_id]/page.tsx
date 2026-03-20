@@ -35,6 +35,7 @@ import { getSubscriptionById, deleteSubscription, Subscription } from '@/api/sub
 import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
+import { formatDateOnly, formatDateTime } from '@/lib/utils'
 
 // Demo data for charts
 const cpuData = [
@@ -142,10 +143,10 @@ export default function PackageDetailPage() {
           bandwidth: data.cloudPackage?.bandwidth || 'N/A',
           feature: data.cloudPackage?.feature || 'N/A',
           ipAddress: '', // Will be populated from vmDetails
-          createdAt: new Date(data.created_at).toLocaleDateString('vi-VN'),
-          startDate: new Date(data.start_date).toLocaleDateString('vi-VN'),
-          endDate: new Date(data.end_date).toLocaleDateString('vi-VN'),
-          nextBilling: new Date(data.end_date).toLocaleDateString('vi-VN'),
+          createdAt: formatDateOnly(data.created_at),
+          startDate: formatDateOnly(data.start_date),
+          endDate: formatDateOnly(data.end_date),
+          nextBilling: formatDateOnly(data.end_date),
           monthlyPrice: data.cloudPackage?.cost_vnd ? parseFloat(data.cloudPackage.cost_vnd) : 0,
           autoRenew: data.auto_renew,
           user: data.user
@@ -572,7 +573,7 @@ export default function PackageDetailPage() {
                       <>
                         <div>
                           <p className="text-sm text-gray-600 dark:text-muted-foreground">Thời điểm bắt đầu chạy</p>
-                          <p className="font-semibold">{new Date(vmDetails.vm.startedAt).toLocaleString('vi-VN')}</p>
+                          <p className="font-semibold">{formatDateTime(vmDetails.vm.startedAt)}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-600 dark:text-muted-foreground">Uptime</p>
@@ -1055,7 +1056,7 @@ export default function PackageDetailPage() {
                     <div>
                       <p className="text-sm text-gray-600 dark:text-muted-foreground">Created Date</p>
                       <p className="font-semibold">
-                        {vmDetails.vm.createdAt ? new Date(vmDetails.vm.createdAt).toLocaleDateString('vi-VN') : '-'}
+                        {vmDetails.vm.createdAt ? formatDateOnly(vmDetails.vm.createdAt) : '-'}
                       </p>
                     </div>
                   </>

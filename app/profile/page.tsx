@@ -56,6 +56,7 @@ import { useAuth } from '@/lib/auth-context'
 import { imageApi } from '@/api/image.api'
 import { updateUserAvatar, updateUserProfile, changePassword } from '@/api/user.api'
 import { useToast } from '@/hooks/use-toast'
+import { formatDateOnly } from '@/lib/utils'
 
 type ProfileFormData = {
   firstName: string
@@ -288,12 +289,7 @@ function ProfilePage() {
     return 'U'
   }
 
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString('vi-VN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+  const formatDate = (dateString: string) => formatDateOnly(dateString)
 
   const genderLabel = (g?: string) => {
     if (!g) return undefined

@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import { useAuth } from '@/lib/auth-context'
 import { useToast } from '@/hooks/use-toast'
+import { formatDateTime } from '@/lib/utils'
 import {
   createSupportTicket,
   getMyTickets,
@@ -186,8 +187,7 @@ export default function SupportPage() {
     }
   }
 
-  const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+  const formatDate = (d: string) => formatDateTime(d)
 
   return (
     <div className="min-h-screen bg-background">

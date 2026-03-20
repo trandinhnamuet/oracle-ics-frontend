@@ -29,7 +29,7 @@ import {
   Clock,
   Loader2,
 } from 'lucide-react'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, formatDateTime } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { walletTransactionApi, WalletTransaction } from '@/api/wallet-transaction.api'
 import { paymentApi, Payment } from '@/api/payment.api'
@@ -75,15 +75,7 @@ export default function PaymentHistoryPage() {
     },
   }), [t])
 
-  const formatDate = (dateString: string) => {
-    return new Intl.DateTimeFormat(i18n.language || 'vi', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(new Date(dateString))
-  }
+  const formatDate = (dateString: string) => formatDateTime(dateString, i18n.language || undefined)
 
   const [transactions, setTransactions] = useState<WalletTransaction[]>([])
   const [filtered, setFiltered] = useState<WalletTransaction[]>([])
