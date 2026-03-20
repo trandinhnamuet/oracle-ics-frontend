@@ -1622,6 +1622,37 @@
       "message4": "VMが実行中の場合、グラフが利用可能です",
       "label": "VMはまだ構成されていません",
       "deleteButton": "VMを削除（サブスクリプションを保持）"
+    },
+    "sshKeyRequest": {
+      "title": "新しいSSHキーの作成を確認",
+      "warningTitle": "重要なセキュリティに関する注意事項",
+      "warningItem1": "新しいSSHキーが作成され、VMに追加されます",
+      "warningItem2": "古いキーは引き続き使用できます — そのまま利用可能です",
+      "warningItem3": "最大2つのユーザーSSHキー + 1つの管理者キー（合計3キー）",
+      "warningItem4": "ユーザーキーがすでに2つある場合、最も古いユーザーキーが自動的に削除されます",
+      "vmInfoTitle": "VM情報：",
+      "privateKeyOnScreen": "秘密鍵はダウンロード用に画面に直接表示されます",
+      "processTitle": "🔐 キー生成プロセス：",
+      "processStep1": "システムが新しいRSA 4096ビットSSHキーペアを生成",
+      "processStep2": "公開鍵がVMメタデータに追加される",
+      "processStep3": "秘密鍵がダウンロード用に画面に直接表示される（一度限り）",
+      "processStep4": "古いキーは引き続き動作し、制限を超えると自動的に削除される",
+      "importantLabel": "重要：",
+      "importantNote1": "秘密鍵は",
+      "importantOnce": "一度だけ表示されます",
+      "importantNote2": "作成後すぐに保存してください。",
+      "cancel": "キャンセル",
+      "creating": "キーを生成中...",
+      "confirm": "新しいSSHキーを確認"
+    },
+    "newSshKeyCreated": {
+      "title": "新しいSSHキーが正常に作成されました！",
+      "onceWarningTitle": "⚠️ この情報は1回のみ表示されます",
+      "onceWarningDesc": "今すぐ保存してください。このウィンドウを閉じると、秘密鍵を再度確認することはできません。",
+      "copy": "キーをコピー",
+      "copied": "コピーしました！",
+      "download": "ダウンロード (.pem)",
+      "close": "保存済み — 閉じる"
     }
   },
   "support": {

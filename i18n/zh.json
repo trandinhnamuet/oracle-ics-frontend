@@ -1623,6 +1623,37 @@
       "message4": "VM运行时图表可用",
       "label": "VM尚未配置",
       "deleteButton": "删除VM（保留订阅）"
+    },
+    "sshKeyRequest": {
+      "title": "确认生成新 SSH 密钥",
+      "warningTitle": "重要安全提示",
+      "warningItem1": "将创建新的 SSH 密钥并添加到您的 VM",
+      "warningItem2": "旧密钥继续正常工作 — 您可以继续使用",
+      "warningItem3": "最多 2 个用户 SSH 密钥 + 1 个管理员密钥（共 3 个）",
+      "warningItem4": "如果已有 2 个用户密钥，最旧的用户密钥将被自动删除",
+      "vmInfoTitle": "VM 信息：",
+      "privateKeyOnScreen": "私钥将直接显示在屏幕上供您下载",
+      "processTitle": "🔐 密钥生成流程：",
+      "processStep1": "系统生成新的 RSA 4096 位 SSH 密钥对",
+      "processStep2": "公钥被添加到 VM 元数据",
+      "processStep3": "私钥直接显示在屏幕上供您下载（仅一次）",
+      "processStep4": "旧密钥继续工作，超出限制时自动删除",
+      "importantLabel": "重要：",
+      "importantNote1": "私钥将",
+      "importantOnce": "仅显示一次",
+      "importantNote2": "请在创建后立即保存。",
+      "cancel": "取消",
+      "creating": "正在生成密钥...",
+      "confirm": "确认生成新 SSH 密钥"
+    },
+    "newSshKeyCreated": {
+      "title": "新 SSH 密钥创建成功！",
+      "onceWarningTitle": "⚠️ 此信息仅显示一次",
+      "onceWarningDesc": "请立即保存。关闭此窗口后，您将无法再次查看私钥。",
+      "copy": "复制密钥",
+      "copied": "已复制！",
+      "download": "下载 (.pem)",
+      "close": "已保存 — 关闭"
     }
   },
   "support": {

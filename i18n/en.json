@@ -1606,6 +1606,37 @@
       "message4": "Charts available when VM is running",
       "label": "VM not configured yet",
       "deleteButton": "Delete VM (keep subscription)"
+    },
+    "sshKeyRequest": {
+      "title": "Confirm New SSH Key Generation",
+      "warningTitle": "Important Security Notice",
+      "warningItem1": "A new SSH key will be created and added to your VM",
+      "warningItem2": "Old key continues to work normally — you can keep using it",
+      "warningItem3": "Maximum 2 user SSH keys + 1 admin key (3 keys total)",
+      "warningItem4": "If you already have 2 user keys, the oldest user key will be automatically removed",
+      "vmInfoTitle": "VM Information:",
+      "privateKeyOnScreen": "Private key will be displayed directly on screen for you to download",
+      "processTitle": "🔐 Key generation process:",
+      "processStep1": "System generates a new RSA 4096-bit SSH key pair",
+      "processStep2": "Public key is added to VM metadata",
+      "processStep3": "Private key is displayed directly on screen for you to download (one time only)",
+      "processStep4": "Old key continues to work, automatically removed when limit is exceeded",
+      "importantLabel": "Important:",
+      "importantNote1": "Private key will be displayed",
+      "importantOnce": "ONLY ONCE",
+      "importantNote2": "Save it immediately after creation.",
+      "cancel": "Cancel",
+      "creating": "Generating key...",
+      "confirm": "Confirm New SSH Key"
+    },
+    "newSshKeyCreated": {
+      "title": "New SSH Key Created Successfully!",
+      "onceWarningTitle": "⚠️ This information is displayed only ONCE",
+      "onceWarningDesc": "Please save it now. After closing this window, you will not be able to view the private key again.",
+      "copy": "Copy key",
+      "copied": "Copied!",
+      "download": "Download (.pem)",
+      "close": "Saved — Close"
     }
   },
   "support": {

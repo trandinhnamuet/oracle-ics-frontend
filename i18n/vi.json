@@ -1605,6 +1605,37 @@
       "message4": "Biểu đồ sẽ khả dụng khi VM đang chạy",
       "label": "VM chưa được cấu hình",
       "deleteButton": "Xóa VM (giữ nguyên subscription)"
+    },
+    "sshKeyRequest": {
+      "title": "Xác nhận tạo SSH Key mới",
+      "warningTitle": "Lưu ý quan trọng về bảo mật",
+      "warningItem1": "SSH key mới sẽ được tạo và thêm vào VM của bạn",
+      "warningItem2": "Key cũ vẫn hoạt động bình thường - bạn có thể tiếp tục sử dụng",
+      "warningItem3": "Tối đa 2 user SSH keys + 1 admin key (3 keys total)",
+      "warningItem4": "Nếu đã có 2 user keys, key user cũ nhất sẽ tự động bị xóa",
+      "vmInfoTitle": "Thông tin VM:",
+      "privateKeyOnScreen": "Private key sẽ hiển thị trực tiếp trên màn hình để bạn tải về",
+      "processTitle": "🔐 Quy trình tạo key:",
+      "processStep1": "Hệ thống tạo cặp SSH key RSA 4096-bit mới",
+      "processStep2": "Public key được thêm vào VM metadata",
+      "processStep3": "Private key hiển thị trực tiếp trên màn hình để bạn tải về (chỉ lần này duy nhất)",
+      "processStep4": "Key cũ vẫn hoạt động, tự động xóa khi vượt giới hạn",
+      "importantLabel": "Quan trọng:",
+      "importantNote1": "Private key sẽ hiển thị",
+      "importantOnce": "CHỈ MỘT LẦN DUY NHẤT",
+      "importantNote2": "Hãy lưu lại ngay sau khi tạo xong.",
+      "cancel": "Hủy bỏ",
+      "creating": "Đang tạo key...",
+      "confirm": "Xác nhận tạo SSH Key mới"
+    },
+    "newSshKeyCreated": {
+      "title": "SSH Key mới đã tạo thành công!",
+      "onceWarningTitle": "⚠️ Thông tin này chỉ hiển thị 1 lần duy nhất",
+      "onceWarningDesc": "Vui lòng lưu lại ngay bây giờ. Sau khi đóng cửa sổ này, bạn sẽ không thể xem lại private key.",
+      "copy": "Sao chép key",
+      "copied": "Đã sao chép!",
+      "download": "Tải về (.pem)",
+      "close": "Đã lưu — Đóng"
     }
   },
   "support": {

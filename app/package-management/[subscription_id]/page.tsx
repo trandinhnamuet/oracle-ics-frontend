@@ -1253,16 +1253,16 @@ export default function PackageDetailPage() {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-xl">
               <CheckCircle className="h-6 w-6 text-green-500" />
-              SSH Key mới đã tạo thành công!
+              {t('packageDetail.newSshKeyCreated.title')}
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-4 text-left pt-2">
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
                   <p className="font-semibold text-red-900 text-sm">
-                    ⚠️ Thông tin này chỉ hiển thị 1 lần duy nhất
+                    {t('packageDetail.newSshKeyCreated.onceWarningTitle')}
                   </p>
                   <p className="text-red-800 text-sm mt-1">
-                    Vui lòng lưu lại ngay bây giờ. Sau khi đóng cửa sổ này, bạn sẽ không thể xem lại private key.
+                    {t('packageDetail.newSshKeyCreated.onceWarningDesc')}
                   </p>
                 </div>
 
@@ -1287,7 +1287,7 @@ export default function PackageDetailPage() {
                     className="flex-1"
                   >
                     {copiedField === 'newkey' ? <Check className="h-4 w-4 mr-1 text-green-500" /> : <Copy className="h-4 w-4 mr-1" />}
-                    {copiedField === 'newkey' ? 'Đã sao chép!' : 'Sao chép key'}
+                    {copiedField === 'newkey' ? t('packageDetail.newSshKeyCreated.copied') : t('packageDetail.newSshKeyCreated.copy')}
                   </Button>
                   <Button
                     size="sm"
@@ -1295,7 +1295,7 @@ export default function PackageDetailPage() {
                     className="flex-1 bg-blue-600 hover:bg-blue-700"
                   >
                     <Download className="h-4 w-4 mr-1" />
-                    Tải về (.pem)
+                    {t('packageDetail.newSshKeyCreated.download')}
                   </Button>
                 </div>
               </div>
@@ -1306,7 +1306,7 @@ export default function PackageDetailPage() {
               onClick={() => setNewSshKey(null)}
               className="bg-green-600 hover:bg-green-700"
             >
-              Đã lưu — Đóng
+              {t('packageDetail.newSshKeyCreated.close')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
