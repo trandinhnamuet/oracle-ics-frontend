@@ -225,37 +225,37 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
             <span className="text-xs text-red-400 ml-2">● Disconnected</span>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {error && !isConnecting && (
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
+              type="button"
               onClick={handleReconnect}
-              className="h-7 px-2 text-gray-300 hover:text-white hover:bg-gray-600"
+              title="Reconnect"
+              className="flex items-center justify-center h-7 w-7 rounded text-gray-300 hover:text-white hover:bg-gray-600 transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
-            </Button>
+            </button>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
+            type="button"
             onClick={toggleFullscreen}
-            className="h-7 px-2 text-gray-300 hover:text-white hover:bg-gray-600"
+            title={isFullscreen ? "Minimize" : "Maximize"}
+            className="flex items-center justify-center h-7 w-7 rounded text-gray-300 hover:text-white hover:bg-gray-600 transition-colors"
           >
             {isFullscreen ? (
               <Minimize2 className="w-4 h-4" />
             ) : (
               <Maximize2 className="w-4 h-4" />
             )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
+          </button>
+          <button
+            type="button"
             onClick={onClose}
-            className="h-7 px-2 text-gray-300 hover:text-white hover:bg-red-600/70"
+            title="Close"
+            className="flex items-center justify-center h-7 w-7 rounded text-gray-300 hover:text-white hover:bg-red-600 transition-colors"
           >
             <X className="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 
