@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import Image from 'next/image'
@@ -41,7 +41,7 @@ import {
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/lib/auth-context'
 import { getSubscriptionById } from '@/api/subscription.api'
-import { configureSubscriptionVm } from '@/api/vm-subscription.api'
+import { configureSubscriptionVm, getSubscriptionVm } from '@/api/vm-subscription.api'
 import { getComputeImages, type ComputeImage } from '@/api/oci.api'
 
 // OS Icon mapping
@@ -127,8 +127,40 @@ export default function CloudConfigurationBySubscriptionPage() {
     privateKey?: string
     username?: string
     password?: string
+    subscriptionId?: string
   } | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const windowsPasswordPollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Auto-poll for Windows password when in pending state
+  useEffect(() => {
+    if (vmCredentials?.type !== 'windows-pending' || !vmCredentials.subscriptionId) return
+
+    const sid = vmCredentials.subscriptionId
+    windowsPasswordPollRef.current = setInterval(async () => {
+      try {
+        const vmData = await getSubscriptionVm(sid)
+        const vm = vmData?.vm
+        if (vm?.windowsInitialPassword) {
+          clearInterval(windowsPasswordPollRef.current!)
+          windowsPasswordPollRef.current = null
+          setVmCredentials(prev => prev ? {
+            ...prev,
+            type: 'windows',
+            username: prev.username || 'opc',
+            password: vm.windowsInitialPassword,
+            publicIp: prev.publicIp || vm.publicIp,
+          } : null)
+        }
+      } catch {
+        // Ignore polling errors, keep trying
+      }
+    }, 10000)
+
+    return () => {
+      if (windowsPasswordPollRef.current) clearInterval(windowsPasswordPollRef.current)
+    }
+  }, [vmCredentials?.type, vmCredentials?.subscriptionId])
 
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -278,12 +310,13 @@ export default function CloudConfigurationBySubscriptionPage() {
           password: response.vm.windowsInitialPassword,
         })
       } else if (isWindows) {
-        // Windows - password pending async retrieval
+        // Windows - password pending async retrieval, start polling
         setVmCredentials({
           type: 'windows-pending',
           instanceName,
           publicIp,
           username: 'opc',
+          subscriptionId,
         })
       } else if (response.sshKey?.privateKey) {
         // Linux - SSH key available
@@ -890,6 +923,18 @@ export default function CloudConfigurationBySubscriptionPage() {
                         {t('cloudConfig.vmCreated.downloadPem')}
                       </Button>
                     </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => downloadFile(
+                        `============================\nVM CREDENTIALS - KEEP SAFE\n============================\nVM Name: ${vmCredentials.instanceName}\nPublic IP: ${vmCredentials.publicIp || '(available after a few minutes)'}\nUsername: opc\nSSH Key File: ${vmCredentials.instanceName}-key.pem\n\nConnect command:\n  ssh -i ${vmCredentials.instanceName}-key.pem opc@${vmCredentials.publicIp || '<YOUR_IP>'}\n\n----\nPrivate Key (save as ${vmCredentials.instanceName}-key.pem):\n${vmCredentials.privateKey}\n============================`,
+                        `${vmCredentials.instanceName}-ssh-info.txt`
+                      )}
+                      className="w-full"
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      Tải thông tin đăng nhập đầy đủ (.txt)
+                    </Button>
                     <p className="text-xs text-muted-foreground">
                       {t('cloudConfig.vmCreated.connectLabel')}<code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem opc@{vmCredentials.publicIp || 'YOUR_IP'}</code>
                     </p>
@@ -917,7 +962,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                     <Button
                       size="sm"
                       onClick={() => downloadFile(
-                        `VM: ${vmCredentials.instanceName}\nIP: ${vmCredentials.publicIp || ''}\nUsername: ${vmCredentials.username}\nPassword: ${vmCredentials.password}`,
+                        `============================\nVM CREDENTIALS - KEEP SAFE\n============================\nVM Name: ${vmCredentials.instanceName}\nPublic IP: ${vmCredentials.publicIp || '(available after a few minutes)'}\nUsername: ${vmCredentials.username}\nPassword: ${vmCredentials.password}\n\nRDP Connection:\n  Host: ${vmCredentials.publicIp || '<YOUR_IP>'}\n  Username: ${vmCredentials.username}\n  Password: ${vmCredentials.password}\n============================`,
                         `${vmCredentials.instanceName}-rdp-credentials.txt`
                       )}
                       className="w-full bg-blue-600 hover:bg-blue-700"
@@ -928,18 +973,28 @@ export default function CloudConfigurationBySubscriptionPage() {
                   </div>
                 )}
 
-                {/* Windows Password Pending */}
+                {/* Windows Password Pending — auto-polling every 10s */}
                 {vmCredentials?.type === 'windows-pending' && (
-                  <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
-                    <p className="font-semibold text-yellow-900">{t('cloudConfig.vmCreated.windowsPendingTitle')}</p>
-                    <p className="text-yellow-800 text-sm mt-1">
-                      {t('cloudConfig.vmCreated.windowsPendingDesc1')}
-                    </p>
-                    <p className="text-yellow-800 text-sm mt-1">
-                      {t('cloudConfig.vmCreated.windowsPendingDesc2')}
-                    </p>
-                    <p className="text-yellow-800 text-sm mt-1">
-                      <strong>Username:</strong> {vmCredentials.username}
+                  <div className="space-y-3">
+                    <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
+                      <p className="font-semibold text-yellow-900 flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {t('cloudConfig.vmCreated.windowsPendingTitle')}
+                      </p>
+                      <p className="text-yellow-800 text-sm mt-2">
+                        {t('cloudConfig.vmCreated.windowsPendingDesc1')}
+                      </p>
+                      <p className="text-yellow-800 text-sm mt-1">
+                        {t('cloudConfig.vmCreated.windowsPendingDesc2')}
+                      </p>
+                    </div>
+                    <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-sm font-mono">
+                      <p><strong>Username:</strong> {vmCredentials.username}</p>
+                      {vmCredentials.publicIp && <p className="mt-1"><strong>IP:</strong> {vmCredentials.publicIp}</p>}
+                      <p className="mt-1 text-muted-foreground italic">Password đang được tạo — trang này sẽ tự động cập nhật...</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center">
+                      🔄 Đang tự động kiểm tra mỗi 10 giây. Vui lòng giữ trang này mở.
                     </p>
                   </div>
                 )}
@@ -950,6 +1005,10 @@ export default function CloudConfigurationBySubscriptionPage() {
           <AlertDialogFooter>
             <AlertDialogAction
               onClick={() => {
+                if (windowsPasswordPollRef.current) {
+                  clearInterval(windowsPasswordPollRef.current)
+                  windowsPasswordPollRef.current = null
+                }
                 setVmCredentials(null)
                 router.push(`/package-management/${subscriptionId}`)
               }}
