@@ -499,33 +499,8 @@ export default function CloudConfigurationBySubscriptionPage() {
               </CardContent>
             </Card>
 
-            {/* Notification Email */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Mail className="h-5 w-5 mr-2" />
-                  {t('cloudConfig.notificationSettings')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div>
-                  <Label htmlFor="email">
-                    {t('cloudConfig.emailLabel')}
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={user?.email || ''}
-                    readOnly
-                    disabled
-                    className="mt-2 bg-gray-100 dark:bg-muted cursor-not-allowed"
-                  />
-                  <p className="text-sm text-gray-500 dark:text-muted-foreground mt-2">
-                    {t('cloudConfig.emailNote')}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Notification Email - Removed */}
+
           </div>
 
           {/* Column 2: VM Shape + OS Selection */}
