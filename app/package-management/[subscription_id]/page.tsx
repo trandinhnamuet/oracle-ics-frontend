@@ -581,28 +581,6 @@ export default function PackageDetailPage() {
                       <p className="text-sm text-gray-600 dark:text-muted-foreground">Compartment ID <span className="text-xs text-gray-400 dark:text-muted-foreground">(will be hide in production)</span></p>
                       <p className="font-semibold text-xs break-all">{vmDetails?.vm?.compartmentId || 'N/A'}</p>
                     </div>
-                    {vmDetails?.vm?.startedAt && (
-                      <>
-                        <div>
-                          <p className="text-sm text-gray-600 dark:text-muted-foreground">Thời điểm bắt đầu chạy</p>
-                          <p className="font-semibold">{formatDateTime(vmDetails.vm.startedAt)}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600 dark:text-muted-foreground">Uptime</p>
-                          <p className="font-semibold">
-                            {(() => {
-                              const startTime = new Date(vmDetails.vm.startedAt).getTime()
-                              const now = new Date().getTime()
-                              const diff = now - startTime
-                              const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-                              const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-                              const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-                              return `${days}d ${hours}h ${minutes}m`
-                            })()}
-                          </p>
-                        </div>
-                      </>
-                    )}
                   </div>
                 )}
 
