@@ -908,7 +908,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                       className="w-full"
                     >
                       <Download className="h-4 w-4 mr-1" />
-                      Tải thông tin đăng nhập đầy đủ (.txt)
+                      {t('cloudConfig.vmCreated.downloadFullCredentials')}
                     </Button>
                     <p className="text-xs text-muted-foreground">
                       {t('cloudConfig.vmCreated.connectLabel')}<code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem opc@{vmCredentials.publicIp || 'YOUR_IP'}</code>
@@ -919,23 +919,23 @@ export default function CloudConfigurationBySubscriptionPage() {
                 {/* Windows Password (available immediately) */}
                 {vmCredentials?.type === 'windows' && vmCredentials.password && (
                   <div className="space-y-2">
-                    <p className="font-semibold">🪟 Windows RDP Credentials</p>
+                    <p className="font-semibold">{t('cloudConfig.vmCreated.windowsRdpTitle')}</p>
                     <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded space-y-2 text-sm font-mono">
                       <div className="flex items-center justify-between">
-                        <span><strong>Username:</strong> {vmCredentials.username}</span>
+                        <span><strong>{t('cloudConfig.vmCreated.username')}:</strong> {vmCredentials.username}</span>
                         <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmCredentials.username!, 'user')}>
                           {copiedField === 'user' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
                         </Button>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span><strong>Initial password:</strong> {vmCredentials.password}</span>
+                        <span><strong>{t('cloudConfig.vmCreated.initialPassword')}:</strong> {vmCredentials.password}</span>
                         <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmCredentials.password!, 'pass')}>
                           {copiedField === 'pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
                         </Button>
                       </div>
                     </div>
                     <p className="text-xs text-blue-600 dark:text-blue-400">
-                      💡 Mật khẩu này cũng có thể xem lại tại trang <strong>Quản lý VM</strong> (mục <em>Windows RDP Credentials → Initial password</em>).
+                      {t('cloudConfig.vmCreated.windowsHint')}
                     </p>
                     <Button
                       size="sm"
@@ -957,22 +957,22 @@ export default function CloudConfigurationBySubscriptionPage() {
                     <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
                       <p className="font-semibold text-yellow-900 flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        ⏳ Mật khẩu Windows đang được tạo
+                        {t('cloudConfig.vmCreated.windowsPendingTitle')}
                       </p>
                       <p className="text-yellow-800 text-sm mt-2">
-                        Mật khẩu khởi tạo (Initial password) sẽ sẵn sàng trong <strong>5–10 phút</strong>.
+                        {t('cloudConfig.vmCreated.windowsPendingDesc1')}
                       </p>
                       <p className="text-yellow-800 text-sm mt-1">
-                        Sau khi đóng màn hình này, bạn có thể xem mật khẩu tại trang <strong>Quản lý VM</strong> (mục <em>Windows RDP Credentials → Initial password</em>).
+                        {t('cloudConfig.vmCreated.windowsPendingDesc2')}
                       </p>
                     </div>
                     <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-sm font-mono">
-                      <p><strong>Username:</strong> {vmCredentials.username}</p>
+                      <p><strong>{t('cloudConfig.vmCreated.username')}:</strong> {vmCredentials.username}</p>
                       {vmCredentials.publicIp && <p className="mt-1"><strong>IP:</strong> {vmCredentials.publicIp}</p>}
-                      <p className="mt-1 text-muted-foreground italic">Initial password đang được tạo — trang này sẽ tự động cập nhật...</p>
+                      <p className="mt-1 text-muted-foreground italic">{t('cloudConfig.vmCreated.windowsPendingGeneratingNote')}</p>
                     </div>
                     <p className="text-xs text-muted-foreground text-center">
-                      🔄 Đang tự động kiểm tra mỗi 10 giây. Vui lòng giữ trang này mở.
+                      {t('cloudConfig.vmCreated.autoCheckEvery10s')}
                     </p>
                   </div>
                 )}
