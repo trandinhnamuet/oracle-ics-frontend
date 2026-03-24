@@ -928,12 +928,15 @@ export default function CloudConfigurationBySubscriptionPage() {
                         </Button>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span><strong>Password:</strong> {vmCredentials.password}</span>
+                        <span><strong>Initial password:</strong> {vmCredentials.password}</span>
                         <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmCredentials.password!, 'pass')}>
                           {copiedField === 'pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
                         </Button>
                       </div>
                     </div>
+                    <p className="text-xs text-blue-600 dark:text-blue-400">
+                      💡 Mật khẩu này cũng có thể xem lại tại trang <strong>Quản lý VM</strong> (mục <em>Windows RDP Credentials → Initial password</em>).
+                    </p>
                     <Button
                       size="sm"
                       onClick={() => downloadFile(
@@ -954,19 +957,19 @@ export default function CloudConfigurationBySubscriptionPage() {
                     <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
                       <p className="font-semibold text-yellow-900 flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        {t('cloudConfig.vmCreated.windowsPendingTitle')}
+                        ⏳ Mật khẩu Windows đang được tạo
                       </p>
                       <p className="text-yellow-800 text-sm mt-2">
-                        {t('cloudConfig.vmCreated.windowsPendingDesc1')}
+                        Mật khẩu khởi tạo (Initial password) sẽ sẵn sàng trong <strong>5–10 phút</strong>.
                       </p>
                       <p className="text-yellow-800 text-sm mt-1">
-                        {t('cloudConfig.vmCreated.windowsPendingDesc2')}
+                        Sau khi đóng màn hình này, bạn có thể xem mật khẩu tại trang <strong>Quản lý VM</strong> (mục <em>Windows RDP Credentials → Initial password</em>).
                       </p>
                     </div>
                     <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-sm font-mono">
                       <p><strong>Username:</strong> {vmCredentials.username}</p>
                       {vmCredentials.publicIp && <p className="mt-1"><strong>IP:</strong> {vmCredentials.publicIp}</p>}
-                      <p className="mt-1 text-muted-foreground italic">Password đang được tạo — trang này sẽ tự động cập nhật...</p>
+                      <p className="mt-1 text-muted-foreground italic">Initial password đang được tạo — trang này sẽ tự động cập nhật...</p>
                     </div>
                     <p className="text-xs text-muted-foreground text-center">
                       🔄 Đang tự động kiểm tra mỗi 10 giây. Vui lòng giữ trang này mở.
