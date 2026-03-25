@@ -1588,7 +1588,9 @@
       "configurateVM": "VM設定",
       "requestSshKey": "新しいSSHキーをリクエスト",
       "generating": "生成中...",
-      "openTerminal": "ターミナルを開く"
+      "openTerminal": "ターミナルを開く",
+      "resetPassword": "Windowsパスワードリセット",
+      "resettingPassword": "パスワードをリセット中..."
     },
     "billing": {
       "title": "請求情報",
@@ -1612,7 +1614,11 @@
       "deleteVmFailedDesc": "後で再試するか、サポートにお問い合わせください。",
       "deleteSuccess": "削除成功",
       "deleteSuccessDesc": "サブスクリプションとVMが完全に削除されました",
-      "deleteError": "サブスクリプションの削除エラー"
+      "deleteError": "サブスクリプションの削除エラー",
+      "passwordResetSuccess": "パスワードのリセット成功",
+      "passwordResetSuccessDesc": "新しいWindowsパスワードが設定されました。今すぐ保存してください。",
+      "passwordResetError": "パスワードのリセット失敗",
+      "passwordResetErrorDesc": "Windowsパスワードをリセットできませんでした。もう一度お試しください。"
     },
     "confirmDialog": {
       "cancel": "キャンセル",
@@ -1663,6 +1669,17 @@
       "copy": "キーをコピー",
       "copied": "コピーしました！",
       "download": "ダウンロード (.pem)",
+      "close": "保存済み — 閉じる"
+    },
+    "resetPassword": {
+      "title": "Windowsパスワードリセット",
+      "description": "Windows VMの新しいパスワードを生成します。現在のパスワードは置き換えられます。新しいパスワードを必ず保存してください。",
+      "confirm": "パスワードリセット",
+      "resettingTitle": "パスワードをリセット中...",
+      "resettingDesc": "Windows VMに接続してパスワードを変更しています。お待ちください...",
+      "successTitle": "パスワードリセット成功！",
+      "successDesc": "Windows VMのパスワードが変更されました。以下の新しいパスワードを保存してください。",
+      "saveWarning": "今すぐこのパスワードを保存してください。Windows RDP資格情報セクションで後で確認できます。",
       "close": "保存済み — 閉じる"
     }
   },

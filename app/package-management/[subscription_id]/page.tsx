@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp, Copy, Key, Check, CheckCircle } from 'lucide-react'
+import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp, Copy, Key, Check, CheckCircle, Lock } from 'lucide-react'
 import { ConfirmSshKeyRequestDialog } from '@/components/dialogs/confirm-ssh-key-request-dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
@@ -32,7 +32,7 @@ import {
   Area
 } from 'recharts'
 import { getSubscriptionById, deleteSubscription, Subscription } from '@/api/subscription.api'
-import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, VmDetails } from '@/api/vm-subscription.api'
+import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, resetWindowsPassword, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
 import { formatDateOnly, formatDateTime, parseAsUtc } from '@/lib/utils'
@@ -112,6 +112,9 @@ export default function PackageDetailPage() {
   const [isRequestingSshKey, setIsRequestingSshKey] = useState(false)
   const [newSshKey, setNewSshKey] = useState<{ privateKey: string; instanceName: string } | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [isResettingPassword, setIsResettingPassword] = useState(false)
+  const [resetPasswordDialog, setResetPasswordDialog] = useState(false)
+  const [newWindowsPassword, setNewWindowsPassword] = useState<string | null>(null)
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean
     title: string
@@ -363,6 +366,33 @@ export default function PackageDetailPage() {
       })
     } finally {
       setIsRequestingSshKey(false)
+    }
+  }
+
+  const handleResetWindowsPassword = async () => {
+    setResetPasswordDialog(false)
+    setIsResettingPassword(true)
+    try {
+      const result = await resetWindowsPassword(subscriptionId)
+      setNewWindowsPassword(result.newPassword)
+      // Refresh VM details to get updated password
+      const updatedVm = await getSubscriptionVm(subscriptionId)
+      setVmDetails(updatedVm)
+      toast({
+        title: t('packageDetail.toast.passwordResetSuccess'),
+        description: t('packageDetail.toast.passwordResetSuccessDesc'),
+        duration: 8000,
+      })
+    } catch (error: any) {
+      console.error('Error resetting Windows password:', error)
+      toast({
+        title: t('packageDetail.toast.passwordResetError'),
+        description: error?.response?.data?.message || error?.message || t('packageDetail.toast.passwordResetErrorDesc'),
+        variant: 'destructive',
+        duration: 8000,
+      })
+    } finally {
+      setIsResettingPassword(false)
     }
   }
 
@@ -1066,15 +1096,27 @@ export default function PackageDetailPage() {
                     {t('packageDetail.actions.restartVM')}
                   </Button>
                   
-                  <Button 
-                    className="w-full justify-start"
-                    variant="outline"
-                    onClick={handleRequestNewKey}
-                    disabled={isLoading || isRequestingSshKey}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    {isRequestingSshKey ? t('packageDetail.actions.generating') : t('packageDetail.actions.requestSshKey')}
-                  </Button>
+                  {vmDetails?.vm?.operatingSystem?.toLowerCase().includes('windows') ? (
+                    <Button 
+                      className="w-full justify-start"
+                      variant="outline"
+                      onClick={() => setResetPasswordDialog(true)}
+                      disabled={isLoading || isResettingPassword || vmDetails?.vm?.lifecycleState !== 'RUNNING'}
+                    >
+                      <Lock className="h-4 w-4 mr-2" />
+                      {isResettingPassword ? t('packageDetail.actions.resettingPassword') : t('packageDetail.actions.resetPassword')}
+                    </Button>
+                  ) : (
+                    <Button 
+                      className="w-full justify-start"
+                      variant="outline"
+                      onClick={handleRequestNewKey}
+                      disabled={isLoading || isRequestingSshKey}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      {isRequestingSshKey ? t('packageDetail.actions.generating') : t('packageDetail.actions.requestSshKey')}
+                    </Button>
+                  )}
 
                   <Button 
                     className="w-full justify-start bg-green-600 hover:bg-green-700 text-white"
@@ -1246,6 +1288,88 @@ export default function PackageDetailPage() {
               className="bg-green-600 hover:bg-green-700"
             >
               {t('packageDetail.newSshKeyCreated.close')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reset Windows Password — Confirmation Dialog */}
+      <AlertDialog open={resetPasswordDialog} onOpenChange={setResetPasswordDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>🔑 {t('packageDetail.resetPassword.title')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('packageDetail.resetPassword.description')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('packageDetail.confirmDialog.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleResetWindowsPassword}
+              className="bg-orange-600 hover:bg-orange-700 text-white"
+            >
+              {t('packageDetail.resetPassword.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reset Windows Password — Loading Dialog */}
+      <AlertDialog open={isResettingPassword} onOpenChange={() => {}}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <RefreshCw className="h-5 w-5 animate-spin" />
+              {t('packageDetail.resetPassword.resettingTitle')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('packageDetail.resetPassword.resettingDesc')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reset Windows Password — New password display (one-time) */}
+      <AlertDialog open={!!newWindowsPassword} onOpenChange={() => {}}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-500" />
+              {t('packageDetail.resetPassword.successTitle')}
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  {t('packageDetail.resetPassword.successDesc')}
+                </p>
+                <div className="bg-gray-50 dark:bg-muted border rounded p-4 font-mono text-sm space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span><strong>Username:</strong> opc</span>
+                    <Button size="sm" variant="ghost" onClick={() => copyToClipboard('opc', 'new-win-user')}>
+                      {copiedField === 'new-win-user' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                    </Button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span><strong>Password:</strong> {newWindowsPassword}</span>
+                    <Button size="sm" variant="ghost" onClick={() => copyToClipboard(newWindowsPassword!, 'new-win-pass')}>
+                      {copiedField === 'new-win-pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                    </Button>
+                  </div>
+                </div>
+                <div className="bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500 p-3 rounded">
+                  <p className="text-sm text-red-800 dark:text-red-400 font-semibold">
+                    {t('packageDetail.resetPassword.saveWarning')}
+                  </p>
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction
+              onClick={() => setNewWindowsPassword(null)}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              {t('packageDetail.resetPassword.close')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

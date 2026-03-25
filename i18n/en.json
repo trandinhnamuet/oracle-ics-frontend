@@ -1572,7 +1572,9 @@
       "configurateVM": "Configurate VM",
       "requestSshKey": "Request New SSH Key",
       "generating": "Generating...",
-      "openTerminal": "Open Terminal"
+      "openTerminal": "Open Terminal",
+      "resetPassword": "Reset Windows Password",
+      "resettingPassword": "Resetting password..."
     },
     "billing": {
       "title": "Billing Information",
@@ -1596,7 +1598,11 @@
       "deleteVmFailedDesc": "Please try again or contact support.",
       "deleteSuccess": "Deleted successfully",
       "deleteSuccessDesc": "Subscription and VM have been completely removed",
-      "deleteError": "Error deleting subscription"
+      "deleteError": "Error deleting subscription",
+      "passwordResetSuccess": "Password reset successfully",
+      "passwordResetSuccessDesc": "New Windows password has been set. Please save it now.",
+      "passwordResetError": "Password reset failed",
+      "passwordResetErrorDesc": "Failed to reset Windows password. Please try again."
     },
     "confirmDialog": {
       "cancel": "Cancel",
@@ -1647,6 +1653,17 @@
       "copy": "Copy key",
       "copied": "Copied!",
       "download": "Download (.pem)",
+      "close": "Saved — Close"
+    },
+    "resetPassword": {
+      "title": "Reset Windows Password",
+      "description": "This will generate a new password for your Windows VM. The current password will be replaced. Make sure to save the new password.",
+      "confirm": "Reset Password",
+      "resettingTitle": "Resetting password...",
+      "resettingDesc": "Connecting to your Windows VM and changing the password. Please wait...",
+      "successTitle": "Password Reset Successfully!",
+      "successDesc": "Your Windows VM password has been changed. Please save the new password below.",
+      "saveWarning": "Please save this password now. You can view it later in the Windows RDP Credentials section.",
       "close": "Saved — Close"
     }
   },

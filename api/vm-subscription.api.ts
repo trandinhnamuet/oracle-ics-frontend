@@ -202,3 +202,18 @@ export const deleteVmOnly = async (
   return result
 }
 
+/**
+ * Reset Windows VM password
+ */
+export const resetWindowsPassword = async (
+  subscriptionId: string
+): Promise<{ success: boolean; username: string; newPassword: string; message: string }> => {
+  const result = await fetchJsonWithAuth<{ success: boolean; username: string; newPassword: string; message: string }>(
+    `${API_BASE_URL}/vm-subscription/${subscriptionId}/reset-windows-password`,
+    {
+      method: 'POST'
+    }
+  )
+  return result
+}
+

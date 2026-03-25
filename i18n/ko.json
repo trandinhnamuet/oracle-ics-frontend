@@ -1588,7 +1588,9 @@
       "configurateVM": "VM 구성",
       "requestSshKey": "새 SSH 키 요청",
       "generating": "생성 중...",
-      "openTerminal": "터미널 열기"
+      "openTerminal": "터미널 열기",
+      "resetPassword": "Windows 비밀번호 재설정",
+      "resettingPassword": "비밀번호 재설정 중..."
     },
     "billing": {
       "title": "청구 정보",
@@ -1612,7 +1614,11 @@
       "deleteVmFailedDesc": "나중에 다시 시도하거나 지원팀에 문의하세요.",
       "deleteSuccess": "삭제 성공",
       "deleteSuccessDesc": "구독과 VM이 완전히 제거되었습니다",
-      "deleteError": "구독 삭제 오류"
+      "deleteError": "구독 삭제 오류",
+      "passwordResetSuccess": "비밀번호 재설정 성공",
+      "passwordResetSuccessDesc": "새로운 Windows 비밀번호가 설정되었습니다. 지금 바로 저장하세요.",
+      "passwordResetError": "비밀번호 재설정 실패",
+      "passwordResetErrorDesc": "Windows 비밀번호를 재설정할 수 없습니다. 다시 시도해 주세요."
     },
     "confirmDialog": {
       "cancel": "취소",
@@ -1663,6 +1669,17 @@
       "copy": "키 복사",
       "copied": "복사됨!",
       "download": "다운로드 (.pem)",
+      "close": "저장됨 — 닫기"
+    },
+    "resetPassword": {
+      "title": "Windows 비밀번호 재설정",
+      "description": "Windows VM의 새 비밀번호를 생성합니다. 현재 비밀번호가 대체됩니다. 새 비밀번호를 반드시 저장하세요.",
+      "confirm": "비밀번호 재설정",
+      "resettingTitle": "비밀번호 재설정 중...",
+      "resettingDesc": "Windows VM에 연결하여 비밀번호를 변경하고 있습니다. 잠시 기다려 주세요...",
+      "successTitle": "비밀번호 재설정 성공!",
+      "successDesc": "Windows VM 비밀번호가 변경되었습니다. 아래에서 새 비밀번호를 저장하세요.",
+      "saveWarning": "지금 비밀번호를 저장하세요. Windows RDP 자격 증명 섹션에서 나중에 확인할 수 있습니다.",
       "close": "저장됨 — 닫기"
     }
   },
