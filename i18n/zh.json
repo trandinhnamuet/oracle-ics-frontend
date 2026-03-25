@@ -1554,8 +1554,8 @@
       "memoryUsage": "内存使用率 (%)",
       "cpuTitle": "CPU使用率 (%)",
       "memoryTitle": "内存使用率 (%)",
-      "networkTraffic": "网络流量 (MB/s)",
-      "diskIO": "磁盘I/O (MB/s)",
+      "networkTraffic": "网络流量 (MB)",
+      "diskIO": "磁盘I/O (MB)",
       "noData": "暂无数据"
     },
     "packageInfo": {

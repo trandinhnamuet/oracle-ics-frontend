@@ -1537,8 +1537,8 @@
       "memoryUsage": "Memory Usage (%)",
       "cpuTitle": "CPU Utilization (%)",
       "memoryTitle": "Memory Utilization (%)",
-      "networkTraffic": "Network Traffic (MB/s)",
-      "diskIO": "Disk I/O (MB/s)",
+      "networkTraffic": "Network Traffic (MB)",
+      "diskIO": "Disk I/O (MB)",
       "noData": "No data available"
     },
     "packageInfo": {

@@ -1553,8 +1553,8 @@
       "memoryUsage": "メモリ使用率 (%)",
       "cpuTitle": "CPU使用率 (%)",
       "memoryTitle": "メモリ使用率 (%)",
-      "networkTraffic": "ネットワークトラフィック (MB/s)",
-      "diskIO": "ディスクI/O (MB/s)",
+      "networkTraffic": "ネットワークトラフィック (MB)",
+      "diskIO": "ディスクI/O (MB)",
       "noData": "データなし"
     },
     "packageInfo": {

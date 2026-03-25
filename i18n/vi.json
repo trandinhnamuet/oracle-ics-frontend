@@ -1536,8 +1536,8 @@
       "memoryUsage": "Sử dụng bộ nhớ (%)",
       "cpuTitle": "Mức sử dụng CPU (%)",
       "memoryTitle": "Mức sử dụng bộ nhớ (%)",
-      "networkTraffic": "Lưu lượng mạng (MB/s)",
-      "diskIO": "Disk I/O (MB/s)",
+      "networkTraffic": "Lưu lượng mạng (MB)",
+      "diskIO": "Disk I/O (MB)",
       "noData": "Không có dữ liệu"
     },
     "packageInfo": {
