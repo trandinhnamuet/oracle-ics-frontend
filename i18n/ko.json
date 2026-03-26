@@ -1677,6 +1677,7 @@
       "confirm": "비밀번호 재설정",
       "resettingTitle": "비밀번호 재설정 중...",
       "resettingDesc": "Windows VM에 연결하여 비밀번호를 변경하고 있습니다. 잠시 기다려 주세요...",
+      "resettingNote": "이 과정은 5-10분 정도 소요될 수 있습니다.",
       "successTitle": "비밀번호 재설정 성공!",
       "successDesc": "Windows VM 비밀번호가 변경되었습니다. 아래에서 새 비밀번호를 저장하세요.",
       "saveWarning": "지금 비밀번호를 저장하세요. Windows RDP 자격 증명 섹션에서 나중에 확인할 수 있습니다.",

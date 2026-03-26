@@ -1660,6 +1660,7 @@
       "confirm": "Đặt lại mật khẩu",
       "resettingTitle": "Đang đặt lại mật khẩu...",
       "resettingDesc": "Đang kết nối tới VM Windows và thay đổi mật khẩu. Vui lòng đợi...",
+      "resettingNote": "Quá trình này sẽ kéo dài từ 5-10 phút",
       "successTitle": "Đặt lại mật khẩu thành công!",
       "successDesc": "Mật khẩu VM Windows đã được thay đổi. Vui lòng lưu lại mật khẩu mới bên dưới.",
       "saveWarning": "Vui lòng lưu lại mật khẩu này ngay. Bạn có thể xem lại trong phần Windows RDP Credentials.",

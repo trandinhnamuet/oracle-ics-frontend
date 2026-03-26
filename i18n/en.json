@@ -1661,6 +1661,7 @@
       "confirm": "Reset Password",
       "resettingTitle": "Resetting password...",
       "resettingDesc": "Connecting to your Windows VM and changing the password. Please wait...",
+      "resettingNote": "This process may take 5-10 minutes.",
       "successTitle": "Password Reset Successfully!",
       "successDesc": "Your Windows VM password has been changed. Please save the new password below.",
       "saveWarning": "Please save this password now. You can view it later in the Windows RDP Credentials section.",

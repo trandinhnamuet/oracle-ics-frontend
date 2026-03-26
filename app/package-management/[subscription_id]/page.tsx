@@ -1324,6 +1324,7 @@ export default function PackageDetailPage() {
             </AlertDialogTitle>
             <AlertDialogDescription>
               {t('packageDetail.resetPassword.resettingDesc')}
+              <p className="text-sm text-muted-foreground mt-2">{t('packageDetail.resetPassword.resettingNote')}</p>
             </AlertDialogDescription>
           </AlertDialogHeader>
         </AlertDialogContent>

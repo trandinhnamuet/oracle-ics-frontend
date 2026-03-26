@@ -1677,6 +1677,7 @@
       "confirm": "パスワードリセット",
       "resettingTitle": "パスワードをリセット中...",
       "resettingDesc": "Windows VMに接続してパスワードを変更しています。お待ちください...",
+      "resettingNote": "この処理は5〜10分かかる場合があります。",
       "successTitle": "パスワードリセット成功！",
       "successDesc": "Windows VMのパスワードが変更されました。以下の新しいパスワードを保存してください。",
       "saveWarning": "今すぐこのパスワードを保存してください。Windows RDP資格情報セクションで後で確認できます。",

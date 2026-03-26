@@ -1678,6 +1678,7 @@
       "confirm": "重置密码",
       "resettingTitle": "正在重置密码...",
       "resettingDesc": "正在连接到您的 Windows VM 并更改密码。请稍候...",
+      "resettingNote": "该过程可能需要5-10分钟。",
       "successTitle": "密码重置成功！",
       "successDesc": "您的 Windows VM 密码已更改。请保存以下新密码。",
       "saveWarning": "请立即保存此密码。您可以稍后在 Windows RDP 凭据部分查看。",
