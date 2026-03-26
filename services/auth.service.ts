@@ -48,8 +48,9 @@ class AuthService {
     const ipData = await getClientIp();
     console.log('Client IP data in login:', ipData);
 
-    // Login should NOT use fetchWithAuth wrapper to avoid circular refresh
-    const response = await fetch(`${API_URL}/auth/login`, {
+    // Gọi qua Next.js proxy để strip domain attribute khỏi Set-Cookie,
+    // đảm bảo cookie chỉ bind vào exact host hiện tại (không lan sang subdomain)
+    const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,8 +85,8 @@ class AuthService {
   }
 
   async refresh(): Promise<string> {
-    // Refresh should NOT use fetchWithAuth to avoid circular refresh
-    const response = await fetch(`${API_URL}/auth/refresh`, {
+    // Gọi qua Next.js proxy để đảm bảo cookie rotation không bị cross-domain
+    const response = await fetch('/api/auth/refresh', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -113,7 +114,7 @@ class AuthService {
 
   async logout(): Promise<void> {
     try {
-      await fetchWithAuth(`${API_URL}/auth/logout`, {
+      await fetchWithAuth('/api/auth/logout', {
         method: 'POST',
       }, false, true); // skipRedirectOnError=true: let the logout flow handle navigation
     } catch (error) {
@@ -131,7 +132,7 @@ class AuthService {
 
   async logoutAll(): Promise<void> {
     try {
-      await fetchWithAuth(`${API_URL}/auth/logout-all`, {
+      await fetchWithAuth('/api/auth/logout-all', {
         method: 'POST',
       }, false, true); // skipRedirectOnError=true: let the logout flow handle navigation
     } catch (error) {
