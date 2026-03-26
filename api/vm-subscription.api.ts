@@ -204,14 +204,18 @@ export const deleteVmOnly = async (
 
 /**
  * Reset Windows VM password
+ * @param newPassword Optional. If provided, sets the VM password to this value.
+ *                    If omitted, the server auto-generates a random password.
  */
 export const resetWindowsPassword = async (
-  subscriptionId: string
+  subscriptionId: string,
+  newPassword?: string,
 ): Promise<{ success: boolean; username: string; newPassword: string; message: string }> => {
   const result = await fetchJsonWithAuth<{ success: boolean; username: string; newPassword: string; message: string }>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/reset-windows-password`,
     {
-      method: 'POST'
+      method: 'POST',
+      ...(newPassword ? { body: JSON.stringify({ newPassword }) } : {}),
     }
   )
   return result
