@@ -7,20 +7,17 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Đảm bảo date string từ API luôn được parse đúng là UTC.
- * Backend lưu UTC trong cột TIMESTAMP (không có timezone info),
- * nên chuỗi trả về có thể không có Z suffix (e.g. "2026-03-20T08:30:00.000").
- * Nếu không có timezone info → append 'Z' để browser parse đúng là UTC,
- * sau đó tự động convert sang múi giờ của browser khi hiển thị.
+ * Parse timestamp từ API theo chuẩn UTC:
+ * - Có timezone info (Z, +HH:MM, -HH:MM): parse trực tiếp
+ * - Không có timezone info: coi là UTC
  */
 export function parseAsUtc(dateStr: string | Date): Date {
   if (dateStr instanceof Date) return dateStr
   const s = dateStr.trim()
   // Đã có timezone info (Z, +HH:MM, -HH:MM) → parse trực tiếp
   if (/Z$/i.test(s) || /[+-]\d{2}:\d{2}$/.test(s)) return new Date(s)
-  // ISO format với T separator nhưng không có timezone → thêm Z
+  // Không có timezone info -> coi là UTC
   if (s.includes('T')) return new Date(s + 'Z')
-  // "2026-03-20 08:30:00" (space-separated) → chuẩn hóa rồi thêm Z
   return new Date(s.replace(' ', 'T') + 'Z')
 }
 
