@@ -1573,7 +1573,11 @@
       "generating": "Đang tạo...",
       "openTerminal": "Mở Terminal",
       "resetPassword": "Đặt lại mật khẩu Windows",
-      "resettingPassword": "Đang đặt lại mật khẩu..."
+      "resettingPassword": "Đang đặt lại mật khẩu...",
+      "autoRenew": "Tự động gia hạn",
+      "autoRenewOn": "Đang bật tự động gia hạn",
+      "autoRenewOff": "Đã tắt tự động gia hạn",
+      "togglingAutoRenew": "Đang cập nhật..."
     },
     "billing": {
       "title": "Thông tin thanh toán",
@@ -1601,7 +1605,16 @@
       "passwordResetSuccess": "Đặt lại mật khẩu thành công",
       "passwordResetSuccessDesc": "Mật khẩu Windows mới đã được thiết lập. Vui lòng lưu lại ngay.",
       "passwordResetError": "Đặt lại mật khẩu thất bại",
-      "passwordResetErrorDesc": "Không thể đặt lại mật khẩu Windows. Vui lòng thử lại."
+      "passwordResetErrorDesc": "Không thể đặt lại mật khẩu Windows. Vui lòng thử lại.",
+      "autoRenewUpdated": "Cập nhật tự động gia hạn thành công",
+      "autoRenewEnabled": "Đã bật tự động gia hạn. Subscription sẽ tự gia hạn hàng tháng.",
+      "autoRenewDisabled": "Đã tắt tự động gia hạn. VM sẽ bị dừng khi subscription hết hạn.",
+      "autoRenewError": "Không thể cập nhật cài đặt tự động gia hạn",
+      "renewSuccess": "Gia hạn thành công!",
+      "renewSuccessDesc": "Subscription đã được gia hạn thêm 1 tháng và VM đang khởi động.",
+      "renewFailed": "Gia hạn thất bại",
+      "renewInsufficientFunds": "Số dư tài khoản không đủ. Vui lòng nạp thêm tiền để gia hạn.",
+      "renewError": "Đã xảy ra lỗi khi gia hạn subscription"
     },
     "confirmDialog": {
       "cancel": "Hủy",
@@ -1613,6 +1626,16 @@
       "deleteSubscription": {
         "title": "Xác nhận xóa subscription",
         "description": "Hành động này sẽ XÓA HOÀN TOÀN subscription và máy ảo (VM) trên Oracle Cloud. Tất cả dữ liệu liên quan sẽ bị xóa và KHÔNG THỂ KHÔI PHỤC. Vui lòng backup dữ liệu quan trọng trước khi xóa."
+      },
+      "renewAndStart": {
+        "title": "⚠️ Subscription đã hết hạn — Cần gia hạn",
+        "description": "Subscription này đã quá ngày kết thúc. Để khởi động VM, bạn cần gia hạn thêm 1 tháng.",
+        "cost": "Chi phí gia hạn: {{cost}}",
+        "autoRenewLabel": "Bật tự động gia hạn sau khi khởi động",
+        "autoRenewHint": "Nếu bật, subscription sẽ tự động gia hạn mỗi tháng. Nếu tắt, VM sẽ bị dừng khi hết hạn lần tiếp theo.",
+        "insufficientFundsWarning": "Vui lòng đảm bảo số dư tài khoản đủ trước khi xác nhận.",
+        "confirm": "Thanh toán & Gia hạn",
+        "cancel": "Hủy"
       }
     },
     "vmNotConfigured": {

@@ -1574,7 +1574,11 @@
       "generating": "Generating...",
       "openTerminal": "Open Terminal",
       "resetPassword": "Reset Windows Password",
-      "resettingPassword": "Resetting password..."
+      "resettingPassword": "Resetting password...",
+      "autoRenew": "Auto Renew",
+      "autoRenewOn": "Auto renew is ON",
+      "autoRenewOff": "Auto renew is OFF",
+      "togglingAutoRenew": "Updating..."
     },
     "billing": {
       "title": "Billing Information",
@@ -1602,7 +1606,16 @@
       "passwordResetSuccess": "Password reset successfully",
       "passwordResetSuccessDesc": "New Windows password has been set. Please save it now.",
       "passwordResetError": "Password reset failed",
-      "passwordResetErrorDesc": "Failed to reset Windows password. Please try again."
+      "passwordResetErrorDesc": "Failed to reset Windows password. Please try again.",
+      "autoRenewUpdated": "Auto Renew Updated",
+      "autoRenewEnabled": "Auto renew has been enabled. Your subscription will renew automatically.",
+      "autoRenewDisabled": "Auto renew has been disabled. VM will be stopped when the subscription expires.",
+      "autoRenewError": "Failed to update auto renew setting",
+      "renewSuccess": "Subscription Renewed!",
+      "renewSuccessDesc": "Your subscription has been extended by 1 month and the VM is starting.",
+      "renewFailed": "Renewal Failed",
+      "renewInsufficientFunds": "Insufficient balance. Please top up your wallet to renew.",
+      "renewError": "An error occurred while renewing the subscription"
     },
     "confirmDialog": {
       "cancel": "Cancel",
@@ -1614,6 +1627,16 @@
       "deleteSubscription": {
         "title": "Confirm Delete Subscription",
         "description": "This action will PERMANENTLY DELETE the subscription and the virtual machine (VM) on Oracle Cloud. All related data will be deleted and CANNOT BE RECOVERED. Please backup important data before deleting."
+      },
+      "renewAndStart": {
+        "title": "⚠️ Subscription Expired — Renewal Required",
+        "description": "This subscription's end date has passed. To start the VM, you need to renew for 1 more month.",
+        "cost": "Renewal cost: {{cost}}",
+        "autoRenewLabel": "Enable Auto Renew after start",
+        "autoRenewHint": "If enabled, the subscription will renew automatically each month. If disabled, the VM will be stopped when it expires again.",
+        "insufficientFundsWarning": "Please ensure you have sufficient balance before confirming.",
+        "confirm": "Pay & Renew",
+        "cancel": "Cancel"
       }
     },
     "vmNotConfigured": {

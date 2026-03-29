@@ -7,6 +7,8 @@ import dynamic from 'next/dynamic'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import { ArrowLeft, Play, Pause, RotateCcw, Trash2, Download, RefreshCw, Terminal, MonitorUp, Copy, Key, Check, CheckCircle, Lock, Eye, EyeOff } from 'lucide-react'
 import { ConfirmSshKeyRequestDialog } from '@/components/dialogs/confirm-ssh-key-request-dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
@@ -32,7 +34,7 @@ import {
   AreaChart,
   Area
 } from 'recharts'
-import { getSubscriptionById, deleteSubscription, Subscription } from '@/api/subscription.api'
+import { getSubscriptionById, deleteSubscription, toggleAutoRenew, renewSubscription, Subscription } from '@/api/subscription.api'
 import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, resetWindowsPassword, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
@@ -118,6 +120,12 @@ export default function PackageDetailPage() {
   const [newWindowsPassword, setNewWindowsPassword] = useState<string | null>(null)
   const [customPassword, setCustomPassword] = useState('')
   const [showCustomPassword, setShowCustomPassword] = useState(false)
+  const [isTogglingAutoRenew, setIsTogglingAutoRenew] = useState(false)
+  const [renewAndStartDialog, setRenewAndStartDialog] = useState<{
+    open: boolean
+    renewAutoRenew: boolean
+  }>({ open: false, renewAutoRenew: true })
+  const [isRenewingAndStarting, setIsRenewingAndStarting] = useState(false)
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean
     title: string
@@ -264,6 +272,97 @@ export default function PackageDetailPage() {
     }))
     
     return combined
+  }
+
+  const handleToggleAutoRenew = async () => {
+    if (!subscription) return
+    setIsTogglingAutoRenew(true)
+    try {
+      const updated = await toggleAutoRenew(subscriptionId, !subscription.auto_renew)
+      setSubscription(updated)
+      toast({
+        title: t('packageDetail.toast.autoRenewUpdated'),
+        description: updated.auto_renew
+          ? t('packageDetail.toast.autoRenewEnabled')
+          : t('packageDetail.toast.autoRenewDisabled'),
+      })
+    } catch (error: any) {
+      toast({
+        title: t('packageDetail.toast.autoRenewError'),
+        description: error?.response?.data?.message || error?.message,
+        variant: 'destructive',
+      })
+    } finally {
+      setIsTogglingAutoRenew(false)
+    }
+  }
+
+  const handleStartVm = () => {
+    if (!subscription?.vm_instance_id) {
+      toast({
+        title: t('packageDetail.toast.vmNotConfigured'),
+        description: t('packageDetail.toast.vmNotConfiguredDesc'),
+        variant: 'destructive',
+      })
+      return
+    }
+    // Check if subscription has expired
+    const endDate = parseAsUtc(subscription.end_date)
+    const now = new Date()
+    if (now > endDate) {
+      setRenewAndStartDialog({ open: true, renewAutoRenew: true })
+      return
+    }
+    handleVmAction('START')
+  }
+
+  const handleRenewAndStartVm = async () => {
+    setRenewAndStartDialog(prev => ({ ...prev, open: false }))
+    setIsRenewingAndStarting(true)
+    try {
+      // Renew the subscription (this also starts the VM on the backend)
+      const updatedSub = await renewSubscription(subscriptionId)
+      setSubscription(updatedSub)
+
+      // Sync auto_renew setting if it changed
+      if (renewAndStartDialog.renewAutoRenew !== updatedSub.auto_renew) {
+        const toggled = await toggleAutoRenew(subscriptionId, renewAndStartDialog.renewAutoRenew)
+        setSubscription(toggled)
+      }
+
+      toast({
+        title: t('packageDetail.toast.renewSuccess'),
+        description: t('packageDetail.toast.renewSuccessDesc'),
+        duration: 8000,
+      })
+
+      // Refresh VM details
+      setTimeout(async () => {
+        try {
+          const vmData = await getSubscriptionVm(subscriptionId)
+          setVmDetails(vmData)
+        } catch (e) {
+          console.error('Error refreshing VM after renew:', e)
+        }
+      }, 2000)
+    } catch (error: any) {
+      const msg: string = error?.response?.data?.message || error?.message || ''
+      const isInsufficient =
+        error?.response?.status === 402 ||
+        msg.toLowerCase().includes('insufficient') ||
+        msg.toLowerCase().includes('not enough') ||
+        msg.toLowerCase().includes('không đủ')
+      toast({
+        title: t('packageDetail.toast.renewFailed'),
+        description: isInsufficient
+          ? t('packageDetail.toast.renewInsufficientFunds')
+          : msg || t('packageDetail.toast.renewError'),
+        variant: 'destructive',
+        duration: 10000,
+      })
+    } finally {
+      setIsRenewingAndStarting(false)
+    }
   }
 
   const handleVmAction = async (action: 'START' | 'STOP' | 'RESTART' | 'TERMINATE') => {
@@ -1063,8 +1162,8 @@ export default function PackageDetailPage() {
                   <Button 
                     className="w-full justify-start"
                     variant="outline"
-                    onClick={() => handleVmAction('START')}
-                    disabled={isLoading || vmDetails?.vm?.lifecycleState === 'RUNNING' || vmDetails?.vm?.lifecycleState === 'PROVISIONING'}
+                    onClick={() => handleStartVm()}
+                    disabled={isLoading || isRenewingAndStarting || vmDetails?.vm?.lifecycleState === 'RUNNING' || vmDetails?.vm?.lifecycleState === 'PROVISIONING'}
                   >
                     <Play className="h-4 w-4 mr-2" />
                     {t('packageDetail.actions.startVM')}
@@ -1134,6 +1233,28 @@ export default function PackageDetailPage() {
               </Button>
               
               
+              <div className="pt-2 border-t dark:border-border space-y-2">
+                {/* Auto Renew Toggle */}
+                <div className="flex items-center justify-between px-1 py-2">
+                  <div className="flex flex-col gap-0.5">
+                    <Label htmlFor="auto-renew-toggle" className="text-sm font-medium cursor-pointer">
+                      {t('packageDetail.actions.autoRenew')}
+                    </Label>
+                    <span className="text-xs text-muted-foreground">
+                      {subscription?.auto_renew
+                        ? t('packageDetail.actions.autoRenewOn')
+                        : t('packageDetail.actions.autoRenewOff')}
+                    </span>
+                  </div>
+                  <Switch
+                    id="auto-renew-toggle"
+                    checked={subscription?.auto_renew ?? false}
+                    onCheckedChange={handleToggleAutoRenew}
+                    disabled={isTogglingAutoRenew || isLoading}
+                  />
+                </div>
+              </div>
+
               <div className="pt-2 border-t dark:border-border space-y-2">
                 {subscription?.vm_instance_id && (
                   <Button 
@@ -1284,6 +1405,71 @@ export default function PackageDetailPage() {
               {t('packageDetail.newSshKeyCreated.close')}
             </AlertDialogAction>
           </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Renew & Start VM Dialog — subscription expired */}
+      <AlertDialog open={renewAndStartDialog.open} onOpenChange={(open) => !open && setRenewAndStartDialog(prev => ({ ...prev, open: false }))}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('packageDetail.confirmDialog.renewAndStart.title')}</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <p>{t('packageDetail.confirmDialog.renewAndStart.description')}</p>
+                {subscription?.cloudPackage?.cost_vnd && (
+                  <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 p-3 rounded text-sm font-semibold text-blue-800 dark:text-blue-300">
+                    {t('packageDetail.confirmDialog.renewAndStart.cost', {
+                      cost: new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                        parseFloat(subscription.cloudPackage.cost_vnd)
+                      ),
+                    })}
+                  </div>
+                )}
+                <div className="flex items-start justify-between gap-3 p-3 border rounded dark:border-border">
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="renew-auto-renew" className="text-sm font-medium cursor-pointer">
+                      {t('packageDetail.confirmDialog.renewAndStart.autoRenewLabel')}
+                    </Label>
+                    <span className="text-xs text-muted-foreground">
+                      {t('packageDetail.confirmDialog.renewAndStart.autoRenewHint')}
+                    </span>
+                  </div>
+                  <Switch
+                    id="renew-auto-renew"
+                    checked={renewAndStartDialog.renewAutoRenew}
+                    onCheckedChange={(checked) => setRenewAndStartDialog(prev => ({ ...prev, renewAutoRenew: checked }))}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {t('packageDetail.confirmDialog.renewAndStart.insufficientFundsWarning')}
+                </p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('packageDetail.confirmDialog.renewAndStart.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleRenewAndStartVm}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {t('packageDetail.confirmDialog.renewAndStart.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Renew & Start VM — Loading Dialog */}
+      <AlertDialog open={isRenewingAndStarting} onOpenChange={() => {}}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <RefreshCw className="h-5 w-5 animate-spin" />
+              {t('packageDetail.toast.renewSuccess')}...
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('packageDetail.toast.renewSuccessDesc')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>
 
