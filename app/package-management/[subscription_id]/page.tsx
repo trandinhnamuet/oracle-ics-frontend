@@ -1091,26 +1091,6 @@ export default function PackageDetailPage() {
                   <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.endDate')}</p>
                   <p className="font-semibold">{packageDetail.endDate || '-'}</p>
                 </div>
-                <div className="col-span-2">
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground mb-2">{t('packageDetail.packageInfo.autoRenew')}</p>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-muted rounded-lg border">
-                    <div className="flex flex-col gap-0.5">
-                      <span className={`text-sm font-semibold ${subscription?.auto_renew ? 'text-green-700 dark:text-green-400' : 'text-gray-500 dark:text-muted-foreground'}`}>
-                        {subscription?.auto_renew ? '✅ ' + t('packageDetail.packageInfo.yes') : '⏸️ ' + t('packageDetail.packageInfo.no')}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {subscription?.auto_renew
-                          ? t('packageDetail.actions.autoRenewOn')
-                          : t('packageDetail.actions.autoRenewOff')}
-                      </span>
-                    </div>
-                    <Switch
-                      checked={subscription?.auto_renew ?? false}
-                      onCheckedChange={handleToggleAutoRenew}
-                      disabled={isTogglingAutoRenew || isLoading}
-                    />
-                  </div>
-                </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.monthlyCost')}</p>
                   <p className="font-semibold">
@@ -1266,6 +1246,7 @@ export default function PackageDetailPage() {
                   </div>
                   <Switch
                     id="auto-renew-toggle"
+                    className="scale-125 origin-right"
                     checked={subscription?.auto_renew ?? false}
                     onCheckedChange={handleToggleAutoRenew}
                     disabled={isTogglingAutoRenew || isLoading}
