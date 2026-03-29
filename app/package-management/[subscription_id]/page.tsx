@@ -1091,13 +1091,25 @@ export default function PackageDetailPage() {
                   <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.endDate')}</p>
                   <p className="font-semibold">{packageDetail.endDate || '-'}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.autoRenew')}</p>
-                  <p className="font-semibold">
-                    <Badge variant={packageDetail.autoRenew ? 'default' : 'outline'}>
-                      {packageDetail.autoRenew ? t('packageDetail.packageInfo.yes') : t('packageDetail.packageInfo.no')}
-                    </Badge>
-                  </p>
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-600 dark:text-muted-foreground mb-2">{t('packageDetail.packageInfo.autoRenew')}</p>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-muted rounded-lg border">
+                    <div className="flex flex-col gap-0.5">
+                      <span className={`text-sm font-semibold ${subscription?.auto_renew ? 'text-green-700 dark:text-green-400' : 'text-gray-500 dark:text-muted-foreground'}`}>
+                        {subscription?.auto_renew ? '✅ ' + t('packageDetail.packageInfo.yes') : '⏸️ ' + t('packageDetail.packageInfo.no')}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {subscription?.auto_renew
+                          ? t('packageDetail.actions.autoRenewOn')
+                          : t('packageDetail.actions.autoRenewOff')}
+                      </span>
+                    </div>
+                    <Switch
+                      checked={subscription?.auto_renew ?? false}
+                      onCheckedChange={handleToggleAutoRenew}
+                      disabled={isTogglingAutoRenew || isLoading}
+                    />
+                  </div>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.packageInfo.monthlyCost')}</p>
@@ -1233,15 +1245,21 @@ export default function PackageDetailPage() {
               </Button>
               
               
-              <div className="pt-2 border-t dark:border-border space-y-2">
+              <div className="pt-2 border-t dark:border-border">
                 {/* Auto Renew Toggle */}
-                <div className="flex items-center justify-between px-1 py-2">
+                <div className={`flex items-center justify-between px-2 py-3 rounded-lg border transition-colors ${
+                  subscription?.auto_renew
+                    ? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900'
+                    : 'bg-gray-50 dark:bg-muted border-gray-200 dark:border-border'
+                }`}>
                   <div className="flex flex-col gap-0.5">
-                    <Label htmlFor="auto-renew-toggle" className="text-sm font-medium cursor-pointer">
-                      {t('packageDetail.actions.autoRenew')}
+                    <Label htmlFor="auto-renew-toggle" className="text-sm font-medium cursor-pointer flex items-center gap-1">
+                      {subscription?.auto_renew ? '🔄' : '⏸️'} {t('packageDetail.actions.autoRenew')}
                     </Label>
                     <span className="text-xs text-muted-foreground">
-                      {subscription?.auto_renew
+                      {isTogglingAutoRenew
+                        ? t('packageDetail.actions.togglingAutoRenew')
+                        : subscription?.auto_renew
                         ? t('packageDetail.actions.autoRenewOn')
                         : t('packageDetail.actions.autoRenewOff')}
                     </span>

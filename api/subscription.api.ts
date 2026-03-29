@@ -226,10 +226,10 @@ export const updateSubscription = async (subscriptionId: string, updateData: any
   }
 }
 
-// Toggle auto renew
+// Toggle auto renew — uses the general PATCH /:id endpoint (no dedicated /auto-renew route)
 export const toggleAutoRenew = async (subscriptionId: string, autoRenew: boolean): Promise<Subscription> => {
   try {
-    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}/auto-renew`, {
+    const result = await fetchJsonWithAuth<Subscription>(`${API_URL}/subscriptions/${subscriptionId}`, {
       method: 'PATCH',
       body: JSON.stringify({
         auto_renew: autoRenew
