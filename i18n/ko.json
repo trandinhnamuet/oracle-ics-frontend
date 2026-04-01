@@ -1603,7 +1603,10 @@
       "generating": "생성 중...",
       "openTerminal": "터미널 열기",
       "resetPassword": "Windows 비밀번호 재설정",
-      "resettingPassword": "비밀번호 재설정 중..."
+      "resettingPassword": "비밀번호 재설정 중...",
+      "autoRenew": "자동 갱신",
+      "autoRenewOn": "자동 갱신이 활성화되어 있습니다",
+      "autoRenewOff": "자동 갱신이 비활성화되어 있습니다"
     },
     "billing": {
       "title": "청구 정보",

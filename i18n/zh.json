@@ -1604,7 +1604,10 @@
       "generating": "正在生成...",
       "openTerminal": "打开终端",
       "resetPassword": "重置 Windows 密码",
-      "resettingPassword": "正在重置密码..."
+      "resettingPassword": "正在重置密码...",
+      "autoRenew": "自动续费",
+      "autoRenewOn": "自动续费已开启",
+      "autoRenewOff": "自动续费已关闭"
     },
     "billing": {
       "title": "账单信息",
