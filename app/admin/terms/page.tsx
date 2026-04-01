@@ -35,7 +35,7 @@ type SectionDraft = {
   isActive: boolean
   articles: EditableArticle[]
 }
-
+//test
 const emptyArticle = (): EditableArticle => ({
   number: '',
   headingVi: '',
