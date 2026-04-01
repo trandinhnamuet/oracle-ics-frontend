@@ -2114,7 +2114,9 @@
     "insufficientBalanceDesc": "Số dư của bạn không đủ, hãy nạp thêm.",
     "successTitle": "Đăng ký thành công!",
     "successDesc": "Đã đăng ký gói {{planName}} thành công. Tiền đã được trừ từ tài khoản.",
-    "errorGeneral": "Có lỗi xảy ra, vui lòng thử lại."
+    "errorGeneral": "Có lỗi xảy ra, vui lòng thử lại.",
+    "autoRenew": "Tự động gia hạn",
+    "autoRenewDesc": "Tự động gia hạn subscription mỗi tháng khi hết hạn."
   },
   "register": {
     "title": "Đăng ký tài khoản",

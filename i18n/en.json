@@ -2115,7 +2115,9 @@
     "insufficientBalanceDesc": "Your balance is insufficient, please top up.",
     "successTitle": "Registration successful!",
     "successDesc": "Successfully registered {{planName}} plan. Money has been deducted from account.",
-    "errorGeneral": "An error occurred, please try again."
+    "errorGeneral": "An error occurred, please try again.",
+    "autoRenew": "Auto Renew",
+    "autoRenewDesc": "Automatically renew subscription each month when it expires."
   },
   "register": {
     "title": "Create Account",

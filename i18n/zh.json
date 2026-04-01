@@ -2109,7 +2109,9 @@
     "insufficientBalanceDesc": "您的余额不足，请充值。",
     "successTitle": "注册成功！",
     "successDesc": "已成功购买 {{planName}} 套餐。费用已从账户中扣除。",
-    "errorGeneral": "发生错误，请重试。"
+    "errorGeneral": "发生错误，请重试。",
+    "autoRenew": "自动续费",
+    "autoRenewDesc": "到期时每月自动续费订阅。"
   },
   "register": {
     "title": "创建账户",

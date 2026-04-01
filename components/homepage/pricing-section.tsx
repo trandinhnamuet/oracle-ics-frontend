@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Check, Star, Zap, Shield, Crown, BrainCircuit, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Info, Wallet, CreditCard } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
 import { useTranslation } from "react-i18next"
 import { useState, useRef, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
@@ -39,6 +40,7 @@ export function PricingSection() {
   const [userBalance, setUserBalance] = useState<number>(0)
   const [isConfirming, setIsConfirming] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [autoRenew, setAutoRenew] = useState(true)
   const isConfirmingRef = useRef(false)
 
   // ── Cloud packages from backend ──────────────────────────────────────────
@@ -144,6 +146,7 @@ export function PricingSection() {
     setSelectedPaymentMethod('')
     setAgreedToTerms(false)
     setMonthsCount(1)
+    setAutoRenew(true)
     // Reset lock for fresh payment attempt
     isConfirmingRef.current = false
     setIsConfirming(false)
@@ -225,7 +228,7 @@ export function PricingSection() {
         await subscribeWithBalance({
           cloudPackageId: selectedPlan.id,
           monthsCount: monthsCount,
-          autoRenew: false
+          autoRenew: autoRenew
         })
         console.log(`[PAY-DEBUG] subscribeWithBalance API call SUCCESS`)
         succeeded = true
@@ -248,7 +251,7 @@ export function PricingSection() {
         const result = await subscribeWithPayment({
           cloudPackageId: selectedPlan.id,
           monthsCount: monthsCount,
-          autoRenew: false
+          autoRenew: autoRenew
         })
         console.log(`[PAY-DEBUG] subscribeWithPayment API call SUCCESS`)
         succeeded = true
@@ -821,6 +824,18 @@ export function PricingSection() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Auto Renew toggle */}
+          <div className="flex items-center justify-between px-2 py-2 bg-muted/40 rounded-lg border border-border">
+            <div>
+              <p className="text-xs sm:text-sm font-medium leading-tight">{t('pricingModal.autoRenew')}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground leading-snug">{t('pricingModal.autoRenewDesc')}</p>
+            </div>
+            <Switch
+              checked={autoRenew}
+              onCheckedChange={setAutoRenew}
+            />
           </div>
 
           {/* Terms agreement checkbox */}

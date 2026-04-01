@@ -2108,7 +2108,9 @@
     "insufficientBalanceDesc": "残高が不足しています。チャージしてください。",
     "successTitle": "登録成功！",
     "successDesc": "{{planName}} プランの登録が完了しました。アカウントから料金が引き落とされました。",
-    "errorGeneral": "エラーが発生しました。再試行してください。"
+    "errorGeneral": "エラーが発生しました。再試行してください。",
+    "autoRenew": "自動更新",
+    "autoRenewDesc": "期限切れ時に毎月自動でサブスクリプションを更新します。"
   },
   "register": {
     "title": "アカウント登録",

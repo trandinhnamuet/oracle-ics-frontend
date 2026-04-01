@@ -2108,7 +2108,9 @@
     "insufficientBalanceDesc": "잔액이 부족합니다. 충전해 주세요.",
     "successTitle": "등록 성공!",
     "successDesc": "{{planName}} 플랜 등록이 완료되었습니다. 계정에서 금액이 차감되었습니다.",
-    "errorGeneral": "오류가 발생했습니다. 다시 시도해 주세요."
+    "errorGeneral": "오류가 발생했습니다. 다시 시도해 주세요.",
+    "autoRenew": "자동 갱신",
+    "autoRenewDesc": "만료 시 매월 자동으로 구독을 갱신합니다."
   },
   "register": {
     "title": "계정 등록",
