@@ -91,7 +91,7 @@ export function PricingSection() {
           description: '',
           price: String(pkg.cost),
           priceVnd: pkg.cost_vnd,
-          period: t('checkout.period'),
+          period: 'month',
           icon: config.icon as any,
           popular: i === 0,
           category: cat as PricingPlan['category'],
@@ -622,7 +622,7 @@ export function PricingSection() {
                               {/* Hiển thị giá VND, debug giá gốc và tỉ giá */}
                               {formatPrice(plan.priceVnd)}
                             </div>
-                            <div className="text-xs text-muted-foreground">₫/{plan.period}</div>
+                            <div className="text-xs text-muted-foreground">₫/{t('checkout.period')}</div>
                           </div>
                         </CardHeader>
                         
