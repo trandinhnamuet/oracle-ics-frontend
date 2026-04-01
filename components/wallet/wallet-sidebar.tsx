@@ -82,12 +82,15 @@ export default function WalletSidebar() {
 
       {/* Info section */}
       <div className="p-4 bg-gradient-to-t from-gray-50 dark:from-muted to-transparent border-t border-gray-200 dark:border-border">
-        <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-3 text-center">
+        <button
+          onClick={() => handleNavigate('/support')}
+          className="w-full bg-blue-50 dark:bg-blue-950/20 hover:bg-blue-100 dark:hover:bg-blue-950/30 rounded-lg p-3 text-center transition-colors duration-200"
+        >
           <p className="text-xs text-gray-600 dark:text-muted-foreground">
             <span className="font-medium text-gray-900 dark:text-foreground">{t('walletSidebar.needHelp')}</span><br />
             {t('walletSidebar.contactSupport')}
           </p>
-        </div>
+        </button>
       </div>
     </div>
   )
