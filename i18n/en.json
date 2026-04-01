@@ -40,8 +40,8 @@
       "autoRenew": "Auto Renew",
       "vmName": "VM Name",
       "endDate": "End Date",
-      "vmRunning": "RUNNING",
-      "vmStopped": "STOPPED",
+      "vmRunning": "Running",
+      "vmStopped": "Stopped",
       "configure": "Configure"
     },
     "confirmDialog": {

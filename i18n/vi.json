@@ -40,8 +40,8 @@
       "autoRenew": "Tự động gia hạn",
       "vmName": "Tên VM",
       "endDate": "Ngày hết hạn",
-      "vmRunning": "ĐANG CHẠY",
-      "vmStopped": "ĐÃ DỪNG",
+      "vmRunning": "Đang chạy",
+      "vmStopped": "Đã dừng",
       "configure": "Cấu hình"
     },
     "confirmDialog": {
