@@ -37,7 +37,12 @@
       "pauseTitle": "Pause Package",
       "activateTitle": "Activate Package",
       "deleteTitle": "Delete Package",
-      "autoRenew": "Auto Renew"
+      "autoRenew": "Auto Renew",
+      "vmName": "VM Name",
+      "endDate": "End Date",
+      "vmRunning": "RUNNING",
+      "vmStopped": "STOPPED",
+      "configure": "Configure"
     },
     "confirmDialog": {
       "cancel": "Cancel",

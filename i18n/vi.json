@@ -37,7 +37,12 @@
       "pauseTitle": "Tạm dừng gói",
       "activateTitle": "Kích hoạt gói",
       "deleteTitle": "Xóa gói",
-      "autoRenew": "Tự động gia hạn"
+      "autoRenew": "Tự động gia hạn",
+      "vmName": "Tên VM",
+      "endDate": "Ngày hết hạn",
+      "vmRunning": "ĐANG CHẠY",
+      "vmStopped": "ĐÃ DỪNG",
+      "configure": "Cấu hình"
     },
     "confirmDialog": {
       "cancel": "Hủy",

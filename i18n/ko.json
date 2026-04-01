@@ -37,7 +37,12 @@
       "pauseTitle": "패키지 일시 중지",
       "activateTitle": "패키지 활성화",
       "deleteTitle": "패키지 삭제",
-      "autoRenew": "자동 갱신"
+      "autoRenew": "자동 갱신",
+      "vmName": "VM 이름",
+      "endDate": "종료일",
+      "vmRunning": "실행 중",
+      "vmStopped": "중지됨",
+      "configure": "구성"
     },
     "confirmDialog": {
       "cancel": "취소",

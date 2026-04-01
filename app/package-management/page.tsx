@@ -477,10 +477,10 @@ export default function PackageManagementPage() {
                   <TableHead>Sub ID</TableHead>
                   <TableHead>{t('packageManagement.table.packageName')}</TableHead>
                   <TableHead>{t('packageManagement.table.type')}</TableHead>
-                  <TableHead>VM Name</TableHead>
+                  <TableHead>{t('packageManagement.table.vmName')}</TableHead>
                   <TableHead>IPv4</TableHead>
                   <TableHead>{t('packageManagement.table.createdAt')}</TableHead>
-                  <TableHead>End Date</TableHead>
+                  <TableHead>{t('packageManagement.table.endDate')}</TableHead>
                   <TableHead>{t('packageManagement.table.status')}</TableHead>
                   <TableHead>{t('packageManagement.table.autoRenew')}</TableHead>
                   <TableHead>{t('packageManagement.table.actions')}</TableHead>
@@ -569,7 +569,7 @@ export default function PackageManagementPage() {
                                 : 'bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900'
                               return (
                                 <Badge variant="outline" className={className}>
-                                  {state}
+                                  {isRunning ? t('packageManagement.table.vmRunning') : isStopped ? t('packageManagement.table.vmStopped') : state}
                                 </Badge>
                               )
                             })()}
@@ -596,7 +596,7 @@ export default function PackageManagementPage() {
                             </div>
                             {/* Configure VM button for active subscriptions without VM */}
                             {sub.status === 'active' && !sub.vm_instance_id && (
-                              <div title="Configure VM">
+                              <div title={t('packageManagement.table.configure')}>
                                 <Button
                                   variant="default"
                                   size="sm"
@@ -604,7 +604,7 @@ export default function PackageManagementPage() {
                                   className="bg-blue-600 hover:bg-blue-700"
                                 >
                                   <Settings className="h-4 w-4 mr-1" />
-                                  Configure
+                                  {t('packageManagement.table.configure')}
                                 </Button>
                               </div>
                             )}

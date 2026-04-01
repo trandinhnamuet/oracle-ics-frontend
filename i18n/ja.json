@@ -37,7 +37,12 @@
       "pauseTitle": "パッケージ一時停止",
       "activateTitle": "パッケージ有効化",
       "deleteTitle": "パッケージ削除",
-      "autoRenew": "自動更新"
+      "autoRenew": "自動更新",
+      "vmName": "VM名",
+      "endDate": "終了日",
+      "vmRunning": "実行中",
+      "vmStopped": "停止済み",
+      "configure": "設定"
     },
     "confirmDialog": {
       "cancel": "キャンセル",
