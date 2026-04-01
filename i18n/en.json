@@ -1518,6 +1518,8 @@
       "uptime": "Uptime",
       "days": "Days",
       "vmState": "VM State",
+      "vmStatus": "VM Status",
+      "createdDate": "Created Date",
       "publicIp": "Public IP"
     },
     "controls": {

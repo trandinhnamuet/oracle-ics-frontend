@@ -1534,6 +1534,8 @@
       "uptime": "가동 시간",
       "days": "일",
       "vmState": "VM 상태",
+      "vmStatus": "VM 상태",
+      "createdDate": "생성일",
       "publicIp": "공용 IP"
     },
     "controls": {

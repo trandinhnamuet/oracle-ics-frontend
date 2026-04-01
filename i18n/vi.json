@@ -1517,6 +1517,8 @@
       "uptime": "Uptime",
       "days": "Ngày",
       "vmState": "Trạng thái VM",
+      "vmStatus": "Trạng thái VM",
+      "createdDate": "Ngày tạo",
       "publicIp": "IP công khai"
     },
     "controls": {
