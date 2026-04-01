@@ -41,7 +41,17 @@ export function PricingSection() {
   const [isConfirming, setIsConfirming] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [autoRenew, setAutoRenew] = useState(true)
+  const [expandedPlanIds, setExpandedPlanIds] = useState<Set<number>>(new Set())
   const isConfirmingRef = useRef(false)
+
+  const togglePlanFeatures = (planId: number, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setExpandedPlanIds(prev => {
+      const next = new Set(prev)
+      if (next.has(planId)) next.delete(planId) else next.add(planId)
+      return next
+    })
+  }
 
   // ── Cloud packages from backend ──────────────────────────────────────────
   const [cloudPackages, setCloudPackages] = useState<CloudPackage[]>([])
@@ -617,16 +627,23 @@ export function PricingSection() {
                         </CardHeader>
                         
                         <CardContent className="space-y-2">
-                          {plan.features.slice(0, 4).map((feature, idx) => (
+                          {(expandedPlanIds.has(plan.id) ? plan.features : plan.features.slice(0, 4)).map((feature, idx) => (
                             <div key={idx} className="flex items-start space-x-2">
                               <Check className="h-3 w-3 text-primary mt-1 flex-shrink-0" />
                               <span className="text-xs text-foreground leading-relaxed">{feature}</span>
                             </div>
                           ))}
                           {plan.features.length > 4 && (
-                            <div className="text-xs text-muted-foreground">
-                              +{plan.features.length - 4} {t('homepage.pricing.sections.moreFeatures')}
-                            </div>
+                            <button
+                              className="text-xs text-primary hover:underline mt-1 flex items-center gap-1"
+                              onClick={(e) => togglePlanFeatures(plan.id, e)}
+                            >
+                              {expandedPlanIds.has(plan.id) ? (
+                                <><ChevronUp className="h-3 w-3" />{t('homepage.pricing.sections.showLess')}</>
+                              ) : (
+                                <><ChevronDown className="h-3 w-3" />+{plan.features.length - 4} {t('homepage.pricing.sections.moreFeatures')}</>
+                              )}
+                            </button>
                           )}
                         </CardContent>
                         

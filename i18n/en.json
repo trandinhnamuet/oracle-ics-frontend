@@ -1104,7 +1104,8 @@
       },
       "sections": {
         "selectSuitable": "Choose the most suitable package for you",
-        "moreFeatures": "more features"
+        "moreFeatures": "more features",
+        "showLess": "Show less"
       },
       "auth": {
         "loginRequired": "Please log in",

@@ -1121,7 +1121,8 @@
       },
       "sections": {
         "selectSuitable": "가장 적합한 패키지 선택",
-        "moreFeatures": "추가 기능"
+        "moreFeatures": "추가 기능",
+        "showLess": "접기"
       },
       "auth": {
         "loginRequired": "로그인하세요",

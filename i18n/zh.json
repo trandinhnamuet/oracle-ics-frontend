@@ -1121,7 +1121,8 @@
       },
       "sections": {
         "selectSuitable": "选择最适合您的套餐",
-        "moreFeatures": "更多功能"
+        "moreFeatures": "更多功能",
+        "showLess": "收起"
       },
       "auth": {
         "loginRequired": "请登录",

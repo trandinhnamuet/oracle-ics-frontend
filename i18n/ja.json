@@ -1121,7 +1121,8 @@
       },
       "sections": {
         "selectSuitable": "あなたに最適なパッケージを選択",
-        "moreFeatures": "その他の機能"
+        "moreFeatures": "その他の機能",
+        "showLess": "折りたたむ"
       },
       "auth": {
         "loginRequired": "ログインしてください",

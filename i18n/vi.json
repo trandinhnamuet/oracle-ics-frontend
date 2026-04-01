@@ -1104,7 +1104,8 @@
       },
       "sections": {
         "selectSuitable": "Chọn gói phù hợp nhất cho bạn",
-        "moreFeatures": "tính năng khác"
+        "moreFeatures": "tính năng khác",
+        "showLess": "Rút gọn"
       },
       "auth": {
         "loginRequired": "Vui lòng đăng nhập",
