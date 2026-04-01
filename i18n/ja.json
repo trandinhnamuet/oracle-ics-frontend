@@ -1400,6 +1400,7 @@
     "autoConfirmNote": "送金が成功するとシステムが自動的に確認します。",
     "monthsSubscription": "登録月数",
     "months": "ヶ月",
+    "period": "ヶ月",
     "forMonths": "({{n}}ヶ月)"
   },
   "login": {

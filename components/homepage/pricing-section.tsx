@@ -91,7 +91,7 @@ export function PricingSection() {
           description: '',
           price: String(pkg.cost),
           priceVnd: pkg.cost_vnd,
-          period: 'tháng',
+          period: t('checkout.period'),
           icon: config.icon as any,
           popular: i === 0,
           category: cat as PricingPlan['category'],

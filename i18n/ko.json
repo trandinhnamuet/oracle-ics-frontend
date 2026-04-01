@@ -1400,6 +1400,7 @@
     "autoConfirmNote": "송금이 성공하면 시스템이 자동으로 확인합니다.",
     "monthsSubscription": "구독 개월 수",
     "months": "개월",
+    "period": "개월",
     "forMonths": "({{n}}개월)"
   },
   "login": {

@@ -1384,6 +1384,7 @@
     "autoConfirmNote": "The system will automatically confirm once the transfer is successful.",
     "monthsSubscription": "Subscription months",
     "months": "month(s)",
+    "period": "month",
     "forMonths": "(for {{n}} month(s))"
   },
   "login": {

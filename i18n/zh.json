@@ -1401,6 +1401,7 @@
     "autoConfirmNote": "系统将在转账成功后自动确认。",
     "monthsSubscription": "订阅月数",
     "months": "个月",
+    "period": "个月",
     "forMonths": "(共{{n}}个月)"
   },
   "login": {

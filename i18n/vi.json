@@ -1383,6 +1383,7 @@
     "autoConfirmNote": "Hệ thống sẽ tự động xác nhận khi bạn chuyển khoản thành công.",
     "monthsSubscription": "Số tháng đăng ký",
     "months": "tháng",
+    "period": "tháng",
     "forMonths": "(cho {{n}} tháng)"
   },
   "login": {
