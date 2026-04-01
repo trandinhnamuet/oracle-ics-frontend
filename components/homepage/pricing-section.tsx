@@ -48,7 +48,7 @@ export function PricingSection() {
     e.stopPropagation()
     setExpandedPlanIds(prev => {
       const next = new Set(prev)
-      if (next.has(planId)) next.delete(planId) else next.add(planId)
+      if (next.has(planId)) { next.delete(planId) } else { next.add(planId) }
       return next
     })
   }
