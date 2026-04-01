@@ -36,7 +36,8 @@
       "expired": "期限切れ",
       "pauseTitle": "パッケージ一時停止",
       "activateTitle": "パッケージ有効化",
-      "deleteTitle": "パッケージ削除"
+      "deleteTitle": "パッケージ削除",
+      "autoRenew": "自動更新"
     },
     "confirmDialog": {
       "cancel": "キャンセル",
@@ -72,7 +73,11 @@
       "renewInsufficientFunds": "更新のためのウォレット残高が不足しています。チャージしてください。",
       "renewError": "サブスクリプション更新中にエラーが発生しました",
       "deleteSuccess": "サブスクリプションとVMを正常に削除しました！",
-      "deleteError": "サブスクリプションの削除中にエラーが発生しました"
+      "deleteError": "サブスクリプションの削除中にエラーが発生しました",
+      "autoRenewEnabled": "自動更新が有効になりました",
+      "autoRenewDisabled": "自動更新が無効になりました",
+      "autoRenewError": "自動更新の更新に失敗しました",
+      "tryAgain": "後でもう一度お試しください"
     },
     "notConfigured": "未構成",
     "tooltip": {

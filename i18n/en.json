@@ -36,7 +36,8 @@
       "expired": "Expired",
       "pauseTitle": "Pause Package",
       "activateTitle": "Activate Package",
-      "deleteTitle": "Delete Package"
+      "deleteTitle": "Delete Package",
+      "autoRenew": "Auto Renew"
     },
     "confirmDialog": {
       "cancel": "Cancel",
@@ -72,7 +73,11 @@
       "renewInsufficientFunds": "You do not have enough balance to renew. Please top up your wallet.",
       "renewError": "An error occurred while renewing the subscription",
       "deleteSuccess": "Subscription and VM deleted successfully!",
-      "deleteError": "An error occurred while deleting the subscription"
+      "deleteError": "An error occurred while deleting the subscription",
+      "autoRenewEnabled": "Auto renew enabled",
+      "autoRenewDisabled": "Auto renew disabled",
+      "autoRenewError": "Failed to update auto renew",
+      "tryAgain": "Please try again later"
     },
     "notConfigured": "Not Configured",
     "tooltip": {

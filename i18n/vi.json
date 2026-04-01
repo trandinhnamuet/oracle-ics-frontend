@@ -36,7 +36,8 @@
       "expired": "Hết hạn",
       "pauseTitle": "Tạm dừng gói",
       "activateTitle": "Kích hoạt gói",
-      "deleteTitle": "Xóa gói"
+      "deleteTitle": "Xóa gói",
+      "autoRenew": "Tự động gia hạn"
     },
     "confirmDialog": {
       "cancel": "Hủy",
@@ -72,7 +73,11 @@
       "renewInsufficientFunds": "Bạn không đủ tiền trong tài khoản để gia hạn, xin hãy nạp thêm.",
       "renewError": "Có lỗi xảy ra khi gia hạn subscription",
       "deleteSuccess": "Đã xóa subscription và VM thành công!",
-      "deleteError": "Có lỗi xảy ra khi xóa subscription"
+      "deleteError": "Có lỗi xảy ra khi xóa subscription",
+      "autoRenewEnabled": "Đã bật tự động gia hạn",
+      "autoRenewDisabled": "Đã tắt tự động gia hạn",
+      "autoRenewError": "Cập nhật tự động gia hạn thất bại",
+      "tryAgain": "Vui lòng thử lại sau"
     },
     "notConfigured": "Chưa cấu hình",
     "tooltip": {

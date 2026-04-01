@@ -36,7 +36,8 @@
       "expired": "已过期",
       "pauseTitle": "暂停套餐",
       "activateTitle": "激活套餐",
-      "deleteTitle": "删除套餐"
+      "deleteTitle": "删除套餐",
+      "autoRenew": "自动续费"
     },
     "confirmDialog": {
       "cancel": "取消",
@@ -72,7 +73,11 @@
       "renewInsufficientFunds": "账户余额不足，无法续费，请充值。",
       "renewError": "续费订阅时出错",
       "deleteSuccess": "订阅和VM已成功删除！",
-      "deleteError": "删除订阅时发生错误"
+      "deleteError": "删除订阅时发生错误",
+      "autoRenewEnabled": "已开启自动续费",
+      "autoRenewDisabled": "已关闭自动续费",
+      "autoRenewError": "更新自动续费失败",
+      "tryAgain": "请稍后再试"
     },
     "notConfigured": "未配置",
     "tooltip": {

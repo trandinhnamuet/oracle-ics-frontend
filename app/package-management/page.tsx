@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useAuth } from '@/lib/auth-context'
-import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, deleteSubscription, suspendSubscription, reactivateSubscription, renewSubscription, Subscription } from '@/api/subscription.api'
+import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, deleteSubscription, suspendSubscription, reactivateSubscription, renewSubscription, toggleAutoRenew, Subscription } from '@/api/subscription.api'
 import { performVmAction, getSubscriptionVm } from '@/api/vm-subscription.api'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Search, Package, Calendar, Clock, AlertTriangle, Settings, Play, Pause, Trash2, Eye, Loader2, RefreshCw } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
 import { useToast } from '@/hooks/use-toast'
 import { formatDateOnly } from '@/lib/utils'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
@@ -71,6 +72,7 @@ export default function PackageManagementPage() {
   const [isVisible, setIsVisible] = useState(false)
   const [togglingVmIds, setTogglingVmIds] = useState<Set<string>>(new Set())
   const [renewingIds, setRenewingIds] = useState<Set<string>>(new Set())
+  const [togglingAutoRenewIds, setTogglingAutoRenewIds] = useState<Set<string>>(new Set())
   const { toast } = useToast()
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean
@@ -312,6 +314,34 @@ export default function PackageManagementPage() {
     })
   }
 
+  const handleToggleAutoRenew = async (id: string, newValue: boolean) => {
+    setTogglingAutoRenewIds(prev => new Set(prev).add(id))
+    // Optimistic update
+    setSubscriptions(prev => prev.map(s => s.id === id ? { ...s, auto_renew: newValue } : s))
+    try {
+      await toggleAutoRenew(id, newValue)
+      toast({
+        title: newValue
+          ? t('packageManagement.toast.autoRenewEnabled')
+          : t('packageManagement.toast.autoRenewDisabled'),
+      })
+    } catch (error: any) {
+      // Revert on failure
+      setSubscriptions(prev => prev.map(s => s.id === id ? { ...s, auto_renew: !newValue } : s))
+      toast({
+        title: t('packageManagement.toast.autoRenewError'),
+        description: error?.response?.data?.message || error?.message || t('packageManagement.toast.tryAgain'),
+        variant: 'destructive',
+      })
+    } finally {
+      setTogglingAutoRenewIds(prev => {
+        const next = new Set(prev)
+        next.delete(id)
+        return next
+      })
+    }
+  }
+
   // Statistics
   const stats = {
     total: subscriptions.length,
@@ -452,13 +482,14 @@ export default function PackageManagementPage() {
                   <TableHead>{t('packageManagement.table.createdAt')}</TableHead>
                   <TableHead>End Date</TableHead>
                   <TableHead>{t('packageManagement.table.status')}</TableHead>
+                  <TableHead>{t('packageManagement.table.autoRenew')}</TableHead>
                   <TableHead>{t('packageManagement.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredSubscriptions.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
                       {searchTerm || statusFilter !== 'all' || typeFilter !== 'all' 
                         ? t('packageManagement.table.noMatch')
                         : t('packageManagement.table.noPackage')
@@ -543,6 +574,14 @@ export default function PackageManagementPage() {
                               )
                             })()}
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <Switch
+                            checked={sub.auto_renew}
+                            onCheckedChange={(checked) => handleToggleAutoRenew(sub.id, checked)}
+                            disabled={togglingAutoRenewIds.has(sub.id)}
+                            aria-label={t('packageManagement.table.autoRenew')}
+                          />
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">

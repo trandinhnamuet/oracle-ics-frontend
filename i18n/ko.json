@@ -36,7 +36,8 @@
       "expired": "만료됨",
       "pauseTitle": "패키지 일시 중지",
       "activateTitle": "패키지 활성화",
-      "deleteTitle": "패키지 삭제"
+      "deleteTitle": "패키지 삭제",
+      "autoRenew": "자동 갱신"
     },
     "confirmDialog": {
       "cancel": "취소",
@@ -72,7 +73,11 @@
       "renewInsufficientFunds": "갱신하기에 지갑 잔액이 부족합니다. 충전해 주세요.",
       "renewError": "구독 갱신 중 오류가 발생했습니다",
       "deleteSuccess": "구독과 VM이 성공적으로 삭제되었습니다!",
-      "deleteError": "구독 삭제 중 오류가 발생했습니다"
+      "deleteError": "구독 삭제 중 오류가 발생했습니다",
+      "autoRenewEnabled": "자동 갱신이 활성화되었습니다",
+      "autoRenewDisabled": "자동 갱신이 비활성화되었습니다",
+      "autoRenewError": "자동 갱신 업데이트 실패",
+      "tryAgain": "나중에 다시 시도해 주세요"
     },
     "notConfigured": "구성되지 않음",
     "tooltip": {
