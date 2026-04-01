@@ -628,7 +628,7 @@ export default function PackageDetailPage() {
         <div className="text-center">
           <div className="text-lg text-red-600">{t('packageDetail.error.notFound')}</div>
           <Button 
-            onClick={() => router.back()} 
+            onClick={() => router.push('/package-management')} 
             className="mt-4"
             variant="outline"
           >
@@ -649,7 +649,7 @@ export default function PackageDetailPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.back()}
+              onClick={() => router.push('/package-management')}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
