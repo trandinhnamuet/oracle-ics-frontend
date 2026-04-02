@@ -203,15 +203,14 @@ export const deleteVmOnly = async (
 }
 
 /**
- * Reset Windows VM password
- * @param newPassword Optional. If provided, sets the VM password to this value.
- *                    If omitted, the server auto-generates a random password.
+ * Start an async Windows password reset job.
+ * Returns a jobId immediately (HTTP 202). Poll getResetWindowsPasswordStatus() for the result.
  */
 export const resetWindowsPassword = async (
   subscriptionId: string,
   newPassword?: string,
-): Promise<{ success: boolean; username: string; newPassword: string; message: string }> => {
-  const result = await fetchJsonWithAuth<{ success: boolean; username: string; newPassword: string; message: string }>(
+): Promise<{ jobId: string }> => {
+  const result = await fetchJsonWithAuth<{ jobId: string }>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/reset-windows-password`,
     {
       method: 'POST',
@@ -219,5 +218,24 @@ export const resetWindowsPassword = async (
     }
   )
   return result
+}
+
+/**
+ * Poll the status of an async Windows password reset job.
+ */
+export const getResetWindowsPasswordStatus = async (
+  subscriptionId: string,
+  jobId: string,
+): Promise<{
+  status: 'pending' | 'success' | 'failed' | 'not_found';
+  newPassword?: string;
+  username?: string;
+  message?: string;
+  error?: string;
+}> => {
+  return fetchJsonWithAuth(
+    `${API_BASE_URL}/vm-subscription/${subscriptionId}/reset-windows-password-status/${jobId}`,
+    { method: 'GET' },
+  )
 }
 

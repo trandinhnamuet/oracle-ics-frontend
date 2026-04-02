@@ -35,7 +35,7 @@ import {
   Area
 } from 'recharts'
 import { getSubscriptionById, deleteSubscription, toggleAutoRenew, renewSubscription, Subscription } from '@/api/subscription.api'
-import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, resetWindowsPassword, VmDetails } from '@/api/vm-subscription.api'
+import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, resetWindowsPassword, getResetWindowsPasswordStatus, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
 import { formatDateOnly, formatDateTime, parseAsUtc } from '@/lib/utils'
@@ -489,15 +489,42 @@ export default function PackageDetailPage() {
     setCustomPassword('')
     setShowCustomPassword(false)
     try {
-      const result = await resetWindowsPassword(subscriptionId, passwordToUse)
-      setNewWindowsPassword(result.newPassword)
-      // Refresh VM details to get updated password
-      const updatedVm = await getSubscriptionVm(subscriptionId)
-      setVmDetails(updatedVm)
-      toast({
-        title: t('packageDetail.toast.passwordResetSuccess'),
-        description: t('packageDetail.toast.passwordResetSuccessDesc'),
-        duration: 8000,
+      // Start async job — returns immediately (HTTP 202)
+      const { jobId } = await resetWindowsPassword(subscriptionId, passwordToUse)
+
+      // Poll for completion (up to 15 minutes, every 5 seconds)
+      const MAX_POLLS = 180
+      const POLL_INTERVAL_MS = 5000
+      let polls = 0
+      await new Promise<void>((resolve, reject) => {
+        const tick = async () => {
+          polls++
+          try {
+            const job = await getResetWindowsPasswordStatus(subscriptionId, jobId)
+            if (job.status === 'success') {
+              setNewWindowsPassword(job.newPassword!)
+              // Refresh VM details to get updated password
+              const updatedVm = await getSubscriptionVm(subscriptionId)
+              setVmDetails(updatedVm)
+              toast({
+                title: t('packageDetail.toast.passwordResetSuccess'),
+                description: t('packageDetail.toast.passwordResetSuccessDesc'),
+                duration: 8000,
+              })
+              resolve()
+            } else if (job.status === 'failed') {
+              reject(new Error(job.error || 'Password reset failed'))
+            } else if (polls >= MAX_POLLS) {
+              reject(new Error('Password reset timed out. Please try again.'))
+            } else {
+              // still pending
+              setTimeout(tick, POLL_INTERVAL_MS)
+            }
+          } catch (pollErr) {
+            reject(pollErr)
+          }
+        }
+        setTimeout(tick, POLL_INTERVAL_MS)
       })
     } catch (error: any) {
       console.error('Error resetting Windows password:', error)
