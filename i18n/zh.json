@@ -2119,7 +2119,7 @@
     "errorMonths": "月数必须在 1 到 24 之间",
     "insufficientBalanceTitle": "余额不足",
     "insufficientBalanceDesc": "您的余额不足，请充值。",
-    "successTitle": "購買成功！",
+    "successTitle": "购买成功！",
     "successDesc": "已成功购买 {{planName}} 套餐。费用已从账户中扣除。",
     "errorGeneral": "发生错误，请重试。",
     "autoRenew": "自动续费",
