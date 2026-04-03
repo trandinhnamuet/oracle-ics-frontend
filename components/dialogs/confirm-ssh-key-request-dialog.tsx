@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,16 +11,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { AlertTriangle, Key, Monitor, Shield } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { AlertTriangle, Key, Mail, Monitor, Shield } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { sendActionOtp } from '@/api/vm-subscription.api'
+import { useToast } from '@/hooks/use-toast'
 
 interface ConfirmSshKeyRequestDialogProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: () => void
+  onConfirm: (otpCode: string) => void
   email: string
   vmName?: string
   isLoading?: boolean
+  subscriptionId: string
 }
 
 export function ConfirmSshKeyRequestDialog({
@@ -29,8 +34,51 @@ export function ConfirmSshKeyRequestDialog({
   email,
   vmName,
   isLoading = false,
+  subscriptionId,
 }: ConfirmSshKeyRequestDialogProps) {
   const { t } = useTranslation()
+  const { toast } = useToast()
+  const [step, setStep] = useState<'confirm' | 'otp'>('confirm')
+  const [otpCode, setOtpCode] = useState('')
+  const [isSendingOtp, setIsSendingOtp] = useState(false)
+
+  // Reset state whenever dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      setStep('confirm')
+      setOtpCode('')
+      setIsSendingOtp(false)
+    }
+  }, [isOpen])
+
+  const handleSendOtp = async () => {
+    setIsSendingOtp(true)
+    try {
+      await sendActionOtp(subscriptionId, 'request-key')
+      setStep('otp')
+    } catch (error: any) {
+      toast({
+        title: t('common.error'),
+        description: error?.response?.data?.message || t('packageDetail.actionOtp.sendError'),
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSendingOtp(false)
+    }
+  }
+
+  const handleConfirm = () => {
+    if (!otpCode.trim()) {
+      toast({
+        title: t('common.error'),
+        description: t('packageDetail.actionOtp.emptyError'),
+        variant: 'destructive',
+      })
+      return
+    }
+    onConfirm(otpCode.trim())
+  }
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent className="max-w-2xl">
@@ -39,94 +87,177 @@ export function ConfirmSshKeyRequestDialog({
             <Key className="h-5 w-5 text-orange-600" />
             {t('packageDetail.sshKeyRequest.title')}
           </AlertDialogTitle>
-          <AlertDialogDescription className="space-y-4 text-left pt-4">
-            {/* Warning Box */}
-            <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
-                <div className="space-y-2">
-                  <p className="font-semibold text-orange-900">
-                    {t('packageDetail.sshKeyRequest.warningTitle')}
-                  </p>
-                  <ul className="text-sm text-orange-800 space-y-1 list-disc list-inside">
-                    <li>{t('packageDetail.sshKeyRequest.warningItem1')}</li>
-                    <li>{t('packageDetail.sshKeyRequest.warningItem2')}</li>
-                    <li>{t('packageDetail.sshKeyRequest.warningItem3')}</li>
-                    <li>{t('packageDetail.sshKeyRequest.warningItem4')}</li>
-                  </ul>
+
+          {step === 'confirm' ? (
+            <AlertDialogDescription className="space-y-4 text-left pt-4">
+              {/* Warning Box */}
+              <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                  <div className="space-y-2">
+                    <p className="font-semibold text-orange-900">
+                      {t('packageDetail.sshKeyRequest.warningTitle')}
+                    </p>
+                    <ul className="text-sm text-orange-800 space-y-1 list-disc list-inside">
+                      <li>{t('packageDetail.sshKeyRequest.warningItem1')}</li>
+                      <li>{t('packageDetail.sshKeyRequest.warningItem2')}</li>
+                      <li>{t('packageDetail.sshKeyRequest.warningItem3')}</li>
+                      <li>{t('packageDetail.sshKeyRequest.warningItem4')}</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* VM Info */}
-            <div className="bg-blue-50 border border-blue-200 p-4 rounded">
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-blue-600" />
-                  <span className="font-medium text-blue-900">{t('packageDetail.sshKeyRequest.vmInfoTitle')}</span>
-                </div>
-                {vmName && (
-                  <p className="text-blue-800 ml-6">
-                    <strong>VM:</strong> {vmName}
-                  </p>
-                )}
-                <div className="flex items-center gap-2 ml-6">
-                  <Monitor className="h-4 w-4 text-blue-600" />
-                  <span className="text-blue-800">
-                    {t('packageDetail.sshKeyRequest.privateKeyOnScreen')}
-                  </span>
+              {/* VM Info */}
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded">
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-blue-600" />
+                    <span className="font-medium text-blue-900">{t('packageDetail.sshKeyRequest.vmInfoTitle')}</span>
+                  </div>
+                  {vmName && (
+                    <p className="text-blue-800 ml-6">
+                      <strong>VM:</strong> {vmName}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-2 ml-6">
+                    <Monitor className="h-4 w-4 text-blue-600" />
+                    <span className="text-blue-800">
+                      {t('packageDetail.sshKeyRequest.privateKeyOnScreen')}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Security Notice */}
-            <div className="bg-gray-50 border border-gray-200 p-4 rounded">
-              <p className="text-sm font-semibold text-gray-900 mb-2">
-                {t('packageDetail.sshKeyRequest.processTitle')}
-              </p>
-              <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-                <li>{t('packageDetail.sshKeyRequest.processStep1')}</li>
-                <li>{t('packageDetail.sshKeyRequest.processStep2')}</li>
-                <li>{t('packageDetail.sshKeyRequest.processStep3')}</li>
-                <li>{t('packageDetail.sshKeyRequest.processStep4')}</li>
-              </ol>
-            </div>
+              {/* Security Notice */}
+              <div className="bg-gray-50 border border-gray-200 p-4 rounded">
+                <p className="text-sm font-semibold text-gray-900 mb-2">
+                  {t('packageDetail.sshKeyRequest.processTitle')}
+                </p>
+                <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
+                  <li>{t('packageDetail.sshKeyRequest.processStep1')}</li>
+                  <li>{t('packageDetail.sshKeyRequest.processStep2')}</li>
+                  <li>{t('packageDetail.sshKeyRequest.processStep3')}</li>
+                  <li>{t('packageDetail.sshKeyRequest.processStep4')}</li>
+                </ol>
+              </div>
 
-            {/* Final Warning */}
-            <div className="bg-yellow-50 border border-yellow-200 p-3 rounded">
-              <p className="text-sm text-yellow-900">
-                ⚠️ <strong>{t('packageDetail.sshKeyRequest.importantLabel')}</strong>{' '}
-                {t('packageDetail.sshKeyRequest.importantNote1')}{' '}
-                <strong className="underline">{t('packageDetail.sshKeyRequest.importantOnce')}</strong>.{' '}
-                {t('packageDetail.sshKeyRequest.importantNote2')}
+              {/* Final Warning */}
+              <div className="bg-yellow-50 border border-yellow-200 p-3 rounded">
+                <p className="text-sm text-yellow-900">
+                  ⚠️ <strong>{t('packageDetail.sshKeyRequest.importantLabel')}</strong>{' '}
+                  {t('packageDetail.sshKeyRequest.importantNote1')}{' '}
+                  <strong className="underline">{t('packageDetail.sshKeyRequest.importantOnce')}</strong>.{' '}
+                  {t('packageDetail.sshKeyRequest.importantNote2')}
+                </p>
+              </div>
+            </AlertDialogDescription>
+          ) : (
+            <AlertDialogDescription className="space-y-4 text-left pt-4">
+              {/* OTP sent notice */}
+              <div className="bg-green-50 border border-green-200 p-4 rounded">
+                <div className="flex items-start gap-3">
+                  <Mail className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-green-900 text-sm">
+                      {t('packageDetail.actionOtp.otpSent', { email })}
+                    </p>
+                    <p className="text-xs text-green-700 mt-1">
+                      {t('packageDetail.actionOtp.otpExpiry')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* OTP input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  {t('packageDetail.actionOtp.otpLabel')}
+                </label>
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder={t('packageDetail.actionOtp.otpPlaceholder')}
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                  className="text-center text-xl tracking-widest font-mono"
+                  autoFocus
+                />
+              </div>
+
+              {/* Resend link */}
+              <p className="text-xs text-muted-foreground text-center">
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={isSendingOtp}
+                  className="underline hover:no-underline disabled:opacity-50"
+                >
+                  {isSendingOtp ? t('packageDetail.actionOtp.resending') : t('packageDetail.actionOtp.resend')}
+                </button>
               </p>
-            </div>
-          </AlertDialogDescription>
+            </AlertDialogDescription>
+          )}
         </AlertDialogHeader>
+
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>
-            {t('packageDetail.sshKeyRequest.cancel')}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={(e) => {
-              e.preventDefault()
-              onConfirm()
-            }}
-            disabled={isLoading}
-            className="bg-orange-600 hover:bg-orange-700"
-          >
-            {isLoading ? (
-              <>
-                <span className="animate-spin mr-2">⏳</span>
-                {t('packageDetail.sshKeyRequest.creating')}
-              </>
-            ) : (
-              <>
-                <Key className="h-4 w-4 mr-2" />
-                {t('packageDetail.sshKeyRequest.confirm')}
-              </>
-            )}
-          </AlertDialogAction>
+          {step === 'confirm' ? (
+            <>
+              <AlertDialogCancel disabled={isSendingOtp}>
+                {t('packageDetail.sshKeyRequest.cancel')}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleSendOtp()
+                }}
+                disabled={isSendingOtp}
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                {isSendingOtp ? (
+                  <>
+                    <span className="animate-spin mr-2">⏳</span>
+                    {t('packageDetail.actionOtp.sendingOtp')}
+                  </>
+                ) : (
+                  <>
+                    <Mail className="h-4 w-4 mr-2" />
+                    {t('packageDetail.actionOtp.sendOtp')}
+                  </>
+                )}
+              </AlertDialogAction>
+            </>
+          ) : (
+            <>
+              <AlertDialogCancel
+                onClick={() => setStep('confirm')}
+                disabled={isLoading}
+              >
+                {t('packageDetail.actionOtp.backToForm')}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleConfirm()
+                }}
+                disabled={isLoading || otpCode.length !== 6}
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                {isLoading ? (
+                  <>
+                    <span className="animate-spin mr-2">⏳</span>
+                    {t('packageDetail.sshKeyRequest.creating')}
+                  </>
+                ) : (
+                  <>
+                    <Key className="h-4 w-4 mr-2" />
+                    {t('packageDetail.actionOtp.verify')}
+                  </>
+                )}
+              </AlertDialogAction>
+            </>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

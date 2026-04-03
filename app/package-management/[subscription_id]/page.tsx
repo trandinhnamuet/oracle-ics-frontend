@@ -35,7 +35,7 @@ import {
   Area
 } from 'recharts'
 import { getSubscriptionById, deleteSubscription, toggleAutoRenew, renewSubscription, Subscription } from '@/api/subscription.api'
-import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, resetWindowsPassword, getResetWindowsPasswordStatus, VmDetails } from '@/api/vm-subscription.api'
+import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, resetWindowsPassword, getResetWindowsPasswordStatus, sendActionOtp, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
 import { formatDateOnly, formatDateTime, parseAsUtc } from '@/lib/utils'
@@ -120,6 +120,9 @@ export default function PackageDetailPage() {
   const [newWindowsPassword, setNewWindowsPassword] = useState<string | null>(null)
   const [customPassword, setCustomPassword] = useState('')
   const [showCustomPassword, setShowCustomPassword] = useState(false)
+  const [resetPasswordOtpStep, setResetPasswordOtpStep] = useState<'form' | 'otp'>('form')
+  const [resetOtpCode, setResetOtpCode] = useState('')
+  const [isSendingResetOtp, setIsSendingResetOtp] = useState(false)
   const [isTogglingAutoRenew, setIsTogglingAutoRenew] = useState(false)
   const [renewAndStartDialog, setRenewAndStartDialog] = useState<{
     open: boolean
@@ -430,13 +433,13 @@ export default function PackageDetailPage() {
     setShowSshKeyConfirm(true)
   }
 
-  const handleConfirmSshKeyRequest = async () => {
+  const handleConfirmSshKeyRequest = async (otpCode: string) => {
     const email = subscription?.user?.email
     if (!email) return
 
     setIsRequestingSshKey(true)
     try {
-      const result = await requestNewSshKey(subscriptionId, email)
+      const result = await requestNewSshKey(subscriptionId, email, otpCode)
       
       // Close dialog
       setShowSshKeyConfirm(false)
@@ -482,15 +485,34 @@ export default function PackageDetailPage() {
     return null
   }
 
+  const handleSendResetOtp = async () => {
+    setIsSendingResetOtp(true)
+    try {
+      await sendActionOtp(subscriptionId, 'reset-password')
+      setResetPasswordOtpStep('otp')
+    } catch (error: any) {
+      toast({
+        title: t('common.error'),
+        description: error?.response?.data?.message || t('packageDetail.actionOtp.sendError'),
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSendingResetOtp(false)
+    }
+  }
+
   const handleResetWindowsPassword = async () => {
     setResetPasswordDialog(false)
-    setIsResettingPassword(true)
+    setResetPasswordOtpStep('form')
+    const otpToUse = resetOtpCode.trim()
     const passwordToUse = customPassword.trim() || undefined
     setCustomPassword('')
     setShowCustomPassword(false)
+    setResetOtpCode('')
+    setIsResettingPassword(true)
     try {
       // Start async job — returns immediately (HTTP 202)
-      const { jobId } = await resetWindowsPassword(subscriptionId, passwordToUse)
+      const { jobId } = await resetWindowsPassword(subscriptionId, otpToUse, passwordToUse)
 
       // Poll for completion (up to 15 minutes, every 5 seconds)
       const MAX_POLLS = 180
@@ -1354,6 +1376,7 @@ export default function PackageDetailPage() {
         email={subscription?.user?.email || ''}
         vmName={vmDetails?.vm?.instanceName}
         isLoading={isRequestingSshKey}
+        subscriptionId={subscriptionId}
       />
 
       <AlertDialog open={confirmDialog.open} onOpenChange={(open) => !open && setConfirmDialog(prev => ({ ...prev, open: false }))}>
@@ -1501,57 +1524,112 @@ export default function PackageDetailPage() {
 
       {/* Reset Windows Password — Confirmation Dialog */}
       <AlertDialog open={resetPasswordDialog} onOpenChange={(open) => {
-        if (!open) { setCustomPassword(''); setShowCustomPassword(false) }
+        if (!open) { setCustomPassword(''); setShowCustomPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false) }
         setResetPasswordDialog(open)
       }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>🔑 {t('packageDetail.resetPassword.title')}</AlertDialogTitle>
             <AlertDialogDescription asChild>
-              <div className="space-y-4">
-                <p>{t('packageDetail.resetPassword.description')}</p>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">
-                    {t('packageDetail.resetPassword.newPasswordLabel')}
-                  </label>
-                  <div className="relative">
+              {resetPasswordOtpStep === 'form' ? (
+                <div className="space-y-4">
+                  <p>{t('packageDetail.resetPassword.description')}</p>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">
+                      {t('packageDetail.resetPassword.newPasswordLabel')}
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type={showCustomPassword ? 'text' : 'password'}
+                        placeholder={t('packageDetail.resetPassword.newPasswordPlaceholder')}
+                        value={customPassword}
+                        onChange={(e) => setCustomPassword(e.target.value)}
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCustomPassword(v => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showCustomPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {customPassword && (() => {
+                      const err = validateWindowsPassword(customPassword)
+                      return err
+                        ? <p className="text-xs text-destructive">{err}</p>
+                        : <p className="text-xs text-green-600 dark:text-green-400">✓ {t('packageDetail.resetPassword.validation.valid')}</p>
+                    })()}
+                    <p className="text-xs text-muted-foreground">{t('packageDetail.resetPassword.newPasswordHint')}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 p-4 rounded">
+                    <p className="text-sm font-semibold text-green-900 dark:text-green-300">
+                      {t('packageDetail.actionOtp.otpSent', { email: subscription?.user?.email || '' })}
+                    </p>
+                    <p className="text-xs text-green-700 dark:text-green-400 mt-1">
+                      {t('packageDetail.actionOtp.otpExpiry')}
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">
+                      {t('packageDetail.actionOtp.otpLabel')}
+                    </label>
                     <Input
-                      type={showCustomPassword ? 'text' : 'password'}
-                      placeholder={t('packageDetail.resetPassword.newPasswordPlaceholder')}
-                      value={customPassword}
-                      onChange={(e) => setCustomPassword(e.target.value)}
-                      className="pr-10"
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      placeholder={t('packageDetail.actionOtp.otpPlaceholder')}
+                      value={resetOtpCode}
+                      onChange={(e) => setResetOtpCode(e.target.value.replace(/\D/g, ''))}
+                      className="text-center text-xl tracking-widest font-mono"
+                      autoFocus
                     />
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">
                     <button
                       type="button"
-                      onClick={() => setShowCustomPassword(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      onClick={handleSendResetOtp}
+                      disabled={isSendingResetOtp}
+                      className="underline hover:no-underline disabled:opacity-50"
                     >
-                      {showCustomPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {isSendingResetOtp ? t('packageDetail.actionOtp.resending') : t('packageDetail.actionOtp.resend')}
                     </button>
-                  </div>
-                  {customPassword && (() => {
-                    const err = validateWindowsPassword(customPassword)
-                    return err
-                      ? <p className="text-xs text-destructive">{err}</p>
-                      : <p className="text-xs text-green-600 dark:text-green-400">✓ {t('packageDetail.resetPassword.validation.valid')}</p>
-                  })()}
-                  <p className="text-xs text-muted-foreground">{t('packageDetail.resetPassword.newPasswordHint')}</p>
+                  </p>
                 </div>
-              </div>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => { setCustomPassword(''); setShowCustomPassword(false) }}>
-              {t('packageDetail.confirmDialog.cancel')}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleResetWindowsPassword}
-              className="bg-orange-600 hover:bg-orange-700 text-white"
-              disabled={!!customPassword && !!validateWindowsPassword(customPassword)}
-            >
-              {t('packageDetail.resetPassword.confirm')}
-            </AlertDialogAction>
+            {resetPasswordOtpStep === 'form' ? (
+              <>
+                <AlertDialogCancel onClick={() => { setCustomPassword(''); setShowCustomPassword(false) }}>
+                  {t('packageDetail.confirmDialog.cancel')}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={(e) => { e.preventDefault(); handleSendResetOtp() }}
+                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                  disabled={isSendingResetOtp || (!!customPassword && !!validateWindowsPassword(customPassword))}
+                >
+                  {isSendingResetOtp ? t('packageDetail.actionOtp.sendingOtp') : t('packageDetail.actionOtp.sendOtp')}
+                </AlertDialogAction>
+              </>
+            ) : (
+              <>
+                <AlertDialogCancel onClick={() => setResetPasswordOtpStep('form')}>
+                  {t('packageDetail.actionOtp.backToForm')}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleResetWindowsPassword}
+                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                  disabled={resetOtpCode.length !== 6}
+                >
+                  {t('packageDetail.resetPassword.confirm')}
+                </AlertDialogAction>
+              </>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -1715,6 +1715,20 @@
         "needSpecial": "Mật khẩu phải có ít nhất 1 ký tự đặc biệt (ví dụ: !@#$%)",
         "valid": "Mật khẩu đáp ứng yêu cầu Windows"
       }
+    },
+    "actionOtp": {
+      "sendOtp": "Gửi mã xác thực",
+      "sendingOtp": "Đang gửi...",
+      "otpSent": "Mã xác thực đã gửi tới {{email}}",
+      "otpLabel": "Mã xác thực",
+      "otpPlaceholder": "Nhập mã 6 chữ số",
+      "otpExpiry": "Mã hết hạn sau 10 phút",
+      "verify": "Xác nhận",
+      "resend": "Gửi lại mã",
+      "resending": "Đang gửi lại...",
+      "backToForm": "Quay lại",
+      "sendError": "Không thể gửi mã xác thực. Vui lòng thử lại.",
+      "emptyError": "Vui lòng nhập mã xác thực"
     }
   },
   "support": {

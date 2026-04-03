@@ -1716,6 +1716,20 @@
         "needSpecial": "Password must include at least one special character (e.g. !@#$%)",
         "valid": "Password meets Windows requirements"
       }
+    },
+    "actionOtp": {
+      "sendOtp": "Send Verification Code",
+      "sendingOtp": "Sending...",
+      "otpSent": "Verification code sent to {{email}}",
+      "otpLabel": "Verification Code",
+      "otpPlaceholder": "Enter 6-digit code",
+      "otpExpiry": "Code expires in 10 minutes",
+      "verify": "Confirm",
+      "resend": "Resend Code",
+      "resending": "Resending...",
+      "backToForm": "Back",
+      "sendError": "Failed to send verification code. Please try again.",
+      "emptyError": "Please enter the verification code"
     }
   },
   "support": {

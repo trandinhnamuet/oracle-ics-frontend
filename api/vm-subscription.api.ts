@@ -129,11 +129,29 @@ export const performVmAction = async (
 }
 
 /**
+ * Send an OTP code to the user's email before performing a sensitive VM action.
+ * Language is automatically determined from the frontend's current locale cookie.
+ */
+export const sendActionOtp = async (
+  subscriptionId: string,
+  action: 'request-key' | 'reset-password',
+): Promise<{ success: boolean; message: string }> => {
+  return fetchJsonWithAuth<{ success: boolean; message: string }>(
+    `${API_BASE_URL}/vm-subscription/${subscriptionId}/send-action-otp`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ action }),
+    }
+  )
+}
+
+/**
  * Request new SSH key for VM
  */
 export const requestNewSshKey = async (
   subscriptionId: string,
-  email: string
+  email: string,
+  otpCode: string,
 ): Promise<{ 
   success: boolean
   message: string
@@ -163,7 +181,7 @@ export const requestNewSshKey = async (
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/request-key`,
     {
       method: 'POST',
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, otpCode })
     }
   )
   return result
@@ -208,13 +226,16 @@ export const deleteVmOnly = async (
  */
 export const resetWindowsPassword = async (
   subscriptionId: string,
+  otpCode: string,
   newPassword?: string,
 ): Promise<{ jobId: string }> => {
+  const body: Record<string, string> = { otpCode }
+  if (newPassword) body.newPassword = newPassword
   const result = await fetchJsonWithAuth<{ jobId: string }>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/reset-windows-password`,
     {
       method: 'POST',
-      ...(newPassword ? { body: JSON.stringify({ newPassword }) } : {}),
+      body: JSON.stringify(body),
     }
   )
   return result
