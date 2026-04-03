@@ -1712,6 +1712,20 @@
         "needSpecial": "特殊文字(例: !@#$%)を少なくとも1文字含める必要があります",
         "valid": "パスワードはWindowsの要件を満たしています"
       }
+    },
+    "actionOtp": {
+      "sendOtp": "確認",
+      "sendingOtp": "確認中...",
+      "otpSent": "認証コードを {{email}} に送信しました",
+      "otpExpiry": "コードは10分後に期限切れになります",
+      "otpLabel": "認証コード",
+      "otpPlaceholder": "6桁のコードを入力",
+      "verify": "確認",
+      "resend": "コードを再送信",
+      "resending": "再送信中...",
+      "backToForm": "戻る",
+      "sendError": "認証コードの送信に失敗しました。再試行してください。",
+      "emptyError": "認証コードを入力してください"
     }
   },
   "support": {

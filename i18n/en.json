@@ -1718,8 +1718,8 @@
       }
     },
     "actionOtp": {
-      "sendOtp": "Send Verification Code",
-      "sendingOtp": "Sending...",
+      "sendOtp": "Confirm",
+      "sendingOtp": "Confirming...",
       "otpSent": "Verification code sent to {{email}}",
       "otpLabel": "Verification Code",
       "otpPlaceholder": "Enter 6-digit code",

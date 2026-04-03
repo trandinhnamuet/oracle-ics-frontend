@@ -1713,6 +1713,20 @@
         "needSpecial": "密码必须包含至少一个特殊字符(如!@#$%)",
         "valid": "密码符合Windows要求"
       }
+    },
+    "actionOtp": {
+      "sendOtp": "确认",
+      "sendingOtp": "确认中...",
+      "otpSent": "验证码已发送至 {{email}}",
+      "otpExpiry": "验证码将在10分钟后过期",
+      "otpLabel": "验证码",
+      "otpPlaceholder": "输入6位数字验证码",
+      "verify": "确认",
+      "resend": "重新发送验证码",
+      "resending": "重新发送中...",
+      "backToForm": "返回",
+      "sendError": "验证码发送失败，请重试。",
+      "emptyError": "请输入验证码"
     }
   },
   "support": {

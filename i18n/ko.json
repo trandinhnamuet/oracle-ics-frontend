@@ -1712,6 +1712,20 @@
         "needSpecial": "특수문자(예: !@#$%)를 최소 1자 포함해야 합니다",
         "valid": "비밀번호가 Windows 요구 사항을 충족합니다"
       }
+    },
+    "actionOtp": {
+      "sendOtp": "확인",
+      "sendingOtp": "확인 중...",
+      "otpSent": "{{email}} 으로 인증 코드가 전송되었습니다",
+      "otpExpiry": "코드는 10분 후 만료됩니다",
+      "otpLabel": "인증 코드",
+      "otpPlaceholder": "6자리 코드 입력",
+      "verify": "확인",
+      "resend": "코드 재전송",
+      "resending": "재전송 중...",
+      "backToForm": "뒤로",
+      "sendError": "인증 코드 전송에 실패했습니다. 다시 시도해 주세요.",
+      "emptyError": "인증 코드를 입력해 주세요"
     }
   },
   "support": {

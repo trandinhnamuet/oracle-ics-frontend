@@ -1717,8 +1717,8 @@
       }
     },
     "actionOtp": {
-      "sendOtp": "Gửi mã xác thực",
-      "sendingOtp": "Đang gửi...",
+      "sendOtp": "Xác nhận",
+      "sendingOtp": "Đang xác nhận...",
       "otpSent": "Mã xác thực đã gửi tới {{email}}",
       "otpLabel": "Mã xác thực",
       "otpPlaceholder": "Nhập mã 6 chữ số",
