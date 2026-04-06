@@ -42,7 +42,8 @@
       "endDate": "Ngày hết hạn",
       "vmRunning": "Đang chạy",
       "vmStopped": "Đã dừng",
-      "configure": "Cấu hình"
+      "configure": "Cấu hình",
+      "imageDetail": "Hệ điều hành"
     },
     "confirmDialog": {
       "cancel": "Hủy",
@@ -1526,7 +1527,10 @@
       "vmState": "Trạng thái VM",
       "vmStatus": "Trạng thái VM",
       "createdDate": "Ngày tạo",
-      "publicIp": "IP công khai"
+      "publicIp": "IP công khai",
+      "operatingSystem": "Hệ điều hành",
+      "osVersion": "Phiên bản OS",
+      "imageName": "Image"
     },
     "controls": {
       "vmName": "Tên VM:",

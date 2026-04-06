@@ -42,7 +42,8 @@
       "endDate": "End Date",
       "vmRunning": "Running",
       "vmStopped": "Stopped",
-      "configure": "Configure"
+      "configure": "Configure",
+      "imageDetail": "Operating System"
     },
     "confirmDialog": {
       "cancel": "Cancel",
@@ -1527,7 +1528,10 @@
       "vmState": "VM State",
       "vmStatus": "VM Status",
       "createdDate": "Created Date",
-      "publicIp": "Public IP"
+      "publicIp": "Public IP",
+      "operatingSystem": "Operating System",
+      "osVersion": "OS Version",
+      "imageName": "Image"
     },
     "controls": {
       "vmName": "VM Name:",

@@ -42,7 +42,8 @@
       "endDate": "終了日",
       "vmRunning": "実行中",
       "vmStopped": "停止済み",
-      "configure": "設定"
+      "configure": "設定",
+      "imageDetail": "オペレーティングシステム"
     },
     "confirmDialog": {
       "cancel": "キャンセル",
@@ -1543,7 +1544,10 @@
       "vmState": "VM状態",
       "vmStatus": "VMステータス",
       "createdDate": "作成日",
-      "publicIp": "パブリックIP"
+      "publicIp": "パブリックIP",
+      "operatingSystem": "オペレーティングシステム",
+      "osVersion": "OSバージョン",
+      "imageName": "イメージ"
     },
     "controls": {
       "vmName": "VM名：",

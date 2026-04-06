@@ -774,6 +774,18 @@ export default function PackageDetailPage() {
                       <p className="text-sm text-gray-600 dark:text-muted-foreground">Compartment ID <span className="text-xs text-gray-400 dark:text-muted-foreground">(will be hide in production)</span></p>
                       <p className="font-semibold text-xs break-all">{vmDetails?.vm?.compartmentId || 'N/A'}</p>
                     </div>
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.serverDetails.operatingSystem')}</p>
+                      <p className="font-semibold">{vmDetails?.vm?.operatingSystem || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.serverDetails.osVersion')}</p>
+                      <p className="font-semibold">{vmDetails?.vm?.operatingSystemVersion || 'N/A'}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-sm text-gray-600 dark:text-muted-foreground">{t('packageDetail.serverDetails.imageName')}</p>
+                      <p className="font-semibold text-xs break-all">{vmDetails?.vm?.imageName || 'N/A'}</p>
+                    </div>
                   </div>
                 )}
 

@@ -42,7 +42,8 @@
       "endDate": "종료일",
       "vmRunning": "실행 중",
       "vmStopped": "중지됨",
-      "configure": "구성"
+      "configure": "구성",
+      "imageDetail": "운영 체제"
     },
     "confirmDialog": {
       "cancel": "취소",
@@ -1543,7 +1544,10 @@
       "vmState": "VM 상태",
       "vmStatus": "VM 상태",
       "createdDate": "생성일",
-      "publicIp": "공용 IP"
+      "publicIp": "공용 IP",
+      "operatingSystem": "운영 체제",
+      "osVersion": "OS 버전",
+      "imageName": "이미지"
     },
     "controls": {
       "vmName": "VM 이름:",

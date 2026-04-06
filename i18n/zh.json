@@ -42,7 +42,8 @@
       "endDate": "到期日期",
       "vmRunning": "运行中",
       "vmStopped": "已停止",
-      "configure": "配置"
+      "configure": "配置",
+      "imageDetail": "操作系统"
     },
     "confirmDialog": {
       "cancel": "取消",
@@ -1544,7 +1545,10 @@
       "vmState": "VM状态",
       "vmStatus": "VM状态",
       "createdDate": "建立日期",
-      "publicIp": "公网IP"
+      "publicIp": "公网IP",
+      "operatingSystem": "操作系统",
+      "osVersion": "系统版本",
+      "imageName": "镜像"
     },
     "controls": {
       "vmName": "虚拟机名称：",

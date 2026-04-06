@@ -56,6 +56,8 @@ interface PackageSubscription {
     region?: string
     shape?: string
     operating_system?: string
+    operating_system_version?: string
+    image_name?: string
     created_at?: string
   } | null
 }
@@ -476,7 +478,7 @@ export default function PackageManagementPage() {
                 <TableRow>
                   <TableHead>Sub ID</TableHead>
                   <TableHead>{t('packageManagement.table.packageName')}</TableHead>
-                  <TableHead>{t('packageManagement.table.type')}</TableHead>
+                  <TableHead>{t('packageManagement.table.imageDetail')}</TableHead>
                   <TableHead>{t('packageManagement.table.vmName')}</TableHead>
                   <TableHead>IPv4</TableHead>
                   <TableHead>{t('packageManagement.table.createdAt')}</TableHead>
@@ -516,10 +518,17 @@ export default function PackageManagementPage() {
                             {packageName}
                           </span>
                         </TableCell>
-                        <TableCell>
-                          <Badge variant={getTypeVariant(packageType)}>
-                            {packageType.charAt(0).toUpperCase() + packageType.slice(1)}
-                          </Badge>
+                        <TableCell className="text-sm">
+                          {sub.vmInstance?.operating_system ? (
+                            <div>
+                              <div className="font-medium">{sub.vmInstance.operating_system}</div>
+                              {sub.vmInstance.operating_system_version && (
+                                <div className="text-xs text-muted-foreground">{sub.vmInstance.operating_system_version}</div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
                         </TableCell>
                         <TableCell className="font-mono text-sm">
                           {vmName || <span className="text-muted-foreground">-</span>}
