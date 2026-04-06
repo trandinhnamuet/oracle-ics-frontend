@@ -1,6 +1,6 @@
-'use client'
+﻿'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import dynamic from 'next/dynamic'
@@ -41,15 +41,21 @@ import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
 import { formatDateOnly, formatDateTime, parseAsUtc } from '@/lib/utils'
 
-// Converts ISO timestamp from metrics API → HH:MM in browser's local timezone
-function formatMetricTime(isoStr: string): string {
-  try {
-    return parseAsUtc(isoStr).toLocaleTimeString(undefined, {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  } catch {
-    return isoStr
+// Returns a formatter function for chart axes based on the selected time range.
+// Short ranges (≤24h) show time only; longer ranges (7d / all) show date + time.
+function makeTimeFormatter(tr: string) {
+  const showDate = tr === '7d' || tr === 'all'
+  return (isoStr: string): string => {
+    try {
+      const d = parseAsUtc(isoStr)
+      if (showDate) {
+        return d.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' })
+          + ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+      }
+      return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+    } catch {
+      return isoStr
+    }
   }
 }
 
@@ -113,6 +119,7 @@ export default function PackageDetailPage() {
   const [isLoadingMetrics, setIsLoadingMetrics] = useState(false)
   const [networkVisible, setNetworkVisible] = useState({ in: true, out: true })
   const [diskVisible, setDiskVisible] = useState({ read: true, write: true })
+  const fmtTime = useMemo(() => makeTimeFormatter(timeRange), [timeRange])
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
   const [showSshKeyConfirm, setShowSshKeyConfirm] = useState(false)
   const [isRequestingSshKey, setIsRequestingSshKey] = useState(false)
@@ -895,7 +902,7 @@ export default function PackageDetailPage() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.cpuTitle')}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => downloadChartCSV((metrics?.cpu || []).map(d => ({ time: formatMetricTime(d.time), cpu_percent: d.value })), `cpu-${subscriptionId}-${timeRange}.csv`)}>
+                  <Button variant="ghost" size="sm" onClick={() => downloadChartCSV((metrics?.cpu || []).map(d => ({ time: fmtTime(d.time), cpu_percent: d.value })), `cpu-${subscriptionId}-${timeRange}.csv`)}>
                     <Download className="h-4 w-4" />
                   </Button>
                 </CardHeader>
@@ -911,7 +918,7 @@ export default function PackageDetailPage() {
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
                             dataKey="time"
-                            tickFormatter={formatMetricTime}
+                            tickFormatter={fmtTime}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -922,7 +929,7 @@ export default function PackageDetailPage() {
                             tickLine={false}
                             className="text-sm"
                           />
-                          <Tooltip labelFormatter={formatMetricTime} formatter={(v: number) => [`${v.toFixed(2)}%`, 'CPU']} />
+                          <Tooltip labelFormatter={fmtTime} formatter={(v: number) => [`${v.toFixed(2)}%`, 'CPU']} />
                           <Area 
                             type="monotone" 
                             dataKey="value" 
@@ -945,7 +952,7 @@ export default function PackageDetailPage() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-lg font-semibold">{t('packageDetail.charts.memoryTitle')}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => downloadChartCSV((metrics?.memory || []).map(d => ({ time: formatMetricTime(d.time), memory_percent: d.value })), `memory-${subscriptionId}-${timeRange}.csv`)}>
+                  <Button variant="ghost" size="sm" onClick={() => downloadChartCSV((metrics?.memory || []).map(d => ({ time: fmtTime(d.time), memory_percent: d.value })), `memory-${subscriptionId}-${timeRange}.csv`)}>
                     <Download className="h-4 w-4" />
                   </Button>
                 </CardHeader>
@@ -961,7 +968,7 @@ export default function PackageDetailPage() {
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
                             dataKey="time"
-                            tickFormatter={formatMetricTime}
+                            tickFormatter={fmtTime}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -972,7 +979,7 @@ export default function PackageDetailPage() {
                             tickLine={false}
                             className="text-sm"
                           />
-                          <Tooltip labelFormatter={formatMetricTime} formatter={(v: number) => [`${v.toFixed(2)}%`, 'Memory']} />
+                          <Tooltip labelFormatter={fmtTime} formatter={(v: number) => [`${v.toFixed(2)}%`, 'Memory']} />
                           <Area 
                             type="monotone" 
                             dataKey="value" 
@@ -1033,7 +1040,7 @@ export default function PackageDetailPage() {
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
                             dataKey="time"
-                            tickFormatter={formatMetricTime}
+                            tickFormatter={fmtTime}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -1044,7 +1051,7 @@ export default function PackageDetailPage() {
                             className="text-sm"
                           />
                           <Tooltip
-                            labelFormatter={formatMetricTime}
+                            labelFormatter={fmtTime}
                             formatter={(v: number, name: string) => [
                               `${v.toFixed(3)} MB`,
                               name === 'in' ? 'In (nhận)' : 'Out (gửi)',
@@ -1123,7 +1130,7 @@ export default function PackageDetailPage() {
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
                             dataKey="time"
-                            tickFormatter={formatMetricTime}
+                            tickFormatter={fmtTime}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -1134,7 +1141,7 @@ export default function PackageDetailPage() {
                             className="text-sm"
                           />
                           <Tooltip
-                            labelFormatter={formatMetricTime}
+                            labelFormatter={fmtTime}
                             formatter={(v: number, name: string) => [
                               `${v.toFixed(3)} MB`,
                               name === 'read' ? 'Read (đọc)' : 'Write (ghi)',
