@@ -62,32 +62,32 @@ export function Footer() {
             <h4 className="text-lg font-semibold">{t('footer.services')}</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.serviceList.database')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.serviceList.compute')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.serviceList.storage')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.serviceList.networking')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.serviceList.security')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.serviceList.analytics')}
                 </a>
               </li>
@@ -99,39 +99,39 @@ export function Footer() {
             <h4 className="text-lg font-semibold">{t('footer.support')}</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.supportList.docs')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.supportList.videos')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.supportList.forum')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.supportList.ticket')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.supportList.training')}
                 </a>
               </li>
               <li>
-                <a href="#" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
+                <a href="javascript:void(0)" className="opacity-80 hover:opacity-100 hover:text-primary transition-colors">
                   {t('footer.supportList.api')}
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Contact & Newsletter */}
+          {/* Contact */}
           <div className="space-y-6">
             <h4 className="text-lg font-semibold">{t('footer.contact')}</h4>
             <div className="space-y-4 text-sm">
@@ -152,19 +152,6 @@ export function Footer() {
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 opacity-80" />
                 <p className="opacity-80">{t('footer.email')} &nbsp; - &nbsp; {t('footer.website')}</p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <h5 className="font-medium">{t('footer.newsletter')}</h5>
-              <div className="flex space-x-2">
-                <Input
-                  placeholder={t('footer.newsletterPlaceholder')}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-                />
-                <Button className="bg-primary hover:bg-primary/80 text-white" size="sm">
-                  {t('footer.newsletterButton')}
-                </Button>
               </div>
             </div>
           </div>
