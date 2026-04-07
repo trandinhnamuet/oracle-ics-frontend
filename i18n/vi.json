@@ -42,8 +42,12 @@
       "endDate": "Ngày hết hạn",
       "vmRunning": "Đang chạy",
       "vmStopped": "Đã dừng",
+      "vmStopping": "Đang dừng",
+      "vmStarting": "Đang khởi động",
       "configure": "Cấu hình",
-      "imageDetail": "Hệ điều hành"
+      "imageDetail": "Hệ điều hành",
+      "subscriptionId": "ID",
+      "ipv4": "IPv4"
     },
     "confirmDialog": {
       "cancel": "Hủy",
@@ -92,7 +96,8 @@
       "stopping": "VM đang dừng...",
       "starting": "VM đang khởi động...",
       "transitioning": "VM đang trong trạng thái chuyển đổi",
-      "renewSubscription": "Gia hạn subscription"
+      "renewSubscription": "Gia hạn subscription",
+      "viewDetails": "Xem chi tiết"
     },
     "fetchError": {
       "title": "Lỗi",

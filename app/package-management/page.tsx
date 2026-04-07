@@ -476,11 +476,11 @@ export default function PackageManagementPage() {
               <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Sub ID</TableHead>
+                  <TableHead>{t('packageManagement.table.subscriptionId')}</TableHead>
                   <TableHead>{t('packageManagement.table.packageName')}</TableHead>
                   <TableHead>{t('packageManagement.table.imageDetail')}</TableHead>
                   <TableHead>{t('packageManagement.table.vmName')}</TableHead>
-                  <TableHead>IPv4</TableHead>
+                  <TableHead>{t('packageManagement.table.ipv4')}</TableHead>
                   <TableHead>{t('packageManagement.table.createdAt')}</TableHead>
                   <TableHead>{t('packageManagement.table.endDate')}</TableHead>
                   <TableHead>{t('packageManagement.table.status')}</TableHead>
@@ -569,6 +569,8 @@ export default function PackageManagementPage() {
                               const isRunning = state === 'RUNNING'
                               const isStopped = state === 'STOPPED'
                               const isTerminated = ['TERMINATED', 'TERMINATING'].includes(state)
+                              const isStopping = state === 'STOPPING'
+                              const isStarting = state === 'STARTING'
                               const className = isRunning
                                 ? 'bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-green-300 dark:border-green-900'
                                 : isStopped
@@ -576,9 +578,14 @@ export default function PackageManagementPage() {
                                 : isTerminated
                                 ? 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-300 dark:border-red-900'
                                 : 'bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900'
+                              const label = isRunning ? t('packageManagement.table.vmRunning') 
+                                : isStopped ? t('packageManagement.table.vmStopped')
+                                : isStopping ? t('packageManagement.table.vmStopping')
+                                : isStarting ? t('packageManagement.table.vmStarting')
+                                : state
                               return (
                                 <Badge variant="outline" className={className}>
-                                  {isRunning ? t('packageManagement.table.vmRunning') : isStopped ? t('packageManagement.table.vmStopped') : state}
+                                  {label}
                                 </Badge>
                               )
                             })()}
@@ -594,7 +601,7 @@ export default function PackageManagementPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">
-                            <div title="View Details">
+                            <div title={t('packageManagement.tooltip.viewDetails')}>
                               <Button
                                 variant="outline"
                                 size="sm"

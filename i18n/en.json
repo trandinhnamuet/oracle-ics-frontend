@@ -42,8 +42,12 @@
       "endDate": "End Date",
       "vmRunning": "Running",
       "vmStopped": "Stopped",
+      "vmStopping": "Stopping",
+      "vmStarting": "Starting",
       "configure": "Configure",
-      "imageDetail": "Operating System"
+      "imageDetail": "Operating System",
+      "subscriptionId": "Sub ID",
+      "ipv4": "IPv4"
     },
     "confirmDialog": {
       "cancel": "Cancel",
@@ -92,7 +96,8 @@
       "stopping": "VM is stopping...",
       "starting": "VM is starting...",
       "transitioning": "VM is in transition state",
-      "renewSubscription": "Renew subscription"
+      "renewSubscription": "Renew subscription",
+      "viewDetails": "View Details"
     },
     "fetchError": {
       "title": "Error",

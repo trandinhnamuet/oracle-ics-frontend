@@ -42,8 +42,12 @@
       "endDate": "종료일",
       "vmRunning": "실행 중",
       "vmStopped": "중지됨",
+      "vmStopping": "중지 중",
+      "vmStarting": "시작 중",
       "configure": "구성",
-      "imageDetail": "운영 체제"
+      "imageDetail": "운영 체제",
+      "subscriptionId": "구독 ID",
+      "ipv4": "IPv4"
     },
     "confirmDialog": {
       "cancel": "취소",
@@ -92,7 +96,8 @@
       "stopping": "VM 중지 중...",
       "starting": "VM 시작 중...",
       "transitioning": "VM이 전환 상태입니다",
-      "renewSubscription": "구독 갱신"
+      "renewSubscription": "구독 갱신",
+      "viewDetails": "세부 정보 보기"
     },
     "fetchError": {
       "title": "오류",

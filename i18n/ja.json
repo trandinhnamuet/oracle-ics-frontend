@@ -42,8 +42,12 @@
       "endDate": "終了日",
       "vmRunning": "実行中",
       "vmStopped": "停止済み",
+      "vmStopping": "停止中",
+      "vmStarting": "起動中",
       "configure": "設定",
-      "imageDetail": "オペレーティングシステム"
+      "imageDetail": "オペレーティングシステム",
+      "subscriptionId": "サブID",
+      "ipv4": "IPv4"
     },
     "confirmDialog": {
       "cancel": "キャンセル",
@@ -92,7 +96,8 @@
       "stopping": "VM停止中...",
       "starting": "VM起動中...",
       "transitioning": "VMは移行状態です",
-      "renewSubscription": "サブスクリプションを更新"
+      "renewSubscription": "サブスクリプションを更新",
+      "viewDetails": "詳細を表示"
     },
     "fetchError": {
       "title": "エラー",
