@@ -505,8 +505,17 @@ export default function PackageManagementPage() {
                     const vmName = sub.vmInstance?.instance_name || ''
                     const vmIpv4 = sub.vmInstance?.public_ip || ''
                     
+                    const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+                      // Only navigate if clicking on non-interactive elements
+                      const target = e.target as HTMLElement
+                      if (target.closest('button') || target.closest('[role="switch"]')) {
+                        return
+                      }
+                      router.push(`/package-management/${sub.id}`)
+                    }
+                    
                     return (
-                      <TableRow key={sub.id}>
+                      <TableRow key={sub.id} onClick={handleRowClick} className="cursor-pointer">
                         <TableCell className="font-mono text-xs text-muted-foreground">
                           {sub.id.substring(0, 6)}
                         </TableCell>
