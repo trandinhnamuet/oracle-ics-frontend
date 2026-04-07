@@ -2060,8 +2060,11 @@
     "validationErrorDesc": "全ての必須フィールドに有効な値を入力してください",
     "configSuccess": "成功",
     "armCapacityUnavailable": "ARM容量は利用できません",
+    "armCapacityUnavailableDesc": "OCIは現在このリージョンでARMインスタンス（A1.Flex）の利用可能な容量がありません。後で再試行するか、x86互換イメージで別のシェイプ（例: E2.1.Micro, E3.Flex）を選択してください。",
     "capacityUnavailable": "容量は利用できません",
+    "capacityUnavailableDesc": "OCIは{{shape}}の利用可能な容量がありません。後で再試行するか、別のシェイプを選択してください。",
     "configFailed": "設定に失敗しました",
+    "configFailedDesc": "VMの構成に失敗しました。再試行してください。",
     "vmCreated": {
       "title": "VMが正常に作成されました！",
       "warningTitle": "⚠️ この情報は一度しか表示されません",

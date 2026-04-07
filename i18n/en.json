@@ -2064,8 +2064,11 @@
     "validationErrorDesc": "Please fill all required fields with valid values",
     "configSuccess": "Success",
     "armCapacityUnavailable": "ARM Capacity Unavailable",
+    "armCapacityUnavailableDesc": "OCI currently has no available capacity for ARM instances (A1.Flex) in this region. Please try again later or select a different shape (e.g., E2.1.Micro, E3.Flex) with x86-compatible images.",
     "capacityUnavailable": "Capacity Unavailable",
+    "capacityUnavailableDesc": "OCI has no available capacity for {{shape}}. Please try again later or select a different shape.",
     "configFailed": "Configuration Failed",
+    "configFailedDesc": "Failed to configure VM. Please try again.",
     "vmCreated": {
       "title": "VM created successfully!",
       "warningTitle": "⚠️ This information is shown only once",

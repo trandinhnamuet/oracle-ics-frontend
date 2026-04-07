@@ -2063,8 +2063,11 @@
     "validationErrorDesc": "Vui lòng điền đầy đủ tất cả các trường bắt buộc với giá trị hợp lệ",
     "configSuccess": "Thành công",
     "armCapacityUnavailable": "Không có năng lực ARM",
+    "armCapacityUnavailableDesc": "OCI hiện không có năng lực khả dụng cho các instance ARM (A1.Flex) trong khu vực này. Vui lòng thử lại sau hoặc chọn shape khác (ví dụ: E2.1.Micro, E3.Flex) với hình ảnh tương thích x86.",
     "capacityUnavailable": "Không có năng lực",
+    "capacityUnavailableDesc": "OCI không có năng lực khả dụng cho {{shape}}. Vui lòng thử lại sau hoặc chọn shape khác.",
     "configFailed": "Cấu hình thất bại",
+    "configFailedDesc": "Không thể cấu hình VM. Vui lòng thử lại.",
     "vmCreated": {
       "title": "Máy ảo đã tạo thành công!",
       "warningTitle": "⚠️ Thông tin này chỉ hiển thị 1 lần duy nhất",

@@ -338,21 +338,21 @@ export default function CloudConfigurationBySubscriptionPage() {
 
     } catch (error: any) {
       console.error('Error configuring VM:', error)
-      const errorMessage = error.response?.data?.message || 'Failed to configure VM. Please try again.'
+      const errorMessage = error.response?.data?.message || t('cloudConfig.configFailedDesc')
       
       // Check if it's a capacity error
       const isCapacityError = errorMessage.toLowerCase().includes('out of host capacity')
       const isArchitectureMismatch = errorMessage.toLowerCase().includes('architecture mismatch')
       
       let displayMessage = errorMessage
-      let title = 'Configuration Failed'
+      let title = t('cloudConfig.configFailed')
       
       if (isCapacityError && isArchitectureMismatch) {
         title = t('cloudConfig.armCapacityUnavailable')
-        displayMessage = `OCI currently has no available capacity for ARM instances (A1.Flex) in this region. Please try again later or select a different shape (e.g., E2.1.Micro, E3.Flex) with x86-compatible images.`
+        displayMessage = t('cloudConfig.armCapacityUnavailableDesc')
       } else if (isCapacityError) {
         title = t('cloudConfig.capacityUnavailable')
-        displayMessage = `OCI has no available capacity for ${selectedShape}. Please try again later or select a different shape.`
+        displayMessage = t('cloudConfig.capacityUnavailableDesc', { shape: selectedShape })
       }
       
       toast({
