@@ -508,7 +508,7 @@ export default function PackageManagementPage() {
                     return (
                       <TableRow 
                         key={sub.id}
-                        className="cursor-pointer hover:bg-gray-100 dark:hover:bg-muted/50 transition-colors"
+                        className="cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
                         onClick={() => router.push(`/package-management/${sub.id}`)}
                       >
                         <TableCell className="font-mono text-xs text-muted-foreground">
