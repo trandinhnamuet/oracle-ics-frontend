@@ -506,11 +506,7 @@ export default function PackageManagementPage() {
                     const vmIpv4 = sub.vmInstance?.public_ip || ''
                     
                     return (
-                      <TableRow 
-                        key={sub.id}
-                        className="cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
-                        onClick={() => router.push(`/package-management/${sub.id}`)}
-                      >
+                      <TableRow key={sub.id}>
                         <TableCell className="font-mono text-xs text-muted-foreground">
                           {sub.id.substring(0, 6)}
                         </TableCell>
@@ -598,24 +594,18 @@ export default function PackageManagementPage() {
                         <TableCell>
                           <Switch
                             checked={sub.auto_renew}
-                            onCheckedChange={(checked) => {
-                              handleToggleAutoRenew(sub.id, checked)
-                            }}
+                            onCheckedChange={(checked) => handleToggleAutoRenew(sub.id, checked)}
                             disabled={togglingAutoRenewIds.has(sub.id)}
                             aria-label={t('packageManagement.table.autoRenew')}
-                            onClick={(e) => e.stopPropagation()}
                           />
                         </TableCell>
-                        <TableCell onClick={(e) => e.stopPropagation()}>
+                        <TableCell>
                           <div className="flex items-center space-x-2">
                             <div title={t('packageManagement.tooltip.viewDetails')}>
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  router.push(`/package-management/${sub.id}`)
-                                }}
+                                onClick={() => router.push(`/package-management/${sub.id}`)}
                               >
                                 <Eye className="h-4 w-4" />
                               </Button>
@@ -626,10 +616,7 @@ export default function PackageManagementPage() {
                                 <Button
                                   variant="default"
                                   size="sm"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    router.push(`/cloud/configuration/${sub.id}`)
-                                  }}
+                                  onClick={() => router.push(`/cloud/configuration/${sub.id}`)}
                                   className="bg-blue-600 hover:bg-blue-700"
                                 >
                                   <Settings className="h-4 w-4 mr-1" />
@@ -643,10 +630,7 @@ export default function PackageManagementPage() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleRenewSubscription(sub.id)
-                                  }}
+                                  onClick={() => handleRenewSubscription(sub.id)}
                                   disabled={renewingIds.has(sub.id)}
                                   className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 border-orange-300"
                                 >
@@ -678,10 +662,7 @@ export default function PackageManagementPage() {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      toggleVmStatus(sub.id)
-                                    }}
+                                    onClick={() => toggleVmStatus(sub.id)}
                                     disabled={isDisabled}
                                   >
                                     {!isStable ? (
@@ -699,10 +680,7 @@ export default function PackageManagementPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  cancelUserSubscription(sub.id)
-                                }}
+                                onClick={() => cancelUserSubscription(sub.id)}
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
