@@ -359,7 +359,7 @@ export default function PackageManagementPage() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto pt-16 md:pt-0">
-        <div className="container mx-auto py-8 px-4 space-y-8 max-w-full lg:max-w-7xl">
+        <div className="container mx-auto py-8 px-4 space-y-8 max-w-full lg:max-w-full">
           {/* Balance Bar */}
           <div className="w-full flex items-center justify-between bg-white dark:bg-card rounded-lg shadow p-4 mb-4 border border-gray-100 dark:border-border">
             <BalanceDisplay showAddFunds={true} className="flex items-center gap-2" />
