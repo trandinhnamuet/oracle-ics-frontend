@@ -1562,10 +1562,10 @@
       "networkTraffic": "Lưu lượng mạng (MB)",
       "diskIO": "Disk I/O (MB)",
       "noData": "Không có dữ liệu",
-      "networkIn": "In (Nhận)",
-      "networkOut": "Out (Gửi)",
-      "diskRead": "Read (Đọc)",
-      "diskWrite": "Write (Ghi)"
+      "networkIn": "Nhận",
+      "networkOut": "Gửi",
+      "diskRead": "Đọc",
+      "diskWrite": "Ghi"
     },
     "packageInfo": {
       "title": "Thông tin gói",

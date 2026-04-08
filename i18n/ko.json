@@ -1579,10 +1579,10 @@
       "networkTraffic": "네트워크 트래픽 (MB)",
       "diskIO": "디스크 I/O (MB)",
       "noData": "데이터 없음",
-      "networkIn": "In (수신)",
-      "networkOut": "Out (전송)",
-      "diskRead": "Read (읽기)",
-      "diskWrite": "Write (쓰기)"
+      "networkIn": "수신",
+      "networkOut": "전송",
+      "diskRead": "읽기",
+      "diskWrite": "쓰기"
     },
     "packageInfo": {
       "title": "패키지 정보",

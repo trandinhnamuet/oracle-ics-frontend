@@ -1563,8 +1563,8 @@
       "networkTraffic": "Network Traffic (MB)",
       "diskIO": "Disk I/O (MB)",
       "noData": "No data available",
-      "networkIn": "In (Receive)",
-      "networkOut": "Out (Send)",
+      "networkIn": "Receive",
+      "networkOut": "Send",
       "diskRead": "Read",
       "diskWrite": "Write"
     },

@@ -1580,10 +1580,10 @@
       "networkTraffic": "网络流量 (MB)",
       "diskIO": "磁盘I/O (MB)",
       "noData": "暂无数据",
-      "networkIn": "In (接收)",
-      "networkOut": "Out (发送)",
-      "diskRead": "Read (读取)",
-      "diskWrite": "Write (写入)"
+      "networkIn": "接收",
+      "networkOut": "发送",
+      "diskRead": "读取",
+      "diskWrite": "写入"
     },
     "packageInfo": {
       "title": "包信息",
