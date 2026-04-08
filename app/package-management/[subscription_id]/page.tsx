@@ -1054,7 +1054,7 @@ export default function PackageDetailPage() {
                             labelFormatter={fmtTime}
                             formatter={(v: number, name: string) => [
                               `${v.toFixed(3)} MB`,
-                              name === 'in' ? 'In (nhận)' : 'Out (gửi)',
+                              name === 'in' ? t('packageDetail.charts.networkIn') : t('packageDetail.charts.networkOut'),
                             ]}
                           />
                           {networkVisible.in && (
@@ -1144,7 +1144,7 @@ export default function PackageDetailPage() {
                             labelFormatter={fmtTime}
                             formatter={(v: number, name: string) => [
                               `${v.toFixed(3)} MB`,
-                              name === 'read' ? 'Read (đọc)' : 'Write (ghi)',
+                              name === 'read' ? t('packageDetail.charts.diskRead') : t('packageDetail.charts.diskWrite'),
                             ]}
                           />
                           {diskVisible.read && (

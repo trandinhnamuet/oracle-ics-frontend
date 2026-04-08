@@ -1561,7 +1561,11 @@
       "memoryTitle": "Mức sử dụng bộ nhớ (%)",
       "networkTraffic": "Lưu lượng mạng (MB)",
       "diskIO": "Disk I/O (MB)",
-      "noData": "Không có dữ liệu"
+      "noData": "Không có dữ liệu",
+      "networkIn": "In (Nhận)",
+      "networkOut": "Out (Gửi)",
+      "diskRead": "Read (Đọc)",
+      "diskWrite": "Write (Ghi)"
     },
     "packageInfo": {
       "title": "Thông tin gói",

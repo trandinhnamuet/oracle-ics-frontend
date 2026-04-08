@@ -1562,7 +1562,11 @@
       "memoryTitle": "Memory Utilization (%)",
       "networkTraffic": "Network Traffic (MB)",
       "diskIO": "Disk I/O (MB)",
-      "noData": "No data available"
+      "noData": "No data available",
+      "networkIn": "In (Receive)",
+      "networkOut": "Out (Send)",
+      "diskRead": "Read",
+      "diskWrite": "Write"
     },
     "packageInfo": {
       "title": "Package Information",
