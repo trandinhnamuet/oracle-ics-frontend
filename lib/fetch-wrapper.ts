@@ -148,7 +148,10 @@ export async function fetchJsonWithAuth<T>(
     const error = await response.json().catch(() => ({
       message: `HTTP ${response.status}: ${response.statusText}`,
     }));
-    throw new Error(error.message || `API Error: ${response.status}`);
+    const err = new Error(error.message || `API Error: ${response.status}`) as Error & { status: number; response: { status: number; data: any } };
+    err.status = response.status;
+    err.response = { status: response.status, data: error };
+    throw err;
   }
 
   return response.json();
