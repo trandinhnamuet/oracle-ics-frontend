@@ -1719,6 +1719,8 @@
       "newPasswordLabel": "Mật khẩu mới (tùy chọn)",
       "newPasswordPlaceholder": "Để trống để tự động tạo mật khẩu",
       "newPasswordHint": "14-127 ký tự · bắt buộc có đủ: chữ hoa (A-Z), chữ thường (a-z), số (0-9) và ký tự đặc biệt",
+      "confirmPasswordLabel": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
       "validation": {
         "minLength": "Mật khẩu phải có ít nhất 14 ký tự",
         "maxLength": "Mật khẩu không được vượt quá 127 ký tự",
@@ -1727,7 +1729,9 @@
         "needLower": "Mật khẩu phải có ít nhất 1 chữ thường (a-z)",
         "needDigit": "Mật khẩu phải có ít nhất 1 chữ số (0-9)",
         "needSpecial": "Mật khẩu phải có ít nhất 1 ký tự đặc biệt (ví dụ: !@#$%)",
-        "valid": "Mật khẩu đáp ứng yêu cầu Windows"
+        "valid": "Mật khẩu đáp ứng yêu cầu Windows",
+        "passwordMismatch": "Mật khẩu xác nhận không khớp",
+        "passwordMatch": "Mật khẩu khớp"
       }
     },
     "actionOtp": {

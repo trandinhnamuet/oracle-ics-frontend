@@ -1720,6 +1720,8 @@
       "newPasswordLabel": "New Password (optional)",
       "newPasswordPlaceholder": "Leave blank to auto-generate",
       "newPasswordHint": "14-127 characters · must include: uppercase (A-Z), lowercase (a-z), digits (0-9), and special characters",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Re-enter the new password",
       "validation": {
         "minLength": "Password must be at least 14 characters long",
         "maxLength": "Password must not exceed 127 characters",
@@ -1728,7 +1730,9 @@
         "needLower": "Password must include at least one lowercase letter (a-z)",
         "needDigit": "Password must include at least one digit (0-9)",
         "needSpecial": "Password must include at least one special character (e.g. !@#$%)",
-        "valid": "Password meets Windows requirements"
+        "valid": "Password meets Windows requirements",
+        "passwordMismatch": "Passwords do not match",
+        "passwordMatch": "Passwords match"
       }
     },
     "actionOtp": {

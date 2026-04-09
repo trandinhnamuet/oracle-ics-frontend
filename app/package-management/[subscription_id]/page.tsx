@@ -129,7 +129,9 @@ export default function PackageDetailPage() {
   const [resetPasswordDialog, setResetPasswordDialog] = useState(false)
   const [newWindowsPassword, setNewWindowsPassword] = useState<string | null>(null)
   const [customPassword, setCustomPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showCustomPassword, setShowCustomPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [resetPasswordOtpStep, setResetPasswordOtpStep] = useState<'form' | 'otp'>('form')
   const [resetOtpCode, setResetOtpCode] = useState('')
   const [isSendingResetOtp, setIsSendingResetOtp] = useState(false)
@@ -1627,7 +1629,7 @@ export default function PackageDetailPage() {
 
       {/* Reset Windows Password — Confirmation Dialog */}
       <AlertDialog open={resetPasswordDialog} onOpenChange={(open) => {
-        if (!open) { setCustomPassword(''); setShowCustomPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false) }
+        if (!open) { setCustomPassword(''); setConfirmPassword(''); setShowCustomPassword(false); setShowConfirmPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false) }
         setResetPasswordDialog(open)
       }}>
         <AlertDialogContent>
@@ -1664,6 +1666,33 @@ export default function PackageDetailPage() {
                         : <p className="text-xs text-green-600 dark:text-green-400">✓ {t('packageDetail.resetPassword.validation.valid')}</p>
                     })()}
                     <p className="text-xs text-muted-foreground">{t('packageDetail.resetPassword.newPasswordHint')}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">
+                      {t('packageDetail.resetPassword.confirmPasswordLabel')}
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        placeholder={t('packageDetail.resetPassword.confirmPasswordPlaceholder')}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(v => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {confirmPassword && customPassword && confirmPassword !== customPassword && (
+                      <p className="text-xs text-destructive">{t('packageDetail.resetPassword.validation.passwordMismatch')}</p>
+                    )}
+                    {confirmPassword && customPassword && confirmPassword === customPassword && !validateWindowsPassword(customPassword) && (
+                      <p className="text-xs text-green-600 dark:text-green-400">✓ {t('packageDetail.resetPassword.validation.passwordMatch')}</p>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -1708,13 +1737,13 @@ export default function PackageDetailPage() {
           <AlertDialogFooter>
             {resetPasswordOtpStep === 'form' ? (
               <>
-                <AlertDialogCancel onClick={() => { setCustomPassword(''); setShowCustomPassword(false) }}>
+                <AlertDialogCancel onClick={() => { setCustomPassword(''); setConfirmPassword(''); setShowCustomPassword(false); setShowConfirmPassword(false) }}>
                   {t('packageDetail.confirmDialog.cancel')}
                 </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={(e) => { e.preventDefault(); handleSendResetOtp() }}
                   className="bg-orange-600 hover:bg-orange-700 text-white"
-                  disabled={isSendingResetOtp || (!!customPassword && !!validateWindowsPassword(customPassword))}
+                  disabled={isSendingResetOtp || (!!customPassword && !!validateWindowsPassword(customPassword)) || (!!customPassword && confirmPassword !== customPassword)}
                 >
                   {isSendingResetOtp ? t('packageDetail.actionOtp.sendingOtp') : t('packageDetail.actionOtp.sendOtp')}
                 </AlertDialogAction>

@@ -1717,6 +1717,8 @@
       "newPasswordLabel": "新密码（可选）",
       "newPasswordPlaceholder": "留空则自动生成",
       "newPasswordHint": "14-127个字符 · 必须包含：大写字母(A-Z)、小写字母(a-z)、数字(0-9)和特殊字符",
+      "confirmPasswordLabel": "确认密码",
+      "confirmPasswordPlaceholder": "请再次输入新密码",
       "validation": {
         "minLength": "密码至少需要14个字符",
         "maxLength": "密码不得超过127个字符",
@@ -1725,7 +1727,9 @@
         "needLower": "密码必须包含至少一个小写字母(a-z)",
         "needDigit": "密码必须包含至少一个数字(0-9)",
         "needSpecial": "密码必须包含至少一个特殊字符(如!@#$%)",
-        "valid": "密码符合Windows要求"
+        "valid": "密码符合Windows要求",
+        "passwordMismatch": "两次输入的密码不一致",
+        "passwordMatch": "密码匹配"
       }
     },
     "actionOtp": {
