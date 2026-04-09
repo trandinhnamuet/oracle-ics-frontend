@@ -1709,6 +1709,7 @@
       "title": "Đặt lại mật khẩu Windows",
       "description": "Thao tác này sẽ tạo mật khẩu mới cho VM Windows. Mật khẩu hiện tại sẽ bị thay thế. Hãy đảm bảo lưu lại mật khẩu mới.",
       "confirm": "Đặt lại mật khẩu",
+      "otpInvalid": "Mã xác thực không đúng hoặc đã hết hạn. Vui lòng thử lại.",
       "resettingTitle": "Đang đặt lại mật khẩu...",
       "resettingDesc": "Đang kết nối tới VM Windows và thay đổi mật khẩu. Vui lòng đợi...",
       "resettingNote": "Quá trình này sẽ kéo dài từ 5-10 phút",

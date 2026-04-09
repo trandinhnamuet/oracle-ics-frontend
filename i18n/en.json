@@ -1710,6 +1710,7 @@
       "title": "Reset Windows Password",
       "description": "This will generate a new password for your Windows VM. The current password will be replaced. Make sure to save the new password.",
       "confirm": "Reset Password",
+      "otpInvalid": "Invalid or expired verification code. Please try again.",
       "resettingTitle": "Resetting password...",
       "resettingDesc": "Connecting to your Windows VM and changing the password. Please wait...",
       "resettingNote": "This process may take 5-10 minutes.",

@@ -1706,7 +1706,7 @@
       "title": "Windowsパスワードリセット",
       "description": "Windows VMの新しいパスワードを生成します。現在のパスワードは置き換えられます。新しいパスワードを必ず保存してください。",
       "confirm": "パスワードリセット",
-      "resettingTitle": "パスワードをリセット中...",
+      "otpInvalid": "認証コードが無効または期限切れです。もう一度お試しください。",
       "resettingDesc": "Windows VMに接続してパスワードを変更しています。お待ちください...",
       "resettingNote": "この処理は5〜10分かかる場合があります。",
       "successTitle": "パスワードリセット成功！",

@@ -136,6 +136,8 @@ export default function PackageDetailPage() {
   const [resetOtpCode, setResetOtpCode] = useState('')
   const [isSendingResetOtp, setIsSendingResetOtp] = useState(false)
   const [resendCooldown, setResendCooldown] = useState(0)
+  const [resetOtpError, setResetOtpError] = useState('')
+  const [isConfirmingOtp, setIsConfirmingOtp] = useState(false)
 
   useEffect(() => {
     if (resendCooldown <= 0) return
@@ -539,17 +541,23 @@ export default function PackageDetailPage() {
   }
 
   const handleResetWindowsPassword = async () => {
-    setResetPasswordDialog(false)
-    setResetPasswordOtpStep('form')
+    setResetOtpError('')
+    setIsConfirmingOtp(true)
     const otpToUse = resetOtpCode.trim()
     const passwordToUse = customPassword.trim() || undefined
-    setCustomPassword('')
-    setShowCustomPassword(false)
-    setResetOtpCode('')
-    setIsResettingPassword(true)
     try {
       // Start async job — returns immediately (HTTP 202)
       const { jobId } = await resetWindowsPassword(subscriptionId, otpToUse, passwordToUse)
+
+      // OTP accepted — close dialog and clear all state now
+      setResetPasswordDialog(false)
+      setResetPasswordOtpStep('form')
+      setCustomPassword('')
+      setConfirmPassword('')
+      setShowCustomPassword(false)
+      setShowConfirmPassword(false)
+      setResetOtpCode('')
+      setIsResettingPassword(true)
 
       // Poll for completion (up to 15 minutes, every 5 seconds)
       const MAX_POLLS = 180
@@ -586,14 +594,32 @@ export default function PackageDetailPage() {
         setTimeout(tick, POLL_INTERVAL_MS)
       })
     } catch (error: any) {
+      const status = error?.response?.status
+      const message = error?.response?.data?.message || error?.message
+
+      // OTP-related errors (400/401/422): stay on OTP step, show inline error
+      if (status === 400 || status === 401 || status === 422) {
+        setResetOtpError(message || t('packageDetail.resetPassword.otpInvalid'))
+        return
+      }
+
+      // Other errors (network, server): close dialog, show toast
+      setResetPasswordDialog(false)
+      setResetPasswordOtpStep('form')
+      setCustomPassword('')
+      setConfirmPassword('')
+      setShowCustomPassword(false)
+      setShowConfirmPassword(false)
+      setResetOtpCode('')
       console.error('Error resetting Windows password:', error)
       toast({
         title: t('packageDetail.toast.passwordResetError'),
-        description: error?.response?.data?.message || error?.message || t('packageDetail.toast.passwordResetErrorDesc'),
+        description: message || t('packageDetail.toast.passwordResetErrorDesc'),
         variant: 'destructive',
         duration: 8000,
       })
     } finally {
+      setIsConfirmingOtp(false)
       setIsResettingPassword(false)
     }
   }
@@ -1637,7 +1663,7 @@ export default function PackageDetailPage() {
 
       {/* Reset Windows Password — Confirmation Dialog */}
       <AlertDialog open={resetPasswordDialog} onOpenChange={(open) => {
-        if (!open) { setCustomPassword(''); setConfirmPassword(''); setShowCustomPassword(false); setShowConfirmPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false); setResendCooldown(0) }
+        if (!open) { setCustomPassword(''); setConfirmPassword(''); setShowCustomPassword(false); setShowConfirmPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false); setResendCooldown(0); setResetOtpError(''); setIsConfirmingOtp(false) }
         setResetPasswordDialog(open)
       }}>
         <AlertDialogContent>
@@ -1723,10 +1749,13 @@ export default function PackageDetailPage() {
                       maxLength={6}
                       placeholder={t('packageDetail.actionOtp.otpPlaceholder')}
                       value={resetOtpCode}
-                      onChange={(e) => setResetOtpCode(e.target.value.replace(/\D/g, ''))}
-                      className="text-center text-xl tracking-widest font-mono"
+                      onChange={(e) => { setResetOtpCode(e.target.value.replace(/\D/g, '')); setResetOtpError('') }}
+                      className={`text-center text-xl tracking-widest font-mono ${resetOtpError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                       autoFocus
                     />
+                    {resetOtpError && (
+                      <p className="text-xs text-destructive text-center">{resetOtpError}</p>
+                    )}
                   </div>
                   <p className="text-xs text-muted-foreground text-center">
                     {resendCooldown > 0 ? (
@@ -1768,9 +1797,9 @@ export default function PackageDetailPage() {
                 <AlertDialogAction
                   onClick={handleResetWindowsPassword}
                   className="bg-orange-600 hover:bg-orange-700 text-white"
-                  disabled={resetOtpCode.length !== 6}
+                  disabled={resetOtpCode.length !== 6 || isConfirmingOtp}
                 >
-                  {t('packageDetail.resetPassword.confirm')}
+                  {isConfirmingOtp ? t('packageDetail.actionOtp.sendingOtp') : t('packageDetail.resetPassword.confirm')}
                 </AlertDialogAction>
               </>
             )}
