@@ -1360,7 +1360,8 @@
       "configBtn": "Configure Virtual Machine",
       "manageBtn": "Manage Subscribed Packages",
       "homeBtn": "Back to Home",
-      "note": "Note: If you do not receive the email within 5 minutes, please check your spam folder or contact us."
+      "note": "Note: If you do not receive the email within 5 minutes, please check your spam folder or contact us.",
+      "redirectIn": "Redirecting to configuration in {{count}} seconds..."
     },
     "packageInfo": "Service Package Information",
     "packageName": "Package Name",

@@ -1359,7 +1359,8 @@
       "configBtn": "Cài đặt cấu hình máy ảo",
       "manageBtn": "Cloud của tôi",
       "homeBtn": "Về trang chủ",
-      "note": "Lưu ý: Nếu bạn không nhận được email trong vòng 5 phút, vui lòng kiểm tra thư mục spam hoặc liên hệ với chúng tôi."
+      "note": "Lưu ý: Nếu bạn không nhận được email trong vòng 5 phút, vui lòng kiểm tra thư mục spam hoặc liên hệ với chúng tôi.",
+      "redirectIn": "Tự động chuyển hướng đến cài đặt sau {{count}} giây..."
     },
     "packageInfo": "Thông tin gói dịch vụ",
     "packageName": "Tên gói",

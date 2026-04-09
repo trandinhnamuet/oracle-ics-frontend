@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -10,10 +10,19 @@ import { useTranslation } from 'react-i18next'
 export default function CheckoutSuccessPage() {
   const { t } = useTranslation()
   const searchParams = useSearchParams()
+  const router = useRouter()
   const subscriptionId = searchParams.get('subscriptionId')
   const [showAnimation, setShowAnimation] = useState(false)
   const [showCheckmark, setShowCheckmark] = useState(false)
   const [showContent, setShowContent] = useState(false)
+  const [countdown, setCountdown] = useState(10)
+
+  // Guard: redirect to home if no subscriptionId
+  useEffect(() => {
+    if (!subscriptionId) {
+      router.replace('/')
+    }
+  }, [subscriptionId, router])
 
   useEffect(() => {
     // Trigger animations in sequence
@@ -35,6 +44,26 @@ export default function CheckoutSuccessPage() {
       clearTimeout(timer3)
     }
   }, [])
+
+  // Auto-redirect countdown
+  useEffect(() => {
+    if (!subscriptionId) return
+
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          router.push(`/cloud/configuration/${subscriptionId}`)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [subscriptionId, router])
+
+  if (!subscriptionId) return null
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 dark:from-background dark:to-background flex items-center justify-center px-4">
@@ -123,8 +152,19 @@ export default function CheckoutSuccessPage() {
           </Link>
         </div>
 
+        {/* Countdown redirect */}
+        <div className={`mt-6 transition-all duration-1000 ease-out delay-400 ${
+          showContent
+            ? 'translate-y-0 opacity-100'
+            : 'translate-y-4 opacity-0'
+        }`}>
+          <p className="text-sm text-gray-500 dark:text-muted-foreground">
+            {t('checkout.success.redirectIn', { count: countdown })}
+          </p>
+        </div>
+
         {/* Additional Info */}
-        <div className={`mt-8 p-4 bg-white/70 dark:bg-card/70 backdrop-blur-sm rounded-lg border border-green-200 dark:border-border transition-all duration-1000 ease-out delay-500 ${
+        <div className={`mt-4 p-4 bg-white/70 dark:bg-card/70 backdrop-blur-sm rounded-lg border border-green-200 dark:border-border transition-all duration-1000 ease-out delay-500 ${
           showContent 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-4 opacity-0'
