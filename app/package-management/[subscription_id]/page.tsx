@@ -596,10 +596,13 @@ export default function PackageDetailPage() {
     } catch (error: any) {
       const status = error?.response?.status
       const message = error?.response?.data?.message || error?.message
+      const i18nKey = error?.response?.data?.i18nKey
 
       // OTP-related errors (400/401/422): stay on OTP step, show inline error
       if (status === 400 || status === 401 || status === 422) {
-        setResetOtpError(message || t('packageDetail.resetPassword.otpInvalid'))
+        // Use server-provided i18n key if available, otherwise use default fallback
+        const errorText = i18nKey ? t(`packageDetail.${i18nKey}`) : t('packageDetail.resetPassword.otpInvalid')
+        setResetOtpError(errorText)
         return
       }
 
