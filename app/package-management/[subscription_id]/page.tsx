@@ -135,6 +135,13 @@ export default function PackageDetailPage() {
   const [resetPasswordOtpStep, setResetPasswordOtpStep] = useState<'form' | 'otp'>('form')
   const [resetOtpCode, setResetOtpCode] = useState('')
   const [isSendingResetOtp, setIsSendingResetOtp] = useState(false)
+  const [resendCooldown, setResendCooldown] = useState(0)
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const timer = setTimeout(() => setResendCooldown(s => s - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [resendCooldown])
   const [isTogglingAutoRenew, setIsTogglingAutoRenew] = useState(false)
   const [renewAndStartDialog, setRenewAndStartDialog] = useState<{
     open: boolean
@@ -519,6 +526,7 @@ export default function PackageDetailPage() {
     try {
       await sendActionOtp(subscriptionId, 'reset-password')
       setResetPasswordOtpStep('otp')
+      setResendCooldown(60)
     } catch (error: any) {
       toast({
         title: t('common.error'),
@@ -1629,7 +1637,7 @@ export default function PackageDetailPage() {
 
       {/* Reset Windows Password — Confirmation Dialog */}
       <AlertDialog open={resetPasswordDialog} onOpenChange={(open) => {
-        if (!open) { setCustomPassword(''); setConfirmPassword(''); setShowCustomPassword(false); setShowConfirmPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false) }
+        if (!open) { setCustomPassword(''); setConfirmPassword(''); setShowCustomPassword(false); setShowConfirmPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false); setResendCooldown(0) }
         setResetPasswordDialog(open)
       }}>
         <AlertDialogContent>
@@ -1721,14 +1729,18 @@ export default function PackageDetailPage() {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground text-center">
-                    <button
-                      type="button"
-                      onClick={handleSendResetOtp}
-                      disabled={isSendingResetOtp}
-                      className="underline hover:no-underline disabled:opacity-50"
-                    >
-                      {isSendingResetOtp ? t('packageDetail.actionOtp.resending') : t('packageDetail.actionOtp.resend')}
-                    </button>
+                    {resendCooldown > 0 ? (
+                      <span className="opacity-50">{t('packageDetail.actionOtp.resendCountdown', { count: resendCooldown })}</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleSendResetOtp}
+                        disabled={isSendingResetOtp}
+                        className="underline hover:no-underline disabled:opacity-50"
+                      >
+                        {isSendingResetOtp ? t('packageDetail.actionOtp.resending') : t('packageDetail.actionOtp.resend')}
+                      </button>
+                    )}
                   </p>
                 </div>
               )}

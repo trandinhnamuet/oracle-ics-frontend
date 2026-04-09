@@ -1741,6 +1741,7 @@
       "verify": "確認",
       "resend": "コードを再送信",
       "resending": "再送信中...",
+      "resendCountdown": "{{count}}秒後に再送信",
       "backToForm": "戻る",
       "sendError": "認証コードの送信に失敗しました。再試行してください。",
       "emptyError": "認証コードを入力してください"

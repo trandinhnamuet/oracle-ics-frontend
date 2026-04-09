@@ -1745,6 +1745,7 @@
       "verify": "Confirm",
       "resend": "Resend Code",
       "resending": "Resending...",
+      "resendCountdown": "Resend in {{count}}s",
       "backToForm": "Back",
       "sendError": "Failed to send verification code. Please try again.",
       "emptyError": "Please enter the verification code"

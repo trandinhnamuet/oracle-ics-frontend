@@ -1742,6 +1742,7 @@
       "verify": "确认",
       "resend": "重新发送验证码",
       "resending": "重新发送中...",
+      "resendCountdown": "{{count}}秒后重新发送",
       "backToForm": "返回",
       "sendError": "验证码发送失败，请重试。",
       "emptyError": "请输入验证码"

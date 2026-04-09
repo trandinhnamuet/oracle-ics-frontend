@@ -1744,6 +1744,7 @@
       "verify": "Xác nhận",
       "resend": "Gửi lại mã",
       "resending": "Đang gửi lại...",
+      "resendCountdown": "Gửi lại sau {{count}}s",
       "backToForm": "Quay lại",
       "sendError": "Không thể gửi mã xác thực. Vui lòng thử lại.",
       "emptyError": "Vui lòng nhập mã xác thực"
