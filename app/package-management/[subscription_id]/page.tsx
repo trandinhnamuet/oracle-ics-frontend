@@ -1795,7 +1795,7 @@ export default function PackageDetailPage() {
                   {t('packageDetail.actionOtp.backToForm')}
                 </AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={handleResetWindowsPassword}
+                  onClick={(e) => { e.preventDefault(); handleResetWindowsPassword() }}
                   className="bg-orange-600 hover:bg-orange-700 text-white"
                   disabled={resetOtpCode.length !== 6 || isConfirmingOtp}
                 >
