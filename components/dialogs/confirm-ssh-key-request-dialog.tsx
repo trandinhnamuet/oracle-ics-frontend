@@ -193,7 +193,7 @@ export function ConfirmSshKeyRequestDialog({
                   autoFocus
                 />
                 {otpError && (
-                  <p className="text-sm text-red-600 font-medium">{otpError}</p>
+                  <p className="text-sm text-red-600 font-medium text-center">{otpError}</p>
                 )}
               </div>
 
