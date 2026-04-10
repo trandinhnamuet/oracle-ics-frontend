@@ -235,7 +235,7 @@ export function PricingSection() {
 
         console.log(`[PAY-DEBUG] Calling subscribeWithBalance API...`)
         // Call API to subscribe with balance
-        await subscribeWithBalance({
+        const subscription = await subscribeWithBalance({
           cloudPackageId: selectedPlan.id,
           monthsCount: monthsCount,
           autoRenew: autoRenew
@@ -247,12 +247,16 @@ export function PricingSection() {
         toast({
           title: t('pricingModal.successTitle'),
           description: t('pricingModal.successDesc', { planName: selectedPlan?.name }),
-          variant: 'default'
+          variant: 'default',
+          className: 'border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-100'
         })
 
         // Refresh balance
         const response = await getUserBalance()
         setUserBalance(response.balance)
+
+        // Navigate to VM configuration page
+        router.push(`/cloud/configuration/${subscription.id}`)
 
       } else if (selectedPaymentMethod === 'direct_payment') {
         // Phương thức 2: Thanh toán trực tiếp
