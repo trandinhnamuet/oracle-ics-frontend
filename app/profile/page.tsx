@@ -172,10 +172,12 @@ function ProfilePage() {
     }
   }, [user, reset])
 
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/
+
   const changePwSchema = z
     .object({
       currentPassword: z.string().min(1, t('profile.validation.currentPasswordRequired')),
-      newPassword: z.string().min(6, t('profile.validation.newPasswordMin')),
+      newPassword: z.string().min(8, t('profile.validation.newPasswordMin')).regex(passwordRegex, t('profile.validation.newPasswordStrong')),
       confirmNewPassword: z.string().min(1, t('profile.validation.confirmPasswordRequired')),
     })
     .refine((data) => data.newPassword !== data.currentPassword, {
@@ -803,7 +805,19 @@ function ProfilePage() {
                   </button>
                 </div>
                 {pwErrors.newPassword && (
-                  <p className="text-xs text-destructive">{pwErrors.newPassword.message}</p>
+                  <div className="space-y-1">
+                    <p className="text-xs text-destructive">{pwErrors.newPassword.message}</p>
+                    <div className="text-xs text-red-400 mt-1">
+                      <p>{t('register.passwordRules.title')}</p>
+                      <ul className="list-disc list-inside space-y-0.5 mt-1">
+                        <li>{t('register.passwordRules.minLength')}</li>
+                        <li>{t('register.passwordRules.lowercase')}</li>
+                        <li>{t('register.passwordRules.uppercase')}</li>
+                        <li>{t('register.passwordRules.digit')}</li>
+                        <li>{t('register.passwordRules.special')}</li>
+                      </ul>
+                    </div>
+                  </div>
                 )}
               </div>
 

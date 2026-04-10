@@ -1510,7 +1510,8 @@
       "backupEmailInvalid": "サブメールの形式が正しくありません",
       "idCardInvalid": "身分証番号の形式が正しくありません",
       "currentPasswordRequired": "現在のパスワードを入力してください",
-      "newPasswordMin": "新しいパスワードは6文字以上入力してください",
+      "newPasswordMin": "新しいパスワードは8文字以上で入力してください",
+      "newPasswordStrong": "新しいパスワードが要件を満たしていません",
       "confirmPasswordRequired": "新しいパスワードを確認してください",
       "passwordSameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります"
     }
@@ -2190,10 +2191,19 @@
       "lastNameMaxLength": "名は50文字以下で入力してください",
       "emailRequired": "メールアドレスを入力してください",
       "emailInvalid": "無効なメールアドレスです",
-      "passwordMinLength": "パスワードは6文字以上で入力してください",
+      "passwordMinLength": "パスワードは8文字以上で入力してください",
+      "passwordStrong": "パスワードが要件を満たしていません",
       "passwordMaxLength": "パスワードは100文字以下で入力してください",
       "confirmPasswordRequired": "パスワードを確認してください",
       "passwordsMismatch": "パスワードが一致しません"
+    },
+    "passwordRules": {
+      "title": "パスワードに含める必要のあるもの:",
+      "minLength": "8文字以上",
+      "lowercase": "小文字1字以上 (a-z)",
+      "uppercase": "大文字1字以上 (A-Z)",
+      "digit": "数字1字以上 (0-9)",
+      "special": "特殊文字1字以上 (!@#$...)"
     },
     "errorEmailAlreadyExists": "このメールアドレスはすでに登録されています。別のメールアドレスを使用するかログインしてください。",
     "errorDefault": "登録に失敗しました。もう一度お試しください。"
@@ -2261,10 +2271,19 @@
       "submitButton": "パスワードをリセット",
       "resetting": "リセット中...",
       "validation": {
-        "passwordMinLength": "パスワードは最低6文字である必要があります",
-        "confirmPasswordMinLength": "パスワード確認は最低6文字である必要があります",
+        "passwordMinLength": "パスワードは最低8文字である必要があります",
+        "passwordStrong": "パスワードが要件を満たしていません",
+        "confirmPasswordMinLength": "パスワード確認は最低8文字である必要があります",
         "passwordMismatch": "パスワードが一致しません"
       }
+    },
+    "passwordRules": {
+      "title": "パスワードに含める必要のあるもの:",
+      "minLength": "8文字以上",
+      "lowercase": "小文字1字以上 (a-z)",
+      "uppercase": "大文字1字以上 (A-Z)",
+      "digit": "数字1字以上 (0-9)",
+      "special": "特殊文字1字以上 (!@#$...)"
     }
   },
   "addFundsPayment": {

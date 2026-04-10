@@ -1493,7 +1493,8 @@
       "backupEmailInvalid": "Email dự phòng không hợp lệ",
       "idCardInvalid": "Số CCCD không hợp lệ (9 hoặc 12 số)",
       "currentPasswordRequired": "Vui lòng nhập mật khẩu hiện tại",
-      "newPasswordMin": "Mật khẩu mới phải có ít nhất 6 ký tự",
+      "newPasswordMin": "Mật khẩu mới phải có ít nhất 8 ký tự",
+      "newPasswordStrong": "Mật khẩu mới không đáp ứng yêu cầu",
       "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu mới",
       "passwordSameAsCurrent": "Mật khẩu mới phải khác mật khẩu hiện tại"
     }
@@ -2194,10 +2195,19 @@
       "lastNameMaxLength": "Tên không được quá 50 ký tự",
       "emailRequired": "Email không được để trống",
       "emailInvalid": "Email không hợp lệ",
-      "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
+      "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+      "passwordStrong": "Mật khẩu không đáp ứng yêu cầu",
       "passwordMaxLength": "Mật khẩu không được quá 100 ký tự",
       "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
       "passwordsMismatch": "Mật khẩu xác nhận không khớp"
+    },
+    "passwordRules": {
+      "title": "Mật khẩu phải bao gồm:",
+      "minLength": "Tối thiểu 8 ký tự",
+      "lowercase": "Một chữ thường (a-z)",
+      "uppercase": "Một chữ hoa (A-Z)",
+      "digit": "Một chữ số (0-9)",
+      "special": "Một ký tự đặc biệt (!@#$...)"
     },
     "errorEmailAlreadyExists": "Email này đã được đăng ký. Vui lòng sử dụng email khác hoặc đăng nhập.",
     "errorDefault": "Đăng ký thất bại. Vui lòng thử lại."
@@ -2265,10 +2275,19 @@
       "submitButton": "Đặt lại mật khẩu",
       "resetting": "Đang đặt lại...",
       "validation": {
-        "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
-        "confirmPasswordMinLength": "Mật khẩu xác nhận phải có ít nhất 6 ký tự",
+        "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+        "passwordStrong": "Mật khẩu không đáp ứng yêu cầu",
+        "confirmPasswordMinLength": "Mật khẩu xác nhận phải có ít nhất 8 ký tự",
         "passwordMismatch": "Mật khẩu xác nhận không khớp"
       }
+    },
+    "passwordRules": {
+      "title": "Mật khẩu phải bao gồm:",
+      "minLength": "Tối thiểu 8 ký tự",
+      "lowercase": "Một chữ thường (a-z)",
+      "uppercase": "Một chữ hoa (A-Z)",
+      "digit": "Một chữ số (0-9)",
+      "special": "Một ký tự đặc biệt (!@#$...)"
     }
   },
   "addFundsPayment": {

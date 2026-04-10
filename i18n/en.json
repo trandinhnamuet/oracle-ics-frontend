@@ -1494,7 +1494,8 @@
       "backupEmailInvalid": "Invalid backup email address",
       "idCardInvalid": "Invalid ID card number (9 or 12 digits)",
       "currentPasswordRequired": "Current password is required",
-      "newPasswordMin": "New password must be at least 6 characters",
+      "newPasswordMin": "New password must be at least 8 characters",
+      "newPasswordStrong": "New password does not meet the requirements",
       "confirmPasswordRequired": "Please confirm your new password",
       "passwordSameAsCurrent": "New password must be different from your current password"
     }
@@ -2195,10 +2196,19 @@
       "lastNameMaxLength": "Last name cannot exceed 50 characters",
       "emailRequired": "Email is required",
       "emailInvalid": "Invalid email",
-      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordStrong": "Password does not meet the requirements",
       "passwordMaxLength": "Password cannot exceed 100 characters",
       "confirmPasswordRequired": "Please confirm your password",
       "passwordsMismatch": "Passwords do not match"
+    },
+    "passwordRules": {
+      "title": "Password must include:",
+      "minLength": "At least 8 characters",
+      "lowercase": "At least one lowercase letter (a-z)",
+      "uppercase": "At least one uppercase letter (A-Z)",
+      "digit": "At least one digit (0-9)",
+      "special": "At least one special character (!@#$...)"
     },
     "errorEmailAlreadyExists": "This email is already registered. Please use a different email or login.",
     "errorDefault": "Registration failed. Please try again."
@@ -2266,10 +2276,19 @@
       "submitButton": "Reset Password",
       "resetting": "Resetting...",
       "validation": {
-        "passwordMinLength": "Password must be at least 6 characters",
-        "confirmPasswordMinLength": "Confirm password must be at least 6 characters",
+        "passwordMinLength": "Password must be at least 8 characters",
+        "passwordStrong": "Password does not meet the requirements",
+        "confirmPasswordMinLength": "Confirm password must be at least 8 characters",
         "passwordMismatch": "Passwords do not match"
       }
+    },
+    "passwordRules": {
+      "title": "Password must include:",
+      "minLength": "At least 8 characters",
+      "lowercase": "At least one lowercase letter (a-z)",
+      "uppercase": "At least one uppercase letter (A-Z)",
+      "digit": "At least one digit (0-9)",
+      "special": "At least one special character (!@#$...)"
     }
   },
   "addFundsPayment": {

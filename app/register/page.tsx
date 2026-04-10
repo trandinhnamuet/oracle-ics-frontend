@@ -27,6 +27,8 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/
+
   const registerSchema = z.object({
     firstName: z
       .string()
@@ -42,8 +44,9 @@ export default function RegisterPage() {
       .email(t('register.validation.emailInvalid')),
     password: z
       .string()
-      .min(6, t('register.validation.passwordMinLength'))
-      .max(100, t('register.validation.passwordMaxLength')),
+      .min(8, t('register.validation.passwordMinLength'))
+      .max(100, t('register.validation.passwordMaxLength'))
+      .regex(passwordRegex, t('register.validation.passwordStrong')),
     confirmPassword: z
       .string()
       .min(1, t('register.validation.confirmPasswordRequired')),
@@ -197,7 +200,19 @@ export default function RegisterPage() {
                 </Button>
               </div>
               {errors.password && (
-                <p className="text-sm text-red-500">{errors.password.message}</p>
+                <div className="space-y-1">
+                  <p className="text-sm text-red-500">{errors.password.message}</p>
+                  <div className="text-xs text-red-400 mt-1">
+                    <p>{t('register.passwordRules.title')}</p>
+                    <ul className="list-disc list-inside space-y-0.5 mt-1">
+                      <li>{t('register.passwordRules.minLength')}</li>
+                      <li>{t('register.passwordRules.lowercase')}</li>
+                      <li>{t('register.passwordRules.uppercase')}</li>
+                      <li>{t('register.passwordRules.digit')}</li>
+                      <li>{t('register.passwordRules.special')}</li>
+                    </ul>
+                  </div>
+                </div>
               )}
             </div>
 

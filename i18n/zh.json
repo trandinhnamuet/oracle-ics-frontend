@@ -1511,7 +1511,8 @@
       "backupEmailInvalid": "备用邮件格式不正确",
       "idCardInvalid": "身份证号码格式不正确",
       "currentPasswordRequired": "请输入当前密码",
-      "newPasswordMin": "新密码必须至少6个字符",
+      "newPasswordMin": "新密码至少8个字符",
+      "newPasswordStrong": "新密码不符合要求",
       "confirmPasswordRequired": "请确认新密码",
       "passwordSameAsCurrent": "新密码必须与当前密码不同"
     }
@@ -2192,10 +2193,19 @@
       "lastNameMaxLength": "名不能超过50个字符",
       "emailRequired": "电子邮件不能为空",
       "emailInvalid": "电子邮件格式无效",
-      "passwordMinLength": "密码至少6个字符",
+      "passwordMinLength": "密码至少8个字符",
+      "passwordStrong": "密码不符合要求",
       "passwordMaxLength": "密码不能超过100个字符",
       "confirmPasswordRequired": "请确认您的密码",
       "passwordsMismatch": "密码不一致"
+    },
+    "passwordRules": {
+      "title": "密码必须包含:",
+      "minLength": "至少8个字符",
+      "lowercase": "至少一个小写字母 (a-z)",
+      "uppercase": "至少一个大写字母 (A-Z)",
+      "digit": "至少一个数字 (0-9)",
+      "special": "至少一个特殊字符 (!@#$...)"
     },
     "errorEmailAlreadyExists": "此邮箱已被注册，请使用其他邮箱或登录。",
     "errorDefault": "注册失败，请重试。"
@@ -2263,10 +2273,19 @@
       "submitButton": "重置密码",
       "resetting": "重置中...",
       "validation": {
-        "passwordMinLength": "密码必须至少为6个字符",
-        "confirmPasswordMinLength": "确认密码必须至少为6个字符",
+        "passwordMinLength": "密码至少8个字符",
+        "passwordStrong": "密码不符合要求",
+        "confirmPasswordMinLength": "确认密码至少8个字符",
         "passwordMismatch": "密码不匹配"
       }
+    },
+    "passwordRules": {
+      "title": "密码必须包含:",
+      "minLength": "至少8个字符",
+      "lowercase": "至少一个小写字母 (a-z)",
+      "uppercase": "至少一个大写字母 (A-Z)",
+      "digit": "至少一个数字 (0-9)",
+      "special": "至少一个特殊字符 (!@#$...)"
     }
   },
   "addFundsPayment": {
