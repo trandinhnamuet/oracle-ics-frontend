@@ -1650,7 +1650,16 @@
       "passwordResetSuccess": "パスワードのリセット成功",
       "passwordResetSuccessDesc": "新しいWindowsパスワードが設定されました。今すぐ保存してください。",
       "passwordResetError": "パスワードのリセット失敗",
-      "passwordResetErrorDesc": "Windowsパスワードをリセットできませんでした。もう一度お試しください。"
+      "passwordResetErrorDesc": "Windowsパスワードをリセットできませんでした。もう一度お試しください。",
+      "autoRenewUpdated": "自動更新設定を更新しました",
+      "autoRenewEnabled": "自動更新が有効になりました。サブスクリプションは自動的に更新されます。",
+      "autoRenewDisabled": "自動更新が無効になりました。サブスクリプションの有効期限が切れると、VMは停止します。",
+      "autoRenewError": "自動更新設定の更新に失敗しました",
+      "renewSuccess": "サブスクリプションが更新されました！",
+      "renewSuccessDesc": "サブスクリプションは1か月延長され、VMが起動しています。",
+      "renewFailed": "更新に失敗しました",
+      "renewInsufficientFunds": "残高が不足しています。更新するにはウォレットに入金してください。",
+      "renewError": "サブスクリプションの更新中にエラーが発生しました"
     },
     "confirmDialog": {
       "cancel": "キャンセル",

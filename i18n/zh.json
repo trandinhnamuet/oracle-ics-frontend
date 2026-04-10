@@ -1651,7 +1651,16 @@
       "passwordResetSuccess": "密码重置成功",
       "passwordResetSuccessDesc": "新的 Windows 密码已设置。请立即保存。",
       "passwordResetError": "密码重置失败",
-      "passwordResetErrorDesc": "无法重置 Windows 密码。请重试。"
+      "passwordResetErrorDesc": "无法重置 Windows 密码。请重试。",
+      "autoRenewUpdated": "自動續費設定已更新",
+      "autoRenewEnabled": "已啟用自動續費。您的訂閱將自動續期。",
+      "autoRenewDisabled": "已停用自動續費。訂閱到期時，VM 將會停止。",
+      "autoRenewError": "更新自動續費設定失敗",
+      "renewSuccess": "訂閱已續期！",
+      "renewSuccessDesc": "您的訂閱已延長一個月，VM 正在啟動。",
+      "renewFailed": "續訂失敗",
+      "renewInsufficientFunds": "餘額不足。請儲值錢包以續訂。",
+      "renewError": "續訂時發生錯誤"
     },
     "confirmDialog": {
       "cancel": "取消",

@@ -1650,7 +1650,16 @@
       "passwordResetSuccess": "비밀번호 재설정 성공",
       "passwordResetSuccessDesc": "새로운 Windows 비밀번호가 설정되었습니다. 지금 바로 저장하세요.",
       "passwordResetError": "비밀번호 재설정 실패",
-      "passwordResetErrorDesc": "Windows 비밀번호를 재설정할 수 없습니다. 다시 시도해 주세요."
+      "passwordResetErrorDesc": "Windows 비밀번호를 재설정할 수 없습니다. 다시 시도해 주세요.",
+      "autoRenewUpdated": "자동 갱신 설정이 업데이트되었습니다",
+      "autoRenewEnabled": "자동 갱신이 활성화되었습니다. 구독이 자동으로 갱신됩니다.",
+      "autoRenewDisabled": "자동 갱신이 비활성화되었습니다. 구독이 만료되면 VM이 중지됩니다.",
+      "autoRenewError": "자동 갱신 설정을 업데이트하지 못했습니다",
+      "renewSuccess": "구독이 갱신되었습니다!",
+      "renewSuccessDesc": "구독이 1개월 연장되었으며 VM이 시작 중입니다.",
+      "renewFailed": "갱신 실패",
+      "renewInsufficientFunds": "잔액이 부족합니다. 갱신하려면 지갑을 충전하세요.",
+      "renewError": "구독 갱신 중 오류가 발생했습니다"
     },
     "confirmDialog": {
       "cancel": "취소",
