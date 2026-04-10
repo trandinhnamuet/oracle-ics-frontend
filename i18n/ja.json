@@ -1622,7 +1622,8 @@
       "resettingPassword": "パスワードをリセット中...",
       "autoRenew": "自動更新",
       "autoRenewOn": "自動更新が有効です",
-      "autoRenewOff": "自動更新が無効です"
+      "autoRenewOff": "自動更新が無効です",
+      "togglingAutoRenew": "更新中..."
     },
     "billing": {
       "title": "請求情報",

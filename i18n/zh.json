@@ -1623,7 +1623,8 @@
       "resettingPassword": "正在重置密码...",
       "autoRenew": "自动续费",
       "autoRenewOn": "自动续费已开启",
-      "autoRenewOff": "自动续费已关闭"
+      "autoRenewOff": "自动续费已关闭",
+      "togglingAutoRenew": "正在更新..."
     },
     "billing": {
       "title": "账单信息",

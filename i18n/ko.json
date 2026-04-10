@@ -1622,7 +1622,8 @@
       "resettingPassword": "비밀번호 재설정 중...",
       "autoRenew": "자동 갱신",
       "autoRenewOn": "자동 갱신이 활성화되어 있습니다",
-      "autoRenewOff": "자동 갱신이 비활성화되어 있습니다"
+      "autoRenewOff": "자동 갱신이 비활성화되어 있습니다",
+      "togglingAutoRenew": "업데이트 중..."
     },
     "billing": {
       "title": "청구 정보",
