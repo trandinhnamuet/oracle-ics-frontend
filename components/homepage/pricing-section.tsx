@@ -248,7 +248,8 @@ export function PricingSection() {
           title: t('pricingModal.successTitle'),
           description: t('pricingModal.successDesc', { planName: selectedPlan?.name }),
           variant: 'default',
-          className: 'border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-100'
+          className: 'border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-100',
+          duration: 10000,
         })
 
         // Refresh balance
