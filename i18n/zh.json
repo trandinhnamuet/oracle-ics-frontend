@@ -1652,6 +1652,8 @@
       "passwordResetSuccessDesc": "新的 Windows 密码已设置。请立即保存。",
       "passwordResetError": "密码重置失败",
       "passwordResetErrorDesc": "无法重置 Windows 密码。请重试。",
+      "sshKeyRequestError": "SSH 密钥请求失败",
+      "sshKeyRequestErrorDesc": "无法生成新的 SSH 密钥。请重试。",
       "autoRenewUpdated": "自動續費設定已更新",
       "autoRenewEnabled": "已啟用自動續費。您的訂閱將自動續期。",
       "autoRenewDisabled": "已停用自動續費。訂閱到期時，VM 將會停止。",
@@ -1702,7 +1704,8 @@
       "importantNote2": "请在创建后立即保存。",
       "cancel": "取消",
       "creating": "正在生成密钥...",
-      "confirm": "确认生成新 SSH 密钥"
+      "confirm": "确认生成新 SSH 密钥",
+      "otpInvalid": "验证码不正确或已过期，请重试。"
     },
     "newSshKeyCreated": {
       "title": "新 SSH 密钥创建成功！",

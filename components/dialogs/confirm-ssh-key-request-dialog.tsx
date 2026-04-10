@@ -25,6 +25,8 @@ interface ConfirmSshKeyRequestDialogProps {
   vmName?: string
   isLoading?: boolean
   subscriptionId: string
+  otpError?: string
+  onClearOtpError?: () => void
 }
 
 export function ConfirmSshKeyRequestDialog({
@@ -35,6 +37,8 @@ export function ConfirmSshKeyRequestDialog({
   vmName,
   isLoading = false,
   subscriptionId,
+  otpError,
+  onClearOtpError,
 }: ConfirmSshKeyRequestDialogProps) {
   const { t } = useTranslation()
   const { toast } = useToast()
@@ -76,6 +80,7 @@ export function ConfirmSshKeyRequestDialog({
       })
       return
     }
+    onClearOtpError?.()
     onConfirm(otpCode.trim())
   }
 
@@ -180,10 +185,16 @@ export function ConfirmSshKeyRequestDialog({
                   maxLength={6}
                   placeholder={t('packageDetail.actionOtp.otpPlaceholder')}
                   value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                  className="text-center text-xl tracking-widest font-mono"
+                  onChange={(e) => {
+                    setOtpCode(e.target.value.replace(/\D/g, ''))
+                    onClearOtpError?.()
+                  }}
+                  className={`text-center text-xl tracking-widest font-mono${otpError ? ' border-red-500 focus-visible:ring-red-500' : ''}`}
                   autoFocus
                 />
+                {otpError && (
+                  <p className="text-sm text-red-600 font-medium">{otpError}</p>
+                )}
               </div>
 
               {/* Resend link */}

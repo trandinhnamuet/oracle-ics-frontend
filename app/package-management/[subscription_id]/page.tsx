@@ -123,6 +123,7 @@ export default function PackageDetailPage() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
   const [showSshKeyConfirm, setShowSshKeyConfirm] = useState(false)
   const [isRequestingSshKey, setIsRequestingSshKey] = useState(false)
+  const [sshKeyOtpError, setSshKeyOtpError] = useState('')
   const [newSshKey, setNewSshKey] = useState<{ privateKey: string; instanceName: string } | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [isResettingPassword, setIsResettingPassword] = useState(false)
@@ -498,12 +499,22 @@ export default function PackageDetailPage() {
       }
     } catch (error: any) {
       console.error('Error requesting new SSH key:', error)
-      
+
+      const status = error?.response?.status
+      const message = error?.response?.data?.message || error?.message
+
+      // OTP errors (400/401/422): keep dialog open, show inline error
+      if (status === 400 || status === 401 || status === 422) {
+        setSshKeyOtpError(t('packageDetail.sshKeyRequest.otpInvalid'))
+        return
+      }
+
+      // Other errors: close dialog, show toast
       setShowSshKeyConfirm(false)
-      
+      setSshKeyOtpError('')
       toast({
-        title: 'Request Failed',
-        description: error.response?.data?.message || 'Failed to generate new SSH key. Please try again.',
+        title: t('packageDetail.toast.sshKeyRequestError'),
+        description: message || t('packageDetail.toast.sshKeyRequestErrorDesc'),
         variant: 'destructive',
         duration: 8000,
       })
@@ -1513,12 +1524,14 @@ export default function PackageDetailPage() {
       {/* SSH Key Request Confirmation Dialog */}
       <ConfirmSshKeyRequestDialog
         isOpen={showSshKeyConfirm}
-        onClose={() => !isRequestingSshKey && setShowSshKeyConfirm(false)}
+        onClose={() => { if (!isRequestingSshKey) { setShowSshKeyConfirm(false); setSshKeyOtpError('') } }}
         onConfirm={handleConfirmSshKeyRequest}
         email={subscription?.user?.email || ''}
         vmName={vmDetails?.vm?.instanceName}
         isLoading={isRequestingSshKey}
         subscriptionId={subscriptionId}
+        otpError={sshKeyOtpError}
+        onClearOtpError={() => setSshKeyOtpError('')}
       />
 
       <AlertDialog open={confirmDialog.open} onOpenChange={(open) => !open && setConfirmDialog(prev => ({ ...prev, open: false }))}>

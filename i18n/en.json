@@ -1636,6 +1636,8 @@
       "passwordResetSuccessDesc": "New Windows password has been set. Please save it now.",
       "passwordResetError": "Password reset failed",
       "passwordResetErrorDesc": "Failed to reset Windows password. Please try again.",
+      "sshKeyRequestError": "SSH Key Request Failed",
+      "sshKeyRequestErrorDesc": "Failed to generate new SSH key. Please try again.",
       "autoRenewUpdated": "Auto Renew Updated",
       "autoRenewEnabled": "Auto renew has been enabled. Your subscription will renew automatically.",
       "autoRenewDisabled": "Auto renew has been disabled. VM will be stopped when the subscription expires.",
@@ -1696,7 +1698,8 @@
       "importantNote2": "Save it immediately after creation.",
       "cancel": "Cancel",
       "creating": "Generating key...",
-      "confirm": "Confirm New SSH Key"
+      "confirm": "Confirm New SSH Key",
+      "otpInvalid": "Verification code is incorrect or has expired. Please try again."
     },
     "newSshKeyCreated": {
       "title": "New SSH Key Created Successfully!",

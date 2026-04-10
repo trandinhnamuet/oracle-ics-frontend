@@ -1651,6 +1651,8 @@
       "passwordResetSuccessDesc": "新しいWindowsパスワードが設定されました。今すぐ保存してください。",
       "passwordResetError": "パスワードのリセット失敗",
       "passwordResetErrorDesc": "Windowsパスワードをリセットできませんでした。もう一度お試しください。",
+      "sshKeyRequestError": "SSHキーリクエスト失敗",
+      "sshKeyRequestErrorDesc": "新しいSSHキーを生成できませんでした。もう一度お試しください。",
       "autoRenewUpdated": "自動更新設定を更新しました",
       "autoRenewEnabled": "自動更新が有効になりました。サブスクリプションは自動的に更新されます。",
       "autoRenewDisabled": "自動更新が無効になりました。サブスクリプションの有効期限が切れると、VMは停止します。",
@@ -1701,7 +1703,8 @@
       "importantNote2": "作成後すぐに保存してください。",
       "cancel": "キャンセル",
       "creating": "キーを生成中...",
-      "confirm": "新しいSSHキーを確認"
+      "confirm": "新しいSSHキーを確認",
+      "otpInvalid": "認証コードが不正か有効期限が切れています。もう一度お試しください。"
     },
     "newSshKeyCreated": {
       "title": "新しいSSHキーが正常に作成されました！",

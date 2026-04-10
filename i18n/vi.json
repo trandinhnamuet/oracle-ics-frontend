@@ -1635,6 +1635,8 @@
       "passwordResetSuccessDesc": "Mật khẩu Windows mới đã được thiết lập. Vui lòng lưu lại ngay.",
       "passwordResetError": "Đặt lại mật khẩu thất bại",
       "passwordResetErrorDesc": "Không thể đặt lại mật khẩu Windows. Vui lòng thử lại.",
+      "sshKeyRequestError": "Yêu cầu SSH Key thất bại",
+      "sshKeyRequestErrorDesc": "Không thể tạo SSH key mới. Vui lòng thử lại.",
       "autoRenewUpdated": "Cập nhật tự động gia hạn thành công",
       "autoRenewEnabled": "Đã bật tự động gia hạn. Subscription sẽ tự gia hạn hàng tháng.",
       "autoRenewDisabled": "Đã tắt tự động gia hạn. VM sẽ bị dừng khi subscription hết hạn.",
@@ -1695,7 +1697,8 @@
       "importantNote2": "Hãy lưu lại ngay sau khi tạo xong.",
       "cancel": "Hủy bỏ",
       "creating": "Đang tạo key...",
-      "confirm": "Xác nhận tạo SSH Key mới"
+      "confirm": "Xác nhận tạo SSH Key mới",
+      "otpInvalid": "Mã xác thực không đúng hoặc đã hết hạn. Vui lòng thử lại."
     },
     "newSshKeyCreated": {
       "title": "SSH Key mới đã tạo thành công!",
