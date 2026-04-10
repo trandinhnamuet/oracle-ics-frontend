@@ -104,8 +104,8 @@ export function ConfirmSshKeyRequestDialog({
 
           {step === 'confirm' ? (
             <AlertDialogDescription className="space-y-4 text-left pt-4">
-              {/* Warning Box */}
-              <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
+              {/* Warning Box - HIDDEN */}
+              {/* <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
                   <div className="space-y-2">
@@ -120,7 +120,7 @@ export function ConfirmSshKeyRequestDialog({
                     </ul>
                   </div>
                 </div>
-              </div>
+              </div> */
 
               {/* VM Info */}
               <div className="bg-blue-50 border border-blue-200 p-4 rounded">
@@ -143,8 +143,8 @@ export function ConfirmSshKeyRequestDialog({
                 </div>
               </div>
 
-              {/* Security Notice */}
-              <div className="bg-gray-50 border border-gray-200 p-4 rounded">
+              {/* Security Notice - HIDDEN */}
+              {/* <div className="bg-gray-50 border border-gray-200 p-4 rounded">
                 <p className="text-sm font-semibold text-gray-900 mb-2">
                   {t('packageDetail.sshKeyRequest.processTitle')}
                 </p>
@@ -154,7 +154,7 @@ export function ConfirmSshKeyRequestDialog({
                   <li>{t('packageDetail.sshKeyRequest.processStep3')}</li>
                   <li>{t('packageDetail.sshKeyRequest.processStep4')}</li>
                 </ol>
-              </div>
+              </div> */
 
               {/* Final Warning */}
               <div className="bg-yellow-50 border border-yellow-200 p-3 rounded">
