@@ -138,6 +138,7 @@ export default function PackageDetailPage() {
   const [isSendingResetOtp, setIsSendingResetOtp] = useState(false)
   const [resendCooldown, setResendCooldown] = useState(0)
   const [resetOtpError, setResetOtpError] = useState('')
+  const [sendResetOtpError, setSendResetOtpError] = useState('')
   const [isConfirmingOtp, setIsConfirmingOtp] = useState(false)
 
   useEffect(() => {
@@ -535,17 +536,24 @@ export default function PackageDetailPage() {
   }
 
   const handleSendResetOtp = async () => {
+    setSendResetOtpError('')
     setIsSendingResetOtp(true)
     try {
       await sendActionOtp(subscriptionId, 'reset-password')
       setResetPasswordOtpStep('otp')
       setResendCooldown(60)
     } catch (error: any) {
-      toast({
-        title: t('common.error'),
-        description: error?.response?.data?.message || t('packageDetail.actionOtp.sendError'),
-        variant: 'destructive',
-      })
+      const msg: string = error?.response?.data?.message || ''
+      const cooldownMatch = msg.match(/please wait (\d+) second/i)
+      if (cooldownMatch) {
+        setSendResetOtpError(t('packageDetail.actionOtp.sendCooldown', { seconds: cooldownMatch[1] }))
+      } else {
+        toast({
+          title: t('common.error'),
+          description: msg || t('packageDetail.actionOtp.sendError'),
+          variant: 'destructive',
+        })
+      }
     } finally {
       setIsSendingResetOtp(false)
     }
@@ -1679,7 +1687,7 @@ export default function PackageDetailPage() {
 
       {/* Reset Windows Password — Confirmation Dialog */}
       <AlertDialog open={resetPasswordDialog} onOpenChange={(open) => {
-        if (!open) { setCustomPassword(''); setConfirmPassword(''); setShowCustomPassword(false); setShowConfirmPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false); setResendCooldown(0); setResetOtpError(''); setIsConfirmingOtp(false) }
+        if (!open) { setCustomPassword(''); setConfirmPassword(''); setShowCustomPassword(false); setShowConfirmPassword(false); setResetPasswordOtpStep('form'); setResetOtpCode(''); setIsSendingResetOtp(false); setResendCooldown(0); setResetOtpError(''); setSendResetOtpError(''); setIsConfirmingOtp(false) }
         setResetPasswordDialog(open)
       }}>
         <AlertDialogContent>
@@ -1791,6 +1799,9 @@ export default function PackageDetailPage() {
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
+          {resetPasswordOtpStep === 'form' && sendResetOtpError && (
+            <p className="text-sm text-red-600 font-medium text-center px-2 pb-1">{sendResetOtpError}</p>
+          )}
           <AlertDialogFooter>
             {resetPasswordOtpStep === 'form' ? (
               <>

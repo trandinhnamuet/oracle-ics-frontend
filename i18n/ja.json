@@ -1760,6 +1760,7 @@
       "resendCountdown": "{{count}}秒後に再送信",
       "backToForm": "戻る",
       "sendError": "認証コードの送信に失敗しました。再試行してください。",
+      "sendCooldown": "新しいOTPをリクエストする前に {{seconds}} 秒お待ちください。",
       "emptyError": "認証コードを入力してください"
     }
   },

@@ -1762,6 +1762,7 @@
       "resendCountdown": "{{count}}秒后重新发送",
       "backToForm": "返回",
       "sendError": "验证码发送失败，请重试。",
+      "sendCooldown": "请在 {{seconds}} 秒后再请求新的验证码。",
       "emptyError": "请输入验证码"
     }
   },

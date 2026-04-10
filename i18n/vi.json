@@ -1755,6 +1755,7 @@
       "resendCountdown": "Gửi lại sau {{count}}s",
       "backToForm": "Quay lại",
       "sendError": "Không thể gửi mã xác thực. Vui lòng thử lại.",
+      "sendCooldown": "Vui lòng chờ {{seconds}} giây trước khi yêu cầu OTP mới.",
       "emptyError": "Vui lòng nhập mã xác thực"
     }
   },

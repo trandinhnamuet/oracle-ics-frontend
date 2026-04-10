@@ -45,6 +45,7 @@ export function ConfirmSshKeyRequestDialog({
   const [step, setStep] = useState<'confirm' | 'otp'>('confirm')
   const [otpCode, setOtpCode] = useState('')
   const [isSendingOtp, setIsSendingOtp] = useState(false)
+  const [sendOtpError, setSendOtpError] = useState('')
 
   // Reset state whenever dialog opens
   useEffect(() => {
@@ -52,20 +53,28 @@ export function ConfirmSshKeyRequestDialog({
       setStep('confirm')
       setOtpCode('')
       setIsSendingOtp(false)
+      setSendOtpError('')
     }
   }, [isOpen])
 
   const handleSendOtp = async () => {
+    setSendOtpError('')
     setIsSendingOtp(true)
     try {
       await sendActionOtp(subscriptionId, 'request-key')
       setStep('otp')
     } catch (error: any) {
-      toast({
-        title: t('common.error'),
-        description: error?.response?.data?.message || t('packageDetail.actionOtp.sendError'),
-        variant: 'destructive',
-      })
+      const msg: string = error?.response?.data?.message || ''
+      const cooldownMatch = msg.match(/please wait (\d+) second/i)
+      if (cooldownMatch) {
+        setSendOtpError(t('packageDetail.actionOtp.sendCooldown', { seconds: cooldownMatch[1] }))
+      } else {
+        toast({
+          title: t('common.error'),
+          description: msg || t('packageDetail.actionOtp.sendError'),
+          variant: 'destructive',
+        })
+      }
     } finally {
       setIsSendingOtp(false)
     }
@@ -211,6 +220,10 @@ export function ConfirmSshKeyRequestDialog({
             </AlertDialogDescription>
           )}
         </AlertDialogHeader>
+
+        {step === 'confirm' && sendOtpError && (
+          <p className="text-sm text-red-600 font-medium text-center px-2 pb-1">{sendOtpError}</p>
+        )}
 
         <AlertDialogFooter>
           {step === 'confirm' ? (
