@@ -1762,6 +1762,7 @@
       "backToForm": "戻る",
       "sendError": "認証コードの送信に失敗しました。再試行してください。",
       "sendCooldown": "新しいOTPをリクエストする前に {{seconds}} 秒お待ちください。",
+      "hourlyLimitReached": "1時間内のOTP生成限度（6回）に達しました。{{minutes}}分待ってから再試行してください。",
       "emptyError": "認証コードを入力してください"
     }
   },

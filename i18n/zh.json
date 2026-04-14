@@ -1764,6 +1764,7 @@
       "backToForm": "返回",
       "sendError": "验证码发送失败，请重试。",
       "sendCooldown": "请在 {{seconds}} 秒后再请求新的验证码。",
+      "hourlyLimitReached": "您每小时内发送OTP次数已达上限（6次）。请等待 {{minutes}} 分钟后再试。",
       "emptyError": "请输入验证码"
     }
   },

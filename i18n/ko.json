@@ -1763,6 +1763,7 @@
       "backToForm": "뒤로",
       "sendError": "인증 코드 전송에 실패했습니다. 다시 시도해 주세요.",
       "sendCooldown": "새 OTP를 요청하기 전에 {{seconds}}초 기다려 주세요.",
+      "hourlyLimitReached": "1시간 OTP 한도(6회)에 도달했습니다. {{minutes}}시간 후 다시 시도해 주세요.",
       "emptyError": "인증 코드를 입력해 주세요"
     }
   },

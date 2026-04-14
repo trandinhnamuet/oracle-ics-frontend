@@ -1756,6 +1756,7 @@
       "backToForm": "Quay lại",
       "sendError": "Không thể gửi mã xác thực. Vui lòng thử lại.",
       "sendCooldown": "Vui lòng chờ {{seconds}} giây trước khi yêu cầu OTP mới.",
+      "hourlyLimitReached": "Bạn đã gửi quá 6 OTP trong 1 giờ. Vui lòng chờ {{minutes}} phút trước khi yêu cầu lại.",
       "emptyError": "Vui lòng nhập mã xác thực"
     }
   },

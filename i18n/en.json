@@ -1757,6 +1757,7 @@
       "backToForm": "Back",
       "sendError": "Failed to send verification code. Please try again.",
       "sendCooldown": "Please wait {{seconds}} seconds before requesting a new OTP.",
+      "hourlyLimitReached": "You have reached the OTP limit (6/hour). Please wait {{minutes}} minute(s) before requesting again.",
       "emptyError": "Please enter the verification code"
     }
   },

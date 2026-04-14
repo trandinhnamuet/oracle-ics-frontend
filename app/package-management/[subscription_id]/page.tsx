@@ -545,8 +545,11 @@ export default function PackageDetailPage() {
     } catch (error: any) {
       const msg: string = error?.response?.data?.message || ''
       const cooldownMatch = msg.match(/please wait (\d+) second/i)
+      const hourlyMatch = msg.match(/please wait (\d+) minute/i)
       if (cooldownMatch) {
         setSendResetOtpError(t('packageDetail.actionOtp.sendCooldown', { seconds: cooldownMatch[1] }))
+      } else if (hourlyMatch || /hourly otp limit/i.test(msg)) {
+        setSendResetOtpError(t('packageDetail.actionOtp.hourlyLimitReached', { minutes: hourlyMatch?.[1] ?? '60' }))
       } else {
         toast({
           title: t('common.error'),
