@@ -622,8 +622,8 @@ export default function PackageDetailPage() {
 
       // OTP-related errors (400/401/422): stay on OTP step, show inline error
       if (status === 400 || status === 401 || status === 422) {
-        // Use server-provided i18n key if available, otherwise use default fallback
-        const errorText = i18nKey ? t(`packageDetail.${i18nKey}`) : t('packageDetail.resetPassword.otpInvalid')
+        // Use server-provided i18n key if available, otherwise show actual server message
+        const errorText = i18nKey ? t(`packageDetail.${i18nKey}`) : (message || t('packageDetail.resetPassword.otpInvalid'))
         setResetOtpError(errorText)
         return
       }
@@ -641,7 +641,6 @@ export default function PackageDetailPage() {
         title: t('packageDetail.toast.passwordResetError'),
         description: message || t('packageDetail.toast.passwordResetErrorDesc'),
         variant: 'destructive',
-        duration: 8000,
       })
     } finally {
       setIsConfirmingOtp(false)
