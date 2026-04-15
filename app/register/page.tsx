@@ -101,17 +101,11 @@ export default function RegisterPage() {
 
   const handleGoogleSignup = async () => {
     try {
-      setIsLoading(true)
       setError(null)
-      
-      // TODO: Implement Google OAuth
-      // Hiện tại chỉ hiển thị thông báo
-      setError(t('register.googleComingSoon'))
-      
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+      window.location.href = `${backendUrl}/auth/google`
     } catch (error: any) {
       setError(error.message || t('register.errorDefault'))
-    } finally {
-      setIsLoading(false)
     }
   }
 
