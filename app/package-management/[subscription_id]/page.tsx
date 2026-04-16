@@ -58,6 +58,23 @@ function makeTimeFormatter(tr: string) {
   }
 }
 
+// Returns one representative timestamp per unique day (first point of each day) from a data array.
+// Used to deduplicate X-axis ticks when displaying date-only labels for 7d/all ranges.
+function makeDateTicks(data: Array<{ time: string }>): string[] {
+  const seen = new Set<string>()
+  const ticks: string[] = []
+  for (const d of data) {
+    try {
+      const key = parseAsUtc(d.time).toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' })
+      if (!seen.has(key)) {
+        seen.add(key)
+        ticks.push(d.time)
+      }
+    } catch { /* skip */ }
+  }
+  return ticks
+}
+
 // Always shows full date + time for tooltip labels regardless of time range.
 function tooltipDateTimeFormatter(isoStr: string): string {
   try {
@@ -130,6 +147,11 @@ export default function PackageDetailPage() {
   const [networkVisible, setNetworkVisible] = useState({ in: true, out: true })
   const [diskVisible, setDiskVisible] = useState({ read: true, write: true })
   const fmtTime = useMemo(() => makeTimeFormatter(timeRange), [timeRange])
+  const chartTicks = useMemo(() => {
+    if (timeRange !== '7d' && timeRange !== 'all') return undefined
+    const src = metrics?.cpu ?? metrics?.memory ?? []
+    return makeDateTicks(src)
+  }, [timeRange, metrics])
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
   const [showSshKeyConfirm, setShowSshKeyConfirm] = useState(false)
   const [isRequestingSshKey, setIsRequestingSshKey] = useState(false)
@@ -989,6 +1011,7 @@ export default function PackageDetailPage() {
                           <XAxis 
                             dataKey="time"
                             tickFormatter={fmtTime}
+                            ticks={chartTicks}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -1039,6 +1062,7 @@ export default function PackageDetailPage() {
                           <XAxis 
                             dataKey="time"
                             tickFormatter={fmtTime}
+                            ticks={chartTicks}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -1111,6 +1135,7 @@ export default function PackageDetailPage() {
                           <XAxis 
                             dataKey="time"
                             tickFormatter={fmtTime}
+                            ticks={chartTicks}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
@@ -1201,6 +1226,7 @@ export default function PackageDetailPage() {
                           <XAxis 
                             dataKey="time"
                             tickFormatter={fmtTime}
+                            ticks={chartTicks}
                             axisLine={false}
                             tickLine={false}
                             className="text-sm"
