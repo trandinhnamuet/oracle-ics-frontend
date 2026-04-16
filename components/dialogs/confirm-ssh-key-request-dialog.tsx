@@ -46,6 +46,14 @@ export function ConfirmSshKeyRequestDialog({
   const [otpCode, setOtpCode] = useState('')
   const [isSendingOtp, setIsSendingOtp] = useState(false)
   const [sendOtpError, setSendOtpError] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
+
+  // Countdown timer for resend button
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const timer = setTimeout(() => setResendCooldown(prev => prev - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [resendCooldown])
 
   // Reset state whenever dialog opens
   useEffect(() => {
@@ -54,6 +62,7 @@ export function ConfirmSshKeyRequestDialog({
       setOtpCode('')
       setIsSendingOtp(false)
       setSendOtpError('')
+      setResendCooldown(0)
     }
   }, [isOpen])
 
@@ -63,11 +72,14 @@ export function ConfirmSshKeyRequestDialog({
     try {
       await sendActionOtp(subscriptionId, 'request-key')
       setStep('otp')
+      setResendCooldown(30)
     } catch (error: any) {
       const msg: string = error?.response?.data?.message || ''
       const cooldownMatch = msg.match(/please wait (\d+) second/i)
       const hourlyMatch = msg.match(/please wait (\d+) minute/i)
       if (cooldownMatch) {
+        const secs = parseInt(cooldownMatch[1], 10)
+        setResendCooldown(secs)
         setSendOtpError(t('packageDetail.actionOtp.sendCooldown', { seconds: cooldownMatch[1] }))
       } else if (hourlyMatch || /hourly otp limit/i.test(msg)) {
         setSendOtpError(t('packageDetail.actionOtp.hourlyLimitReached', { minutes: hourlyMatch?.[1] ?? '60' }))
@@ -213,13 +225,20 @@ export function ConfirmSshKeyRequestDialog({
 
               {/* Resend link */}
               <p className="text-xs text-muted-foreground text-center">
+                {sendOtpError && (
+                  <span className="block text-red-600 font-medium mb-1">{sendOtpError}</span>
+                )}
                 <button
                   type="button"
                   onClick={handleSendOtp}
-                  disabled={isSendingOtp}
-                  className="underline hover:no-underline disabled:opacity-50"
+                  disabled={isSendingOtp || resendCooldown > 0}
+                  className="underline hover:no-underline disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSendingOtp ? t('packageDetail.actionOtp.resending') : t('packageDetail.actionOtp.resend')}
+                  {isSendingOtp
+                    ? t('packageDetail.actionOtp.resending')
+                    : resendCooldown > 0
+                      ? t('packageDetail.actionOtp.resendCooldown', { count: resendCooldown })
+                      : t('packageDetail.actionOtp.resend')}
                 </button>
               </p>
             </AlertDialogDescription>
