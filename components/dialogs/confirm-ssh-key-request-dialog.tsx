@@ -237,7 +237,7 @@ export function ConfirmSshKeyRequestDialog({
                   {isSendingOtp
                     ? t('packageDetail.actionOtp.resending')
                     : resendCooldown > 0
-                      ? t('packageDetail.actionOtp.resendCooldown', { count: resendCooldown })
+                      ? t('packageDetail.actionOtp.resendCountdown', { count: resendCooldown })
                       : t('packageDetail.actionOtp.resend')}
                 </button>
               </p>
