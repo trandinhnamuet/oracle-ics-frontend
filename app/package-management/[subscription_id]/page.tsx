@@ -41,7 +41,7 @@ import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
 import { formatDateOnly, formatDateTime, parseAsUtc } from '@/lib/utils'
 
-// Returns a formatter function for chart axes based on the selected time range.
+// Returns a formatter function for chart X-axis ticks based on the selected time range.
 // Short ranges (≤24h) show time only (HH:mm); longer ranges (>24h) show date only (dd/MM).
 function makeTimeFormatter(tr: string) {
   const dateOnly = tr === '7d' || tr === 'all'
@@ -55,6 +55,17 @@ function makeTimeFormatter(tr: string) {
     } catch {
       return isoStr
     }
+  }
+}
+
+// Always shows full date + time for tooltip labels regardless of time range.
+function tooltipDateTimeFormatter(isoStr: string): string {
+  try {
+    const d = parseAsUtc(isoStr)
+    return d.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' }) +
+      ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+  } catch {
+    return isoStr
   }
 }
 
@@ -988,7 +999,7 @@ export default function PackageDetailPage() {
                             tickLine={false}
                             className="text-sm"
                           />
-                          <Tooltip labelFormatter={fmtTime} formatter={(v: number) => [`${v.toFixed(2)}%`, 'CPU']} />
+                          <Tooltip labelFormatter={tooltipDateTimeFormatter} formatter={(v: number) => [`${v.toFixed(2)}%`, 'CPU']} />
                           <Area 
                             type="monotone" 
                             dataKey="value" 
@@ -1038,7 +1049,7 @@ export default function PackageDetailPage() {
                             tickLine={false}
                             className="text-sm"
                           />
-                          <Tooltip labelFormatter={fmtTime} formatter={(v: number) => [`${v.toFixed(2)}%`, 'Memory']} />
+                          <Tooltip labelFormatter={tooltipDateTimeFormatter} formatter={(v: number) => [`${v.toFixed(2)}%`, 'Memory']} />
                           <Area 
                             type="monotone" 
                             dataKey="value" 
@@ -1110,7 +1121,7 @@ export default function PackageDetailPage() {
                             className="text-sm"
                           />
                           <Tooltip
-                            labelFormatter={fmtTime}
+                            labelFormatter={tooltipDateTimeFormatter}
                             formatter={(v: number, name: string) => [
                               `${v.toFixed(3)} MB`,
                               name === 'in' ? t('packageDetail.charts.networkIn') : t('packageDetail.charts.networkOut'),
@@ -1200,7 +1211,7 @@ export default function PackageDetailPage() {
                             className="text-sm"
                           />
                           <Tooltip
-                            labelFormatter={fmtTime}
+                            labelFormatter={tooltipDateTimeFormatter}
                             formatter={(v: number, name: string) => [
                               `${v.toFixed(3)} MB`,
                               name === 'read' ? t('packageDetail.charts.diskRead') : t('packageDetail.charts.diskWrite'),
