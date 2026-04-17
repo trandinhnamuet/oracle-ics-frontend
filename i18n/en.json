@@ -1538,7 +1538,10 @@
       "publicIp": "Public IP",
       "operatingSystem": "Operating System",
       "osVersion": "OS Version",
-      "imageName": "Image"
+      "imageName": "Image",
+      "windowsRdpCredentials": "🪟 Windows RDP Credentials",
+      "initialPassword": "Initial password",
+      "windowsPasswordPending": "⏳ Password is being generated (5–10 minutes after VM boot). Please refresh the page after a few minutes."
     },
     "controls": {
       "vmName": "VM Name:",

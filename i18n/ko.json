@@ -1554,7 +1554,10 @@
       "publicIp": "공용 IP",
       "operatingSystem": "운영 체제",
       "osVersion": "OS 버전",
-      "imageName": "이미지"
+      "imageName": "이미지",
+      "windowsRdpCredentials": "🪟 Windows RDP 자격 증명",
+      "initialPassword": "초기 비밀번호",
+      "windowsPasswordPending": "⏳ 비밀번호를 생성 중입니다 (VM 부팅 후 5–10분). 몇 분 후 페이지를 새로고침해 주세요."
     },
     "controls": {
       "vmName": "VM 이름:",

@@ -1537,7 +1537,10 @@
       "publicIp": "IP công khai",
       "operatingSystem": "Hệ điều hành",
       "osVersion": "Phiên bản OS",
-      "imageName": "Image"
+      "imageName": "Image",
+      "windowsRdpCredentials": "🪟 Thông tin đăng nhập Windows RDP",
+      "initialPassword": "Mật khẩu khởi tạo",
+      "windowsPasswordPending": "⏳ Mật khẩu đang được tạo (5–10 phút sau khi VM khởi động). Hãy làm mới trang sau vài phút."
     },
     "controls": {
       "vmName": "Tên VM:",

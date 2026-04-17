@@ -1555,7 +1555,10 @@
       "publicIp": "公网IP",
       "operatingSystem": "操作系统",
       "osVersion": "系统版本",
-      "imageName": "镜像"
+      "imageName": "镜像",
+      "windowsRdpCredentials": "🪟 Windows RDP 登录凭据",
+      "initialPassword": "初始密码",
+      "windowsPasswordPending": "⏳ 密码正在生成中（VM 启动后约 5–10 分钟）。请几分钟后刷新页面。"
     },
     "controls": {
       "vmName": "虚拟机名称：",

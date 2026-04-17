@@ -1554,7 +1554,10 @@
       "publicIp": "パブリックIP",
       "operatingSystem": "オペレーティングシステム",
       "osVersion": "OSバージョン",
-      "imageName": "イメージ"
+      "imageName": "イメージ",
+      "windowsRdpCredentials": "🪟 Windows RDP 資格情報",
+      "initialPassword": "初期パスワード",
+      "windowsPasswordPending": "⏳ パスワードを生成中です（VM起動後5〜10分）。数分後にページを更新してください。"
     },
     "controls": {
       "vmName": "VM名：",
