@@ -15,6 +15,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 
 import { authApi } from '@/api/auth.api'
 import { useTranslation } from 'react-i18next'
+import { parseOtpError } from '@/lib/otp-error'
 
 export default function RecoverEmailPage() {
   const { t } = useTranslation()
@@ -55,7 +56,7 @@ export default function RecoverEmailPage() {
       // Navigate to OTP confirmation page
       router.push(`/login/forgot-password/otp-confirm?email=${encodeURIComponent(data.email)}`)
     } catch (error: any) {
-      setError(error.message)
+      setError(parseOtpError(error, t))
     } finally {
       setIsLoading(false)
     }

@@ -17,6 +17,7 @@ import { Separator } from '@/components/ui/separator'
 import { authApi, RegisterRequest } from '@/api/auth.api'
 import { useAuth } from '@/lib/auth-context'
 import { useTranslation } from 'react-i18next'
+import { parseOtpError } from '@/lib/otp-error'
 
 export default function RegisterPage() {
   const { t } = useTranslation()
@@ -92,7 +93,7 @@ export default function RegisterPage() {
       if (msg.includes('đã được đăng ký') || msg.includes('already registered') || msg.includes('already exists') || msg.includes('Conflict')) {
         setError(t('register.errorEmailAlreadyExists'))
       } else {
-        setError(msg || t('register.errorDefault'))
+        setError(parseOtpError(error, t) || t('register.errorDefault'))
       }
     } finally {
       setIsLoading(false)

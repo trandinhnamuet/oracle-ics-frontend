@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 
 import { authApi } from '@/api/auth.api'
 import { useTranslation } from 'react-i18next'
+import { parseOtpError } from '@/lib/otp-error'
 
 export default function OtpConfirmPage() {
   const { t } = useTranslation()
@@ -89,7 +90,7 @@ export default function OtpConfirmPage() {
       localStorage.removeItem('pendingForgotPasswordEmail')
       router.push(`/login/forgot-password/new-password?email=${encodeURIComponent(email)}&otp=${otpString}`)
     } catch (error: any) {
-      setError(error.message)
+      setError(parseOtpError(error, t))
     } finally {
       setIsLoading(false)
     }
@@ -105,7 +106,7 @@ export default function OtpConfirmPage() {
       setOtp(['', '', '', '', '', ''])
       inputRefs.current[0]?.focus()
     } catch (error: any) {
-      setError(error.message)
+      setError(parseOtpError(error, t))
     } finally {
       setIsLoading(false)
     }
