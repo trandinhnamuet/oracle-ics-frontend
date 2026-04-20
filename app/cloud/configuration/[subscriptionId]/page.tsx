@@ -210,23 +210,29 @@ export default function CloudConfigurationBySubscriptionPage() {
 
     const loadAvailableOsList = async () => {
       try {
-        // Fetch images cho cả 2 shape (Windows và non-Windows) để biết OS nào có sẵn
-        const [windowsImages, linuxImages] = await Promise.all([
-          getComputeImages(undefined, undefined, 'VM.Standard.E4.Flex'),
-          getComputeImages(undefined, undefined, 'VM.Standard.A2.Flex'),
-        ])
+        // Fetch images với Linux shape (A2.Flex) để biết OS nào có sẵn
+        // Khi user chọn Windows, sẽ fetch lại với Windows shape (E4.Flex)
+        const linuxImages = await getComputeImages(undefined, undefined, 'VM.Standard.A2.Flex')
+        
+        if (!linuxImages || linuxImages.length === 0) {
+          console.warn('No images found for VM.Standard.A2.Flex')
+          setAvailableOsList([])
+          return
+        }
 
-        const allImages = [...windowsImages, ...linuxImages]
+        // Extract unique OS names từ images, normalize, và filter chỉ lấy OS có icon
         const uniqueOsList = Array.from(
-          new Set(allImages.map(img => normalizeOsName(img.operatingSystem)))
-        ).filter(os => OS_ICONS[os]) // Chỉ lấy OS có icon
+          new Set(linuxImages.map(img => normalizeOsName(img.operatingSystem)))
+        )
+          .filter(os => OS_ICONS[os])
           .sort()
 
+        console.log('Available OS list:', uniqueOsList)
         setAvailableOsList(uniqueOsList)
       } catch (error) {
         console.error('Error loading available OS list:', error)
-        // Fallback: dùng toàn bộ OS_LIST nếu load thất bại
-        setAvailableOsList(OS_LIST)
+        // Fallback: set rỗng — UI sẽ hiển thị error message với nút "Tải lại trang"
+        setAvailableOsList([])
       }
     }
 
@@ -503,9 +509,16 @@ export default function CloudConfigurationBySubscriptionPage() {
                   <Label>{t('cloudConfig.selectOS')}</Label>
                   <div className="grid grid-cols-1 gap-3 mt-2">
                     {availableOsList.length === 0 ? (
-                      <p className="text-xs text-gray-500 dark:text-muted-foreground text-center py-4">
-                        {t('cloudConfig.loadingOsImages', 'Đang tải danh sách hệ điều hành...')}
-                      </p>
+                      <div className="p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded text-sm text-red-700 dark:text-red-300">
+                        <p className="font-semibold mb-2">Không thể tải danh sách hệ điều hành</p>
+                        <p className="mb-3">Vui lòng tải lại trang để tiếp tục.</p>
+                        <button
+                          onClick={() => window.location.reload()}
+                          className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-medium"
+                        >
+                          Tải lại trang
+                        </button>
+                      </div>
                     ) : (
                       availableOsList.map(os => {
                         const icon = OS_ICONS[os] || '/image-logo/Oracle-Linux.png'
