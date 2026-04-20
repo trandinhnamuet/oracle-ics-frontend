@@ -34,18 +34,17 @@ export function middleware(request: NextRequest) {
     })
   }
   
-  // If we have refresh token, try to extract role from it
-  // Note: accessToken is stored in localStorage, not cookie
+  // Extract role from refresh token for routing decisions only.
+  // Actual authentication/authorization is enforced server-side.
   if (refreshToken) {
     try {
       const payload = refreshToken.split('.')[1];
       if (payload) {
         const decoded = JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'));
         userRole = decoded.role;
-        console.log(`✅ Middleware: User with role ${userRole} accessing ${pathname}`);
       }
     } catch (e) {
-      console.log('⚠️ Middleware: Invalid refresh token');
+      // Invalid token format — treat as unauthenticated
     }
   }
   
