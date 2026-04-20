@@ -142,11 +142,16 @@ export default function PackageDetailPage() {
   const [isDataLoading, setIsDataLoading] = useState(true)
   const [isLoadingVm, setIsLoadingVm] = useState(false)
   const [metrics, setMetrics] = useState<InstanceMetrics | null>(null)
-  const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d' | 'all'>('7d')
+  const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d' | 'all'>('1h')
   const [isLoadingMetrics, setIsLoadingMetrics] = useState(false)
   const [networkVisible, setNetworkVisible] = useState({ in: true, out: true })
   const [diskVisible, setDiskVisible] = useState({ read: true, write: true })
   const fmtTime = useMemo(() => makeTimeFormatter(timeRange), [timeRange])
+  // Message shown inside charts when no data is returned for the selected time range.
+  // For longer ranges (7d/all/24h) data may not be available on recently provisioned VMs.
+  const metricsEmptyMsg = ['7d', 'all', '24h'].includes(timeRange)
+    ? 'No data for this period. Try a shorter range or wait for the VM to run longer.'
+    : 'No data available.'
   const chartTicks = useMemo(() => {
     if (timeRange !== '7d' && timeRange !== 'all') return undefined
     const src = metrics?.cpu ?? metrics?.memory ?? []
@@ -1076,8 +1081,8 @@ export default function PackageDetailPage() {
                         </AreaChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground">
-                        <p>No data available</p>
+                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground text-center px-4">
+                        <p className="text-sm">{metricsEmptyMsg}</p>
                       </div>
                     )}
                   </div>
@@ -1127,8 +1132,8 @@ export default function PackageDetailPage() {
                         </AreaChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground">
-                        <p>No data available</p>
+                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground text-center px-4">
+                        <p className="text-sm">{metricsEmptyMsg}</p>
                       </div>
                     )}
                   </div>
@@ -1218,8 +1223,8 @@ export default function PackageDetailPage() {
                         </AreaChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground">
-                        <p>No data available</p>
+                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground text-center px-4">
+                        <p className="text-sm">{metricsEmptyMsg}</p>
                       </div>
                     )}
                   </div>
@@ -1309,8 +1314,8 @@ export default function PackageDetailPage() {
                         </AreaChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground">
-                        <p>No data available</p>
+                      <div className="flex items-center justify-center h-full text-gray-400 dark:text-muted-foreground text-center px-4">
+                        <p className="text-sm">{metricsEmptyMsg}</p>
                       </div>
                     )}
                   </div>
