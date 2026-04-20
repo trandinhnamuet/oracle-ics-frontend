@@ -44,11 +44,22 @@ const OS_ICONS: Record<string, string> = {
   'Ubuntu': '/image-logo/Ubuntu.png',
   'CentOS': '/image-logo/CentOS.png',
   'Oracle Linux': '/image-logo/Oracle-Linux.png',
-  'Oracle Autonomous Linux': '/image-logo/Oracle-Linux.png',
   'Windows': '/image-logo/Window.png',
   'Red Hat Enterprise Linux': '/image-logo/Red-Hat.svg',
   'Rocky Linux': '/image-logo/Rocky-Linux.svg',
   'Alma Linux': '/image-logo/Alma-Linux.png',
+}
+
+// Chuẩn hóa tên OS từ API về tên hiển thị trong OS_ICONS
+// VD: "Canonical Ubuntu" → "Ubuntu", "Oracle Autonomous Linux" → "Oracle Linux"
+const normalizeOsName = (apiOs: string): string => {
+  if (apiOs === 'Canonical Ubuntu') return 'Ubuntu'
+  if (
+    apiOs === 'Oracle Autonomous Linux' ||
+    apiOs === 'Oracle Linux Cloud Developer' ||
+    apiOs === 'Oracle Linux STIG'
+  ) return 'Oracle Linux'
+  return apiOs
 }
 
 // Auto-determine shape based on OS selection
@@ -204,9 +215,7 @@ export default function CloudConfigurationBySubscriptionPage() {
   // Filter images for selected OS with search filter
   const availableImages = selectedOS 
     ? computeImages.filter(image => {
-        let os = image.operatingSystem
-        if (os === 'Oracle Autonomous Linux') os = 'Oracle Linux'
-        return os === selectedOS
+        return normalizeOsName(image.operatingSystem) === selectedOS
       }).filter(image => 
         imageSearchTerm === '' || 
         image.displayName.toLowerCase().includes(imageSearchTerm.toLowerCase()) ||
