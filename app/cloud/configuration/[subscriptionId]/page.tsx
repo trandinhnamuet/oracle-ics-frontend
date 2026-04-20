@@ -13,15 +13,10 @@ import { CustomSelect } from '@/components/ui/custom-select'
 import { 
   ArrowLeft, 
   Server, 
-  MapPin, 
-  Shield, 
   Monitor,
   ChevronDown,
-  Eye,
-  EyeOff,
   Check,
   Loader2,
-  Mail,
   AlertCircle,
   Copy,
   Download,
@@ -56,45 +51,12 @@ const OS_ICONS: Record<string, string> = {
   'Alma Linux': '/image-logo/Alma-Linux.png',
 }
 
-// Shapes (VM configurations)
-const VM_SHAPES = [
-  {
-    id: 'VM.Standard.A1.Flex',
-    name: 'ARM Flexible - A1',
-    description: 'ARM-based, Flexible CPU and Memory (Always Free)',
-    cpu: { min: 1, max: 4, default: 1 },
-    memory: { min: 1, max: 24, default: 4 },
-    recommended: true
-  },
-  {
-    id: 'VM.Standard.E2.1.Micro',
-    name: 'Micro - E2',
-    description: 'x86-based, 1 OCPU, 1GB RAM (Always Free)',
-    cpu: { min: 1, max: 1, default: 1 },
-    memory: { min: 1, max: 1, default: 1 }
-  },
-  {
-    id: 'VM.Standard3.Flex',
-    name: 'Flexible - E4',
-    description: 'AMD EPYC 4th Gen, Flexible CPU and Memory',
-    cpu: { min: 1, max: 64, default: 2 },
-    memory: { min: 1, max: 1024, default: 16 }
-  },
-  {
-    id: 'VM.Standard.E3.Flex',
-    name: 'Flexible - E3',
-    description: 'AMD EPYC 3rd Gen, Flexible CPU and Memory',
-    cpu: { min: 1, max: 64, default: 1 },
-    memory: { min: 1, max: 1024, default: 4 }
-  },
-  {
-    id: 'VM.Standard2.1',
-    name: 'Standard 2.1',
-    description: 'Intel Xeon, 1 OCPU, 15GB RAM',
-    cpu: { min: 1, max: 1, default: 1 },
-    memory: { min: 15, max: 15, default: 15 }
-  }
-]
+// Auto-determine shape based on OS selection
+const getShapeForOS = (os: string) => 
+  os === 'Windows' ? 'VM.Standard.E4.Flex' : 'VM.Standard.A2.Flex'
+
+// Static OS options list
+const OS_LIST = Object.keys(OS_ICONS)
 
 export default function CloudConfigurationBySubscriptionPage() {
   const { t } = useTranslation()
@@ -106,14 +68,10 @@ export default function CloudConfigurationBySubscriptionPage() {
   const subscriptionId = params?.subscriptionId as string
   
   const [computeImages, setComputeImages] = useState<ComputeImage[]>([])
-  const [isLoadingImages, setIsLoadingImages] = useState(true)
+  const [isLoadingImages, setIsLoadingImages] = useState(false)
   const [selectedOS, setSelectedOS] = useState('')
   const [selectedImageId, setSelectedImageId] = useState('')
   const [imageSearchTerm, setImageSearchTerm] = useState('')
-  const [selectedShape, setSelectedShape] = useState('VM.Standard.A1.Flex')
-  const [ocpus, setOcpus] = useState(1)
-  const [memoryInGBs, setMemoryInGBs] = useState(4)
-  const [bootVolumeSize, setBootVolumeSize] = useState(50)
   const [isProcessing, setIsProcessing] = useState(false)
   const [subscription, setSubscription] = useState<any>(null)
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true)
@@ -179,13 +137,21 @@ export default function CloudConfigurationBySubscriptionPage() {
     URL.revokeObjectURL(url)
   }
 
-  // Load compute images
+  // Load compute images when OS selection changes
   useEffect(() => {
+    if (!selectedOS) {
+      setComputeImages([])
+      return
+    }
+
     const fetchImages = async () => {
       try {
         setIsLoadingImages(true)
-        // Filter images by selected shape for compatibility
-        const images = await getComputeImages(undefined, undefined, selectedShape)
+        setSelectedImageId('')
+        setImageSearchTerm('')
+        // Auto-determine shape based on OS and fetch compatible images
+        const shape = getShapeForOS(selectedOS)
+        const images = await getComputeImages(undefined, undefined, shape)
         setComputeImages(images)
       } catch (error: any) {
         console.error('Error fetching compute images:', error)
@@ -200,14 +166,7 @@ export default function CloudConfigurationBySubscriptionPage() {
     }
 
     fetchImages()
-  }, [selectedShape]) // Re-fetch when shape changes
-
-  // Reset OS selection when shape changes
-  useEffect(() => {
-    setSelectedOS('')
-    setSelectedImageId('')
-    setImageSearchTerm('')
-  }, [selectedShape])
+  }, [selectedOS]) // Re-fetch when OS changes
 
   // Load subscription details
   useEffect(() => {
@@ -238,36 +197,22 @@ export default function CloudConfigurationBySubscriptionPage() {
     return (
       selectedOS &&
       selectedImageId &&
-      selectedShape &&
       !!user?.email
     )
   }
 
-  // Get grouped images by operating system (merge Oracle Linux variants)
-  const groupedImages = computeImages.reduce((acc, image) => {
-    let os = image.operatingSystem
-    // Group Oracle Autonomous Linux with Oracle Linux
-    if (os === 'Oracle Autonomous Linux') {
-      os = 'Oracle Linux'
-    }
-    if (!acc[os]) {
-      acc[os] = []
-    }
-    acc[os].push(image)
-    return acc
-  }, {} as Record<string, ComputeImage[]>)
-
-  // Get images for selected OS with search filter
+  // Filter images for selected OS with search filter
   const availableImages = selectedOS 
-    ? (groupedImages[selectedOS] || []).filter(image => 
+    ? computeImages.filter(image => {
+        let os = image.operatingSystem
+        if (os === 'Oracle Autonomous Linux') os = 'Oracle Linux'
+        return os === selectedOS
+      }).filter(image => 
         imageSearchTerm === '' || 
         image.displayName.toLowerCase().includes(imageSearchTerm.toLowerCase()) ||
         image.operatingSystemVersion.toLowerCase().includes(imageSearchTerm.toLowerCase())
       )
     : []
-
-  // Get selected shape config
-  const selectedShapeConfig = VM_SHAPES.find(s => s.id === selectedShape)
 
   // Handle VM configuration submission
   const handleConfigureVM = async () => {
@@ -289,10 +234,7 @@ export default function CloudConfigurationBySubscriptionPage() {
 
       const response = await configureSubscriptionVm(subscriptionId, {
         imageId: selectedImageId,
-        shape: selectedShape,
-        ocpus: ocpus,
-        memoryInGBs: memoryInGBs,
-        bootVolumeSizeInGBs: bootVolumeSize,
+        shape: getShapeForOS(selectedOS),
         notificationEmail: user?.email || ''
       })
 
@@ -352,7 +294,7 @@ export default function CloudConfigurationBySubscriptionPage() {
         displayMessage = t('cloudConfig.armCapacityUnavailableDesc')
       } else if (isCapacityError) {
         title = t('cloudConfig.capacityUnavailable')
-        displayMessage = t('cloudConfig.capacityUnavailableDesc', { shape: selectedShape })
+        displayMessage = t('cloudConfig.capacityUnavailableDesc', { shape: getShapeForOS(selectedOS) })
       }
       
       toast({
@@ -503,75 +445,8 @@ export default function CloudConfigurationBySubscriptionPage() {
 
           </div>
 
-          {/* Column 2: VM Shape + OS Selection */}
+          {/* Column 2: OS Selection */}
           <div className="lg:col-span-1 space-y-6">
-
-            {/* VM Shape Selection */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Shield className="h-5 w-5 mr-2" />
-                  {t('cloudConfig.vmShape')}
-                </CardTitle>
-                <p className="text-xs text-gray-500 dark:text-muted-foreground mt-1">
-                  {t('cloudConfig.vmShapeNote')}
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {VM_SHAPES.map(shape => (
-                    <button
-                      key={shape.id}
-                      onClick={() => setSelectedShape(shape.id)}
-                      className={`w-full p-3 border-2 rounded-lg text-left transition-all ${
-                        selectedShape === shape.id
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
-                          : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-sm">{shape.name}</span>
-                            {shape.recommended && (
-                              <Badge variant="default" className="text-xs">{t('cloudConfig.recommended')}</Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-gray-600 dark:text-muted-foreground mt-1">{shape.description}</p>
-                          <div className="flex gap-3 mt-2 text-xs text-gray-500 dark:text-muted-foreground">
-                            <span>CPU: {shape.cpu.default} OCPU</span>
-                            <span>RAM: {shape.memory.default} GB</span>
-                          </div>
-                        </div>
-                        {selectedShape === shape.id && (
-                          <Check className="h-5 w-5 text-blue-500 flex-shrink-0" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* ARM Capacity Warning */}
-            {selectedShape === 'VM.Standard.A1.Flex' && (
-              <div className="rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 p-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-300 mb-1">
-                      {t('cloudConfig.armCapacityLimited')}
-                    </h4>
-                    <p className="text-xs text-amber-800 dark:text-amber-400 leading-relaxed">
-                      {t('cloudConfig.armCapacityNote')}
-                    </p>
-                    <p className="text-xs text-amber-700 dark:text-amber-400 mt-2 font-medium">
-                      {t('cloudConfig.armImageNote')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Operating System Selection */}
             <Card>
@@ -580,74 +455,70 @@ export default function CloudConfigurationBySubscriptionPage() {
                   <Monitor className="h-5 w-5 mr-2" />
                   {t('cloudConfig.operatingSystem')}
                 </CardTitle>
-                {selectedShape && (
-                  <p className="text-xs text-gray-500 dark:text-muted-foreground mt-1">
-                    {t('cloudConfig.showingCompatible', { shape: selectedShape })}
-                  </p>
-                )}
+                <p className="text-xs text-gray-500 dark:text-muted-foreground mt-1">
+                  {t('cloudConfig.selectOSNote', 'Chọn hệ điều hành cho máy ảo của bạn. Cấu hình sẽ được tự động thiết lập theo gói đăng ký.')}
+                </p>
               </CardHeader>
-              <CardContent className="space-y-4">{isLoadingImages ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-                    <span className="ml-2 text-sm text-gray-600 dark:text-muted-foreground">{t('cloudConfig.loadingOsImages')}</span>
-                  </div>
-                ) : (
-                  <>
-                    <div>
-                      <Label>{t('cloudConfig.selectOS')}</Label>
-                      <div className="grid grid-cols-1 gap-3 mt-2">
-                        {Object.keys(groupedImages).sort().map(os => {
-                          const icon = OS_ICONS[os] || '/image-logo/Oracle-Linux.png'
-                          const isSelected = selectedOS === os
-                          
-                          return (
-                            <div key={os} className="flex flex-col">
-                              <button
-                                onClick={() => {
-                                  if (selectedOS === os) {
-                                    // Toggle: deselect if already selected
-                                    setSelectedOS('')
-                                    setSelectedImageId('')
-                                    setImageSearchTerm('')
-                                  } else {
-                                    // Select new OS
-                                    setSelectedOS(os)
-                                    setSelectedImageId('')
-                                    setImageSearchTerm('')
-                                  }
-                                }}
-                                className={`px-4 py-2 border-2 rounded-lg transition-all ${
-                                  isSelected
-                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
-                                    : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between gap-3">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 relative flex-shrink-0">
-                                      <Image
-                                        src={icon}
-                                        alt={os}
-                                        fill
-                                        className="object-contain"
-                                      />
-                                    </div>
-                                    <div className="font-medium text-sm text-left">{os}</div>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <div className="text-xs text-gray-500 dark:text-muted-foreground">
-                                      {groupedImages[os].length} {t('cloudConfig.versions')}
-                                    </div>
-                                    {isSelected && (
-                                      <ChevronDown className="h-4 w-4 text-blue-500" />
-                                    )}
-                                  </div>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>{t('cloudConfig.selectOS')}</Label>
+                  <div className="grid grid-cols-1 gap-3 mt-2">
+                    {OS_LIST.map(os => {
+                      const icon = OS_ICONS[os] || '/image-logo/Oracle-Linux.png'
+                      const isSelected = selectedOS === os
+                      
+                      return (
+                        <div key={os} className="flex flex-col">
+                          <button
+                            onClick={() => {
+                              if (selectedOS === os) {
+                                // Toggle: deselect if already selected
+                                setSelectedOS('')
+                                setSelectedImageId('')
+                                setImageSearchTerm('')
+                              } else {
+                                // Select new OS
+                                setSelectedOS(os)
+                                setSelectedImageId('')
+                                setImageSearchTerm('')
+                              }
+                            }}
+                            className={`px-4 py-2 border-2 rounded-lg transition-all ${
+                              isSelected
+                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                                : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 relative flex-shrink-0">
+                                  <Image
+                                    src={icon}
+                                    alt={os}
+                                    fill
+                                    className="object-contain"
+                                  />
                                 </div>
-                              </button>
+                                <div className="font-medium text-sm text-left">{os}</div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {isSelected && (
+                                  <ChevronDown className="h-4 w-4 text-blue-500" />
+                                )}
+                              </div>
+                            </div>
+                          </button>
 
-                              {/* Dropdown for versions */}
-                              {isSelected && (
-                                <div className="mt-2 p-3 border-2 border-blue-200 dark:border-blue-900 rounded-lg bg-white dark:bg-card">
+                          {/* Dropdown for versions */}
+                          {isSelected && (
+                            <div className="mt-2 p-3 border-2 border-blue-200 dark:border-blue-900 rounded-lg bg-white dark:bg-card">
+                              {isLoadingImages ? (
+                                <div className="flex items-center justify-center py-4">
+                                  <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
+                                  <span className="ml-2 text-sm text-gray-600 dark:text-muted-foreground">{t('cloudConfig.loadingOsImages')}</span>
+                                </div>
+                              ) : (
+                                <>
                                   {/* Search box */}
                                   <Input
                                     placeholder={t('cloudConfig.searchVersion')}
@@ -661,43 +532,34 @@ export default function CloudConfigurationBySubscriptionPage() {
                                     {availableImages.length === 0 ? (
                                       <p className="text-xs text-gray-500 dark:text-muted-foreground text-center py-2">{t('cloudConfig.noImagesFound')}</p>
                                     ) : (
-                                      availableImages.map(image => {
-                                        const isArm = image.architecture?.toUpperCase() === 'AARCH64'
-                                        const archBadgeColor = isArm ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                                        const archBadgeText = isArm ? '🔷 ARM' : '🔵 x86'
-                                        
-                                        return (
-                                          <button
-                                            key={image.id}
-                                            onClick={() => setSelectedImageId(image.id)}
-                                            className={`w-full p-2 border rounded text-left transition-all text-xs ${
-                                              selectedImageId === image.id
-                                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
-                                                : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
-                                            }`}
-                                          >
-                                            <div className="flex items-center justify-between gap-2">
-                                              <div className="flex-1 min-w-0">
-                                                <div className="font-medium truncate">{image.displayName}</div>
-                                              </div>
-                                              <span className={`px-2 py-1 rounded text-xs font-medium whitespace-nowrap flex-shrink-0 ${archBadgeColor}`}>
-                                                {archBadgeText}
-                                              </span>
+                                      availableImages.map(image => (
+                                        <button
+                                          key={image.id}
+                                          onClick={() => setSelectedImageId(image.id)}
+                                          className={`w-full p-2 border rounded text-left transition-all text-xs ${
+                                            selectedImageId === image.id
+                                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                                              : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
+                                          }`}
+                                        >
+                                          <div className="flex items-center justify-between gap-2">
+                                            <div className="flex-1 min-w-0">
+                                              <div className="font-medium truncate">{image.displayName}</div>
                                             </div>
-                                          </button>
-                                        )
-                                      })
+                                          </div>
+                                        </button>
+                                      ))
                                     )}
                                   </div>
-                                </div>
+                                </>
                               )}
                             </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </>
-                )}
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -722,32 +584,25 @@ export default function CloudConfigurationBySubscriptionPage() {
                   </p>
                 </div>
 
-                {/* VM Shape */}
-                <div className="border-b dark:border-border pb-3">
-                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.vmShapeLabel')}</p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{selectedShape}</p>
-                </div>
-
-                {/* Resources */}
-                {selectedShapeConfig?.id.includes('Flex') && (
+                {/* Package Specs */}
+                {subscription?.cloudPackage && (
                   <>
                     <div className="border-b dark:border-border pb-3">
-                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.ocpus')}</p>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{ocpus}</p>
+                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">CPU</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{subscription.cloudPackage.cpu || t('cloudConfig.notSpecified')}</p>
                     </div>
 
                     <div className="border-b dark:border-border pb-3">
-                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.memory')}</p>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{memoryInGBs} GB</p>
+                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">RAM</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{subscription.cloudPackage.ram || t('cloudConfig.notSpecified')}</p>
+                    </div>
+
+                    <div className="border-b dark:border-border pb-3">
+                      <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.bootVolume')}</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{subscription.cloudPackage.memory || t('cloudConfig.notSpecified')}</p>
                     </div>
                   </>
                 )}
-
-                {/* Boot Volume */}
-                <div className="border-b dark:border-border pb-3">
-                  <p className="text-xs text-gray-600 dark:text-muted-foreground uppercase tracking-wide">{t('cloudConfig.bootVolume')}</p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-foreground mt-1">{bootVolumeSize} GB</p>
-                </div>
 
                 {/* Email */}
                 <div className="border-b dark:border-border pb-3">
