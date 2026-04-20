@@ -87,6 +87,7 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [subscription, setSubscription] = useState<any>(null)
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [availableOsList, setAvailableOsList] = useState<string[]>([])  // Danh sách OS có image thực tế
 
   // Credential dialog state (shown once after VM creation)
   const [vmCredentials, setVmCredentials] = useState<{
@@ -201,6 +202,35 @@ export default function CloudConfigurationBySubscriptionPage() {
     }
 
     fetchSubscription()
+  }, [subscriptionId])
+
+  // Load available OS options (những OS có image thực tế)
+  useEffect(() => {
+    if (!subscriptionId) return
+
+    const loadAvailableOsList = async () => {
+      try {
+        // Fetch images cho cả 2 shape (Windows và non-Windows) để biết OS nào có sẵn
+        const [windowsImages, linuxImages] = await Promise.all([
+          getComputeImages(undefined, undefined, 'VM.Standard.E4.Flex'),
+          getComputeImages(undefined, undefined, 'VM.Standard.A2.Flex'),
+        ])
+
+        const allImages = [...windowsImages, ...linuxImages]
+        const uniqueOsList = Array.from(
+          new Set(allImages.map(img => normalizeOsName(img.operatingSystem)))
+        ).filter(os => OS_ICONS[os]) // Chỉ lấy OS có icon
+          .sort()
+
+        setAvailableOsList(uniqueOsList)
+      } catch (error) {
+        console.error('Error loading available OS list:', error)
+        // Fallback: dùng toàn bộ OS_LIST nếu load thất bại
+        setAvailableOsList(OS_LIST)
+      }
+    }
+
+    loadAvailableOsList()
   }, [subscriptionId])
 
   // Validate form
@@ -472,42 +502,47 @@ export default function CloudConfigurationBySubscriptionPage() {
                 <div>
                   <Label>{t('cloudConfig.selectOS')}</Label>
                   <div className="grid grid-cols-1 gap-3 mt-2">
-                    {OS_LIST.map(os => {
-                      const icon = OS_ICONS[os] || '/image-logo/Oracle-Linux.png'
-                      const isSelected = selectedOS === os
-                      
-                      return (
-                        <div key={os} className="flex flex-col">
-                          <button
-                            onClick={() => {
-                              if (selectedOS === os) {
-                                // Toggle: deselect if already selected
-                                setSelectedOS('')
-                                setSelectedImageId('')
-                                setImageSearchTerm('')
-                              } else {
-                                // Select new OS
-                                setSelectedOS(os)
-                                setSelectedImageId('')
-                                setImageSearchTerm('')
-                              }
-                            }}
-                            className={`px-4 py-2 border-2 rounded-lg transition-all ${
-                              isSelected
-                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
-                                : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 relative flex-shrink-0">
-                                  <Image
-                                    src={icon}
-                                    alt={os}
-                                    fill
-                                    className="object-contain"
-                                  />
-                                </div>
+                    {availableOsList.length === 0 ? (
+                      <p className="text-xs text-gray-500 dark:text-muted-foreground text-center py-4">
+                        {t('cloudConfig.loadingOsImages', 'Đang tải danh sách hệ điều hành...')}
+                      </p>
+                    ) : (
+                      availableOsList.map(os => {
+                        const icon = OS_ICONS[os] || '/image-logo/Oracle-Linux.png'
+                        const isSelected = selectedOS === os
+                        
+                        return (
+                          <div key={os} className="flex flex-col">
+                            <button
+                              onClick={() => {
+                                if (selectedOS === os) {
+                                  // Toggle: deselect if already selected
+                                  setSelectedOS('')
+                                  setSelectedImageId('')
+                                  setImageSearchTerm('')
+                                } else {
+                                  // Select new OS
+                                  setSelectedOS(os)
+                                  setSelectedImageId('')
+                                  setImageSearchTerm('')
+                                }
+                              }}
+                              className={`px-4 py-2 border-2 rounded-lg transition-all ${
+                                isSelected
+                                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                                  : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border/80'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 relative flex-shrink-0">
+                                    <Image
+                                      src={icon}
+                                      alt={os}
+                                      fill
+                                      className="object-contain"
+                                    />
+                                  </div>
                                 <div className="font-medium text-sm text-left">{os}</div>
                               </div>
                               <div className="flex items-center gap-2">
@@ -566,7 +601,8 @@ export default function CloudConfigurationBySubscriptionPage() {
                           )}
                         </div>
                       )
-                    })}
+                    })
+                    )}
                   </div>
                 </div>
               </CardContent>
