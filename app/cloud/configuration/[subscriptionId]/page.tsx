@@ -210,19 +210,24 @@ export default function CloudConfigurationBySubscriptionPage() {
 
     const loadAvailableOsList = async () => {
       try {
-        // Fetch images với Linux shape (A2.Flex) để biết OS nào có sẵn
-        // Khi user chọn Windows, sẽ fetch lại với Windows shape (E4.Flex)
-        const linuxImages = await getComputeImages(undefined, undefined, 'VM.Standard.A2.Flex')
+        // Fetch images với cả 2 shapes để lấy toàn bộ OS có sẵn
+        // ARM shape (A2.Flex): Linux images
+        // x86 shape (E4.Flex): Windows + Linux images
+        const [armImages, x86Images] = await Promise.all([
+          getComputeImages(undefined, undefined, 'VM.Standard.A2.Flex'),
+          getComputeImages(undefined, undefined, 'VM.Standard.E4.Flex'),
+        ])
         
-        if (!linuxImages || linuxImages.length === 0) {
-          console.warn('No images found for VM.Standard.A2.Flex')
+        const allImages = [...armImages, ...x86Images]
+        if (!allImages || allImages.length === 0) {
+          console.warn('No images found for any shape')
           setAvailableOsList([])
           return
         }
 
         // Extract unique OS names từ images, normalize, và filter chỉ lấy OS có icon
         const uniqueOsList = Array.from(
-          new Set(linuxImages.map(img => normalizeOsName(img.operatingSystem)))
+          new Set(allImages.map(img => normalizeOsName(img.operatingSystem)))
         )
           .filter(os => OS_ICONS[os])
           .sort()
