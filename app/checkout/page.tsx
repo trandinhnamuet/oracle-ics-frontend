@@ -22,7 +22,7 @@ function CheckoutContent() {
   // States
   const [qrUrl, setQrUrl] = useState<string>('')
   const [paymentData, setPaymentData] = useState<any>(null)
-  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed'>('pending')
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed' | 'expired'>('pending')
   const [isLoading, setIsLoading] = useState(true)
   const [isCreatingPayment, setIsCreatingPayment] = useState(false)
   const [isPaid, setIsPaid] = useState(false)
