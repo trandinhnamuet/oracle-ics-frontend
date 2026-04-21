@@ -506,7 +506,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                   {t('cloudConfig.operatingSystem')}
                 </CardTitle>
                 <p className="text-xs text-gray-500 dark:text-muted-foreground mt-1">
-                  {t('cloudConfig.selectOSNote', 'Chọn hệ điều hành cho máy ảo của bạn. Cấu hình sẽ được tự động thiết lập theo gói đăng ký.')}
+                  {t('cloudConfig.selectOSNote')}
                 </p>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -515,13 +515,13 @@ export default function CloudConfigurationBySubscriptionPage() {
                   <div className="grid grid-cols-1 gap-3 mt-2">
                     {availableOsList.length === 0 ? (
                       <div className="p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded text-sm text-red-700 dark:text-red-300">
-                        <p className="font-semibold mb-2">Không thể tải danh sách hệ điều hành</p>
-                        <p className="mb-3">Vui lòng tải lại trang để tiếp tục.</p>
+                        <p className="font-semibold mb-2">{t('cloudConfig.osLoadError')}</p>
+                        <p className="mb-3">{t('cloudConfig.osLoadErrorDesc')}</p>
                         <button
                           onClick={() => window.location.reload()}
                           className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-medium"
                         >
-                          Tải lại trang
+                          {t('cloudConfig.reloadPage')}
                         </button>
                       </div>
                     ) : (

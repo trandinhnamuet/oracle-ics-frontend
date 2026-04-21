@@ -2092,6 +2092,10 @@
     "capacityUnavailableDesc": "OCI has no available capacity for {{shape}}. Please try again later or select a different shape.",
     "configFailed": "Configuration Failed",
     "configFailedDesc": "Failed to configure VM. Please try again.",
+    "selectOSNote": "Select the operating system for your virtual machine. Configuration will be automatically set up based on your subscription plan.",
+    "osLoadError": "Unable to load the OS list",
+    "osLoadErrorDesc": "Please reload the page to continue.",
+    "reloadPage": "Reload page",
     "vmCreated": {
       "title": "VM created successfully!",
       "warningTitle": "⚠️ This information is shown only once",

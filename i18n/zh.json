@@ -2099,6 +2099,10 @@
     "capacityUnavailableDesc": "OCI没有{{shape}}的可用容量。请稍后重试或选择其他规格。",
     "configFailed": "配置失败",
     "configFailedDesc": "虚拟机配置失败，请重试。",
+    "selectOSNote": "为您的虚拟机选择操作系统。配置将根据您的订阅套餐自动设置。",
+    "osLoadError": "无法加载操作系统列表",
+    "osLoadErrorDesc": "请重新加载页面以继续。",
+    "reloadPage": "重新加载页面",
     "vmCreated": {
       "title": "虚拟机创建成功！",
       "warningTitle": "⚠️ 此信息仅显示一次",

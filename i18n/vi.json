@@ -2091,6 +2091,10 @@
     "capacityUnavailableDesc": "OCI không có năng lực khả dụng cho {{shape}}. Vui lòng thử lại sau hoặc chọn shape khác.",
     "configFailed": "Cấu hình thất bại",
     "configFailedDesc": "Không thể cấu hình VM. Vui lòng thử lại.",
+    "selectOSNote": "Chọn hệ điều hành cho máy ảo của bạn. Cấu hình sẽ được tự động thiết lập theo gói đăng ký.",
+    "osLoadError": "Không thể tải danh sách hệ điều hành",
+    "osLoadErrorDesc": "Vui lòng tải lại trang để tiếp tục.",
+    "reloadPage": "Tải lại trang",
     "vmCreated": {
       "title": "Máy ảo đã tạo thành công!",
       "warningTitle": "⚠️ Thông tin này chỉ hiển thị 1 lần duy nhất",

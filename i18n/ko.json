@@ -2098,6 +2098,10 @@
     "capacityUnavailableDesc": "OCI에 {{shape}}에 대한 사용 가능한 용량이 없습니다. 나중에 다시 시도하거나 다른 챘을 선택하세요.",
     "configFailed": "구성 실패",
     "configFailedDesc": "VM 구성에 실패했습니다. 다시 시도해 주세요.",
+    "selectOSNote": "가상 머신의 운영 체제를 선택하세요. 구독 플랜에 따라 구성이 자동으로 설정됩니다.",
+    "osLoadError": "운영 체제 목록을 불러올 수 없습니다",
+    "osLoadErrorDesc": "계속하려면 페이지를 새로 고침해 주세요.",
+    "reloadPage": "페이지 새로 고침",
     "vmCreated": {
       "title": "VM이 성공적으로 생성되었습니다!",
       "warningTitle": "⚠️ 이 정보는 한 번만 표시됩니다",

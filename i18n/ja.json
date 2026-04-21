@@ -2097,6 +2097,10 @@
     "capacityUnavailableDesc": "OCIは{{shape}}の利用可能な容量がありません。後で再試行するか、別のシェイプを選択してください。",
     "configFailed": "設定に失敗しました",
     "configFailedDesc": "VMの構成に失敗しました。再試行してください。",
+    "selectOSNote": "仮想マシンのオペレーティングシステムを選択してください。設定はサブスクリプションプランに基づいて自動的に行われます。",
+    "osLoadError": "OSリストを読み込めません",
+    "osLoadErrorDesc": "続行するにはページを再読み込みしてください。",
+    "reloadPage": "ページを再読み込み",
     "vmCreated": {
       "title": "VMが正常に作成されました！",
       "warningTitle": "⚠️ この情報は一度しか表示されません",
