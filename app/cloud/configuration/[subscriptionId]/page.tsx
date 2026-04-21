@@ -88,6 +88,7 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [availableOsList, setAvailableOsList] = useState<string[]>([])  // Danh sách OS có image thực tế
+  const [isLoadingOsList, setIsLoadingOsList] = useState(true)  // Track loading state of OS list
 
   // Credential dialog state (shown once after VM creation)
   const [vmCredentials, setVmCredentials] = useState<{
@@ -210,6 +211,7 @@ export default function CloudConfigurationBySubscriptionPage() {
 
     const loadAvailableOsList = async () => {
       try {
+        setIsLoadingOsList(true)
         // Fetch images với cả 2 shapes để lấy toàn bộ OS có sẵn
         // ARM shape (A2.Flex): Linux images
         // x86 shape (E4.Flex): Windows + Linux images
@@ -238,6 +240,8 @@ export default function CloudConfigurationBySubscriptionPage() {
         console.error('Error loading available OS list:', error)
         // Fallback: set rỗng — UI sẽ hiển thị error message với nút "Tải lại trang"
         setAvailableOsList([])
+      } finally {
+        setIsLoadingOsList(false)
       }
     }
 
@@ -513,7 +517,12 @@ export default function CloudConfigurationBySubscriptionPage() {
                 <div>
                   <Label>{t('cloudConfig.selectOS')}</Label>
                   <div className="grid grid-cols-1 gap-3 mt-2">
-                    {availableOsList.length === 0 ? (
+                    {isLoadingOsList ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+                        <span className="ml-3 text-sm text-gray-600 dark:text-muted-foreground">{t('cloudConfig.loadingOsImages')}</span>
+                      </div>
+                    ) : availableOsList.length === 0 ? (
                       <div className="p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded text-sm text-red-700 dark:text-red-300">
                         <p className="font-semibold mb-2">{t('cloudConfig.osLoadError')}</p>
                         <p className="mb-3">{t('cloudConfig.osLoadErrorDesc')}</p>
