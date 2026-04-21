@@ -108,7 +108,9 @@ export function useAuth() {
         if (authStore.token && !authStore.user) {
           try {
             const userData = await authApi.getCurrentUser()
-            authStore.login(userData, authStore.token)
+            if (userData) {
+              authStore.login(userData, authStore.token)
+            }
           } catch (error) {
             console.error('Failed to fetch user data:', error)
             authStore.logout()
