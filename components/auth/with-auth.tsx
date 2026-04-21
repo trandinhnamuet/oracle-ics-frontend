@@ -35,7 +35,9 @@ function withAuth<P extends object>(
           if (token && !user) {
             try {
               const userData = await authApi.getCurrentUser()
-              login(userData, token)
+              if (userData) {
+                login(userData, token)
+              }
             } catch (error) {
               console.error('Failed to fetch user data:', error)
               logout()
