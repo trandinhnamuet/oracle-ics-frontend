@@ -62,9 +62,8 @@ const normalizeOsName = (apiOs: string): string => {
   return apiOs
 }
 
-// Auto-determine shape based on OS selection
-const getShapeForOS = (os: string) => 
-  os === 'Windows' ? 'VM.Standard.E4.Flex' : 'VM.Standard.A2.Flex'
+// All OS use E4.Flex (AMD x86)
+const getShapeForOS = (_os: string) => 'VM.Standard.E4.Flex'
 
 // Static OS options list
 const OS_LIST = Object.keys(OS_ICONS)
@@ -89,7 +88,6 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [availableOsList, setAvailableOsList] = useState<string[]>([])  // Danh sách OS có image thực tế
   const [isLoadingOsList, setIsLoadingOsList] = useState(true)  // Track loading state of OS list
-  const osToShapeMapRef = useRef<Record<string, string>>({})  // OS → shape mapping built from actual images
 
   // Credential dialog state (shown once after VM creation)
   const [vmCredentials, setVmCredentials] = useState<{
@@ -163,9 +161,7 @@ export default function CloudConfigurationBySubscriptionPage() {
         setIsLoadingImages(true)
         setSelectedImageId('')
         setImageSearchTerm('')
-        // Use shape from OS→shape map (built from actual images) or fallback to static mapping
-        const shape = osToShapeMapRef.current[selectedOS] || getShapeForOS(selectedOS)
-        const images = await getComputeImages(undefined, undefined, shape)
+        const images = await getComputeImages(undefined, undefined, 'VM.Standard.E4.Flex')
         setComputeImages(images)
       } catch (error: any) {
         console.error('Error fetching compute images:', error)
@@ -213,34 +209,14 @@ export default function CloudConfigurationBySubscriptionPage() {
     const loadAvailableOsList = async () => {
       try {
         setIsLoadingOsList(true)
-        // Fetch images với cả 2 shapes để lấy toàn bộ OS có sẵn
-        // ARM shape (A2.Flex): Linux images
-        // x86 shape (E4.Flex): Windows + Linux images
-        const [armImages, x86Images] = await Promise.all([
-          getComputeImages(undefined, undefined, 'VM.Standard.A2.Flex'),
-          getComputeImages(undefined, undefined, 'VM.Standard.E4.Flex'),
-        ])
+        // Chỉ dùng E4.Flex (AMD x86) cho tất cả OS
+        const allImages = await getComputeImages(undefined, undefined, 'VM.Standard.E4.Flex')
         
-        const allImages = [...armImages, ...x86Images]
         if (!allImages || allImages.length === 0) {
-          console.warn('No images found for any shape')
+          console.warn('No images found for E4.Flex shape')
           setAvailableOsList([])
           return
         }
-
-        // Build OS → shape mapping: prefer ARM, fallback to x86
-        const shapeMap: Record<string, string> = {}
-        armImages.forEach(img => {
-          const normalized = normalizeOsName(img.operatingSystem)
-          if (OS_ICONS[normalized]) shapeMap[normalized] = 'VM.Standard.A2.Flex'
-        })
-        x86Images.forEach(img => {
-          const normalized = normalizeOsName(img.operatingSystem)
-          if (OS_ICONS[normalized] && !shapeMap[normalized]) {
-            shapeMap[normalized] = 'VM.Standard.E4.Flex'
-          }
-        })
-        osToShapeMapRef.current = shapeMap
 
         // Extract unique OS names từ images, normalize, và filter chỉ lấy OS có icon
         const uniqueOsList = Array.from(
