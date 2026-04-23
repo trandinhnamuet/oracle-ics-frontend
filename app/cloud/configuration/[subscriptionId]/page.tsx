@@ -89,6 +89,7 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [availableOsList, setAvailableOsList] = useState<string[]>([])  // Danh sách OS có image thực tế
   const [isLoadingOsList, setIsLoadingOsList] = useState(true)  // Track loading state of OS list
+  const osToShapeMapRef = useRef<Record<string, string>>({})  // OS → shape mapping built from actual images
 
   // Credential dialog state (shown once after VM creation)
   const [vmCredentials, setVmCredentials] = useState<{
@@ -162,8 +163,8 @@ export default function CloudConfigurationBySubscriptionPage() {
         setIsLoadingImages(true)
         setSelectedImageId('')
         setImageSearchTerm('')
-        // Auto-determine shape based on OS and fetch compatible images
-        const shape = getShapeForOS(selectedOS)
+        // Use shape from OS→shape map (built from actual images) or fallback to static mapping
+        const shape = osToShapeMapRef.current[selectedOS] || getShapeForOS(selectedOS)
         const images = await getComputeImages(undefined, undefined, shape)
         setComputeImages(images)
       } catch (error: any) {
@@ -226,6 +227,20 @@ export default function CloudConfigurationBySubscriptionPage() {
           setAvailableOsList([])
           return
         }
+
+        // Build OS → shape mapping: prefer ARM, fallback to x86
+        const shapeMap: Record<string, string> = {}
+        armImages.forEach(img => {
+          const normalized = normalizeOsName(img.operatingSystem)
+          if (OS_ICONS[normalized]) shapeMap[normalized] = 'VM.Standard.A2.Flex'
+        })
+        x86Images.forEach(img => {
+          const normalized = normalizeOsName(img.operatingSystem)
+          if (OS_ICONS[normalized] && !shapeMap[normalized]) {
+            shapeMap[normalized] = 'VM.Standard.E4.Flex'
+          }
+        })
+        osToShapeMapRef.current = shapeMap
 
         // Extract unique OS names từ images, normalize, và filter chỉ lấy OS có icon
         const uniqueOsList = Array.from(
