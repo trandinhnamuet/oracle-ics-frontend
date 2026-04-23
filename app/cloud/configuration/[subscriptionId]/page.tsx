@@ -489,7 +489,7 @@ export default function CloudConfigurationBySubscriptionPage() {
         </div>
 
         {/* 3-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr_1fr] gap-6">
           {/* Column 1: VM Details + Notification */}
           <div className="lg:col-span-1 space-y-6">
             {/* VM Instance Details */}
