@@ -45,6 +45,7 @@
       "vmStopping": "停止中",
       "vmStarting": "啟動中",
       "configure": "配置",
+      "completePayment": "完成付款",
       "imageDetail": "作業系統",
       "subscriptionId": "訂閱ID",
       "ipv4": "IPv4"
@@ -97,6 +98,7 @@
       "starting": "VM啟動中...",
       "transitioning": "VM正在過渡狀態",
       "renewSubscription": "續費訂閱",
+      "completePayment": "完成付款",
       "viewDetails": "查看詳細資訊"
     },
     "fetchError": {
