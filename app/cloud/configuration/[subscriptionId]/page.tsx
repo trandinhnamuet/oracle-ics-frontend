@@ -65,6 +65,15 @@ const normalizeOsName = (apiOs: string): string => {
 // All OS use E4.Flex (AMD x86)
 const getShapeForOS = (_os: string) => 'VM.Standard.E4.Flex'
 
+// Returns the SSH username for a given OS name (matches backend getOsSshUsername logic)
+const getSshUsernameForOS = (os: string): string => {
+  const lower = (os || '').toLowerCase()
+  if (lower.includes('ubuntu')) return 'ubuntu'
+  if (lower.includes('centos')) return 'centos'
+  if (lower.includes('rocky')) return 'rocky'
+  return 'opc' // Oracle Linux, default
+}
+
 // Static OS options list
 const OS_LIST = Object.keys(OS_ICONS)
 
@@ -96,6 +105,7 @@ export default function CloudConfigurationBySubscriptionPage() {
     publicIp?: string
     privateKey?: string
     username?: string
+    sshUsername?: string
     password?: string
     subscriptionId?: string
   } | null>(null)
@@ -307,11 +317,13 @@ export default function CloudConfigurationBySubscriptionPage() {
         })
       } else if (response.sshKey?.privateKey) {
         // Linux - SSH key available
+        const sshUser = getSshUsernameForOS(response.vm?.operatingSystem || '')
         setVmCredentials({
           type: 'linux',
           instanceName,
           publicIp,
           privateKey: response.sshKey.privateKey,
+          sshUsername: sshUser,
         })
       } else {
         // Fallback: just redirect
@@ -820,7 +832,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                       size="sm"
                       variant="outline"
                       onClick={() => downloadFile(
-                        `============================\nVM CREDENTIALS - KEEP SAFE\n============================\nVM Name: ${vmCredentials.instanceName}\nPublic IP: ${vmCredentials.publicIp || '(available after a few minutes)'}\nUsername: opc\nSSH Key File: ${vmCredentials.instanceName}-key.pem\n\nConnect command:\n  ssh -i ${vmCredentials.instanceName}-key.pem opc@${vmCredentials.publicIp || '<YOUR_IP>'}\n\n----\nPrivate Key (save as ${vmCredentials.instanceName}-key.pem):\n${vmCredentials.privateKey}\n============================`,
+                        `============================\nVM CREDENTIALS - KEEP SAFE\n============================\nVM Name: ${vmCredentials.instanceName}\nPublic IP: ${vmCredentials.publicIp || '(available after a few minutes)'}\nUsername: ${vmCredentials.sshUsername || 'opc'}\nSSH Key File: ${vmCredentials.instanceName}-key.pem\n\nConnect command:\n  ssh -i ${vmCredentials.instanceName}-key.pem ${vmCredentials.sshUsername || 'opc'}@${vmCredentials.publicIp || '<YOUR_IP>'}\n\n----\nPrivate Key (save as ${vmCredentials.instanceName}-key.pem):\n${vmCredentials.privateKey}\n============================`,
                         `${vmCredentials.instanceName}-ssh-info.txt`
                       )}
                       className="w-full"
@@ -829,7 +841,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                       {t('cloudConfig.vmCreated.downloadFullCredentials')}
                     </Button>
                     <p className="text-xs text-muted-foreground">
-                      {t('cloudConfig.vmCreated.connectLabel')}<code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem opc@{vmCredentials.publicIp || 'YOUR_IP'}</code>
+                      {t('cloudConfig.vmCreated.connectLabel')}<code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem {vmCredentials.sshUsername || 'opc'}@{vmCredentials.publicIp || 'YOUR_IP'}</code>
                     </p>
                   </div>
                 )}

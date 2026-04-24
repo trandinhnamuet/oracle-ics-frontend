@@ -165,6 +165,7 @@ export const requestNewSshKey = async (
     totalKeys: number
     removedOldest: boolean
   }
+  sshUsername?: string
 }> => {
   const result = await fetchJsonWithAuth<{ 
     success: boolean
@@ -178,6 +179,7 @@ export const requestNewSshKey = async (
       totalKeys: number
       removedOldest: boolean
     }
+    sshUsername?: string
   }>(
     `${API_BASE_URL}/vm-subscription/${subscriptionId}/request-key`,
     {

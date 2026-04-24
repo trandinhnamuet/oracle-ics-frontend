@@ -161,7 +161,7 @@ export default function PackageDetailPage() {
   const [showSshKeyConfirm, setShowSshKeyConfirm] = useState(false)
   const [isRequestingSshKey, setIsRequestingSshKey] = useState(false)
   const [sshKeyOtpError, setSshKeyOtpError] = useState('')
-  const [newSshKey, setNewSshKey] = useState<{ privateKey: string; instanceName: string } | null>(null)
+  const [newSshKey, setNewSshKey] = useState<{ privateKey: string; instanceName: string; sshUsername?: string; publicIp?: string } | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [isResettingPassword, setIsResettingPassword] = useState(false)
   const [resetPasswordDialog, setResetPasswordDialog] = useState(false)
@@ -570,6 +570,8 @@ export default function PackageDetailPage() {
         setNewSshKey({
           privateKey: result.sshKey.privateKey,
           instanceName: vmDetails?.vm?.instanceName || 'VM',
+          sshUsername: result.sshUsername,
+          publicIp: vmDetails?.vm?.publicIp,
         })
       } else {
         toast({
@@ -1692,6 +1694,13 @@ export default function PackageDetailPage() {
                     {t('packageDetail.newSshKeyCreated.download')}
                   </Button>
                 </div>
+
+                {newSshKey?.sshUsername && newSshKey?.publicIp && (
+                  <div className="bg-gray-900 text-green-400 font-mono text-xs p-3 rounded">
+                    <p className="text-gray-400 mb-1">Connect command:</p>
+                    <p>ssh -i {newSshKey.instanceName}-new-key.pem {newSshKey.sshUsername}@{newSshKey.publicIp}</p>
+                  </div>
+                )}
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
