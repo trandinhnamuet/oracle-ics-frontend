@@ -34,6 +34,7 @@ function SubscriptionCheckoutContent() {
   const [expiredNotified, setExpiredNotified] = useState(false)
   const [isRegeneratingPayment, setIsRegeneratingPayment] = useState(false)
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
+  const hasAutoRegenerated = useRef(false)
 
   // Query params
   const paymentId = searchParams.get('paymentId')
@@ -259,6 +260,21 @@ function SubscriptionCheckoutContent() {
       setIsRegeneratingPayment(false)
     }
   }
+
+  // Auto-regenerate payment once when transaction is detected as expired
+  useEffect(() => {
+    if (
+      (paymentStatus === 'expired' || countdown <= 0) &&
+      !hasAutoRegenerated.current &&
+      !isRegeneratingPayment &&
+      subscriptionId &&
+      !isLoading
+    ) {
+      hasAutoRegenerated.current = true
+      handleRegeneratePayment()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paymentStatus, countdown, isLoading])
 
   if (authLoading) {
     return (
