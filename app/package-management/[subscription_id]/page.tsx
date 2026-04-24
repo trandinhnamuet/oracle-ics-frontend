@@ -1166,7 +1166,7 @@ export default function PackageDetailPage() {
                       </label>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => downloadChartCSV(getNetworkData(), `network-${subscriptionId}-${timeRange}.csv`)}>
+                  <Button variant="ghost" size="sm" onClick={() => downloadChartCSV(getNetworkData().map(d => ({ ...d, time: tooltipDateTimeFormatter(d.time) })), `network-${subscriptionId}-${timeRange}.csv`)}>
                     <Download className="h-4 w-4" />
                   </Button>
                 </CardHeader>
@@ -1257,7 +1257,7 @@ export default function PackageDetailPage() {
                       </label>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => downloadChartCSV(getDiskData(), `disk-${subscriptionId}-${timeRange}.csv`)}>
+                  <Button variant="ghost" size="sm" onClick={() => downloadChartCSV(getDiskData().map(d => ({ ...d, time: tooltipDateTimeFormatter(d.time) })), `disk-${subscriptionId}-${timeRange}.csv`)}>
                     <Download className="h-4 w-4" />
                   </Button>
                 </CardHeader>
