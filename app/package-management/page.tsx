@@ -7,13 +7,14 @@ import axios from 'axios'
 import { useAuth } from '@/lib/auth-context'
 import { getUserSubscriptions, getActiveSubscriptions, updateSubscription, deleteSubscription, suspendSubscription, reactivateSubscription, renewSubscription, toggleAutoRenew, Subscription } from '@/api/subscription.api'
 import { performVmAction, getSubscriptionVm } from '@/api/vm-subscription.api'
+import { paymentApi } from '@/api/payment.api'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Search, Package, Calendar, Clock, AlertTriangle, Settings, Play, Pause, Trash2, Eye, Loader2, RefreshCw } from 'lucide-react'
+import { Search, Package, Calendar, Clock, AlertTriangle, Settings, Play, Pause, Trash2, Eye, Loader2, RefreshCw, CreditCard } from 'lucide-react'
 import { Switch } from '@/components/ui/switch'
 import { useToast } from '@/hooks/use-toast'
 import { formatDateOnly } from '@/lib/utils'
@@ -75,6 +76,7 @@ export default function PackageManagementPage() {
   const [togglingVmIds, setTogglingVmIds] = useState<Set<string>>(new Set())
   const [renewingIds, setRenewingIds] = useState<Set<string>>(new Set())
   const [togglingAutoRenewIds, setTogglingAutoRenewIds] = useState<Set<string>>(new Set())
+  const [pendingPaymentsMap, setPendingPaymentsMap] = useState<Record<string, any>>({})
   const { toast } = useToast()
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean
@@ -143,6 +145,20 @@ export default function PackageManagementPage() {
   useEffect(() => {
     fetchUserSubscriptions()
     return () => stopPolling()
+  }, [user?.id])
+
+  // Fetch pending payments to support "Complete Payment" button
+  useEffect(() => {
+    if (!user?.id) return
+    paymentApi.getMyPayments().then((payments: any[]) => {
+      const map: Record<string, any> = {}
+      for (const p of payments) {
+        if (p.status === 'pending' && p.payment_type === 'subscription' && p.subscription_id) {
+          map[p.subscription_id] = p
+        }
+      }
+      setPendingPaymentsMap(map)
+    }).catch(() => {/* non-critical */})
   }, [user?.id])
 
   // Animation effect
@@ -651,6 +667,24 @@ export default function PackageManagementPage() {
                                 </Button>
                               </div>
                             )}
+                            {/* Complete Payment button for pending subscriptions */}
+                            {sub.status === 'pending' && pendingPaymentsMap[sub.id] && (() => {
+                              const p = pendingPaymentsMap[sub.id]
+                              const checkoutUrl = `/checkout/subscription?paymentId=${p.id}&subscriptionId=${sub.id}&amount=${p.amount}&method=${p.payment_method}&type=subscription`
+                              return (
+                                <div title={t('packageManagement.tooltip.completePayment')}>
+                                  <Button
+                                    variant="default"
+                                    size="sm"
+                                    onClick={() => router.push(checkoutUrl)}
+                                    className="bg-green-600 hover:bg-green-700"
+                                  >
+                                    <CreditCard className="h-4 w-4 mr-1" />
+                                    {t('packageManagement.table.completePayment')}
+                                  </Button>
+                                </div>
+                              )
+                            })()}
                             {/* Stop/Start VM button - only show if VM is configured and subscription is active */}
                             {sub.vm_instance_id && sub.vmInstance && sub.status !== 'expired' && (() => {
                               const state = sub.vmInstance.lifecycle_state

@@ -45,6 +45,7 @@
       "vmStopping": "Đang dừng",
       "vmStarting": "Đang khởi động",
       "configure": "Cấu hình",
+      "completePayment": "Hoàn tất thanh toán",
       "imageDetail": "Hệ điều hành",
       "subscriptionId": "ID",
       "ipv4": "IPv4"
@@ -97,6 +98,7 @@
       "starting": "VM đang khởi động...",
       "transitioning": "VM đang trong trạng thái chuyển đổi",
       "renewSubscription": "Gia hạn subscription",
+      "completePayment": "Hoàn tất thanh toán",
       "viewDetails": "Xem chi tiết"
     },
     "fetchError": {

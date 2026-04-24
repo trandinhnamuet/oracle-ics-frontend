@@ -45,6 +45,7 @@
       "vmStopping": "停止中",
       "vmStarting": "起動中",
       "configure": "設定",
+      "completePayment": "支払いを完了する",
       "imageDetail": "オペレーティングシステム",
       "subscriptionId": "サブID",
       "ipv4": "IPv4"
@@ -97,6 +98,7 @@
       "starting": "VM起動中...",
       "transitioning": "VMは移行状態です",
       "renewSubscription": "サブスクリプションを更新",
+      "completePayment": "支払いを完了する",
       "viewDetails": "詳細を表示"
     },
     "fetchError": {

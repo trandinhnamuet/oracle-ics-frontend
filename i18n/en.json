@@ -45,6 +45,7 @@
       "vmStopping": "Stopping",
       "vmStarting": "Starting",
       "configure": "Configure",
+      "completePayment": "Complete Payment",
       "imageDetail": "Operating System",
       "subscriptionId": "Sub ID",
       "ipv4": "IPv4"
@@ -97,6 +98,7 @@
       "starting": "VM is starting...",
       "transitioning": "VM is in transition state",
       "renewSubscription": "Renew subscription",
+      "completePayment": "Complete Payment",
       "viewDetails": "View Details"
     },
     "fetchError": {
