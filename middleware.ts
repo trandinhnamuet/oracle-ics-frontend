@@ -34,8 +34,19 @@ export function middleware(request: NextRequest) {
     })
   }
   
-  // Extract role from refresh token for routing decisions only.
-  // Actual authentication/authorization is enforced server-side.
+  // SECURITY NOTE:
+  // The JWT is decoded WITHOUT signature verification here. This is intentional
+  // and SAFE for the following reasons:
+  //   1. The decoded role is used only as a UI ROUTING HINT (e.g. send admins to
+  //      /admin, send guests to /login). It is NEVER used as the source of
+  //      authorization.
+  //   2. All real authorization decisions are enforced server-side by the
+  //      backend on every API call (JwtAuthGuard + AdminGuard verify the
+  //      signature with the server's secret).
+  //   3. A malicious user can craft a token claiming role="admin", but the
+  //      backend will reject it on the first protected API call, so they gain
+  //      nothing beyond seeing an empty admin shell page.
+  // DO NOT use this decoded payload for any authorization or trust decision.
   if (refreshToken) {
     try {
       const payload = refreshToken.split('.')[1];
