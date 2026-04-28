@@ -36,10 +36,9 @@ function SubscriptionCheckoutContent() {
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
   const hasAutoRegenerated = useRef(false)
 
-  // Query params
+  // Query params — amount không còn truyền qua URL để tránh giả mạo số tiền
   const paymentId = searchParams.get('paymentId')
   const subscriptionId = searchParams.get('subscriptionId')
-  const amount = searchParams.get('amount') || '0'
 
   const isExpired = paymentStatus === 'expired' || countdown <= 0
 
@@ -191,7 +190,7 @@ function SubscriptionCheckoutContent() {
     if (!paymentData) return
     const bank = process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'
     const account = process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'
-    const transferInfo = `${t('subscriptionCheckout.bankLabel')} ${bank}\n${t('subscriptionCheckout.accountNumberLabel')} ${account}\n${t('subscriptionCheckout.amountLabel')} ${formatPrice(parseInt(amount))} VND\n${t('subscriptionCheckout.contentLabel')} ${paymentData.transaction_code}`
+    const transferInfo = `${t('subscriptionCheckout.bankLabel')} ${bank}\n${t('subscriptionCheckout.accountNumberLabel')} ${account}\n${t('subscriptionCheckout.amountLabel')} ${formatPrice(paymentData.amount)} VND\n${t('subscriptionCheckout.contentLabel')} ${paymentData.transaction_code}`
     navigator.clipboard.writeText(transferInfo)
     toast({
       title: t('subscriptionCheckout.copiedTransferInfo'),
@@ -238,7 +237,6 @@ function SubscriptionCheckoutContent() {
       const nextParams = new URLSearchParams({
         paymentId: String(result.payment.id),
         subscriptionId: String(result.subscription.id),
-        amount: String(result.payment.amount),
         method: 'sepay_qr',
         type: 'subscription'
       })
@@ -286,7 +284,7 @@ function SubscriptionCheckoutContent() {
 
   if (!user) return null
 
-  if (!paymentId || !amount || parseInt(amount) < 1) {
+  if (!paymentId) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md">
@@ -354,7 +352,7 @@ function SubscriptionCheckoutContent() {
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span>{t('subscriptionCheckout.paymentAmount')}</span>
                   <span className="text-[#E60000]">
-                    {formatPrice(parseInt(amount))} VND
+                    {paymentData ? formatPrice(paymentData.amount) : '---'} VND
                   </span>
                 </div>
               </div>
@@ -413,7 +411,7 @@ function SubscriptionCheckoutContent() {
                 ) : paymentData && !isExpired ? (
                   <div className="bg-white dark:bg-white p-4 rounded-lg inline-block shadow-sm border">
                     <Image
-                      src={createQRUrl(amount, paymentData.transaction_code)}
+                      src={createQRUrl(String(paymentData.amount), paymentData.transaction_code)}
                       alt="QR Code thanh toán subscription"
                       width={200}
                       height={200}
