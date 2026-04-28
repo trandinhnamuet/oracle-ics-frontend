@@ -46,12 +46,13 @@ function AddFundsPaymentContent() {
     }
   }, [user, authLoading, router])
 
-  const createQRUrl = (amount: string, transactionCode: string) => {
+  const createQRUrl = (amount: string | number, transactionCode: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
+    const intAmount = String(Math.round(Number(amount)))
     const params = new URLSearchParams({
       acc: process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964',
       bank: process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank',
-      amount: amount,
+      amount: intAmount,
       des: transactionCode
     })
     return `${baseUrl}?${params.toString()}`

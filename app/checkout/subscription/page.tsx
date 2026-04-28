@@ -49,12 +49,16 @@ function SubscriptionCheckoutContent() {
     }
   }, [user, authLoading, router])
 
-  const createQRUrl = (amount: string, transactionCode: string) => {
+  const createQRUrl = (amount: string | number, transactionCode: string) => {
     const baseUrl = 'https://qr.sepay.vn/img'
+    // Sepay/VietQR requires integer amount (no decimals) for VND.
+    // TypeORM returns DECIMAL columns as strings like "765063.00", so we must
+    // convert to integer to avoid banking apps treating the amount as unset.
+    const intAmount = String(Math.round(Number(amount)))
     const params = new URLSearchParams({
       acc: process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964',
       bank: process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank',
-      amount: amount,
+      amount: intAmount,
       des: transactionCode
     })
     return `${baseUrl}?${params.toString()}`
