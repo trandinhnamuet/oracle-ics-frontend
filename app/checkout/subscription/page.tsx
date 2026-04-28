@@ -463,7 +463,7 @@ function SubscriptionCheckoutContent() {
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('subscriptionCheckout.amountLabel')}</span>
                     <span className="text-sm font-medium text-[#E60000]">
-                      {formatPrice(parseInt(amount))} VND
+                      {paymentData ? formatPrice(paymentData.amount) : '---'} VND
                     </span>
                   </div>
                   {paymentData && !isExpired && (
