@@ -670,7 +670,7 @@ export default function PackageManagementPage() {
                             {/* Complete Payment button for pending subscriptions */}
                             {sub.status === 'pending' && pendingPaymentsMap[sub.id] && (() => {
                               const p = pendingPaymentsMap[sub.id]
-                              const checkoutUrl = `/checkout/subscription?paymentId=${p.id}&subscriptionId=${sub.id}&amount=${p.amount}&method=${p.payment_method}&type=subscription`
+                              const checkoutUrl = `/checkout/subscription?paymentId=${p.id}&subscriptionId=${sub.id}&method=${p.payment_method}&type=subscription`
                               return (
                                 <div title={t('packageManagement.tooltip.completePayment')}>
                                   <Button

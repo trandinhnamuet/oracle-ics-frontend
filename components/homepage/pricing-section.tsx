@@ -277,7 +277,6 @@ export function PricingSection() {
         const params = new URLSearchParams({
           paymentId: result.payment.id,
           subscriptionId: result.subscription.id.toString(),
-          amount: result.payment.amount.toString(),
           method: 'sepay_qr',
           type: 'subscription'
         })
