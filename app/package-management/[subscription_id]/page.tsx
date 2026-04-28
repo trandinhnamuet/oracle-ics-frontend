@@ -307,6 +307,16 @@ export default function PackageDetailPage() {
 
   // Auto-poll VM details for Windows VMs that are still provisioning or missing password
   const windowsPollRef = useRef<NodeJS.Timeout | null>(null)
+  const vmActionPollRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (vmActionPollRef.current) {
+        clearInterval(vmActionPollRef.current)
+        vmActionPollRef.current = null
+      }
+    }
+  }, [])
   useEffect(() => {
     if (windowsPollRef.current) {
       clearInterval(windowsPollRef.current)
@@ -507,16 +517,49 @@ export default function PackageDetailPage() {
         description: t('packageDetail.toast.vmActionSuccessDesc'),
         variant: 'default'
       })
-      
-      // Refresh VM details after action
-      setTimeout(async () => {
+
+      if (vmActionPollRef.current) {
+        clearInterval(vmActionPollRef.current)
+        vmActionPollRef.current = null
+      }
+
+      // Poll until OCI reports a stable lifecycle state so the UI buttons
+      // re-enable only once the transition is fully complete.
+      const STABLE_STATES = ['RUNNING', 'STOPPED', 'TERMINATED']
+      const POLL_INTERVAL_MS = 4000
+      const MAX_POLL_MS = 5 * 60 * 1000
+      const startedAt = Date.now()
+
+      const pollOnce = async () => {
         try {
           const vmData = await getSubscriptionVm(subscriptionId)
           setVmDetails(vmData)
+          const state = vmData?.vm?.lifecycleState
+          if (state && STABLE_STATES.includes(state)) {
+            if (vmActionPollRef.current) {
+              clearInterval(vmActionPollRef.current)
+              vmActionPollRef.current = null
+            }
+            setIsLoading(false)
+            return
+          }
+          if (Date.now() - startedAt > MAX_POLL_MS) {
+            if (vmActionPollRef.current) {
+              clearInterval(vmActionPollRef.current)
+              vmActionPollRef.current = null
+            }
+            setIsLoading(false)
+          }
         } catch (error) {
           console.error('Error refreshing VM details:', error)
         }
+      }
+
+      setTimeout(() => {
+        pollOnce()
+        vmActionPollRef.current = setInterval(pollOnce, POLL_INTERVAL_MS)
       }, 2000)
+      return
     } catch (error: any) {
       console.error(`Error performing VM ${action}:`, error)
       toast({
@@ -524,7 +567,6 @@ export default function PackageDetailPage() {
         description: error.response?.data?.message || t('packageDetail.toast.vmActionFailedDesc'),
         variant: 'destructive'
       })
-    } finally {
       setIsLoading(false)
     }
   }
@@ -1453,7 +1495,7 @@ export default function PackageDetailPage() {
                     className="w-full justify-start"
                     variant="outline"
                     onClick={() => handleStartVm()}
-                    disabled={isLoading || isRenewingAndStarting || vmDetails?.vm?.lifecycleState === 'RUNNING' || vmDetails?.vm?.lifecycleState === 'PROVISIONING'}
+                    disabled={isLoading || isRenewingAndStarting || vmDetails?.vm?.lifecycleState === 'RUNNING' || vmDetails?.vm?.lifecycleState === 'PROVISIONING' || vmDetails?.vm?.lifecycleState === 'STOPPING' || vmDetails?.vm?.lifecycleState === 'STARTING'}
                   >
                     <Play className="h-4 w-4 mr-2" />
                     {t('packageDetail.actions.startVM')}
@@ -1463,7 +1505,7 @@ export default function PackageDetailPage() {
                     className="w-full justify-start"
                     variant="outline"
                     onClick={() => handleVmAction('STOP')}
-                    disabled={isLoading || vmDetails?.vm?.lifecycleState === 'STOPPED' || vmDetails?.vm?.lifecycleState === 'PROVISIONING'}
+                    disabled={isLoading || vmDetails?.vm?.lifecycleState === 'STOPPED' || vmDetails?.vm?.lifecycleState === 'PROVISIONING' || vmDetails?.vm?.lifecycleState === 'STOPPING' || vmDetails?.vm?.lifecycleState === 'STARTING'}
                   >
                     <Pause className="h-4 w-4 mr-2" />
                     {t('packageDetail.actions.pauseVM')}
