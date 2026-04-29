@@ -2272,6 +2272,10 @@
       "validation": {
         "emailRequired": "Email is required",
         "emailInvalid": "Invalid email"
+      },
+      "errors": {
+        "emailNotRegistered": "This email is not registered.",
+        "generic": "An error occurred. Please try again."
       }
     },
     "otpConfirm": {
