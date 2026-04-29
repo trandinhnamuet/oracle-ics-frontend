@@ -9,7 +9,7 @@ import { ArrowLeft, CheckCircle, Copy, Loader, Banknote, Clock, RefreshCw } from
 import { formatPrice } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { paymentApi } from '@/api/payment.api'
-import { getSubscriptionById, subscribeWithPayment } from '@/api/subscription.api'
+import { renewSubscriptionPayment } from '@/api/subscription.api'
 import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
 import { Suspense, useEffect, useRef, useState } from 'react'
@@ -229,25 +229,19 @@ function SubscriptionCheckoutContent() {
     setIsRegeneratingPayment(true)
 
     try {
-      const currentSubscription = await getSubscriptionById(subscriptionId)
-      const monthsCount = Math.max(1, Number(currentSubscription.months_paid || 1))
-
-      const result = await subscribeWithPayment({
-        cloudPackageId: currentSubscription.cloud_package_id,
-        monthsCount,
-        autoRenew: currentSubscription.auto_renew,
-      })
+      // Renew payment for the EXISTING subscription — avoids creating a duplicate record
+      const result = await renewSubscriptionPayment(subscriptionId)
 
       const nextParams = new URLSearchParams({
         paymentId: String(result.payment.id),
-        subscriptionId: String(result.subscription.id),
+        subscriptionId: subscriptionId,
         method: 'sepay_qr',
         type: 'subscription'
       })
 
       toast({
-        title: 'Đã tạo mã thanh toán mới',
-        description: 'Đang chuyển sang phiên thanh toán mới (15 phút).',
+        title: t('subscriptionCheckout.regenerateSuccess'),
+        description: t('subscriptionCheckout.regenerateSuccessDesc'),
         variant: 'default'
       })
 
@@ -255,7 +249,7 @@ function SubscriptionCheckoutContent() {
     } catch (error: any) {
       toast({
         title: t('subscriptionCheckout.invalidInfo'),
-        description: error?.response?.data?.message || 'Không thể tạo lại mã thanh toán. Vui lòng thử lại.',
+        description: error?.response?.data?.message || t('subscriptionCheckout.regenerateError'),
         variant: 'destructive'
       })
     } finally {
@@ -371,7 +365,7 @@ function SubscriptionCheckoutContent() {
                 </div>
                 <p className="text-sm text-gray-600 dark:text-muted-foreground">
                   {isExpired
-                    ? 'Giao dịch đã hết hạn. Vui lòng tạo giao dịch thanh toán mới.'
+                    ? t('subscriptionCheckout.transactionExpired')
                     : t('subscriptionCheckout.expireWarning')}
                 </p>
               </div>
@@ -436,7 +430,7 @@ function SubscriptionCheckoutContent() {
                   </p>
                 ) : isExpired ? (
                   <p className="text-sm text-red-600 mt-2 font-medium">
-                    Giao dịch đã hết hạn. Vui lòng tạo mã QR mới để tiếp tục.
+                    {t('subscriptionCheckout.transactionExpired')}
                   </p>
                 ) : paymentStatus === 'pending' ? (
                   <p className="text-sm text-blue-600 mt-2 flex items-center justify-center">
@@ -496,7 +490,7 @@ function SubscriptionCheckoutContent() {
                       onClick={handleRegeneratePayment}
                       disabled={isRegeneratingPayment}
                     >
-                      {isRegeneratingPayment ? 'Đang tạo mã mới...' : 'Tạo lại mã thanh toán'}
+                      {isRegeneratingPayment ? t('subscriptionCheckout.regenerating') : t('subscriptionCheckout.regenerateButton')}
                     </Button>
                     <Button variant="outline" className="w-full" onClick={() => router.push('/')}>
                       {t('subscriptionCheckout.backHome')}

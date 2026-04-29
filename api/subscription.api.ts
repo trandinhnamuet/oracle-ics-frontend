@@ -128,6 +128,23 @@ export const subscribeWithPayment = async (data: CreateSubscriptionWithPaymentRe
   }
 }
 
+// Renew QR payment for an existing PENDING subscription (no new subscription created)
+export const renewSubscriptionPayment = async (subscriptionId: string): Promise<{
+  subscription: Subscription
+  payment: any
+}> => {
+  try {
+    const result = await fetchJsonWithAuth<{ subscription: Subscription; payment: any }>(
+      `${API_URL}/subscriptions/${subscriptionId}/renew-payment`,
+      { method: 'POST' }
+    )
+    return result
+  } catch (error) {
+    console.error('Error renewing subscription payment:', error)
+    throw error
+  }
+}
+
 // Get all subscriptions (admin only) - with pagination
 export const getAdminSubscriptions = async (params?: GetSubscriptionsParams): Promise<GetSubscriptionsResponse> => {
   try {

@@ -2034,7 +2034,13 @@
     "qrReadyToast": "QR碼準備就緒",
     "qrReadyToastDesc": "請掃描二維碼，或使用以下資訊手動轉帳。",
     "alreadyTransferredToast": "感謝您！",
-    "alreadyTransferredToastDesc": "我們已記錄您的付款，收到轉帳後交易將自動確認。"
+    "alreadyTransferredToastDesc": "我們已記錄您的付款，收到轉帳後交易將自動確認。",
+    "transactionExpired": "交易已過期，請生成新的二維碼繼續。",
+    "regenerateSuccess": "已建立新的付款碼",
+    "regenerateSuccessDesc": "正在跳轉至新的付款工作階段（15分鐘）。",
+    "regenerateError": "無法重新生成付款碼，請重試。",
+    "regenerating": "正在生成新代碼...",
+    "regenerateButton": "重新生成付款碼"
   },
   "cloudConfig": {
     "title": "配置VM實例",

@@ -2027,7 +2027,13 @@
     "qrReadyToast": "QR sẵn sàng",
     "qrReadyToastDesc": "Vui lòng quét mã QR hoặc chuyển khoản thủ công theo thông tin bên dưới.",
     "alreadyTransferredToast": "Cảm ơn bạn!",
-    "alreadyTransferredToastDesc": "Chúng tôi đã ghi nhận thanh toán của bạn. Giao dịch sẽ được xác nhận tự động khi nhận được tiền chuyển khoản."
+    "alreadyTransferredToastDesc": "Chúng tôi đã ghi nhận thanh toán của bạn. Giao dịch sẽ được xác nhận tự động khi nhận được tiền chuyển khoản.",
+    "transactionExpired": "Giao dịch đã hết hạn. Vui lòng tạo mã QR mới để tiếp tục.",
+    "regenerateSuccess": "Đã tạo mã thanh toán mới",
+    "regenerateSuccessDesc": "Đang chuyển sang phiên thanh toán mới (15 phút).",
+    "regenerateError": "Không thể tạo lại mã thanh toán. Vui lòng thử lại.",
+    "regenerating": "Đang tạo mã mới...",
+    "regenerateButton": "Tạo lại mã thanh toán"
   },
   "cloudConfig": {
     "title": "Cấu hình VM Instance",

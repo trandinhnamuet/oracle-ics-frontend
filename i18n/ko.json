@@ -2034,7 +2034,13 @@
     "qrReadyToast": "QR 코드 준비 완료",
     "qrReadyToastDesc": "QR 코드를 스캔하거나 아래 정보로 수동 이체하세요.",
     "alreadyTransferredToast": "감사합니다!",
-    "alreadyTransferredToastDesc": "결제를 접수했습니다. 이체 확인 후 거래가 자동으로 확인됩니다."
+    "alreadyTransferredToastDesc": "결제를 접수했습니다. 이체 확인 후 거래가 자동으로 확인됩니다.",
+    "transactionExpired": "거래가 만료되었습니다. 새 QR 코드를 생성하여 계속하세요.",
+    "regenerateSuccess": "새 결제 코드 생성됨",
+    "regenerateSuccessDesc": "새 결제 세션(15분)으로 이동합니다.",
+    "regenerateError": "결제 코드를 재생성할 수 없습니다. 다시 시도해 주세요.",
+    "regenerating": "새 코드 생성 중...",
+    "regenerateButton": "결제 코드 재생성"
   },
   "cloudConfig": {
     "title": "VM 인스턴스 구성",

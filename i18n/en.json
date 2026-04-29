@@ -2028,7 +2028,13 @@
     "qrReadyToast": "QR Code Ready",
     "qrReadyToastDesc": "Please scan the QR code or transfer manually using the information below.",
     "alreadyTransferredToast": "Thank you!",
-    "alreadyTransferredToastDesc": "We have noted your payment. The transaction will be confirmed automatically once the transfer is received."
+    "alreadyTransferredToastDesc": "We have noted your payment. The transaction will be confirmed automatically once the transfer is received.",
+    "transactionExpired": "The transaction has expired. Please generate a new QR code to continue.",
+    "regenerateSuccess": "New payment code created",
+    "regenerateSuccessDesc": "Redirecting to a new payment session (15 minutes).",
+    "regenerateError": "Unable to regenerate the payment code. Please try again.",
+    "regenerating": "Generating new code...",
+    "regenerateButton": "Regenerate payment code"
   },
   "cloudConfig": {
     "title": "Configure VM Instance",

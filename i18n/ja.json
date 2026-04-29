@@ -2033,7 +2033,13 @@
     "qrReadyToast": "QR準備完了",
     "qrReadyToastDesc": "QRコードをスキャンするか、以下の情報で手動振込してください。",
     "alreadyTransferredToast": "ありがとうございます！",
-    "alreadyTransferredToastDesc": "お支払いを承りました。振込確認後、取引は自動的に確認されます。"
+    "alreadyTransferredToastDesc": "お支払いを承りました。振込確認後、取引は自動的に確認されます。",
+    "transactionExpired": "取引が期限切れになりました。新しいQRコードを生成して続行してください。",
+    "regenerateSuccess": "新しい支払いコードが作成されました",
+    "regenerateSuccessDesc": "新しい支払いセッション（15分）にリダイレクトします。",
+    "regenerateError": "支払いコードを再生成できません。もう一度お試しください。",
+    "regenerating": "新しいコードを生成中...",
+    "regenerateButton": "支払いコードを再生成"
   },
   "cloudConfig": {
     "title": "VMインスタンスの設定",

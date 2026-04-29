@@ -2035,7 +2035,13 @@
     "qrReadyToast": "QR码准备就绪",
     "qrReadyToastDesc": "请扫描二维码，或使用以下信息手动转账。",
     "alreadyTransferredToast": "感谢您！",
-    "alreadyTransferredToastDesc": "我们已记录您的付款，收到转账后交易将自动确认。"
+    "alreadyTransferredToastDesc": "我们已记录您的付款，收到转账后交易将自动确认。",
+    "transactionExpired": "交易已过期，请生成新的二维码继续。",
+    "regenerateSuccess": "已创建新的支付码",
+    "regenerateSuccessDesc": "正在跳转到新的支付会话（15分钟）。",
+    "regenerateError": "无法重新生成支付码，请重试。",
+    "regenerating": "正在生成新代码...",
+    "regenerateButton": "重新生成支付码"
   },
   "cloudConfig": {
     "title": "配置VM实例",
