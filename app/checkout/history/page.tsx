@@ -179,6 +179,9 @@ export default function PaymentHistoryPage() {
 
       filtered.forEach((tx, index) => {
         const typeLabel = typeConfig[tx.type]?.label ?? t('paymentHistory.types.default')
+        const utcDate = parseAsUtc(tx.created_at)
+        // ExcelJS encodes Date as UTC serial; offset by local timezone so Excel shows local time
+        const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000)
         const row = worksheet.addRow({
           stt: index + 1,
           type: typeLabel,
@@ -186,7 +189,7 @@ export default function PaymentHistoryPage() {
           balance_after: tx.balance_after != null ? Number(tx.balance_after) : '',
           payment_id: tx.payment_id ?? '',
           id: tx.id,
-          created_at: parseAsUtc(tx.created_at),
+          created_at: localDate,
         })
 
         const isCredit = Number(tx.change_amount) > 0
