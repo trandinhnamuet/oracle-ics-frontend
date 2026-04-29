@@ -183,7 +183,16 @@ export default function SupportPage() {
       }
       await createSupportTicket(payload)
       toast({ title: t('support.submitSuccess'), description: t('support.submitSuccessDesc') })
-      reset()
+      const userName = user ? ([user.firstName, user.lastName].filter(Boolean).join(' ') || user.email) : ''
+      reset({
+        title: '',
+        customer_name: userName,
+        email: user?.email ?? '',
+        phone: '',
+        address: '',
+        service: '',
+        content: '',
+      })
       setSelectedService('')
       setSelectedFiles([])
       if (isAuthenticated) {
