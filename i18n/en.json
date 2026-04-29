@@ -1776,6 +1776,7 @@
     "files": {
       "tooMany": "Maximum {{max}} files allowed",
       "tooLarge": "File exceeds {{maxMB}}MB limit",
+      "invalidType": "File \"{{fileName}}\" is not supported. Only images (JPG, PNG, GIF, WebP), PDF, Word (.doc, .docx), and plain text (.txt) are accepted.",
       "limits": "Max {{max}} files · each ≤ {{maxMB}}MB · Images, PDF, Word, Text"
     },
     "submitSuccess": "Request submitted successfully!",

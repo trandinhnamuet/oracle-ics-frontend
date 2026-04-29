@@ -35,6 +35,7 @@ import {
 const MAX_FILE_SIZE_MB = 20
 const MAX_FILES = 10
 const ALLOWED_TYPES = 'image/jpeg,image/jpg,image/png,image/gif,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain'
+const ALLOWED_MIME_SET = new Set(ALLOWED_TYPES.split(','))
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`
@@ -136,6 +137,15 @@ export default function SupportPage() {
 
   const handleFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
+    const invalidType = files.find(f => f.type && !ALLOWED_MIME_SET.has(f.type))
+    if (invalidType) {
+      const ext = invalidType.name.includes('.')
+        ? `.${invalidType.name.split('.').pop()!.toUpperCase()}`
+        : invalidType.type
+      toast({ title: t('support.files.invalidType', { fileName: invalidType.name, ext }), variant: 'destructive' })
+      e.target.value = ''
+      return
+    }
     const combined = [...selectedFiles, ...files]
     if (combined.length > MAX_FILES) {
       toast({ title: t('support.files.tooMany', { max: MAX_FILES }), variant: 'destructive' })
@@ -181,7 +191,13 @@ export default function SupportPage() {
       }
     } catch (err: any) {
       setUploadingFiles(false)
-      toast({ title: t('support.submitError'), description: err.message, variant: 'destructive' })
+      const msg: string = err?.message || ''
+      const mimeMatch = msg.match(/File type '([^']+)' is not allowed/)
+      if (mimeMatch) {
+        toast({ title: t('support.files.invalidType', { fileName: mimeMatch[1], ext: mimeMatch[1] }), variant: 'destructive' })
+      } else {
+        toast({ title: t('support.submitError'), description: msg, variant: 'destructive' })
+      }
     } finally {
       setIsSubmitting(false)
     }

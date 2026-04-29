@@ -1781,6 +1781,7 @@
     "files": {
       "tooMany": "添付できるファイルは最大 {{max}} 個まで",
       "tooLarge": "ファイルが {{maxMB}}MB の制限を超えています",
+      "invalidType": "ファイル \"{{fileName}}\" はサポートされていません。画像 (JPG, PNG, GIF, WebP)、PDF、Word (.doc, .docx)、テキスト (.txt) のみ使用できます。",
       "limits": "最大 {{max}} ファイル · 各 ≤ {{maxMB}}MB · 画像、PDF、Word、テキスト"
     },
     "submitSuccess": "リクエストが正常に送信されました！",

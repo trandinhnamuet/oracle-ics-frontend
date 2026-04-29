@@ -1783,6 +1783,7 @@
     "files": {
       "tooMany": "最多允许 {{max}} 个文件",
       "tooLarge": "文件超过 {{maxMB}}MB 限制",
+      "invalidType": "文件 \"{{fileName}}\" 不受支持。仅接受图片 (JPG, PNG, GIF, WebP)、PDF、Word (.doc, .docx) 和纯文本 (.txt)。",
       "limits": "最多 {{max}} 个文件 · 每个 ≤ {{maxMB}}MB · 图片、PDF、Word、文本"
     },
     "submitSuccess": "请求提交成功！",

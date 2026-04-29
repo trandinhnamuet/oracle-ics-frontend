@@ -1782,6 +1782,7 @@
     "files": {
       "tooMany": "最多允許 {{max}} 個檔案",
       "tooLarge": "檔案超過 {{maxMB}}MB 限制",
+      "invalidType": "檔案 \"{{fileName}}\" 不受支援。僅接受圖片 (JPG, PNG, GIF, WebP)、PDF、Word (.doc, .docx) 及純文字 (.txt)。",
       "limits": "最多 {{max}} 個檔案 · 每個 ≤ {{maxMB}}MB · 圖片、PDF、Word、文字"
     },
     "submitSuccess": "請求提交成功！",

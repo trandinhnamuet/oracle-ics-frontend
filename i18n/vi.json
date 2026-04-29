@@ -1775,6 +1775,7 @@
     "files": {
       "tooMany": "Chỉ được đính kèm tối đa {{max}} file",
       "tooLarge": "File vượt quá {{maxMB}}MB cho phép",
+      "invalidType": "File \"{{fileName}}\" không được hỗ trợ. Chỉ chấp nhận ảnh (JPG, PNG, GIF, WebP), PDF, Word (.doc, .docx) và văn bản (.txt).",
       "limits": "Tối đa {{max}} file · mỗi file ≤ {{maxMB}}MB · Ảnh, PDF, Word, Text"
     },
     "submitSuccess": "Yêu cầu đã được gửi thành công!",
