@@ -273,8 +273,9 @@ function ProfilePage() {
     try {
       setIsUploadingAvatar(true)
       const uploadedImage = await imageApi.uploadImage(file)
-      await updateUserAvatar(user.id, uploadedImage.url)
-      updateUser({ avatarUrl: uploadedImage.url })
+      const absoluteAvatarUrl = imageApi.getImageUrl(uploadedImage.url)
+      await updateUserAvatar(user.id, absoluteAvatarUrl)
+      updateUser({ avatarUrl: absoluteAvatarUrl })
       toast({ title: t('profile.avatarUploadSuccess'), variant: 'default' })
     } catch {
       toast({ title: t('profile.avatarUploadError'), variant: 'destructive' })
