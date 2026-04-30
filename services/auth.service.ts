@@ -42,9 +42,15 @@ class AuthService {
     }
   }
 
-  async login(email: string, password: string): Promise<LoginResponse> {
+  async login(email: string, password: string, latitude?: number, longitude?: number): Promise<LoginResponse> {
     // Gọi qua Next.js proxy để strip domain attribute khỏi Set-Cookie,
     // đảm bảo cookie chỉ bind vào exact host hiện tại (không lan sang subdomain)
+    const bodyPayload: Record<string, unknown> = { email, password };
+    if (latitude != null && longitude != null) {
+      bodyPayload.latitude = latitude;
+      bodyPayload.longitude = longitude;
+    }
+
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
@@ -52,7 +58,7 @@ class AuthService {
         'Accept-Language': getCurrentLang(),
       },
       credentials: 'include', // Important: send cookies
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(bodyPayload),
     });
 
     if (!response.ok) {
