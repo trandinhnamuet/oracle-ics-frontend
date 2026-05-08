@@ -488,7 +488,213 @@ export default function PackageManagementPage() {
               <p className="mt-2 text-muted-foreground">{t('packageManagement.toast.loadingList')}</p>
             </div>
           ) : (
-            <div className="overflow-x-auto w-full">
+            <>
+              <div className="space-y-4 md:hidden px-4 pb-4">
+                {filteredSubscriptions.length === 0 ? (
+                  <div className="rounded-lg border bg-background p-6 text-center text-muted-foreground">
+                    {searchTerm || statusFilter !== 'all' || typeFilter !== 'all'
+                      ? t('packageManagement.table.noMatch')
+                      : t('packageManagement.table.noPackage')
+                    }
+                  </div>
+                ) : (
+                  filteredSubscriptions.map(sub => {
+                    const packageName = sub.cloudPackage?.name || t('packageManagement.table.customPackage')
+                    const vmName = sub.vmInstance?.instance_name || ''
+                    const vmIpv4 = sub.vmInstance?.public_ip || ''
+                    const vmState = sub.vmInstance?.lifecycle_state
+                    const isRunning = vmState === 'RUNNING'
+                    const isStopped = vmState === 'STOPPED'
+                    const isTerminated = vmState ? ['TERMINATED', 'TERMINATING'].includes(vmState) : false
+                    const isStopping = vmState === 'STOPPING'
+                    const isStarting = vmState === 'STARTING'
+                    const vmBadgeClass = isRunning
+                      ? 'bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-green-300 dark:border-green-900'
+                      : isStopped
+                      ? 'bg-gray-100 text-gray-600 border-gray-300 dark:bg-muted dark:text-muted-foreground dark:border-border'
+                      : isTerminated
+                      ? 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-300 dark:border-red-900'
+                      : 'bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900'
+                    const vmLabel = isRunning ? t('packageManagement.table.vmRunning')
+                      : isStopped ? t('packageManagement.table.vmStopped')
+                      : isStopping ? t('packageManagement.table.vmStopping')
+                      : isStarting ? t('packageManagement.table.vmStarting')
+                      : vmState
+
+                    const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+                      const target = e.target as HTMLElement
+                      if (target.closest('button') || target.closest('[role="switch"]')) {
+                        return
+                      }
+                      router.push(`/package-management/${sub.id}`)
+                    }
+
+                    return (
+                      <div
+                        key={sub.id}
+                        className="rounded-xl border bg-background p-4 shadow-sm cursor-pointer"
+                        onClick={handleCardClick}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-xs text-muted-foreground">{t('packageManagement.table.subscriptionId')}</p>
+                            <p className="font-mono text-xs">{sub.id.substring(0, 6)}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant={
+                              sub.status === 'active' ? 'default' :
+                              sub.status === 'pending' ? 'secondary' :
+                              sub.status === 'suspended' ? 'secondary' :
+                              sub.status === 'cancelled' ? 'destructive' :
+                              sub.status === 'expired' ? 'outline' : 'secondary'
+                            }>
+                              {sub.status === 'active' ? t('packageManagement.table.active') :
+                               sub.status === 'pending' ? t('packageManagement.table.pending') :
+                               sub.status === 'suspended' ? t('packageManagement.table.suspended') :
+                               sub.status === 'cancelled' ? t('packageManagement.table.cancelled') :
+                               sub.status === 'expired' ? t('packageManagement.table.expired') :
+                               t('packageManagement.table.inactive')}
+                            </Badge>
+                            {sub.status === 'active' && !sub.vm_instance_id && (
+                              <Badge variant="outline" className="bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900">
+                                {t('packageManagement.notConfigured')}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mt-3 space-y-2 text-sm">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-muted-foreground">{t('packageManagement.table.packageName')}</span>
+                            <span className="font-medium text-right">{packageName}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-muted-foreground">{t('packageManagement.table.vmName')}</span>
+                            <span className="font-mono text-right">{vmName || '-'}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-muted-foreground">{t('packageManagement.table.ipv4')}</span>
+                            <span className="font-mono text-right">{vmIpv4 || '-'}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-muted-foreground">{t('packageManagement.table.createdAt')}</span>
+                            <span>{formatDateOnly(sub.created_at)}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-muted-foreground">{t('packageManagement.table.endDate')}</span>
+                            <span>{formatDateOnly(sub.end_date)}</span>
+                          </div>
+                          {sub.vm_instance_id && sub.vmInstance && vmLabel && (
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="text-muted-foreground">VM</span>
+                              <Badge variant="outline" className={vmBadgeClass}>{vmLabel}</Badge>
+                            </div>
+                          )}
+                          <div className="flex items-center justify-between gap-3 pt-1">
+                            <span className="text-muted-foreground">{t('packageManagement.table.autoRenew')}</span>
+                            <Switch
+                              checked={sub.auto_renew}
+                              onCheckedChange={(checked) => handleToggleAutoRenew(sub.id, checked)}
+                              disabled={togglingAutoRenewIds.has(sub.id)}
+                              aria-label={t('packageManagement.table.autoRenew')}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="mt-4 flex flex-wrap gap-2" onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.push(`/package-management/${sub.id}`)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+
+                          {sub.status === 'active' && !sub.vm_instance_id && (
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={() => router.push(`/cloud/configuration/${sub.id}`)}
+                              className="bg-blue-600 hover:bg-blue-700"
+                            >
+                              <Settings className="h-4 w-4 mr-1" />
+                              {t('packageManagement.table.configure')}
+                            </Button>
+                          )}
+
+                          {sub.status === 'expired' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleRenewSubscription(sub.id)}
+                              disabled={renewingIds.has(sub.id)}
+                              className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 border-orange-300"
+                            >
+                              {renewingIds.has(sub.id) ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <RefreshCw className="h-4 w-4" />
+                              )}
+                            </Button>
+                          )}
+
+                          {sub.status === 'pending' && pendingPaymentsMap[sub.id] && (() => {
+                            const p = pendingPaymentsMap[sub.id]
+                            const checkoutUrl = `/checkout/subscription?paymentId=${p.id}&subscriptionId=${sub.id}&method=${p.payment_method}&type=subscription`
+                            return (
+                              <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => router.push(checkoutUrl)}
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                <CreditCard className="h-4 w-4 mr-1" />
+                                {t('packageManagement.table.completePayment')}
+                              </Button>
+                            )
+                          })()}
+
+                          {sub.vm_instance_id && sub.vmInstance && sub.status !== 'expired' && (() => {
+                            const state = sub.vmInstance.lifecycle_state
+                            const isRunningState = state === 'RUNNING'
+                            const isStoppedState = state === 'STOPPED'
+                            const isStable = isRunningState || isStoppedState
+                            const isToggling = togglingVmIds.has(sub.id)
+                            const showStopBtn = isRunningState || state === 'STARTING'
+                            const isDisabled = isToggling || !isStable
+                            return (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => toggleVmStatus(sub.id)}
+                                disabled={isDisabled}
+                              >
+                                {!isStable ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : showStopBtn ? (
+                                  <Pause className="h-4 w-4" />
+                                ) : (
+                                  <Play className="h-4 w-4" />
+                                )}
+                              </Button>
+                            )
+                          })()}
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => cancelUserSubscription(sub.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+
+            <div className="hidden md:block overflow-x-auto w-full">
               <Table>
               <TableHeader>
                 <TableRow>
@@ -737,6 +943,7 @@ export default function PackageManagementPage() {
               </TableBody>
             </Table>
             </div>
+            </>
           )}
         </CardContent>
       </Card>
