@@ -489,7 +489,7 @@ export default function PackageManagementPage() {
             </div>
           ) : (
             <>
-              <div className="space-y-4 md:hidden px-4 pb-4">
+              <div className="space-y-4 2xl:hidden px-4 pb-4">
                 {filteredSubscriptions.length === 0 ? (
                   <div className="rounded-lg border bg-background p-6 text-center text-muted-foreground">
                     {searchTerm || statusFilter !== 'all' || typeFilter !== 'all'
@@ -694,7 +694,7 @@ export default function PackageManagementPage() {
                 )}
               </div>
 
-            <div className="hidden md:block overflow-x-auto w-full">
+            <div className="hidden 2xl:block overflow-x-auto w-full">
               <Table>
               <TableHeader>
                 <TableRow>
