@@ -1930,6 +1930,8 @@
       "subscriptionPayment": "套餐付款",
       "autoRenewal": "自動續費",
       "manualRenewal": "手動續費",
+      "qrPaymentReceived": "QR收款",
+      "qrSubscriptionPayment": "QR套餐付款",
       "default": "交易"
     },
     "excel": {

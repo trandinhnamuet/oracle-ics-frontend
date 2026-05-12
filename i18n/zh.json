@@ -1931,6 +1931,8 @@
       "subscriptionPayment": "套餐付款",
       "autoRenewal": "自动续费",
       "manualRenewal": "手动续费",
+      "qrPaymentReceived": "QR收款",
+      "qrSubscriptionPayment": "QR套餐付款",
       "default": "交易"
     },
     "excel": {

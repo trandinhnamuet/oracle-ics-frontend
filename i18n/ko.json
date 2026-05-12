@@ -1930,6 +1930,8 @@
       "subscriptionPayment": "패키지 결제",
       "autoRenewal": "자동 갱신",
       "manualRenewal": "수동 갱신",
+      "qrPaymentReceived": "QR 결제 수신",
+      "qrSubscriptionPayment": "QR 패키지 결제",
       "default": "거래"
     },
     "excel": {

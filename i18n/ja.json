@@ -1929,6 +1929,8 @@
       "subscriptionPayment": "パッケージ支払い",
       "autoRenewal": "自動更新",
       "manualRenewal": "手動更新",
+      "qrPaymentReceived": "QR入金",
+      "qrSubscriptionPayment": "QRパッケージ決済",
       "default": "取引"
     },
     "excel": {

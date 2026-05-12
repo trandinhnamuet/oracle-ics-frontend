@@ -1923,6 +1923,8 @@
       "subscriptionPayment": "Thanh toán gói",
       "autoRenewal": "Gia hạn tự động",
       "manualRenewal": "Gia hạn thủ công",
+      "qrPaymentReceived": "Nhận tiền QR",
+      "qrSubscriptionPayment": "Thanh toán gói QR",
       "default": "Giao dịch"
     },
     "excel": {

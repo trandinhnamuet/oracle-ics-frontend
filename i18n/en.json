@@ -1924,6 +1924,8 @@
       "subscriptionPayment": "Package Payment",
       "autoRenewal": "Auto Renewal",
       "manualRenewal": "Manual Renewal",
+      "qrPaymentReceived": "QR Payment Received",
+      "qrSubscriptionPayment": "QR Package Payment",
       "default": "Transaction"
     },
     "excel": {

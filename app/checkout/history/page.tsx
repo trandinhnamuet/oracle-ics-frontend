@@ -42,7 +42,7 @@ const DEFAULT_TYPE_CONFIG = {
   icon: Banknote,
 }
 
-const SUBSCRIPTION_TYPES = ['subscription_payment', 'auto_renewal', 'manual_renewal']
+const SUBSCRIPTION_TYPES = ['subscription_payment', 'auto_renewal', 'manual_renewal', 'qr_subscription_payment']
 
 export default function PaymentHistoryPage() {
   const { t, i18n } = useTranslation()
@@ -72,6 +72,18 @@ export default function PaymentHistoryPage() {
       color: 'bg-orange-50 text-orange-700 border-orange-200',
       iconColor: 'text-orange-500',
       icon: RefreshCw,
+    },
+    qr_payment_received: {
+      label: t('paymentHistory.types.qrPaymentReceived'),
+      color: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+      iconColor: 'text-cyan-500',
+      icon: TrendingUp,
+    },
+    qr_subscription_payment: {
+      label: t('paymentHistory.types.qrSubscriptionPayment'),
+      color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+      iconColor: 'text-indigo-500',
+      icon: CreditCard,
     },
   }), [t])
 
