@@ -45,11 +45,13 @@ class AuthService {
   async login(email: string, password: string): Promise<LoginResponse> {
     // Gọi qua Next.js proxy để strip domain attribute khỏi Set-Cookie,
     // đảm bảo cookie chỉ bind vào exact host hiện tại (không lan sang subdomain)
+    const currentLang = getCurrentLang();
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept-Language': getCurrentLang(),
+        'Accept-Language': currentLang,
+        'X-Language': currentLang,
       },
       credentials: 'include', // Important: send cookies
       body: JSON.stringify({ email, password }),
@@ -81,11 +83,13 @@ class AuthService {
 
   async refresh(): Promise<string> {
     // Gọi qua Next.js proxy để đảm bảo cookie rotation không bị cross-domain
+    const currentLang = getCurrentLang();
     const response = await fetch('/api/auth/refresh', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept-Language': getCurrentLang(),
+        'Accept-Language': currentLang,
+        'X-Language': currentLang,
       },
       credentials: 'include',
     });

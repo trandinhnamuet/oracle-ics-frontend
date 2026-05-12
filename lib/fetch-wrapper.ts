@@ -5,7 +5,7 @@ import { authService } from '@/services/auth.service';
  * Reads from the `language` cookie (set by the i18n module) or localStorage fallback.
  */
 export function getCurrentLang(): string {
-  const supported = ['vi', 'en', 'zh', 'ja', 'ko'];
+  const supported = ['vi', 'en', 'zh', 'ja', 'ko', 'th'];
 
   if (typeof document !== 'undefined') {
     const cookieLang = document.cookie
@@ -55,10 +55,12 @@ export async function fetchWithAuth(
     ? url
     : `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`
 
+  const currentLang = getCurrentLang();
   const headers: Record<string, string> = {
     // Don't set Content-Type for FormData — browser must set it with the multipart boundary
     ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
-    'Accept-Language': getCurrentLang(),
+    'Accept-Language': currentLang,
+    'X-Language': currentLang,
     ...(options.headers as Record<string, string> || {}),
   };
 
@@ -92,10 +94,12 @@ export async function fetchWithAuth(
       // Get new token and retry request
       const newAccessToken = authService.getAccessToken();
       if (newAccessToken) {
+        const currentLangRetry = getCurrentLang();
         const retryHeaders: Record<string, string> = {
           // Don't set Content-Type for FormData — browser must set it with the multipart boundary
           ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
-          'Accept-Language': getCurrentLang(),
+          'Accept-Language': currentLangRetry,
+          'X-Language': currentLangRetry,
           ...(options.headers as Record<string, string> || {}),
           'Authorization': `Bearer ${newAccessToken}`,
         };
