@@ -11,8 +11,8 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { CustomSelect } from '@/components/ui/custom-select'
 import { 
-  ArrowLeft, 
-  Server, 
+  ArrowLeft,
+  Server,
   Monitor,
   ChevronDown,
   Check,
@@ -22,6 +22,8 @@ import {
   Download,
   Key,
   CheckCircle,
+  Eye,
+  EyeOff,
 } from 'lucide-react'
 import {
   AlertDialog,
@@ -95,6 +97,7 @@ export default function CloudConfigurationBySubscriptionPage() {
   const [subscription, setSubscription] = useState<any>(null)
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [showVmPassword, setShowVmPassword] = useState(false)
   const [availableOsList, setAvailableOsList] = useState<string[]>([])  // Danh sách OS có image thực tế
   const [isLoadingOsList, setIsLoadingOsList] = useState(true)  // Track loading state of OS list
 
@@ -858,10 +861,15 @@ export default function CloudConfigurationBySubscriptionPage() {
                         </Button>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span><strong>{t('cloudConfig.vmCreated.initialPassword')}:</strong> {vmCredentials.password}</span>
-                        <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmCredentials.password!, 'pass')}>
-                          {copiedField === 'pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
-                        </Button>
+                        <span><strong>{t('cloudConfig.vmCreated.initialPassword')}:</strong> {showVmPassword ? vmCredentials.password : '••••••••••••'}</span>
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="ghost" onClick={() => setShowVmPassword(v => !v)}>
+                            {showVmPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                          </Button>
+                          <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmCredentials.password!, 'pass')}>
+                            {copiedField === 'pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                     <p className="text-xs text-blue-600 dark:text-blue-400">

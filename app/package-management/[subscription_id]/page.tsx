@@ -170,6 +170,8 @@ export default function PackageDetailPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showCustomPassword, setShowCustomPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showInitialWinPassword, setShowInitialWinPassword] = useState(false)
+  const [showNewWinPassword, setShowNewWinPassword] = useState(false)
   const [resetPasswordOtpStep, setResetPasswordOtpStep] = useState<'form' | 'otp'>('form')
   const [resetOtpCode, setResetOtpCode] = useState('')
   const [isSendingResetOtp, setIsSendingResetOtp] = useState(false)
@@ -1016,10 +1018,15 @@ export default function PackageDetailPage() {
                           </Button>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span><strong>{t('packageDetail.serverDetails.initialPassword')}:</strong> {vmDetails.vm.windowsInitialPassword}</span>
-                          <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmDetails.vm!.windowsInitialPassword!, 'win-pass')}>
-                            {copiedField === 'win-pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
-                          </Button>
+                          <span><strong>{t('packageDetail.serverDetails.initialPassword')}:</strong> {showInitialWinPassword ? vmDetails.vm.windowsInitialPassword : '••••••••••••'}</span>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="ghost" onClick={() => setShowInitialWinPassword(v => !v)}>
+                              {showInitialWinPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmDetails.vm!.windowsInitialPassword!, 'win-pass')}>
+                              {copiedField === 'win-pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ) : (
@@ -2008,10 +2015,15 @@ export default function PackageDetailPage() {
                     </Button>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span><strong>Password:</strong> {newWindowsPassword}</span>
-                    <Button size="sm" variant="ghost" onClick={() => copyToClipboard(newWindowsPassword!, 'new-win-pass')}>
-                      {copiedField === 'new-win-pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
-                    </Button>
+                    <span><strong>Password:</strong> {showNewWinPassword ? newWindowsPassword : '••••••••••••'}</span>
+                    <div className="flex gap-1">
+                      <Button size="sm" variant="ghost" onClick={() => setShowNewWinPassword(v => !v)}>
+                        {showNewWinPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => copyToClipboard(newWindowsPassword!, 'new-win-pass')}>
+                        {copiedField === 'new-win-pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 <div className="bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500 p-3 rounded">
