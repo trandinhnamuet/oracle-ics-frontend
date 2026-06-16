@@ -127,7 +127,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 mr-4">
             <button
               type="button"
               className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0"
@@ -188,7 +188,7 @@ export function Header() {
           </span>
 
           {/* Auth Section */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3 ml-4">
             {isAuthenticated && user ? (
               <div className="flex items-center space-x-2">
                 <NotificationBell />
@@ -223,38 +223,38 @@ export function Header() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-border pt-4">
-            <nav className="flex flex-col space-y-3">
+            <nav className="flex flex-col space-y-4">
               <button
                 type="button"
-                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 text-left"
+                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 py-1 text-left"
                 onClick={() => { setIsMenuOpen(false); handleHomeClick() }}
               >
                 {t('header.home')}
               </button>
               <button
                 type="button"
-                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 text-left"
+                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 py-1 text-left"
                 onClick={() => { setIsMenuOpen(false); handleSmoothScroll('services') }}
               >
                 {t('header.services')}
               </button>
               <button
                 type="button"
-                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 text-left"
+                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 py-1 text-left"
                 onClick={() => { setIsMenuOpen(false); handleSmoothScroll('pricing') }}
               >
                 {t('header.pricing')}
               </button>
               <button
                 type="button"
-                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 text-left"
+                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 py-1 text-left"
                 onClick={() => { setIsMenuOpen(false); window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }) }}
               >
                 {t('header.support')}
               </button>
               <button
                 type="button"
-                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 text-left"
+                className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 py-1 text-left"
                 onClick={() => { setIsMenuOpen(false); router.push('/contact-info') }}
               >
                 {t('header.contact')}
