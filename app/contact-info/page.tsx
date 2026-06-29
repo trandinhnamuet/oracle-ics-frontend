@@ -125,7 +125,7 @@ export default function ContactInfoPage() {
                     <Mail className="h-5 w-5 text-purple-600" />
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-foreground mb-1">{t('contactInfo.email')}</p>
-                      <p className="text-gray-700 dark:text-muted-foreground">info@icss.com.vn</p>
+                      <p className="text-gray-700 dark:text-muted-foreground">contact@ics.vn</p>
                     </div>
                   </div>
                 </div>
@@ -134,7 +134,7 @@ export default function ContactInfoPage() {
                     <Globe className="h-5 w-5 text-indigo-600" />
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-foreground mb-1">{t('contactInfo.website')}</p>
-                      <p className="text-gray-700 dark:text-muted-foreground">www.icss.com.vn</p>
+                      <p className="text-gray-700 dark:text-muted-foreground">www.ics.vn</p>
                     </div>
                   </div>
                 </div>
