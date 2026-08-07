@@ -31,7 +31,7 @@
       "active": "Hoạt động",
       "inactive": "Không hoạt động",
       "pending": "Đang chờ",
-      "suspended": "Tạm dừng", 
+      "suspended": "Tạm dừng",
       "cancelled": "Đã hủy",
       "expired": "Hết hạn",
       "pauseTitle": "Tạm dừng gói",
@@ -668,10 +668,18 @@
         "yearly": "Theo năm"
       },
       "months": {
-        "jan": "Tháng 1", "feb": "Tháng 2", "mar": "Tháng 3",
-        "apr": "Tháng 4", "may": "Tháng 5", "jun": "Tháng 6",
-        "jul": "Tháng 7", "aug": "Tháng 8", "sep": "Tháng 9",
-        "oct": "Tháng 10", "nov": "Tháng 11", "dec": "Tháng 12"
+        "jan": "Tháng 1",
+        "feb": "Tháng 2",
+        "mar": "Tháng 3",
+        "apr": "Tháng 4",
+        "may": "Tháng 5",
+        "jun": "Tháng 6",
+        "jul": "Tháng 7",
+        "aug": "Tháng 8",
+        "sep": "Tháng 9",
+        "oct": "Tháng 10",
+        "nov": "Tháng 11",
+        "dec": "Tháng 12"
       },
       "table": {
         "month": "Tháng",
@@ -1039,32 +1047,62 @@
         "database": {
           "title": "Oracle Database Cloud",
           "description": "Cơ sở dữ liệu Oracle tự quản lý với hiệu suất cao và bảo mật tuyệt đối",
-          "features": ["Autonomous Database", "Real Application Clusters", "Data Guard", "Advanced Security"]
+          "features": [
+            "Autonomous Database",
+            "Real Application Clusters",
+            "Data Guard",
+            "Advanced Security"
+          ]
         },
         "compute": {
           "title": "Compute Cloud",
           "description": "Máy chủ ảo linh hoạt với cấu hình tùy chỉnh theo nhu cầu doanh nghiệp",
-          "features": ["Bare Metal", "Virtual Machines", "Container Engine", "Functions"]
+          "features": [
+            "Bare Metal",
+            "Virtual Machines",
+            "Container Engine",
+            "Functions"
+          ]
         },
         "storage": {
           "title": "Storage Solutions",
           "description": "Giải pháp lưu trữ đa dạng từ block storage đến object storage",
-          "features": ["Block Volume", "Object Storage", "File Storage", "Archive Storage"]
+          "features": [
+            "Block Volume",
+            "Object Storage",
+            "File Storage",
+            "Archive Storage"
+          ]
         },
         "networking": {
           "title": "Networking",
           "description": "Hạ tầng mạng toàn cầu với độ trễ thấp và băng thông cao",
-          "features": ["Virtual Cloud Network", "Load Balancer", "VPN Connect", "FastConnect"]
+          "features": [
+            "Virtual Cloud Network",
+            "Load Balancer",
+            "VPN Connect",
+            "FastConnect"
+          ]
         },
         "security": {
           "title": "Security & Identity",
           "description": "Bảo mật đa lớp với quản lý danh tính và truy cập tiên tiến",
-          "features": ["Identity Management", "Key Management", "Web Application Firewall", "Security Zones"]
+          "features": [
+            "Identity Management",
+            "Key Management",
+            "Web Application Firewall",
+            "Security Zones"
+          ]
         },
         "analytics": {
           "title": "Analytics & AI",
           "description": "Phân tích dữ liệu thông minh với machine learning tích hợp",
-          "features": ["Analytics Cloud", "Data Science", "Machine Learning", "Big Data Service"]
+          "features": [
+            "Analytics Cloud",
+            "Data Science",
+            "Machine Learning",
+            "Big Data Service"
+          ]
         }
       },
       "benefits": {
@@ -1516,7 +1554,7 @@
     "status": {
       "active": "Đang hoạt động",
       "inactive": "Không hoạt động",
-      "expired": "Hết hạn", 
+      "expired": "Hết hạn",
       "suspended": "Tạm dừng",
       "cancelled": "Đã hủy",
       "pending": "Đang chờ"
@@ -1542,7 +1580,10 @@
       "imageName": "Image",
       "windowsRdpCredentials": "🪟 Thông tin đăng nhập Windows RDP",
       "initialPassword": "Mật khẩu khởi tạo",
-      "windowsPasswordPending": "⏳ Mật khẩu đang được tạo (5–10 phút sau khi VM khởi động). Hãy làm mới trang sau vài phút."
+      "windowsPasswordPending": "⏳ Mật khẩu đang được tạo (5–10 phút sau khi VM khởi động). Hãy làm mới trang sau vài phút.",
+      "passwordShownOnce": "⚠️ Chỉ hiển thị một lần — hãy lưu lại ngay. Mật khẩu không thể xem lại; nếu mất hãy đặt lại mật khẩu.",
+      "passwordRevealFailed": "Không lấy được mật khẩu.",
+      "passwordOwnerOnly": "Chỉ chủ sở hữu VM mới xem được"
     },
     "controls": {
       "vmName": "Tên VM:",
@@ -1552,7 +1593,7 @@
       "showPerformance": "Hiển thị sử dụng hiệu suất",
       "timeOptions": {
         "oneHour": "1 tiếng trước",
-        "sixHours": "6 tiếng trước", 
+        "sixHours": "6 tiếng trước",
         "twentyFourHours": "24 tiếng trước",
         "sevenDays": "7 ngày trước"
       },
@@ -1596,7 +1637,7 @@
     "actions": {
       "title": "Quản lý gói",
       "startVM": "Khởi động VM",
-      "pauseVM": "Tạm dừng VM", 
+      "pauseVM": "Tạm dừng VM",
       "restartVM": "Khởi động lại VM",
       "createBackup": "Tạo bản sao lưu",
       "console": "Console",
@@ -1745,7 +1786,8 @@
         "valid": "Mật khẩu đáp ứng yêu cầu Windows",
         "passwordMismatch": "Mật khẩu xác nhận không khớp",
         "passwordMatch": "Mật khẩu khớp"
-      }
+      },
+      "sentToOwner": "Đã gửi cho chủ sở hữu VM"
     },
     "actionOtp": {
       "sendOtp": "Xác nhận",
@@ -2154,9 +2196,18 @@
     "successTitle": "Thành công",
     "successDesc": "Đã tạo lệnh nạp tiền, đang chuyển đến trang thanh toán...",
     "methods": {
-      "momo": { "name": "Ví MoMo", "description": "Thanh toán qua ví điện tử MoMo" },
-      "card": { "name": "Thẻ thanh toán quốc tế", "description": "Visa, Mastercard, JCB" },
-      "bank_transfer": { "name": "Chuyển khoản ngân hàng", "description": "Quét QR Code hoặc chuyển khoản thủ công" }
+      "momo": {
+        "name": "Ví MoMo",
+        "description": "Thanh toán qua ví điện tử MoMo"
+      },
+      "card": {
+        "name": "Thẻ thanh toán quốc tế",
+        "description": "Visa, Mastercard, JCB"
+      },
+      "bank_transfer": {
+        "name": "Chuyển khoản ngân hàng",
+        "description": "Quét QR Code hoặc chuyển khoản thủ công"
+      }
     }
   },
   "pricingModal": {
@@ -2201,9 +2252,9 @@
     "email": "Email",
     "emailPlaceholder": "your@email.com",
     "password": "Mật khẩu",
-    "passwordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "passwordPlaceholder": "········",
     "confirmPassword": "Xác nhận mật khẩu",
-    "confirmPasswordPlaceholder": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+    "confirmPasswordPlaceholder": "········",
     "registerButton": "Đăng ký",
     "registering": "Đang đăng ký...",
     "or": "Hoặc",
@@ -2287,7 +2338,7 @@
       "verifying": "Đang xác thực...",
       "resend": "Gửi lại mã OTP",
       "resendCountdown": "Gửi lại mã sau {{countdown}}s",
-      "backToLogin": "\u2190 Quay lại đăng nhập",
+      "backToLogin": "← Quay lại đăng nhập",
       "validation": {
         "otpRequired": "Vui lòng nhập đầy đủ 6 số OTP"
       }
@@ -2339,7 +2390,7 @@
     "benefit4": "Giao dịch được mã hóa bảo mật",
     "scanQR": "Quét QR để thanh toán",
     "loadingPaymentInfo": "Đang tải thông tin thanh toán...",
-    "paymentSuccessRedirect": "\u2705 Nạp tiền thành công! Đang chuyển hướng...",
+    "paymentSuccessRedirect": "✅ Nạp tiền thành công! Đang chuyển hướng...",
     "checkingPayment": "Đang kiểm tra thanh toán...",
     "scanQRDesc": "Quét mã QR bằng app ngân hàng để thanh toán",
     "bankLabel": "Ngân hàng:",

@@ -36,7 +36,7 @@ import {
   Tooltip,
 } from 'recharts'
 import { getSubscriptionById, deleteSubscription, toggleAutoRenew, renewSubscription, Subscription } from '@/api/subscription.api'
-import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, resetWindowsPassword, getResetWindowsPasswordStatus, sendActionOtp, VmDetails } from '@/api/vm-subscription.api'
+import { getSubscriptionVm, performVmAction, requestNewSshKey, deleteVmOnly, resetWindowsPassword, getResetWindowsPasswordStatus, sendActionOtp, revealInitialWindowsPassword, VmDetails } from '@/api/vm-subscription.api'
 import { getInstanceMetrics, InstanceMetrics, MetricsData } from '@/api/oci.api'
 import { toast } from '@/hooks/use-toast'
 import { formatDateOnly, formatDateTime, parseAsUtc } from '@/lib/utils'
@@ -170,7 +170,10 @@ export default function PackageDetailPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showCustomPassword, setShowCustomPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [showInitialWinPassword, setShowInitialWinPassword] = useState(false)
+  // Holds the initial password only for the lifetime of this page view: it is
+  // fetched on demand and destroyed server-side in the same request.
+  const [revealedWinPassword, setRevealedWinPassword] = useState<string | null>(null)
+  const [revealingWinPassword, setRevealingWinPassword] = useState(false)
   const [showNewWinPassword, setShowNewWinPassword] = useState(false)
   const [resetPasswordOtpStep, setResetPasswordOtpStep] = useState<'form' | 'otp'>('form')
   const [resetOtpCode, setResetOtpCode] = useState('')
@@ -197,6 +200,28 @@ export default function PackageDetailPage() {
     description: string
     onConfirm: () => Promise<void>
   }>({ open: false, title: '', description: '', onConfirm: async () => {} })
+
+  /**
+   * Fetch the initial Windows password. The server returns it once and deletes
+   * it, so it is kept in component state only and never re-requested; if the
+   * user reloads the page it is gone for good and they must reset instead.
+   */
+  const handleRevealInitialPassword = async () => {
+    if (revealingWinPassword || revealedWinPassword) return
+    setRevealingWinPassword(true)
+    try {
+      const { password } = await revealInitialWindowsPassword(subscriptionId)
+      setRevealedWinPassword(password)
+    } catch (error: any) {
+      toast({
+        title: t('packageDetail.toast.error'),
+        description: error?.message || t('packageDetail.serverDetails.passwordRevealFailed'),
+        variant: "destructive"
+      })
+    } finally {
+      setRevealingWinPassword(false)
+    }
+  }
 
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text)
@@ -326,7 +351,7 @@ export default function PackageDetailPage() {
     }
 
     const isWindows = vmDetails?.vm?.operatingSystem?.toLowerCase().includes('windows')
-    const needsPolling = isWindows && (!vmDetails?.vm?.windowsInitialPassword || vmDetails?.vm?.lifecycleState !== 'RUNNING')
+    const needsPolling = isWindows && (!vmDetails?.vm?.windowsPasswordReady || vmDetails?.vm?.lifecycleState !== 'RUNNING')
 
     if (!needsPolling || !subscriptionId) return
 
@@ -343,7 +368,7 @@ export default function PackageDetailPage() {
         const vmData = await getSubscriptionVm(subscriptionId)
         setVmDetails(vmData)
         // Stop polling once VM is RUNNING and password is available
-        if (vmData?.vm?.windowsInitialPassword && vmData?.vm?.lifecycleState === 'RUNNING') {
+        if (vmData?.vm?.windowsPasswordReady && vmData?.vm?.lifecycleState === 'RUNNING') {
           if (windowsPollRef.current) clearInterval(windowsPollRef.current)
         }
       } catch (err) {
@@ -357,7 +382,7 @@ export default function PackageDetailPage() {
         windowsPollRef.current = null
       }
     }
-  }, [vmDetails?.vm?.operatingSystem, vmDetails?.vm?.windowsInitialPassword, vmDetails?.vm?.lifecycleState, subscriptionId])
+  }, [vmDetails?.vm?.operatingSystem, vmDetails?.vm?.windowsPasswordReady, vmDetails?.vm?.lifecycleState, subscriptionId])
 
   // Fetch metrics when VM details are available
   useEffect(() => {
@@ -1009,7 +1034,7 @@ export default function PackageDetailPage() {
                     <p className="text-sm font-semibold mb-2 flex items-center gap-2">
                       {t('packageDetail.serverDetails.windowsRdpCredentials')}
                     </p>
-                    {vmDetails.vm.windowsInitialPassword ? (
+                    {vmDetails.vm.windowsPasswordReady ? (
                       <div className="bg-gray-50 dark:bg-muted p-3 rounded space-y-2 text-sm font-mono">
                         <div className="flex items-center justify-between">
                           <span><strong>{t('packageDetail.serverDetails.username')}:</strong> opc</span>
@@ -1017,17 +1042,35 @@ export default function PackageDetailPage() {
                             {copiedField === 'win-user' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
                           </Button>
                         </div>
+                        {/*
+                          The password is not part of this page's data. It is fetched
+                          on explicit request and only once — the server erases it as
+                          it hands it over — so it can never be re-read from here.
+                        */}
                         <div className="flex items-center justify-between">
-                          <span><strong>{t('packageDetail.serverDetails.initialPassword')}:</strong> {showInitialWinPassword ? vmDetails.vm.windowsInitialPassword : '••••••••••••'}</span>
+                          <span><strong>{t('packageDetail.serverDetails.initialPassword')}:</strong> {revealedWinPassword ?? '••••••••••••'}</span>
                           <div className="flex gap-1">
-                            <Button size="sm" variant="ghost" onClick={() => setShowInitialWinPassword(v => !v)}>
-                              {showInitialWinPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => copyToClipboard(vmDetails.vm!.windowsInitialPassword!, 'win-pass')}>
-                              {copiedField === 'win-pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
-                            </Button>
+                            {revealedWinPassword ? (
+                              <Button size="sm" variant="ghost" onClick={() => copyToClipboard(revealedWinPassword, 'win-pass')}>
+                                {copiedField === 'win-pass' ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                disabled={revealingWinPassword}
+                                onClick={handleRevealInitialPassword}
+                              >
+                                <Eye className="h-3 w-3" />
+                              </Button>
+                            )}
                           </div>
                         </div>
+                        {revealedWinPassword && (
+                          <p className="text-xs text-red-600 dark:text-red-400 font-sans">
+                            {t('packageDetail.serverDetails.passwordShownOnce')}
+                          </p>
+                        )}
                       </div>
                     ) : (
                       <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 p-3 rounded text-sm">

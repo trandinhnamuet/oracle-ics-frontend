@@ -17,9 +17,12 @@ const guestOnlyRoutes: string[] = []
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  // Only check refreshToken since accessToken is in localStorage (client-side only)
-  const refreshToken = request.cookies.get('refreshToken')?.value
-  let userRole = null;
+  // The refresh token itself is scoped to /api/auth and is deliberately NOT sent
+  // to page routes, so this reads the companion session-hint cookie instead: a
+  // site-wide marker holding only the role, never a token. Same trust level as
+  // before (see the note below) with nothing sensitive exposed on these paths.
+  const sessionHint = request.cookies.get('sessionHint')?.value
+  let userRole = sessionHint || null;
   
   // Xử lý ngôn ngữ để tránh hydration mismatch
   const response = NextResponse.next()
@@ -35,29 +38,14 @@ export function middleware(request: NextRequest) {
   }
   
   // SECURITY NOTE:
-  // The JWT is decoded WITHOUT signature verification here. This is intentional
-  // and SAFE for the following reasons:
-  //   1. The decoded role is used only as a UI ROUTING HINT (e.g. send admins to
-  //      /admin, send guests to /login). It is NEVER used as the source of
-  //      authorization.
-  //   2. All real authorization decisions are enforced server-side by the
-  //      backend on every API call (JwtAuthGuard + AdminGuard verify the
-  //      signature with the server's secret).
-  //   3. A malicious user can craft a token claiming role="admin", but the
-  //      backend will reject it on the first protected API call, so they gain
-  //      nothing beyond seeing an empty admin shell page.
-  // DO NOT use this decoded payload for any authorization or trust decision.
-  if (refreshToken) {
-    try {
-      const payload = refreshToken.split('.')[1];
-      if (payload) {
-        const decoded = JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'));
-        userRole = decoded.role;
-      }
-    } catch (e) {
-      // Invalid token format — treat as unauthenticated
-    }
-  }
+  // `userRole` comes from the session-hint cookie and is NOT authenticated. It is
+  // used only as a UI ROUTING HINT (send admins to /admin, guests to /login) and
+  // is NEVER the source of authorization. Every real authorization decision is
+  // enforced server-side on each API call (JwtAuthGuard + AdminGuard verify the
+  // JWT signature with the server's secret). Someone who forges this cookie sees
+  // an empty admin shell and nothing more — the same exposure as the previous
+  // unverified JWT decode this replaced.
+  // DO NOT use this value for any authorization or trust decision.
   
   // Kiểm tra xem route có cần authentication không
   const isProtectedRoute = protectedRoutes.some(route => 
@@ -70,13 +58,13 @@ export function middleware(request: NextRequest) {
   )
   
   // Nếu là protected route và không có valid token
-  if (isProtectedRoute && !refreshToken) {
+  if (isProtectedRoute && !sessionHint) {
     console.log(`🔴 Middleware: Protecting route ${pathname} - no refresh token`);
     
     // Nếu là /admin hoặc /admin/* thì redirect sang /unauthorized
     if (pathname.startsWith('/admin')) {
       const unauthorizedResponse = NextResponse.redirect(new URL('/unauthorized', request.url));
-      unauthorizedResponse.cookies.delete('refreshToken')
+      unauthorizedResponse.cookies.delete('sessionHint')
       if (currentLanguage) {
         unauthorizedResponse.cookies.set('language', currentLanguage, {
           path: '/',
@@ -90,7 +78,7 @@ export function middleware(request: NextRequest) {
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('returnUrl', pathname)
     const loginResponse = NextResponse.redirect(loginUrl)
-    loginResponse.cookies.delete('refreshToken')
+    loginResponse.cookies.delete('sessionHint')
     if (currentLanguage) {
       loginResponse.cookies.set('language', currentLanguage, {
         path: '/',
@@ -102,7 +90,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Nếu đã đăng nhập nhưng vào /admin mà không phải admin
-  if (refreshToken && pathname.startsWith('/admin') && userRole !== 'admin') {
+  if (sessionHint && pathname.startsWith('/admin') && userRole !== 'admin') {
     console.log(`🔴 Middleware: User ${userRole} trying to access admin route`);
     const unauthorizedResponse = NextResponse.redirect(new URL('/unauthorized', request.url));
     if (currentLanguage) {
@@ -116,7 +104,7 @@ export function middleware(request: NextRequest) {
   }
   
   // Nếu là guest-only route và đã có valid token, redirect về home
-  if (isGuestOnlyRoute && refreshToken) {
+  if (isGuestOnlyRoute && sessionHint) {
     console.log(`ℹ️ Middleware: User already logged in, redirecting from ${pathname}`);
     const homeUrl = new URL('/', request.url);
     const redirectResponse = NextResponse.redirect(homeUrl);

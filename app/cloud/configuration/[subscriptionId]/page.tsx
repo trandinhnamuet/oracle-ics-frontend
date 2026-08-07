@@ -38,7 +38,7 @@ import {
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/lib/auth-context'
 import { getSubscriptionById } from '@/api/subscription.api'
-import { configureSubscriptionVm, getSubscriptionVm } from '@/api/vm-subscription.api'
+import { configureSubscriptionVm, getSubscriptionVm, revealInitialWindowsPassword } from '@/api/vm-subscription.api'
 import { getComputeImages, type ComputeImage } from '@/api/oci.api'
 
 // OS Icon mapping
@@ -124,14 +124,17 @@ export default function CloudConfigurationBySubscriptionPage() {
       try {
         const vmData = await getSubscriptionVm(sid)
         const vm = vmData?.vm
-        if (vm?.windowsInitialPassword) {
+        if (vm?.windowsPasswordReady) {
           clearInterval(windowsPasswordPollRef.current!)
           windowsPasswordPollRef.current = null
+          // Provisioning is done: claim the password once. The server hands it
+          // over and erases it, so this is the only time it can be displayed.
+          const { password } = await revealInitialWindowsPassword(sid)
           setVmCredentials(prev => prev ? {
             ...prev,
             type: 'windows',
             username: prev.username || 'opc',
-            password: vm.windowsInitialPassword,
+            password,
             publicIp: prev.publicIp || vm.publicIp,
           } : null)
         }
@@ -300,14 +303,15 @@ export default function CloudConfigurationBySubscriptionPage() {
       const instanceName = response.vm?.instanceName || 'VM'
       const publicIp = response.vm?.publicIp
 
-      if (isWindows && response.vm?.windowsInitialPassword) {
-        // Windows - password available immediately
+      if (isWindows && response.vm?.windowsPasswordReady) {
+        // Windows - password already provisioned: claim it once for display.
+        const { password } = await revealInitialWindowsPassword(subscriptionId)
         setVmCredentials({
           type: 'windows',
           instanceName,
           publicIp,
           username: 'opc',
-          password: response.vm.windowsInitialPassword,
+          password,
         })
       } else if (isWindows) {
         // Windows - password pending async retrieval, start polling

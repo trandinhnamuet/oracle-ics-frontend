@@ -685,10 +685,18 @@
         "yearly": "按年"
       },
       "months": {
-        "jan": "1月", "feb": "2月", "mar": "3月",
-        "apr": "4月", "may": "5月", "jun": "6月",
-        "jul": "7月", "aug": "8月", "sep": "9月",
-        "oct": "10月", "nov": "11月", "dec": "12月"
+        "jan": "1月",
+        "feb": "2月",
+        "mar": "3月",
+        "apr": "4月",
+        "may": "5月",
+        "jun": "6月",
+        "jul": "7月",
+        "aug": "8月",
+        "sep": "9月",
+        "oct": "10月",
+        "nov": "11月",
+        "dec": "12月"
       },
       "table": {
         "month": "月份",
@@ -1056,32 +1064,62 @@
         "database": {
           "title": "Oracle資料庫雲",
           "description": "具有高效能和絕對安全的自管理Oracle資料庫",
-          "features": ["自主資料庫", "即時應用叢集", "資料保護", "進階安全"]
+          "features": [
+            "自主資料庫",
+            "即時應用叢集",
+            "資料保護",
+            "進階安全"
+          ]
         },
         "compute": {
           "title": "運算雲",
           "description": "彈性的虛擬伺服器，可根據企業需求自訂配置",
-          "features": ["裸金屬", "虛擬機", "容器引擎", "函數"]
+          "features": [
+            "裸金屬",
+            "虛擬機",
+            "容器引擎",
+            "函數"
+          ]
         },
         "storage": {
           "title": "儲存解決方案",
           "description": "從區塊儲存到物件儲存的多樣化儲存解決方案",
-          "features": ["區塊儲存", "物件儲存", "檔案儲存", "歸檔儲存"]
+          "features": [
+            "區塊儲存",
+            "物件儲存",
+            "檔案儲存",
+            "歸檔儲存"
+          ]
         },
         "networking": {
           "title": "網路",
           "description": "低延遲和高頻寬的全球網路基礎設施",
-          "features": ["虛擬雲網路", "負載平衡器", "VPN連線", "快速連線"]
+          "features": [
+            "虛擬雲網路",
+            "負載平衡器",
+            "VPN連線",
+            "快速連線"
+          ]
         },
         "security": {
           "title": "安全與身份",
           "description": "多層安全與進階身份和存取管理",
-          "features": ["身份管理", "金鑰管理", "Web應用程式防火牆", "安全區域"]
+          "features": [
+            "身份管理",
+            "金鑰管理",
+            "Web應用程式防火牆",
+            "安全區域"
+          ]
         },
         "analytics": {
           "title": "分析與人工智慧",
           "description": "整合機器學習的智慧資料分析",
-          "features": ["分析雲", "資料科學", "機器學習", "大資料服務"]
+          "features": [
+            "分析雲",
+            "資料科學",
+            "機器學習",
+            "大資料服務"
+          ]
         }
       },
       "benefits": {
@@ -1559,7 +1597,10 @@
       "imageName": "鏡像",
       "windowsRdpCredentials": "🪟 Windows RDP 登入憑證",
       "initialPassword": "初始密碼",
-      "windowsPasswordPending": "⏳ 密碼正在產生中（VM 啟動後約 5–10 分鐘）。請幾分鐘後重新整理頁面。"
+      "windowsPasswordPending": "⏳ 密碼正在產生中（VM 啟動後約 5–10 分鐘）。請幾分鐘後重新整理頁面。",
+      "passwordShownOnce": "⚠️ 僅顯示一次，請立即儲存。無法再次顯示；如遺失請重設密碼。",
+      "passwordRevealFailed": "無法取得密碼。",
+      "passwordOwnerOnly": "僅 VM 擁有者可見"
     },
     "controls": {
       "vmName": "虛擬機名稱：",
@@ -1752,7 +1793,8 @@
         "valid": "密碼符合Windows要求",
         "passwordMismatch": "兩次輸入的密碼不一致",
         "passwordMatch": "密碼匹配"
-      }
+      },
+      "sentToOwner": "已傳送給 VM 擁有者"
     },
     "actionOtp": {
       "sendOtp": "確認",
@@ -2161,9 +2203,18 @@
     "successTitle": "成功",
     "successDesc": "儲值請求已建立，正在跳轉到支付頁面...",
     "methods": {
-      "momo": { "name": "MoMo錢包", "description": "透過MoMo電子錢包支付" },
-      "card": { "name": "國際支付卡", "description": "Visa、Mastercard、JCB" },
-      "bank_transfer": { "name": "銀行轉帳", "description": "掃描QR碼或手動轉帳" }
+      "momo": {
+        "name": "MoMo錢包",
+        "description": "透過MoMo電子錢包支付"
+      },
+      "card": {
+        "name": "國際支付卡",
+        "description": "Visa、Mastercard、JCB"
+      },
+      "bank_transfer": {
+        "name": "銀行轉帳",
+        "description": "掃描QR碼或手動轉帳"
+      }
     }
   },
   "pricingModal": {
