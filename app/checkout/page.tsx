@@ -48,6 +48,17 @@ function CheckoutContent() {
   
   // Parse features từ string
   const planFeatures = planFeaturesStr ? planFeaturesStr.split(',').map(f => f.trim()) : []
+
+  // Authoritative VND amount: always prefer the server payment record. The old
+  // URL-price × client-editable localStorage['usdvnd_sell'] computation is only a
+  // pre-load fallback and must never drive the QR or the copied transfer info.
+  const getDisplayVnd = (): number => {
+    if (paymentData?.amount != null && Number.isFinite(Number(paymentData.amount))) {
+      return Number(paymentData.amount)
+    }
+    const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500
+    return roundMoney(parseFloat(planPrice || '0') * rate)
+  }
   
   // Tạo URL QR Sepay 
   const createQRUrl = (amount: string, transactionCode: string) => {
@@ -85,9 +96,14 @@ function CheckoutContent() {
         }, 2000)
       }
       
-      // Create QR URL if we have transaction code
+      // Create QR URL if we have transaction code. Encode the SERVER amount so
+      // the bank app pre-fills the authoritative figure, not the URL hint.
       if (response.transaction_code && !qrUrl) {
-        const qrUrlGenerated = createQRUrl(amount, response.transaction_code)
+        const qrAmount =
+          response.amount != null && Number.isFinite(Number(response.amount))
+            ? String(Math.round(Number(response.amount)))
+            : amount
+        const qrUrlGenerated = createQRUrl(qrAmount, response.transaction_code)
         setQrUrl(qrUrlGenerated)
       }
       
@@ -130,10 +146,19 @@ function CheckoutContent() {
   }
 
   const handleCopyTransferInfo = () => {
-    const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
-    const vndPrice = roundMoney(parseFloat(planPrice || '0') * rate);
-    const transactionCode = paymentData?.transaction_code || `${planName} U${userId}P${planId}`;
-    
+    // The transfer content MUST be the server transaction_code — the SePay webhook
+    // matches on it. Never copy a fabricated "name UxPy" string (it would never
+    // reconcile and the money would be lost).
+    const transactionCode = paymentData?.transaction_code;
+    if (!transactionCode) {
+      toast({
+        title: 'Thông tin thanh toán chưa sẵn sàng, vui lòng đợi mã QR hiển thị.',
+        variant: 'destructive'
+      })
+      return
+    }
+    const vndPrice = getDisplayVnd();
+
     const transferInfo = `
 Ngân hàng: TPBank
 Số tài khoản: 66010901964
@@ -223,8 +248,7 @@ Nội dung: ${transactionCode}
                   <span>{t('checkout.totalAmount')}:</span>
                   <span className="text-primary">
                     {(() => {
-                      const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
-                      const vndPrice = roundMoney(parseFloat(planPrice || '0') * rate);
+                      const vndPrice = getDisplayVnd();
                       return formatPrice(vndPrice);
                     })()}₫
                     {parseInt(planMonths) > 1 ? (
@@ -310,8 +334,7 @@ Nội dung: ${transactionCode}
                     <span className="text-sm text-muted-foreground">{t('checkout.amount')}:</span>
                     <span className="text-sm font-medium text-primary">
                       {(() => {
-                        const rate = typeof window !== 'undefined' ? Number(localStorage.getItem('usdvnd_sell') || 26500) : 26500;
-                        const vndPrice = roundMoney(parseFloat(planPrice || '0') * rate);
+                        const vndPrice = getDisplayVnd();
                         return formatPrice(vndPrice);
                       })()}₫
                     </span>

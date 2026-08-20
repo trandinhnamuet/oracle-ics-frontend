@@ -8,7 +8,7 @@ import { io, Socket } from "socket.io-client";
 import "xterm/css/xterm.css";
 import { X, Maximize2, Minimize2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import useAuthStore from "@/hooks/use-auth-store";
+import { authService } from "@/services/auth.service";
 
 interface TerminalComponentProps {
   vmId: number | string;
@@ -27,12 +27,35 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
   const [error, setError] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   
-  // Lấy token từ auth store thay vì cookies
-  const { token } = useAuthStore();
+  // The real, short-lived JWT access token lives in-memory in authService (the
+  // auth store only holds an HttpOnly-cookie placeholder that the backend rejects).
+  // undefined = still resolving, null = no valid session, string = usable token.
+  const [token, setToken] = useState<string | null | undefined>(undefined);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let active = true;
+    (async () => {
+      let t = authService.getAccessToken();
+      if (!t) {
+        try {
+          t = await authService.refresh();
+        } catch {
+          t = null;
+        }
+      }
+      if (active) setToken(t);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
     if (!terminalRef.current) return;
+    // Wait until the token has been resolved before deciding anything.
+    if (token === undefined) return;
 
     // Initialize xterm.js
     const term = new Terminal({
@@ -86,6 +109,13 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
     });
 
     socketRef.current = socket;
+
+    // Keep the auth token fresh across reconnects: the in-memory access token is
+    // rotated by the auth provider, so re-read it before each reconnect attempt.
+    socket.io.on("reconnect_attempt", () => {
+      const fresh = authService.getAccessToken();
+      if (fresh) socket.auth = { token: fresh };
+    });
 
     // Socket event handlers
     socket.on("connect", () => {
@@ -162,19 +192,28 @@ export function TerminalComponent({ vmId, vmName, isOpen, onClose }: TerminalCom
     };
   }, [vmId, isOpen, token]); // Thêm token vào dependencies
 
-  const handleReconnect = () => {
+  const handleReconnect = async () => {
     setError(null);
     setIsConnecting(true);
-    
-    // Kiểm tra token trước khi reconnect
-    if (!token) {
+
+    // Ensure we reconnect with a valid, current access token.
+    let freshToken = authService.getAccessToken();
+    if (!freshToken) {
+      try {
+        freshToken = await authService.refresh();
+      } catch {
+        freshToken = null;
+      }
+    }
+    setToken(freshToken);
+    if (!freshToken) {
       setError("Authentication required. Please login again.");
       setIsConnecting(false);
       return;
     }
-    
-    setIsConnecting(true);
+
     if (socketRef.current) {
+      socketRef.current.auth = { token: freshToken };
       socketRef.current.connect();
       socketRef.current.emit("terminal:start", { vmId });
     }

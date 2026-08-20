@@ -6,5 +6,5 @@ import { AuthGuard } from '@/components/auth/auth-guard'
  * "session hint" cookie that the security review flagged as overly broad.
  */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <AuthGuard>{children}</AuthGuard>
+  return <AuthGuard requireAdmin>{children}</AuthGuard>
 }

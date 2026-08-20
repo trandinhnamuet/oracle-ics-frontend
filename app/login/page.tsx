@@ -25,14 +25,21 @@ export default function LoginPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  // Check if user is already logged in — redirect to home client-side
+  // Only same-origin relative paths are honored, to avoid an open redirect.
+  const rawReturnUrl = searchParams.get('returnUrl')
+  const returnUrl =
+    rawReturnUrl && rawReturnUrl.startsWith('/') && !rawReturnUrl.startsWith('//')
+      ? rawReturnUrl
+      : '/'
+
+  // Check if user is already logged in — redirect client-side
   // (middleware no longer handles this to avoid HttpOnly cookie race condition after logout)
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      console.log('[LOGIN PAGE] User already authenticated, redirecting to home')
-      router.replace('/')
+      console.log('[LOGIN PAGE] User already authenticated, redirecting to', returnUrl)
+      router.replace(returnUrl)
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, router, returnUrl])
 
   // Check if user just verified email
   useEffect(() => {
@@ -81,7 +88,7 @@ export default function LoginPage() {
     try {
       setError(null)
       clearErrors()
-      await login(data.email, data.password)
+      await login(data.email, data.password, returnUrl)
       console.log('✅ Login successful')
       reset()
     } catch (error: any) {

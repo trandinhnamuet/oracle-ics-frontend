@@ -9,7 +9,7 @@ interface AuthContextType {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string, redirectTo?: string) => Promise<void>
   logout: () => Promise<void>
   logoutAll: () => Promise<void>
   refreshToken: () => Promise<void>
@@ -116,7 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkAuth()
   }, [])
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string, redirectTo?: string) => {
     try {
       const response = await authService.login(email, password)
       
@@ -145,8 +145,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           token: 'from-httponly-cookie'
         })
         console.log('✅ Login synced to store:', response.user)
-        // Redirect to homepage after successful login
-        router.push("/")
+        // Redirect to the requested returnUrl after login, defaulting to home.
+        // Only allow same-origin relative paths to avoid an open-redirect.
+        const safeRedirect =
+          redirectTo && redirectTo.startsWith('/') && !redirectTo.startsWith('//')
+            ? redirectTo
+            : '/'
+        router.push(safeRedirect)
       } else {
         // Should not happen, but handle gracefully
         throw new Error('Login failed - no user data returned')

@@ -20,7 +20,13 @@ import { authService } from '@/services/auth.service'
  */
 const PUBLIC_PATHS: string[] = []
 
-export function AuthGuard({ children }: { children: React.ReactNode }) {
+export function AuthGuard({
+  children,
+  requireAdmin = false,
+}: {
+  children: React.ReactNode
+  requireAdmin?: boolean
+}) {
   const pathname = usePathname()
   const router = useRouter()
   const isPublic = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))
@@ -39,6 +45,19 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         if (!authService.getAccessToken()) {
           await authService.refresh()
         }
+        if (requireAdmin) {
+          // Verify the admin role against the server (never a client-writable
+          // store): a customer session must not render admin pages.
+          const user = await authService.getCurrentUser()
+          if (!user) throw new Error('No session')
+          if (user.role?.toLowerCase() !== 'admin') {
+            if (!cancelled) {
+              setAllowed(false)
+              router.replace('/unauthorized')
+            }
+            return
+          }
+        }
         if (!cancelled) setAllowed(true)
       } catch {
         if (!cancelled) {
@@ -52,7 +71,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [pathname, isPublic, router])
+  }, [pathname, isPublic, router, requireAdmin])
 
   if (!allowed) {
     return (

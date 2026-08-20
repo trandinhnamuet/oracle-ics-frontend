@@ -12,6 +12,7 @@ import {
   AdminLoginStatistics
 } from '@/api/admin-login-history.api'
 import useAuthStore from '@/hooks/use-auth-store'
+import { authService } from '@/services/auth.service'
 import { useToast } from '@/hooks/use-toast'
 import { formatDistanceToNow, format } from 'date-fns'
 import { vi } from 'date-fns/locale'
@@ -51,53 +52,35 @@ export default function AdminLoginHistoryPage() {
   // Search
   const [searchInput, setSearchInput] = useState('')
 
-  // Initialize auth store from localStorage on mount
+  // Verify the admin role against the SERVER, never from the client-writable
+  // `auth-storage` localStorage blob (which any user can edit to forge role:admin).
   useEffect(() => {
-    const storedAuth = localStorage.getItem('auth-storage')
-    if (storedAuth && !isAuthenticated) {
+    let cancelled = false
+    const verify = async () => {
       try {
-        const parsed = JSON.parse(storedAuth)
-        if (parsed.state?.user) {
-          useAuthStore.setState({
-            user: parsed.state.user,
-            token: parsed.state.token,
-            refreshToken: parsed.state.refreshToken,
-            isAuthenticated: true,
-            isLoading: false
-          })
-          console.log('✅ Auth restored from localStorage in login-history page')
+        const current = await authService.getCurrentUser()
+        if (cancelled) return
+        if (!current) {
+          router.push('/login')
+          return
         }
-      } catch (error) {
-        console.error('❌ Failed to restore auth:', error)
+        if (current.role?.toLowerCase() !== 'admin') {
+          console.warn('❌ Access denied - Not an admin user')
+          router.push('/unauthorized')
+          return
+        }
+        // Keep the store in sync with the verified identity.
+        useAuthStore.setState({ user: current, isAuthenticated: true, isLoading: false })
+        setAuthChecked(true)
+      } catch {
+        if (!cancelled) router.push('/login')
       }
     }
-    setAuthChecked(true)
-  }, [isAuthenticated])
-
-  // Check authentication
-  useEffect(() => {
-    // Wait until auth is checked
-    if (!authChecked) return
-    
-    // Nếu user tồn tại và là admin, cho phép truy cập
-    if (user?.role?.toLowerCase() === 'admin') {
-      console.log('✅ Admin access granted', { email: user.email, role: user.role })
-      return
+    verify()
+    return () => {
+      cancelled = true
     }
-    
-    // Chỉ redirect nếu user không tồn tại hoặc không phải admin
-    if (user === null) {
-      console.warn('❌ Access denied - No user logged in')
-      router.push('/unauthorized')
-      return
-    }
-    
-    if (user && user.role && user.role.toLowerCase() !== 'admin') {
-      console.warn('❌ Access denied - Not an admin user', { role: user.role })
-      router.push('/unauthorized')
-      return
-    }
-  }, [user, authChecked, router])
+  }, [router])
 
   // Fetch login history and statistics
   const fetchData = useCallback(async () => {

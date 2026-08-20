@@ -35,9 +35,19 @@ function AddFundsPaymentContent() {
 
   // Query params
   const paymentId = searchParams.get('paymentId')
+  // The URL `amount` is only a hint for the initial guard/loading state. It is
+  // attacker-tamperable (a mangled/shared link), so once the server payment
+  // record is loaded we ALWAYS use its authoritative amount for the QR code,
+  // the displayed transfer amount and the success toast.
   const amount = searchParams.get('amount') || '0'
 
   const isExpired = paymentStatus === 'expired' || countdown <= 0
+
+  // Authoritative amount: server payment record wins over the URL hint.
+  const displayAmount =
+    paymentData?.amount != null && Number.isFinite(Number(paymentData.amount))
+      ? String(paymentData.amount)
+      : amount
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -105,11 +115,11 @@ function AddFundsPaymentContent() {
         stopPolling()
         toast({
           title: t('addFundsPayment.paymentSuccess'),
-          description: `${t('addFundsPayment.paymentSuccessDesc')} ${formatPrice(parseInt(amount))} VND`,
+          description: `${t('addFundsPayment.paymentSuccessDesc')} ${formatPrice(parseInt(displayAmount))} VND`,
           variant: 'default'
         })
         setTimeout(() => {
-          router.push(`/add-funds/payment/success?amount=${encodeURIComponent(amount)}`)
+          router.push(`/add-funds/payment/success?amount=${encodeURIComponent(displayAmount)}`)
         }, 2000)
       }
     } catch (error: any) {
@@ -189,7 +199,7 @@ function AddFundsPaymentContent() {
     if (!paymentData) return
     const bank = process.env.NEXT_PUBLIC_BANK_NAME || 'TPBank'
     const account = process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '66010901964'
-    const transferInfo = `${t('addFundsPayment.bankLabel')} ${bank}\n${t('addFundsPayment.accountNumberLabel')} ${account}\n${t('addFundsPayment.amountLabel')} ${formatPrice(parseInt(amount))} VND\n${t('addFundsPayment.contentLabel')} ${paymentData.transaction_code}`
+    const transferInfo = `${t('addFundsPayment.bankLabel')} ${bank}\n${t('addFundsPayment.accountNumberLabel')} ${account}\n${t('addFundsPayment.amountLabel')} ${formatPrice(parseInt(displayAmount))} VND\n${t('addFundsPayment.contentLabel')} ${paymentData.transaction_code}`
     navigator.clipboard.writeText(transferInfo)
     toast({
       title: t('addFundsPayment.copiedTransferInfo'),
@@ -282,7 +292,7 @@ function AddFundsPaymentContent() {
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span>{t('addFundsPayment.depositAmount')}</span>
                   <span className="text-[#E60000]">
-                    {formatPrice(parseInt(amount))} VND
+                    {formatPrice(parseInt(displayAmount))} VND
                   </span>
                 </div>
               </div>
@@ -341,7 +351,7 @@ function AddFundsPaymentContent() {
                 ) : paymentData && !isExpired ? (
                   <div className="bg-white dark:bg-white p-4 rounded-lg inline-block shadow-sm border">
                     <Image
-                      src={createQRUrl(amount, paymentData.transaction_code)}
+                      src={createQRUrl(displayAmount, paymentData.transaction_code)}
                       alt={t('addFundsPayment.scanQR')}
                       width={200}
                       height={200}
@@ -393,7 +403,7 @@ function AddFundsPaymentContent() {
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('addFundsPayment.amountLabel')}</span>
                     <span className="text-sm font-medium text-[#E60000]">
-                      {formatPrice(parseInt(amount))} VND
+                      {formatPrice(parseInt(displayAmount))} VND
                     </span>
                   </div>
                   {paymentData && !isExpired && (
