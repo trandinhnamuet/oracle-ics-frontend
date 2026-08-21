@@ -275,6 +275,23 @@ export default function CloudConfigurationBySubscriptionPage() {
       )
     : []
 
+  // Restrict the OS options to what the subscription was purchased for: a Windows
+  // subscription (which cost more) may only create Windows VMs, and a Linux
+  // subscription may only create Linux VMs. Defaults to Linux for older rows.
+  const subOsType = subscription?.os_type === 'windows' ? 'windows' : 'linux'
+  const visibleOsList = availableOsList.filter((os) =>
+    subOsType === 'windows' ? os === 'Windows' : os !== 'Windows'
+  )
+
+  // If the currently-selected OS is not allowed for this subscription, clear it.
+  useEffect(() => {
+    if (selectedOS && !visibleOsList.includes(selectedOS)) {
+      setSelectedOS('')
+      setSelectedImageId('')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subOsType, availableOsList])
+
   // Handle VM configuration submission
   const handleConfigureVM = async () => {
     if (!isFormValid()) {
@@ -544,7 +561,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                         </button>
                       </div>
                     ) : (
-                      availableOsList.map(os => {
+                      visibleOsList.map(os => {
                         const icon = OS_ICONS[os] || '/image-logo/Oracle-Linux.png'
                         const isSelected = selectedOS === os
                         

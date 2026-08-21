@@ -12,6 +12,7 @@ export interface Subscription {
   end_date: string
   status: 'active' | 'inactive' | 'pending' | 'expired' | 'suspended' | 'cancelled'
   auto_renew: boolean
+  os_type?: 'linux' | 'windows'
   vm_instance_id?: number | null
   created_at: string
   updated_at: string
@@ -81,12 +82,14 @@ export interface CreateSubscriptionRequest {
   cloudPackageId: number
   monthsCount?: number
   autoRenew?: boolean
+  osType?: 'linux' | 'windows'
 }
 
 export interface CreateSubscriptionWithPaymentRequest {
   cloudPackageId: number
   monthsCount: number
   autoRenew?: boolean
+  osType?: 'linux' | 'windows'
 }
 
 // Subscribe with account balance
@@ -97,7 +100,8 @@ export const subscribeWithBalance = async (data: CreateSubscriptionRequest): Pro
       body: JSON.stringify({
         cloudPackageId: data.cloudPackageId,
         monthsCount: data.monthsCount || 1,
-        autoRenew: data.autoRenew || false
+        autoRenew: data.autoRenew || false,
+        osType: data.osType || 'linux'
       })
     })
     return result
@@ -118,7 +122,8 @@ export const subscribeWithPayment = async (data: CreateSubscriptionWithPaymentRe
       body: JSON.stringify({
         cloudPackageId: data.cloudPackageId,
         monthsCount: data.monthsCount,
-        autoRenew: data.autoRenew || false
+        autoRenew: data.autoRenew || false,
+        osType: data.osType || 'linux'
       })
     })
     return result

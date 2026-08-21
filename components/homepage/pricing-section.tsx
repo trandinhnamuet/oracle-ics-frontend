@@ -21,6 +21,21 @@ import BalanceDisplay from "@/components/wallet/balance-display"
 import { subscribeWithBalance, subscribeWithPayment } from "@/api/subscription.api"
 import { getUserBalance } from "@/api/user-wallet.api"
 
+// Windows license estimate — mirrors the backend (OCI per-OCPU/hour license):
+// uplift = OCPU × $0.092/h × 744h × 26310 VND/USD. 1 OCPU = 2 vCPU.
+const WINDOWS_LICENSE_USD_PER_OCPU_HOUR = 0.092
+const HOURS_PER_MONTH = 744
+const USD_TO_VND = 26310
+function windowsUpliftVnd(vcpu?: number): number {
+  const ocpu = (vcpu || 0) / 2
+  return Math.round(ocpu * WINDOWS_LICENSE_USD_PER_OCPU_HOUR * HOURS_PER_MONTH * USD_TO_VND)
+}
+function effectiveUnitVnd(plan: { priceVnd: number; vcpu?: number } | null, osType: 'linux' | 'windows'): number {
+  if (!plan) return 0
+  const base = parseFloat(String(plan.priceVnd)) || 0
+  return osType === 'windows' ? base + windowsUpliftVnd(plan.vcpu) : base
+}
+
 export function PricingSection() {
   const { t } = useTranslation()
   const router = useRouter()
@@ -41,6 +56,7 @@ export function PricingSection() {
   const [isConfirming, setIsConfirming] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [autoRenew, setAutoRenew] = useState(true)
+  const [osType, setOsType] = useState<'linux' | 'windows'>('linux')
   const [expandedPlanIds, setExpandedPlanIds] = useState<Set<number>>(new Set())
   const isConfirmingRef = useRef(false)
 
@@ -98,6 +114,7 @@ export function PricingSection() {
           subPlanNumber: i + 1,
           features: buildFeatures(pkg),
           limitations: [],
+          vcpu: parseInt((String(pkg.cpu || '').match(/\d+/) || ['0'])[0], 10) || 0,
         }))
         return {
           name: cat,
@@ -221,7 +238,7 @@ export function PricingSection() {
       if (selectedPaymentMethod === 'account_balance') {
         // Phương thức 1: Trừ tiền tài khoản
         const currentBalance = parseFloat(String(userBalance)) // Current balance in VND
-        const planPriceVND = parseFloat(String(selectedPlan.priceVnd))
+        const planPriceVND = effectiveUnitVnd(selectedPlan, osType)
         const totalAmount = planPriceVND * monthsCount
         
         if (totalAmount > currentBalance) {
@@ -238,7 +255,8 @@ export function PricingSection() {
         const subscription = await subscribeWithBalance({
           cloudPackageId: selectedPlan.id,
           monthsCount: monthsCount,
-          autoRenew: autoRenew
+          autoRenew: autoRenew,
+          osType: osType
         })
         console.log(`[PAY-DEBUG] subscribeWithBalance API call SUCCESS`)
         succeeded = true
@@ -266,7 +284,8 @@ export function PricingSection() {
         const result = await subscribeWithPayment({
           cloudPackageId: selectedPlan.id,
           monthsCount: monthsCount,
-          autoRenew: autoRenew
+          autoRenew: autoRenew,
+          osType: osType
         })
         console.log(`[PAY-DEBUG] subscribeWithPayment API call SUCCESS`)
         succeeded = true
@@ -715,7 +734,40 @@ export function PricingSection() {
               {t('pricingModal.subtitle', { planName: selectedPlan?.name })}
             </DialogDescription>
           </DialogHeader>
-          
+
+          {/* Operating System selection — Windows costs more (OCI Windows license) */}
+          <div className="mt-2">
+            <label className="text-[11px] sm:text-xs font-medium text-foreground mb-1 block text-center">
+              {t('pricingModal.osLabel')}
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setOsType('linux')}
+                className={`rounded-lg border-2 p-2 text-center transition-all ${
+                  osType === 'linux' ? 'border-[#E60000] bg-red-50 dark:bg-red-950/30' : 'border-border hover:border-muted-foreground/50'
+                }`}
+              >
+                <div className="text-sm font-semibold">Linux</div>
+                {selectedPlan && (
+                  <div className="text-[11px] text-foreground/70">{formatPrice(effectiveUnitVnd(selectedPlan, 'linux'))} VND/{t('pricingModal.perMonth')}</div>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => setOsType('windows')}
+                className={`rounded-lg border-2 p-2 text-center transition-all ${
+                  osType === 'windows' ? 'border-[#E60000] bg-red-50 dark:bg-red-950/30' : 'border-border hover:border-muted-foreground/50'
+                }`}
+              >
+                <div className="text-sm font-semibold">Windows</div>
+                {selectedPlan && (
+                  <div className="text-[11px] text-foreground/70">{formatPrice(effectiveUnitVnd(selectedPlan, 'windows'))} VND/{t('pricingModal.perMonth')}</div>
+                )}
+              </button>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-2 sm:gap-3 my-3 sm:my-4">
             {/* Phương thức 1: Trừ tiền tài khoản */}
             <Card 
@@ -760,10 +812,10 @@ export function PricingSection() {
                     <div className="text-center">
                       <div className="text-[11px] sm:text-xs text-foreground/70">{t('pricingModal.totalDeduction')}</div>
                       <div className="text-sm sm:text-base font-bold text-[#E60000] leading-tight">
-                        {formatPrice(selectedPlan.priceVnd * monthsCount)} VND
+                        {formatPrice(effectiveUnitVnd(selectedPlan, osType) * monthsCount)} VND
                       </div>
                       <div className="hidden sm:block text-xs text-foreground/60">
-                        {t('pricingModal.perMonthCalc', { price: formatPrice(selectedPlan.priceVnd), months: monthsCount })}
+                        {t('pricingModal.perMonthCalc', { price: formatPrice(effectiveUnitVnd(selectedPlan, osType)), months: monthsCount })}
                       </div>
                     </div>
                   )}
@@ -835,10 +887,10 @@ export function PricingSection() {
                     <div className="text-center">
                       <div className="text-[11px] sm:text-xs text-foreground/70">{t('pricingModal.totalPayment')}</div>
                       <div className="text-sm sm:text-base font-bold text-[#E60000] leading-tight">
-                        {formatPrice(selectedPlan.priceVnd * monthsCount)} VND
+                        {formatPrice(effectiveUnitVnd(selectedPlan, osType) * monthsCount)} VND
                       </div>
                       <div className="hidden sm:block text-xs text-foreground/60">
-                        {t('pricingModal.perMonthCalc', { price: formatPrice(selectedPlan.priceVnd), months: monthsCount })}
+                        {t('pricingModal.perMonthCalc', { price: formatPrice(effectiveUnitVnd(selectedPlan, osType)), months: monthsCount })}
                       </div>
                     </div>
                   )}

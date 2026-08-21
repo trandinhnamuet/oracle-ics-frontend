@@ -2222,6 +2222,8 @@
     "directPayment": "Thanh toán trực tiếp",
     "directPaymentDesc": "Thanh toán qua chuyển khoản ngân hàng hoặc QR code",
     "monthsLabel": "Số tháng đăng ký",
+    "osLabel": "Hệ điều hành",
+    "perMonth": "tháng",
     "totalDeduction": "Tổng trừ từ ví",
     "totalPayment": "Tổng thanh toán",
     "perMonthCalc": "{{price}} × {{months}} tháng",

@@ -13,6 +13,8 @@ export interface PricingPlan {
   limitations: string[]
   category: 'starter' | 'professional' | 'enterprise' | 'custom' | 'ai'
   subPlanNumber?: number
+  /** vCPU count (from the package), used to estimate the Windows license uplift. */
+  vcpu?: number
 }
 
 export interface PricingCategory {

@@ -2222,6 +2222,8 @@
     "directPayment": "Direct Payment",
     "directPaymentDesc": "Pay via bank transfer or QR code",
     "monthsLabel": "Subscription months",
+    "osLabel": "Operating system",
+    "perMonth": "month",
     "totalDeduction": "Total deducted from wallet",
     "totalPayment": "Total payment",
     "perMonthCalc": "{{price}} × {{months}} months",
