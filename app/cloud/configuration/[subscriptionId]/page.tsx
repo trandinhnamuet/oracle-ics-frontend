@@ -64,8 +64,8 @@ const normalizeOsName = (apiOs: string): string => {
   return apiOs
 }
 
-// All OS use E4.Flex (AMD x86)
-const getShapeForOS = (_os: string) => 'VM.Standard.E4.Flex'
+// All OS use E5.Flex (AMD x86)
+const getShapeForOS = (_os: string) => 'VM.Standard.E5.Flex'
 
 // Returns the SSH username for a given OS name (matches backend getOsSshUsername logic)
 const getSshUsernameForOS = (os: string): string => {
@@ -177,7 +177,7 @@ export default function CloudConfigurationBySubscriptionPage() {
         setIsLoadingImages(true)
         setSelectedImageId('')
         setImageSearchTerm('')
-        const images = await getComputeImages(undefined, undefined, 'VM.Standard.E4.Flex')
+        const images = await getComputeImages(undefined, undefined, 'VM.Standard.E5.Flex')
         setComputeImages(images)
       } catch (error: any) {
         console.error('Error fetching compute images:', error)
@@ -225,11 +225,11 @@ export default function CloudConfigurationBySubscriptionPage() {
     const loadAvailableOsList = async () => {
       try {
         setIsLoadingOsList(true)
-        // Chỉ dùng E4.Flex (AMD x86) cho tất cả OS
-        const allImages = await getComputeImages(undefined, undefined, 'VM.Standard.E4.Flex')
-        
+        // Chỉ dùng E5.Flex (AMD x86) cho tất cả OS
+        const allImages = await getComputeImages(undefined, undefined, 'VM.Standard.E5.Flex')
+
         if (!allImages || allImages.length === 0) {
-          console.warn('No images found for E4.Flex shape')
+          console.warn('No images found for E5.Flex shape')
           setAvailableOsList([])
           return
         }
