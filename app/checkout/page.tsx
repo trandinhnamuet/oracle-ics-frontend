@@ -341,7 +341,7 @@ Nội dung: ${transactionCode}
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.content')}:</span>
-                    <span className="text-sm font-medium">{planName} U{userId}P{planId}</span>
+                    <span className="text-sm font-medium">{paymentData?.transaction_code || `${planName} U${userId}P${planId}`}</span>
                   </div>
                 </div>
 
@@ -359,7 +359,7 @@ Nội dung: ${transactionCode}
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800">
                   <strong>{t('checkout.note')}</strong><br/>
-                  {t('checkout.transferContentExact')}: <strong>{planName} U{userId}P{planId}</strong>
+                  {t('checkout.transferContentExact')}: <strong>{paymentData?.transaction_code || `${planName} U${userId}P${planId}`}</strong>
                 </p>
               </div>
 
