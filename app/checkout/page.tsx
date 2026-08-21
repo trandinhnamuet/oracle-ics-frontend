@@ -333,15 +333,14 @@ Nội dung: ${transactionCode}
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.amount')}:</span>
                     <span className="text-sm font-medium text-primary">
-                      {(() => {
-                        const vndPrice = getDisplayVnd();
-                        return formatPrice(vndPrice);
-                      })()}₫
+                      {paymentData?.amount != null
+                        ? `${formatPrice(getDisplayVnd())}₫`
+                        : '…'}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">{t('checkout.content')}:</span>
-                    <span className="text-sm font-medium">{paymentData?.transaction_code || `${planName} U${userId}P${planId}`}</span>
+                    <span className="text-sm font-medium">{paymentData?.transaction_code || 'Đang tạo mã giao dịch…'}</span>
                   </div>
                 </div>
 
@@ -359,7 +358,7 @@ Nội dung: ${transactionCode}
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800">
                   <strong>{t('checkout.note')}</strong><br/>
-                  {t('checkout.transferContentExact')}: <strong>{paymentData?.transaction_code || `${planName} U${userId}P${planId}`}</strong>
+                  {t('checkout.transferContentExact')}: <strong>{paymentData?.transaction_code || 'Đang tạo mã giao dịch…'}</strong>
                 </p>
               </div>
 
