@@ -26,11 +26,10 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
 
   // Only same-origin relative paths are honored, to avoid an open redirect.
+  // Must start with a single '/' NOT followed by '/' or '\' (browsers normalize
+  // '\' to '/', so '/\evil.com' would otherwise become protocol-relative).
   const rawReturnUrl = searchParams.get('returnUrl')
-  const returnUrl =
-    rawReturnUrl && rawReturnUrl.startsWith('/') && !rawReturnUrl.startsWith('//')
-      ? rawReturnUrl
-      : '/'
+  const returnUrl = rawReturnUrl && /^\/(?![/\\])/.test(rawReturnUrl) ? rawReturnUrl : '/'
 
   // Check if user is already logged in — redirect client-side
   // (middleware no longer handles this to avoid HttpOnly cookie race condition after logout)

@@ -146,11 +146,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })
         console.log('✅ Login synced to store:', response.user)
         // Redirect to the requested returnUrl after login, defaulting to home.
-        // Only allow same-origin relative paths to avoid an open-redirect.
-        const safeRedirect =
-          redirectTo && redirectTo.startsWith('/') && !redirectTo.startsWith('//')
-            ? redirectTo
-            : '/'
+        // Same-origin relative paths only: start with a single '/' not followed by
+        // '/' or '\' (browsers normalize '\'→'/', so '/\evil.com' would become a
+        // protocol-relative open redirect).
+        const safeRedirect = redirectTo && /^\/(?![/\\])/.test(redirectTo) ? redirectTo : '/'
         router.push(safeRedirect)
       } else {
         // Should not happen, but handle gracefully
