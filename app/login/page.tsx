@@ -148,8 +148,7 @@ export default function LoginPage() {
             {process.env.NODE_ENV === 'development' && (
               <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded">
                 Form valid: {isValid ? 'Yes' : 'No'}<br/>
-                Errors: {Object.keys(errors).length}<br/>
-                Test data: test@gmail.com / 123123
+                Errors: {Object.keys(errors).length}
               </div>
             )}
             
@@ -202,27 +201,6 @@ export default function LoginPage() {
               {isLoading ? t('login.loggingIn') : t('login.loginButton')}
             </Button>
             
-            {process.env.NODE_ENV === 'development' && (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full text-xs"
-                onClick={() => {
-                  const event = new Event('input', { bubbles: true })
-                  const emailInput = document.getElementById('email') as HTMLInputElement
-                  const passwordInput = document.getElementById('password') as HTMLInputElement
-                  if (emailInput && passwordInput) {
-                    if (emailInput.value == 'tranngocphong@gmail.com') emailInput.value = 'khucthuadu@gmail.com'
-                    else emailInput.value = 'tranngocphong@gmail.com'
-                    emailInput.dispatchEvent(event)
-                    passwordInput.value = '123123'
-                    passwordInput.dispatchEvent(event)
-                  }
-                }}
-              >
-                {t('login.fillTestData')}
-              </Button>
-            )}
           </form>
 
           <div className="relative">

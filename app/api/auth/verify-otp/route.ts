@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
           httpOnly: true,
           secure: IS_PROD,
           sameSite: 'lax',
-          path: '/',
+          path: '/api/auth',
           maxAge: COOKIE_MAX_AGE,
         });
       }
