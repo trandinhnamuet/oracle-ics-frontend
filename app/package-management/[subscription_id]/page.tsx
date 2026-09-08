@@ -985,7 +985,14 @@ export default function PackageDetailPage() {
                             ? 'bg-blue-100 text-blue-700'
                             : 'bg-yellow-100 text-yellow-700'
                         }`}>
-                          {vmDetails?.vm?.lifecycleState || 'N/A'}
+                          {vmDetails?.vm?.lifecycleState === 'RUNNING' ? t('packageManagement.table.vmRunning')
+                            : vmDetails?.vm?.lifecycleState === 'STOPPED' ? t('packageManagement.table.vmStopped')
+                            : vmDetails?.vm?.lifecycleState === 'STOPPING' ? t('packageManagement.table.vmStopping')
+                            : vmDetails?.vm?.lifecycleState === 'STARTING' ? t('packageManagement.table.vmStarting')
+                            : vmDetails?.vm?.lifecycleState === 'PROVISIONING' ? t('packageManagement.table.vmProvisioning')
+                            : vmDetails?.vm?.lifecycleState === 'TERMINATING' ? t('packageManagement.table.vmTerminating')
+                            : vmDetails?.vm?.lifecycleState === 'TERMINATED' ? t('packageManagement.table.vmTerminated')
+                            : (vmDetails?.vm?.lifecycleState || 'N/A')}
                         </span>
                       </div>
                     </div>

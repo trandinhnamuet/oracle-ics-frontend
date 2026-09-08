@@ -14,6 +14,8 @@ export interface Subscription {
   auto_renew: boolean
   os_type?: 'linux' | 'windows'
   vm_instance_id?: number | null
+  // pending_setup | configuring | provisioning | active | failed | deleted (backend subscriptions.configuration_status)
+  configuration_status?: string
   created_at: string
   updated_at: string
   user?: {

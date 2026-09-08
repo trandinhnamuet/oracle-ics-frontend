@@ -148,6 +148,29 @@ export default function CloudConfigurationBySubscriptionPage() {
     }
   }, [vmCredentials?.type, vmCredentials?.subscriptionId])
 
+  // Public IP thường có sau RUNNING vài giây, nên response của configure đôi khi chưa có IP
+  // và lệnh SSH hiện "ubuntu@YOUR_IP". Poll tới khi có IP rồi cập nhật hộp thông tin.
+  useEffect(() => {
+    if (!vmCredentials || vmCredentials.publicIp) return
+    let cancelled = false
+    const timer = setInterval(async () => {
+      try {
+        const vmData = await getSubscriptionVm(subscriptionId)
+        const ip = vmData?.vm?.publicIp
+        if (ip && !cancelled) {
+          clearInterval(timer)
+          setVmCredentials(prev => (prev && !prev.publicIp ? { ...prev, publicIp: ip } : prev))
+        }
+      } catch {
+        // giữ polling
+      }
+    }, 5000)
+    return () => {
+      cancelled = true
+      clearInterval(timer)
+    }
+  }, [vmCredentials?.publicIp, vmCredentials?.instanceName, subscriptionId])
+
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedField(field)
@@ -856,7 +879,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                       size="sm"
                       variant="outline"
                       onClick={() => downloadFile(
-                        `============================\nVM CREDENTIALS - KEEP SAFE\n============================\nVM Name: ${vmCredentials.instanceName}\nPublic IP: ${vmCredentials.publicIp || '(available after a few minutes)'}\nUsername: ${vmCredentials.sshUsername || 'opc'}\nSSH Key File: ${vmCredentials.instanceName}-key.pem\n\nConnect command:\n  ssh -i ${vmCredentials.instanceName}-key.pem ${vmCredentials.sshUsername || 'opc'}@${vmCredentials.publicIp || '<YOUR_IP>'}\n\n----\nPrivate Key (save as ${vmCredentials.instanceName}-key.pem):\n${vmCredentials.privateKey}\n============================`,
+                        `============================\nVM CREDENTIALS - KEEP SAFE\n============================\nVM Name: ${vmCredentials.instanceName}\nPublic IP: ${vmCredentials.publicIp || '(available after a few minutes)'}\nUsername: ${vmCredentials.sshUsername || 'opc'}\nSSH Key File: ${vmCredentials.instanceName}-key.pem\n\nConnect command:\n  ssh -i ${vmCredentials.instanceName}-key.pem ${vmCredentials.sshUsername || 'opc'}@${vmCredentials.publicIp || t('cloudConfig.vmCreated.ipPending')}\n\n----\nPrivate Key (save as ${vmCredentials.instanceName}-key.pem):\n${vmCredentials.privateKey}\n============================`,
                         `${vmCredentials.instanceName}-ssh-info.txt`
                       )}
                       className="w-full"
@@ -865,7 +888,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                       {t('cloudConfig.vmCreated.downloadFullCredentials')}
                     </Button>
                     <p className="text-xs text-muted-foreground">
-                      {t('cloudConfig.vmCreated.connectLabel')}<code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem {vmCredentials.sshUsername || 'opc'}@{vmCredentials.publicIp || 'YOUR_IP'}</code>
+                      {t('cloudConfig.vmCreated.connectLabel')}<code className="bg-gray-100 px-1 rounded">ssh -i {vmCredentials.instanceName}-key.pem {vmCredentials.sshUsername || 'opc'}@{vmCredentials.publicIp || t('cloudConfig.vmCreated.ipPending')}</code>
                     </p>
                   </div>
                 )}
@@ -899,7 +922,7 @@ export default function CloudConfigurationBySubscriptionPage() {
                     <Button
                       size="sm"
                       onClick={() => downloadFile(
-                        `============================\nVM CREDENTIALS - KEEP SAFE\n============================\nVM Name: ${vmCredentials.instanceName}\nPublic IP: ${vmCredentials.publicIp || '(available after a few minutes)'}\nUsername: ${vmCredentials.username}\nPassword: ${vmCredentials.password}\n\nRDP Connection:\n  Host: ${vmCredentials.publicIp || '<YOUR_IP>'}\n  Username: ${vmCredentials.username}\n  Password: ${vmCredentials.password}\n============================`,
+                        `============================\nVM CREDENTIALS - KEEP SAFE\n============================\nVM Name: ${vmCredentials.instanceName}\nPublic IP: ${vmCredentials.publicIp || '(available after a few minutes)'}\nUsername: ${vmCredentials.username}\nPassword: ${vmCredentials.password}\n\nRDP Connection:\n  Host: ${vmCredentials.publicIp || t('cloudConfig.vmCreated.ipPending')}\n  Username: ${vmCredentials.username}\n  Password: ${vmCredentials.password}\n============================`,
                         `${vmCredentials.instanceName}-rdp-credentials.txt`
                       )}
                       className="w-full bg-blue-600 hover:bg-blue-700"

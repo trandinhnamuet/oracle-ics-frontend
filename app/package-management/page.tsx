@@ -33,6 +33,7 @@ interface PackageSubscription {
   created_at: string
   updated_at: string
   vm_instance_id?: number | null // Foreign key to VM instance
+  configuration_status?: string
   // Thông tin từ bảng cloud_packages
   cloudPackage?: {
     id: number
@@ -86,8 +87,33 @@ export default function PackageManagementPage() {
   }>({ open: false, title: '', description: '', onConfirm: async () => {} })
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
   const pollingAttemptsRef = useRef(0)
-  const MAX_POLL_ATTEMPTS = 20 // ~2 phút với interval 6 giây
+  const MAX_POLL_ATTEMPTS = 60 // ~6 phút với interval 6 giây (Windows provisioning có thể ~4 phút)
   const STABLE_STATES = ['RUNNING', 'STOPPED', 'TERMINATED']
+  // configuration_status của backend trong lúc configure đang chạy (VM row có thể chưa được link)
+  const TRANSIENT_CONFIG = ['configuring', 'provisioning']
+
+  // Lifecycle OCI → nhãn i18n. Trước đây state ngoài RUNNING/STOPPED/STARTING/STOPPING
+  // rơi về chuỗi thô ("PROVISIONING") bất kể ngôn ngữ đang chọn.
+  const vmStateLabel = (state?: string | null) => {
+    switch (state) {
+      case 'RUNNING': return t('packageManagement.table.vmRunning')
+      case 'STOPPED': return t('packageManagement.table.vmStopped')
+      case 'STOPPING': return t('packageManagement.table.vmStopping')
+      case 'STARTING': return t('packageManagement.table.vmStarting')
+      case 'PROVISIONING':
+      case 'CREATING':
+      case 'PENDING': return t('packageManagement.table.vmProvisioning')
+      case 'TERMINATING': return t('packageManagement.table.vmTerminating')
+      case 'TERMINATED': return t('packageManagement.table.vmTerminated')
+      default: return state || t('packageManagement.table.vmUnknown')
+    }
+  }
+  // Kiểu cấu trúc tối thiểu: state của trang dùng PackageSubscription (khác Subscription của api layer)
+  type SubLike = { status: string; vm_instance_id?: number | null; configuration_status?: string; vmInstance?: { lifecycle_state: string } | null }
+  const isConfiguring = (s: SubLike) =>
+    s.status === 'active' && !s.vm_instance_id && TRANSIENT_CONFIG.includes(s.configuration_status || '')
+  const isTransitional = (s: SubLike) =>
+    isConfiguring(s) || (!!s.vmInstance && !STABLE_STATES.includes(s.vmInstance.lifecycle_state))
 
   // Fetch user subscriptions
   const fetchUserSubscriptions = useCallback(async () => {
@@ -131,9 +157,7 @@ export default function PackageManagementPage() {
       await fetchUserSubscriptions()
       // Kiểm tra xem tất cả VM đã về trạng thái ổn định chưa
       setSubscriptions(prev => {
-        const allStable = prev.every(s =>
-          !s.vmInstance || STABLE_STATES.includes(s.vmInstance.lifecycle_state)
-        )
+        const allStable = !prev.some(isTransitional)
         if (allStable || pollingAttemptsRef.current >= MAX_POLL_ATTEMPTS) {
           stopPolling()
         }
@@ -146,6 +170,25 @@ export default function PackageManagementPage() {
     fetchUserSubscriptions()
     return () => stopPolling()
   }, [user?.id])
+
+  // Có subscription đang chuyển trạng thái (vừa configure ở tab khác, VM đang khởi động/tắt/xóa)
+  // → poll cho tới khi ổn định, thay vì chờ người dùng F5.
+  useEffect(() => {
+    if (subscriptions.some(isTransitional) && !pollingRef.current) startPollingUntilStable()
+  }, [subscriptions])
+
+  // Quay lại tab (từ trang cấu hình VM chẳng hạn) → lấy trạng thái mới ngay.
+  useEffect(() => {
+    const refetchIfVisible = () => {
+      if (document.visibilityState === 'visible') fetchUserSubscriptions()
+    }
+    document.addEventListener('visibilitychange', refetchIfVisible)
+    window.addEventListener('focus', refetchIfVisible)
+    return () => {
+      document.removeEventListener('visibilitychange', refetchIfVisible)
+      window.removeEventListener('focus', refetchIfVisible)
+    }
+  }, [fetchUserSubscriptions])
 
   // Fetch pending payments to support "Complete Payment" button
   useEffect(() => {
@@ -515,11 +558,7 @@ export default function PackageManagementPage() {
                       : isTerminated
                       ? 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-300 dark:border-red-900'
                       : 'bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900'
-                    const vmLabel = isRunning ? t('packageManagement.table.vmRunning')
-                      : isStopped ? t('packageManagement.table.vmStopped')
-                      : isStopping ? t('packageManagement.table.vmStopping')
-                      : isStarting ? t('packageManagement.table.vmStarting')
-                      : vmState
+                    const vmLabel = vmStateLabel(vmState)
 
                     const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
                       const target = e.target as HTMLElement
@@ -557,7 +596,7 @@ export default function PackageManagementPage() {
                             </Badge>
                             {sub.status === 'active' && !sub.vm_instance_id && (
                               <Badge variant="outline" className="bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900">
-                                {t('packageManagement.notConfigured')}
+                                {isConfiguring(sub) ? (<><Loader2 className="h-3 w-3 mr-1 inline animate-spin" />{t('packageManagement.table.vmConfiguring')}</>) : t('packageManagement.notConfigured')}
                               </Badge>
                             )}
                           </div>
@@ -792,7 +831,7 @@ export default function PackageManagementPage() {
                             {/* VM Configuration Status */}
                             {sub.status === 'active' && !sub.vm_instance_id && (
                               <Badge variant="outline" className="bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900">
-                                {t('packageManagement.notConfigured')}
+                                {isConfiguring(sub) ? (<><Loader2 className="h-3 w-3 mr-1 inline animate-spin" />{t('packageManagement.table.vmConfiguring')}</>) : t('packageManagement.notConfigured')}
                               </Badge>
                             )}
                             {sub.vm_instance_id && sub.vmInstance && (() => {
@@ -809,11 +848,7 @@ export default function PackageManagementPage() {
                                 : isTerminated
                                 ? 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-300 dark:border-red-900'
                                 : 'bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-900'
-                              const label = isRunning ? t('packageManagement.table.vmRunning') 
-                                : isStopped ? t('packageManagement.table.vmStopped')
-                                : isStopping ? t('packageManagement.table.vmStopping')
-                                : isStarting ? t('packageManagement.table.vmStarting')
-                                : state
+                              const label = vmStateLabel(state)
                               return (
                                 <Badge variant="outline" className={className}>
                                   {label}
