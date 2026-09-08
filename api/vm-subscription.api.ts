@@ -76,6 +76,8 @@ export interface ConfigureVmResponse {
     privateKey: string
     fingerprint: string
   }
+  /** SSH login user for Linux VMs — always 'root'; absent for Windows. */
+  sshUsername?: string
   subscription?: {
     id: string
     status: string
