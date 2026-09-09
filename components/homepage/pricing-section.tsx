@@ -427,6 +427,10 @@ export function PricingSection() {
     }
   }
 
+  // Số gói của category đang mở: dưới 6 gói thì căn giữa thay vì căn trái
+  const expandedPlansCount =
+    pricingCategories.find(cat => cat.name === (expandedCategory || closingCategory))?.plans.length ?? 0
+
   return (
     <section id="pricing" className="py-8 lg:py-16 bg-card/30 w-full overflow-x-hidden">
       <div className="container mx-auto px-3 sm:px-4 lg:px-6">
@@ -617,7 +621,7 @@ export function PricingSection() {
                 </button>
                 <div
                   ref={carouselRef}
-                  className="flex overflow-x-auto gap-2 sm:gap-3 md:gap-4 pb-2 pt-2 px-4 sm:px-8 hide-scrollbar justify-start"
+                  className={`flex overflow-x-auto gap-2 sm:gap-3 md:gap-4 pb-2 pt-2 px-4 sm:px-8 hide-scrollbar ${expandedPlansCount < 6 ? 'justify-start lg:justify-center' : 'justify-start'}`}
                   style={{ scrollSnapType: 'x mandatory', scrollPaddingLeft: '2rem', scrollPaddingRight: '2rem' }}
                 >
                   {pricingCategories
