@@ -2225,6 +2225,9 @@
   },
   "pricingModal": {
     "title": "결제 방법 선택",
+    "windowsWhyTitle": "Windows가 더 비싼 이유",
+    "windowsWhy": "Windows 가격 = Linux 가격 + Oracle Cloud가 OCPU당 시간 단위로 청구하는 Windows Server 라이선스 비용(≈ {{rate}} USD/OCPU/시간 × {{hours}}시간/월, {{fx}} VND/USD 환율 적용). 이 요금제는 {{ocpu}} OCPU({{vcpu}} vCPU) → 월 약 {{uplift}} VND 추가. Linux(Ubuntu, Oracle Linux, CentOS…)는 라이선스가 무료이므로 이 비용이 없습니다.",
+    "windowsWhyAria": "Windows가 더 비싼 이유",
     "subtitle": "{{planName}} 플랜에 적합한 결제 방법을 선택하세요",
     "accountBalance": "계정 잔액 차감",
     "accountBalanceDesc": "계정의 사용 가능한 잔액으로 결제",

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Input } from "@/components/ui/input"
 import { Check, Star, Zap, Shield, Crown, BrainCircuit, ChevronDown, ChevronUp, X, ChevronLeft, ChevronRight, Info, Wallet, CreditCard } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
@@ -26,9 +27,12 @@ import { getUserBalance } from "@/api/user-wallet.api"
 const WINDOWS_LICENSE_USD_PER_OCPU_HOUR = 0.092
 const HOURS_PER_MONTH = 744
 const USD_TO_VND = 26310
+// OCPU billed = ceil(vCPU / 2), min 1 — same rounding the backend uses when it debits.
+function windowsOcpu(vcpu?: number): number {
+  return Math.max(1, Math.ceil((vcpu || 0) / 2))
+}
 function windowsUpliftVnd(vcpu?: number): number {
-  const ocpu = (vcpu || 0) / 2
-  return Math.round(ocpu * WINDOWS_LICENSE_USD_PER_OCPU_HOUR * HOURS_PER_MONTH * USD_TO_VND)
+  return Math.round(windowsOcpu(vcpu) * WINDOWS_LICENSE_USD_PER_OCPU_HOUR * HOURS_PER_MONTH * USD_TO_VND)
 }
 function effectiveUnitVnd(plan: { priceVnd: number; vcpu?: number } | null, osType: 'linux' | 'windows'): number {
   if (!plan) return 0
@@ -753,18 +757,49 @@ export function PricingSection() {
                   <div className="text-[11px] text-foreground/70">{formatPrice(effectiveUnitVnd(selectedPlan, 'linux'))} VND/{t('pricingModal.perMonth')}</div>
                 )}
               </button>
-              <button
-                type="button"
-                onClick={() => setOsType('windows')}
-                className={`rounded-lg border-2 p-2 text-center transition-all ${
-                  osType === 'windows' ? 'border-[#E60000] bg-red-50 dark:bg-red-950/30' : 'border-border hover:border-muted-foreground/50'
-                }`}
-              >
-                <div className="text-sm font-semibold">Windows</div>
-                {selectedPlan && (
-                  <div className="text-[11px] text-foreground/70">{formatPrice(effectiveUnitVnd(selectedPlan, 'windows'))} VND/{t('pricingModal.perMonth')}</div>
-                )}
-              </button>
+              {/* The ⓘ sits OUTSIDE the OS button (no nested interactive elements, and
+                  tapping it must not switch the OS). Tooltip explains the licence uplift
+                  with the numbers for the selected plan. */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setOsType('windows')}
+                  className={`w-full rounded-lg border-2 p-2 text-center transition-all ${
+                    osType === 'windows' ? 'border-[#E60000] bg-red-50 dark:bg-red-950/30' : 'border-border hover:border-muted-foreground/50'
+                  }`}
+                >
+                  <div className="text-sm font-semibold">Windows</div>
+                  {selectedPlan && (
+                    <div className="text-[11px] text-foreground/70">{formatPrice(effectiveUnitVnd(selectedPlan, 'windows'))} VND/{t('pricingModal.perMonth')}</div>
+                  )}
+                </button>
+                <TooltipProvider delayDuration={150}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label={t('pricingModal.windowsWhyAria')}
+                        className="absolute top-1 right-1 rounded-full p-0.5 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-[#E60000]/40"
+                      >
+                        <Info className="h-3.5 w-3.5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" align="end" className="max-w-xs text-left text-xs leading-relaxed">
+                      <p className="font-semibold mb-1">{t('pricingModal.windowsWhyTitle')}</p>
+                      <p>
+                        {t('pricingModal.windowsWhy', {
+                          rate: WINDOWS_LICENSE_USD_PER_OCPU_HOUR,
+                          hours: HOURS_PER_MONTH,
+                          fx: formatPrice(USD_TO_VND),
+                          ocpu: windowsOcpu(selectedPlan?.vcpu),
+                          vcpu: selectedPlan?.vcpu ?? windowsOcpu(selectedPlan?.vcpu) * 2,
+                          uplift: formatPrice(windowsUpliftVnd(selectedPlan?.vcpu)),
+                        })}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </div>
 

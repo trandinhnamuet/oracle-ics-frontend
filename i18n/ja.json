@@ -2224,6 +2224,9 @@
   },
   "pricingModal": {
     "title": "お支払い方法を選択",
+    "windowsWhyTitle": "Windowsが高い理由",
+    "windowsWhy": "Windows価格 = Linux価格 + Oracle CloudがOCPU単位・時間単位で課金するWindows Serverライセンス料（≈ {{rate}} USD/OCPU/時 × {{hours}}時間/月、{{fx}} VND/USDで換算）。このプランは{{ocpu}} OCPU（{{vcpu}} vCPU）→ 月額約{{uplift}} VNDの追加。Linux（Ubuntu、Oracle Linux、CentOS…）はライセンス無料のため、この費用はかかりません。",
+    "windowsWhyAria": "Windowsが高い理由",
     "subtitle": "{{planName}} プランに適したお支払い方法をお選びください",
     "accountBalance": "アカウント残高から引き落とし",
     "accountBalanceDesc": "アカウントの利用可能残高を使用して支払い",

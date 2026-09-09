@@ -2225,6 +2225,9 @@
   },
   "pricingModal": {
     "title": "選擇支付方式",
+    "windowsWhyTitle": "為什麼 Windows 貴得多？",
+    "windowsWhy": "Windows 價格 = Linux 價格 + Oracle Cloud 依每 OCPU 每小時收取的 Windows Server 授權費（≈ {{rate}} USD/OCPU/小時 × {{hours}} 小時/月，以 {{fx}} VND/USD 換算）。本方案為 {{ocpu}} OCPU（{{vcpu}} vCPU）→ 每月約多 {{uplift}} VND。Linux（Ubuntu、Oracle Linux、CentOS…）免授權費，因此沒有這筆費用。",
+    "windowsWhyAria": "為什麼 Windows 更貴",
     "subtitle": "為 {{planName}} 套餐選擇合適的支付方式",
     "accountBalance": "帳戶餘額扣款",
     "accountBalanceDesc": "使用帳戶中的可用餘額進行支付",
