@@ -1605,7 +1605,8 @@
       "windowsPasswordPending": "⏳ パスワードを生成中です（VM起動後5〜10分）。数分後にページを更新してください。",
       "passwordShownOnce": "⚠️ 一度だけ表示されます。今すぐ保存してください。再表示はできません。",
       "passwordRevealFailed": "パスワードを取得できませんでした。",
-      "passwordOwnerOnly": "VM 所有者のみ表示可能"
+      "passwordOwnerOnly": "VM 所有者のみ表示可能",
+      "windowsPasswordAlreadyRevealed": "🔐 初期パスワードは一度だけ取得済みで、再表示できません。お手元にない場合は「パスワードのリセット」をご利用ください。"
     },
     "controls": {
       "vmName": "VM名：",
@@ -1798,7 +1799,12 @@
         "passwordMismatch": "パスワードが一致しません",
         "passwordMatch": "パスワードが一致しています"
       },
-      "sentToOwner": "VM 所有者に送信されました"
+      "sentToOwner": "VM 所有者に送信されました",
+      "failedTitle": "❌ パスワードのリセットに失敗しました",
+      "failedDesc": "この VM の Windows パスワードをリセットできませんでした。現在のパスワードは変更されていません。",
+      "failedHint": "数分後にもう一度お試しください。解決しない場合は、上記のエラー内容を添えてサポートにご連絡ください。",
+      "failedClose": "閉じる",
+      "jobLost": "サーバー上のパスワードリセット処理が失われました（サービスが再起動した可能性があります）。もう一度お試しください。"
     },
     "actionOtp": {
       "sendOtp": "確認",

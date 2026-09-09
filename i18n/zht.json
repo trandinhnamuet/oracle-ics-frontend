@@ -1605,7 +1605,8 @@
       "windowsPasswordPending": "⏳ 密碼正在產生中（VM 啟動後約 5–10 分鐘）。請幾分鐘後重新整理頁面。",
       "passwordShownOnce": "⚠️ 僅顯示一次，請立即儲存。無法再次顯示；如遺失請重設密碼。",
       "passwordRevealFailed": "無法取得密碼。",
-      "passwordOwnerOnly": "僅 VM 擁有者可見"
+      "passwordOwnerOnly": "僅 VM 擁有者可見",
+      "windowsPasswordAlreadyRevealed": "🔐 初始密碼已被取回一次，無法再次顯示。如果您已不再持有該密碼，請使用“重設密碼”功能。"
     },
     "controls": {
       "vmName": "虛擬機名稱：",
@@ -1799,7 +1800,12 @@
         "passwordMismatch": "兩次輸入的密碼不一致",
         "passwordMatch": "密碼匹配"
       },
-      "sentToOwner": "已傳送給 VM 擁有者"
+      "sentToOwner": "已傳送給 VM 擁有者",
+      "failedTitle": "❌ 重設密碼失敗",
+      "failedDesc": "無法重設該虛擬機的 Windows 密碼。您目前的密碼未變更。",
+      "failedHint": "請幾分鐘後重試。如果仍然失敗，請聯絡支援並附上上述錯誤訊息。",
+      "failedClose": "關閉",
+      "jobLost": "伺服器上的密碼重設工作已遺失（服務可能已重新啟動）。請重試。"
     },
     "actionOtp": {
       "sendOtp": "確認",

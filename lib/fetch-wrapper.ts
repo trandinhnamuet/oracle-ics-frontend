@@ -89,12 +89,13 @@ export async function fetchWithAuth(
   // Handle 401 Unauthorized
   if (response.status === 401 && !skipAuthRefresh) {
     console.log('Received 401, attempting refresh...');
-    if (!accessToken) {
-      // No token to begin with, don't try to refresh
-      console.log('No access token available, cannot refresh');
-      return response;
-    }
-    
+    // NOTE: do not bail out when there was no access token. The token is memory-only
+    // by design (see auth.service.ts), so it is ALWAYS absent on the first request
+    // after a page reload — which is precisely when the HttpOnly refresh cookie has
+    // to be exchanged for a new one. Bailing out here turned every F5 on a page that
+    // fetches during mount into a spurious "could not load" error.
+    // Concurrent callers are safe: authService.refresh() shares one in-flight request,
+    // so the rotating refresh token is only ever presented once.
     try {
       // Try to refresh the token
       console.log('Calling refresh endpoint...');

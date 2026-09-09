@@ -164,6 +164,9 @@ export default function PackageDetailPage() {
   const [newSshKey, setNewSshKey] = useState<{ privateKey: string; instanceName: string; sshUsername?: string; publicIp?: string } | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [isResettingPassword, setIsResettingPassword] = useState(false)
+  // Failure text for the reset-progress dialog. The dialog used to have no error
+  // state at all, so a failed reset simply made it vanish with nothing shown.
+  const [resetPasswordError, setResetPasswordError] = useState<string | null>(null)
   const [resetPasswordDialog, setResetPasswordDialog] = useState(false)
   const [newWindowsPassword, setNewWindowsPassword] = useState<string | null>(null)
   const [customPassword, setCustomPassword] = useState('')
@@ -351,7 +354,11 @@ export default function PackageDetailPage() {
     }
 
     const isWindows = vmDetails?.vm?.operatingSystem?.toLowerCase().includes('windows')
-    const needsPolling = isWindows && (!vmDetails?.vm?.windowsPasswordReady || vmDetails?.vm?.lifecycleState !== 'RUNNING')
+    // A revealed password is gone for good (the server burns it on reveal), so
+    // windowsPasswordReady stays false forever — polling for it would never end.
+    const needsPolling = isWindows
+      && !vmDetails?.vm?.windowsInitialPasswordRevealed
+      && (!vmDetails?.vm?.windowsPasswordReady || vmDetails?.vm?.lifecycleState !== 'RUNNING')
 
     if (!needsPolling || !subscriptionId) return
 
@@ -716,12 +723,18 @@ export default function PackageDetailPage() {
 
   const handleResetWindowsPassword = async () => {
     setResetOtpError('')
+    setResetPasswordError(null)
     setIsConfirmingOtp(true)
     const otpToUse = resetOtpCode.trim()
     const passwordToUse = customPassword.trim() || undefined
+    // Once the job is running the OTP dialog is closed, so an error must never be
+    // routed back to its inline field — doing so was what made a failed reset look
+    // like nothing had happened at all.
+    let jobStarted = false
     try {
       // Start async job — returns immediately (HTTP 202)
       const { jobId } = await resetWindowsPassword(subscriptionId, otpToUse, passwordToUse)
+      jobStarted = true
 
       // OTP accepted — close dialog and clear all state now
       setResetPasswordDialog(false)
@@ -733,8 +746,11 @@ export default function PackageDetailPage() {
       setResetOtpCode('')
       setIsResettingPassword(true)
 
-      // Poll for completion (up to 15 minutes, every 5 seconds)
-      const MAX_POLLS = 180
+      // Poll for completion (up to 20 minutes, every 5 seconds). The backend walks
+      // WinRM → OCI Run Command (8 min timeout) → SSH before giving up, so the client
+      // budget has to exceed the worst-case server-side chain or it reports a bogus
+      // timeout while the reset is still genuinely running.
+      const MAX_POLLS = 240
       const POLL_INTERVAL_MS = 5000
       let polls = 0
       await new Promise<void>((resolve, reject) => {
@@ -755,6 +771,10 @@ export default function PackageDetailPage() {
               resolve()
             } else if (job.status === 'failed') {
               reject(new Error(job.error || 'Password reset failed'))
+            } else if (job.status === 'not_found') {
+              // Jobs live in backend memory; a deploy/restart loses them. Treat it as a
+              // definite failure instead of polling a job that will never report again.
+              reject(new Error(t('packageDetail.resetPassword.jobLost')))
             } else if (polls >= MAX_POLLS) {
               reject(new Error('Password reset timed out. Please try again.'))
             } else {
@@ -772,15 +792,25 @@ export default function PackageDetailPage() {
       const message = error?.response?.data?.message || error?.message
       const i18nKey = error?.response?.data?.i18nKey
 
-      // OTP-related errors (400/401/422): stay on OTP step, show inline error
-      if (status === 400 || status === 401 || status === 422) {
+      // OTP-related errors (400/401/422): stay on OTP step, show inline error.
+      // Only valid while the OTP dialog is still open — i.e. before the job started.
+      if (!jobStarted && (status === 400 || status === 401 || status === 422)) {
         // Use server-provided i18n key if available, otherwise show actual server message
         const errorText = i18nKey ? t(`packageDetail.${i18nKey}`) : (message || t('packageDetail.resetPassword.otpInvalid'))
         setResetOtpError(errorText)
         return
       }
 
-      // Other errors (network, server): close dialog, show toast
+      // The job was already running: report the failure inside the progress dialog,
+      // which stays open until the user dismisses it. A toast is not enough here —
+      // the reset can take many minutes and the user may not be looking at the tab.
+      if (jobStarted) {
+        console.error('Windows password reset failed:', error)
+        setResetPasswordError(message || t('packageDetail.toast.passwordResetErrorDesc'))
+        return
+      }
+
+      // Other errors (network, server) before the job started: close dialog, show toast
       setResetPasswordDialog(false)
       setResetPasswordOtpStep('form')
       setCustomPassword('')
@@ -1078,6 +1108,15 @@ export default function PackageDetailPage() {
                             {t('packageDetail.serverDetails.passwordShownOnce')}
                           </p>
                         )}
+                      </div>
+                    ) : vmDetails.vm.windowsInitialPasswordRevealed ? (
+                      /* Already retrieved. The server erases the password as it hands it
+                         over, so windowsPasswordReady goes back to false — without this
+                         branch that looked identical to "still being generated". */
+                      <div className="bg-gray-50 dark:bg-muted border p-3 rounded text-sm">
+                        <p className="text-gray-700 dark:text-muted-foreground">
+                          {t('packageDetail.serverDetails.windowsPasswordAlreadyRevealed')}
+                        </p>
                       </div>
                     ) : (
                       <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 p-3 rounded text-sm">
@@ -2028,19 +2067,49 @@ export default function PackageDetailPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Reset Windows Password — Loading Dialog */}
-      <AlertDialog open={isResettingPassword} onOpenChange={() => {}}>
+      {/* Reset Windows Password — Progress / failure dialog.
+          Stays open on failure so the outcome is always reported: previously the
+          dialog was bound to the in-progress flag alone and silently disappeared. */}
+      <AlertDialog open={isResettingPassword || !!resetPasswordError} onOpenChange={() => {}}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <RefreshCw className="h-5 w-5 animate-spin" />
-              {t('packageDetail.resetPassword.resettingTitle')}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('packageDetail.resetPassword.resettingDesc')}
-              <p className="text-sm text-muted-foreground mt-2">{t('packageDetail.resetPassword.resettingNote')}</p>
-            </AlertDialogDescription>
+            {resetPasswordError ? (
+              <>
+                <AlertDialogTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                  {t('packageDetail.resetPassword.failedTitle')}
+                </AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <div>
+                    <p>{t('packageDetail.resetPassword.failedDesc')}</p>
+                    <p className="mt-2 rounded bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 p-2 text-xs font-mono break-all text-red-800 dark:text-red-300">
+                      {resetPasswordError}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-2">{t('packageDetail.resetPassword.failedHint')}</p>
+                  </div>
+                </AlertDialogDescription>
+              </>
+            ) : (
+              <>
+                <AlertDialogTitle className="flex items-center gap-2">
+                  <RefreshCw className="h-5 w-5 animate-spin" />
+                  {t('packageDetail.resetPassword.resettingTitle')}
+                </AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <div>
+                    <p>{t('packageDetail.resetPassword.resettingDesc')}</p>
+                    <p className="text-sm text-muted-foreground mt-2">{t('packageDetail.resetPassword.resettingNote')}</p>
+                  </div>
+                </AlertDialogDescription>
+              </>
+            )}
           </AlertDialogHeader>
+          {resetPasswordError && (
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={() => setResetPasswordError(null)}>
+                {t('packageDetail.resetPassword.failedClose')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          )}
         </AlertDialogContent>
       </AlertDialog>
 

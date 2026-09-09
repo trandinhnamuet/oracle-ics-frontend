@@ -1588,7 +1588,8 @@
       "windowsPasswordPending": "⏳ Password is being generated (5–10 minutes after VM boot). Please refresh the page after a few minutes.",
       "passwordShownOnce": "⚠️ Shown only once — save it now. It cannot be displayed again; reset the password if you lose it.",
       "passwordRevealFailed": "Could not retrieve the password.",
-      "passwordOwnerOnly": "Visible to the VM owner only"
+      "passwordOwnerOnly": "Visible to the VM owner only",
+      "windowsPasswordAlreadyRevealed": "🔐 The initial password was retrieved once and cannot be shown again. If you no longer have it, use “Reset password”."
     },
     "controls": {
       "vmName": "VM Name:",
@@ -1792,7 +1793,12 @@
         "passwordMismatch": "Passwords do not match",
         "passwordMatch": "Passwords match"
       },
-      "sentToOwner": "Sent to the VM owner"
+      "sentToOwner": "Sent to the VM owner",
+      "failedTitle": "❌ Password reset failed",
+      "failedDesc": "The Windows password for this VM could not be reset. Your current password is unchanged.",
+      "failedHint": "Please try again in a few minutes. If it keeps failing, contact support and include the error above.",
+      "failedClose": "Close",
+      "jobLost": "The password reset job was lost on the server (the service may have restarted). Please try again."
     },
     "actionOtp": {
       "sendOtp": "Confirm",

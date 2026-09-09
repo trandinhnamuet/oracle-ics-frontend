@@ -1588,7 +1588,8 @@
       "windowsPasswordPending": "⏳ Mật khẩu đang được tạo (5–10 phút sau khi VM khởi động). Hãy làm mới trang sau vài phút.",
       "passwordShownOnce": "⚠️ Chỉ hiển thị một lần — hãy lưu lại ngay. Mật khẩu không thể xem lại; nếu mất hãy đặt lại mật khẩu.",
       "passwordRevealFailed": "Không lấy được mật khẩu.",
-      "passwordOwnerOnly": "Chỉ chủ sở hữu VM mới xem được"
+      "passwordOwnerOnly": "Chỉ chủ sở hữu VM mới xem được",
+      "windowsPasswordAlreadyRevealed": "🔐 Mật khẩu ban đầu đã được lấy một lần và không thể hiển thị lại. Nếu bạn không còn giữ mật khẩu, hãy dùng chức năng “Đặt lại mật khẩu”."
     },
     "controls": {
       "vmName": "Tên VM:",
@@ -1792,7 +1793,12 @@
         "passwordMismatch": "Mật khẩu xác nhận không khớp",
         "passwordMatch": "Mật khẩu khớp"
       },
-      "sentToOwner": "Đã gửi cho chủ sở hữu VM"
+      "sentToOwner": "Đã gửi cho chủ sở hữu VM",
+      "failedTitle": "❌ Đặt lại mật khẩu thất bại",
+      "failedDesc": "Không thể đặt lại mật khẩu Windows cho máy ảo này. Mật khẩu hiện tại của bạn KHÔNG thay đổi.",
+      "failedHint": "Vui lòng thử lại sau vài phút. Nếu vẫn lỗi, hãy gửi yêu cầu hỗ trợ kèm nội dung lỗi ở trên.",
+      "failedClose": "Đóng",
+      "jobLost": "Tiến trình đặt lại mật khẩu đã bị gián đoạn trên máy chủ (có thể do khởi động lại dịch vụ). Vui lòng thử lại."
     },
     "actionOtp": {
       "sendOtp": "Xác nhận",

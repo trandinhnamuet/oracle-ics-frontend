@@ -1605,7 +1605,8 @@
       "windowsPasswordPending": "⏳ 密码正在生成中（VM 启动后约 5–10 分钟）。请几分钟后刷新页面。",
       "passwordShownOnce": "⚠️ 仅显示一次，请立即保存。无法再次显示；如遗失请重置密码。",
       "passwordRevealFailed": "无法获取密码。",
-      "passwordOwnerOnly": "仅 VM 拥有者可见"
+      "passwordOwnerOnly": "仅 VM 拥有者可见",
+      "windowsPasswordAlreadyRevealed": "🔐 初始密码已被取回一次，无法再次显示。如果您已不再持有该密码，请使用“重置密码”功能。"
     },
     "controls": {
       "vmName": "虚拟机名称：",
@@ -1799,7 +1800,12 @@
         "passwordMismatch": "两次输入的密码不一致",
         "passwordMatch": "密码匹配"
       },
-      "sentToOwner": "已发送给 VM 拥有者"
+      "sentToOwner": "已发送给 VM 拥有者",
+      "failedTitle": "❌ 重置密码失败",
+      "failedDesc": "无法重置该虚拟机的 Windows 密码。您当前的密码未发生更改。",
+      "failedHint": "请几分钟后重试。如果仍然失败，请联系支持并附上上述错误信息。",
+      "failedClose": "关闭",
+      "jobLost": "服务器上的密码重置任务已丢失（服务可能已重启）。请重试。"
     },
     "actionOtp": {
       "sendOtp": "确认",

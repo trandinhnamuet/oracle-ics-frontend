@@ -1605,7 +1605,8 @@
       "windowsPasswordPending": "⏳ 비밀번호를 생성 중입니다 (VM 부팅 후 5–10분). 몇 분 후 페이지를 새로고침해 주세요.",
       "passwordShownOnce": "⚠️ 한 번만 표시됩니다. 지금 저장하세요. 다시 표시할 수 없습니다.",
       "passwordRevealFailed": "비밀번호를 가져오지 못했습니다.",
-      "passwordOwnerOnly": "VM 소유자만 볼 수 있습니다"
+      "passwordOwnerOnly": "VM 소유자만 볼 수 있습니다",
+      "windowsPasswordAlreadyRevealed": "🔐 초기 비밀번호는 한 번만 확인할 수 있으며 다시 표시할 수 없습니다. 비밀번호가 없다면 “비밀번호 재설정”을 사용하세요."
     },
     "controls": {
       "vmName": "VM 이름:",
@@ -1799,7 +1800,12 @@
         "passwordMismatch": "비밀번호가 일치하지 않습니다",
         "passwordMatch": "비밀번호가 일치합니다"
       },
-      "sentToOwner": "VM 소유자에게 전송됨"
+      "sentToOwner": "VM 소유자에게 전송됨",
+      "failedTitle": "❌ 비밀번호 재설정 실패",
+      "failedDesc": "이 VM의 Windows 비밀번호를 재설정하지 못했습니다. 현재 비밀번호는 변경되지 않았습니다.",
+      "failedHint": "몇 분 후 다시 시도해 주세요. 계속 실패하면 위 오류 내용과 함께 지원팀에 문의하세요.",
+      "failedClose": "닫기",
+      "jobLost": "서버의 비밀번호 재설정 작업이 유실되었습니다(서비스가 재시작되었을 수 있습니다). 다시 시도해 주세요."
     },
     "actionOtp": {
       "sendOtp": "확인",
