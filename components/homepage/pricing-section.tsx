@@ -13,7 +13,7 @@ import { useState, useRef, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { customPlan } from "@/types/pricing-plans"
 import { PricingCategory, PricingPlan } from "@/types/pricing-types"
-import { CloudPackage, buildFeatures, getActiveCloudPackages } from "@/api/cloud-package.api"
+import { CloudPackage, buildFeatures, getActiveCloudPackages, SHAPE_FEATURE_LABEL } from "@/api/cloud-package.api"
 import { formatPrice, roundMoney } from "@/lib/utils"
 import CustomRegistrationForm from "./customRegistrationForm"
 import { useAuth } from "@/lib/auth-context"
@@ -668,13 +668,15 @@ export function PricingSection() {
                         </CardHeader>
                         
                         <CardContent className="space-y-2">
-                          {(expandedPlanIds.has(plan.id) ? plan.features : plan.features.slice(0, 4)).map((feature, idx) => (
+                          {(expandedPlanIds.has(plan.id) ? plan.features : plan.features.slice(0, 5)).map((feature, idx) => (
                             <div key={idx} className="flex items-start space-x-2">
                               <Check className="h-3 w-3 text-primary mt-1 flex-shrink-0" />
-                              <span className="text-xs text-foreground leading-relaxed">{feature}</span>
+                              {/* The shape line is short and has a single breakable space — prefer
+                                  keeping it on one line over wrapping "Standard.E5.Flex" alone. */}
+                              <span className={`text-xs text-foreground leading-relaxed ${feature === SHAPE_FEATURE_LABEL ? 'whitespace-nowrap' : ''}`}>{feature}</span>
                             </div>
                           ))}
-                          {plan.features.length > 4 && (
+                          {plan.features.length > 5 && (
                             <button
                               className="text-xs text-primary hover:underline mt-1 flex items-center gap-1"
                               onClick={(e) => togglePlanFeatures(plan.id, e)}
@@ -682,7 +684,7 @@ export function PricingSection() {
                               {expandedPlanIds.has(plan.id) ? (
                                 <><ChevronUp className="h-3 w-3" />{t('homepage.pricing.sections.showLess')}</>
                               ) : (
-                                <><ChevronDown className="h-3 w-3" />+{plan.features.length - 4} {t('homepage.pricing.sections.moreFeatures')}</>
+                                <><ChevronDown className="h-3 w-3" />+{plan.features.length - 5} {t('homepage.pricing.sections.moreFeatures')}</>
                               )}
                             </button>
                           )}
