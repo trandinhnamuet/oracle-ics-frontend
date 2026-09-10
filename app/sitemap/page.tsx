@@ -37,7 +37,7 @@ const VI_GROUPS: SiteGroup[] = [
     links: [
       { href: '/', label: 'Trang chủ', note: 'Giới thiệu tổng quan về Oracle Cloud Vietnam' },
       { href: '/?scroll=services', label: 'Dịch vụ', note: 'Danh mục dịch vụ Oracle Cloud và VPS' },
-      { href: '/?scroll=pricing', label: 'Bảng giá', note: 'Các gói dịch vụ và mức giá tham khảo' },
+      { href: '/cloud/pricing', label: 'Bảng giá', note: 'Các gói dịch vụ và mức giá tham khảo' },
       { href: '/?scroll=support', label: 'Hỗ trợ', note: 'Kênh hỗ trợ và cam kết vận hành' },
       { href: '/contact-info', label: 'Liên hệ', note: 'Thông tin liên hệ và yêu cầu tư vấn' },
     ],
@@ -98,7 +98,7 @@ const EN_GROUPS: SiteGroup[] = [
     links: [
       { href: '/', label: 'Home', note: 'Overview of Oracle Cloud Vietnam' },
       { href: '/?scroll=services', label: 'Services', note: 'Oracle Cloud and VPS service catalogue' },
-      { href: '/?scroll=pricing', label: 'Pricing', note: 'Plans and indicative pricing' },
+      { href: '/cloud/pricing', label: 'Pricing', note: 'Plans and indicative pricing' },
       { href: '/?scroll=support', label: 'Support', note: 'Support channels and operational commitments' },
       { href: '/contact-info', label: 'Contact', note: 'Contact details and consultation requests' },
     ],

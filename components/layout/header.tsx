@@ -151,13 +151,7 @@ export function Header() {
             <button
               type="button"
               className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0"
-              onClick={() => {
-                if (window.location.pathname !== "/") {
-                  router.push("/?scroll=pricing")
-                } else {
-                  handleSmoothScroll('pricing')
-                }
-              }}
+              onClick={() => router.push('/cloud/pricing')}
             >
               {t('header.pricing')}
             </button>
@@ -241,7 +235,7 @@ export function Header() {
               <button
                 type="button"
                 className="text-foreground hover:text-primary transition-colors font-medium bg-transparent border-none px-0 py-1 text-left"
-                onClick={() => { setIsMenuOpen(false); handleSmoothScroll('pricing') }}
+                onClick={() => { setIsMenuOpen(false); router.push('/cloud/pricing') }}
               >
                 {t('header.pricing')}
               </button>
