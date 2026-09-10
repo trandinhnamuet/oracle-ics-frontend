@@ -78,12 +78,31 @@ export async function deactivateCloudPackage(token: string, id: number): Promise
 
 /**
  * Build a features string array from a CloudPackage record.
+ *
+ * Ordering is deliberate, not just concatenation: the card only shows the first
+ * 4 lines before "Xem thêm", so whatever matters most for a category has to be
+ * in that window.
  */
 export function buildFeatures(pkg: CloudPackage): string[] {
-  const base = [pkg.cpu, pkg.ram, pkg.memory, pkg.bandwidth].filter(Boolean) as string[]
-  if (pkg.feature) {
-    const lines = pkg.feature.split('\n').map(l => l.trim()).filter(Boolean)
-    return [...base, ...lines]
+  const isAi = String(pkg.type || '').toLowerCase() === 'ai'
+  const specs = [pkg.cpu, pkg.ram, pkg.memory, pkg.bandwidth].filter(Boolean) as string[]
+  const featureLines = pkg.feature
+    ? pkg.feature.split('\n').map(l => l.trim()).filter(Boolean)
+    : []
+
+  if (isAi) {
+    // The GPU (in `feature`, e.g. "8 GPU NVIDIA H100 80GB") is the one spec that
+    // actually differentiates these packages — lead with it instead of burying
+    // it behind the generic vCPU/RAM/storage lines every package has.
+    return [...featureLines, ...specs]
   }
-  return base
+
+  // Every non-AI package provisions on the same underlying OCI shape
+  // (VM.Standard.E5.Flex — see ALLOWED_VM_SHAPES on the backend), so state that
+  // explicitly instead of leaving customers to infer it. Skip placeholder rows
+  // with no real vCPU (e.g. the "Tư vấn toàn diện" consultation package), which
+  // are never actually provisioned as a VM.
+  const vcpu = parseInt((String(pkg.cpu || '').match(/\d+/) || ['0'])[0], 10) || 0
+  const shapeLine = vcpu > 0 ? ['Oracle VM.Standard.E5.Flex'] : []
+  return [...shapeLine, ...specs, ...featureLines]
 }
