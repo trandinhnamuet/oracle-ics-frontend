@@ -7,7 +7,8 @@ import { AuthStoreInitializer } from '@/components/providers/auth-store-initiali
 import { I18nProvider } from '@/components/providers/i18n-provider'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { AnalyticsProvider } from '@/components/providers/analytics-provider'
+// AnalyticsProvider (Google Analytics) đã ngừng dùng — thay bằng nhật ký truy cập tự lưu.
+import { VisitTracker } from '@/components/providers/visit-tracker'
 import { Toaster } from '@/components/ui/toaster'
 import { cookies } from 'next/headers'
 import { DomPatchProvider } from '@/components/providers/dom-patch-provider'
@@ -72,16 +73,15 @@ export default function RootLayout({
           <I18nProvider initialLanguage={language}>
             <AuthProvider>
               <AuthStoreInitializer />
-              <AnalyticsProvider>
-                <div className="min-h-screen flex flex-col">
-                  <Header />
-                  <main className="flex-1">
-                    {children}
-                  </main>
-                  <Footer />
-                  <Toaster />
-                </div>
-              </AnalyticsProvider>
+              <VisitTracker />
+              <div className="min-h-screen flex flex-col">
+                <Header />
+                <main className="flex-1">
+                  {children}
+                </main>
+                <Footer />
+                <Toaster />
+              </div>
             </AuthProvider>
           </I18nProvider>
         </ThemeProvider>
