@@ -1157,6 +1157,7 @@
         "ai": "AI-GPU",
         "custom": "カスタム"
       },
+      "contactForPrice": "お問い合わせ",
       "buttons": {
         "viewDetails": "詳細を表示",
         "hideDetails": "非表示",

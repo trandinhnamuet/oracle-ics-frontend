@@ -1140,6 +1140,7 @@
         "ai": "AI-GPU",
         "custom": "Tùy chỉnh"
       },
+      "contactForPrice": "Liên hệ",
       "buttons": {
         "viewDetails": "Xem chi tiết",
         "hideDetails": "Ẩn",

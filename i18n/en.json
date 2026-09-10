@@ -1140,6 +1140,7 @@
         "ai": "AI-GPU",
         "custom": "Custom"
       },
+      "contactForPrice": "Contact us",
       "buttons": {
         "viewDetails": "View Details",
         "hideDetails": "Hide",

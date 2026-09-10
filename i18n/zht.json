@@ -1157,6 +1157,7 @@
         "ai": "AI-GPU",
         "custom": "自訂"
       },
+      "contactForPrice": "聯絡我們",
       "buttons": {
         "viewDetails": "查看詳情",
         "hideDetails": "隱藏",

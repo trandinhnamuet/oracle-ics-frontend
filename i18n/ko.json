@@ -1157,6 +1157,7 @@
         "ai": "AI-GPU",
         "custom": "맞춤"
       },
+      "contactForPrice": "문의하기",
       "buttons": {
         "viewDetails": "세부 정보 보기",
         "hideDetails": "숨기기",

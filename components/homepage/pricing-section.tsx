@@ -649,11 +649,21 @@ export function PricingSection() {
                             </Badge>
                           </div>
                           <div className="text-center">
-                            <div className="text-2xl font-bold text-primary">
-                              {/* Hiển thị giá VND, debug giá gốc và tỉ giá */}
-                              {formatPrice(plan.priceVnd)}
-                            </div>
-                            <div className="text-xs text-muted-foreground">₫/{t('checkout.period')}</div>
+                            {/* Gói AI-GPU chưa có bảng giá niêm yết (cost_vnd = 0) thì hiện
+                                "Liên hệ" — không hiển thị 0 ₫ như thể miễn phí. */}
+                            {(expandedCategory || closingCategory) === 'ai' && !(Number(plan.priceVnd) > 0) ? (
+                              <div className="text-2xl font-bold text-primary">
+                                {t('homepage.pricing.contactForPrice')}
+                              </div>
+                            ) : (
+                              <>
+                                <div className="text-2xl font-bold text-primary">
+                                  {/* Hiển thị giá VND, debug giá gốc và tỉ giá */}
+                                  {formatPrice(plan.priceVnd)}
+                                </div>
+                                <div className="text-xs text-muted-foreground">₫/{t('checkout.period')}</div>
+                              </>
+                            )}
                           </div>
                         </CardHeader>
                         
@@ -679,14 +689,27 @@ export function PricingSection() {
                         </CardContent>
                         
                         <CardFooter className="pt-4">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="w-full text-xs hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                            onClick={() => handleSelectPlan(plan, expandedCategory || closingCategory || '')}
-                          >
-                            {t('homepage.pricing.buttons.selectPlan')}
-                          </Button>
+                          {/* Gói AI-GPU không đăng ký online được: hạ tầng GPU do ICS cấp riêng,
+                              ngoài luồng tự phục vụ của portal. Nút dẫn sang trang liên hệ. */}
+                          {(expandedCategory || closingCategory) === 'ai' ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full text-xs hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+                              onClick={() => router.push('/contact-info')}
+                            >
+                              {t('homepage.pricing.buttons.contactConsult')}
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full text-xs hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+                              onClick={() => handleSelectPlan(plan, expandedCategory || closingCategory || '')}
+                            >
+                              {t('homepage.pricing.buttons.selectPlan')}
+                            </Button>
+                          )}
                         </CardFooter>
                       </Card>
                     ))
